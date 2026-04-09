@@ -1,7 +1,7 @@
 'use client';
 
 import { create } from 'zustand';
-import { TarotCard, tarotCards, getRandomCards } from '@/data/tarot';
+import { TarotCard, getRandomCards } from '@/data/tarot';
 
 interface ReadingState {
   question: string;

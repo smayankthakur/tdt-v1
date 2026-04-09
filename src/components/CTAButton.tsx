@@ -1,21 +1,29 @@
 'use client';
 
-import { forwardRef, ButtonHTMLAttributes } from 'react';
-import { motion } from 'framer-motion';
+import { forwardRef } from 'react';
+import { motion, HTMLMotionProps } from 'framer-motion';
 import { cn } from '@/lib/utils';
 
-interface CTAButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+interface CTAButtonProps extends Omit<HTMLMotionProps<'button'>, 'size'> {
   variant?: 'primary' | 'secondary';
+  size?: 'sm' | 'md' | 'lg';
   children: React.ReactNode;
 }
 
 const CTAButton = forwardRef<HTMLButtonElement, CTAButtonProps>(
-  ({ className, variant = 'primary', children, ...props }, ref) => {
+  ({ className, variant = 'primary', size = 'md', children, ...props }, ref) => {
+    const sizeClasses = {
+      sm: 'px-6 py-2 text-sm',
+      md: 'px-8 py-4 text-base',
+      lg: 'px-10 py-5 text-lg',
+    };
+    
     return (
       <motion.button
         ref={ref}
         className={cn(
-          'relative overflow-hidden rounded-full px-8 py-4 font-medium transition-all duration-300 focus:outline-none',
+          'relative overflow-hidden rounded-full font-medium transition-all duration-300 focus:outline-none',
+          sizeClasses[size],
           variant === 'primary'
             ? 'bg-gold-gradient text-[#2D2A26] hover:scale-105 hover:shadow-xl glow-gold-hover active:scale-[0.98]'
             : 'border-2 border-secondary text-secondary bg-transparent hover:bg-secondary/10',

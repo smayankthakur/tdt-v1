@@ -66,7 +66,7 @@ export default function ReadingPage() {
                 What troubles your heart?
               </h1>
               <p className="text-foreground-secondary mb-8">
-                Ask the universe anything that's on your mind
+                Ask the universe anything that is on your mind
               </p>
 
               <div className="mx-auto max-w-xl">

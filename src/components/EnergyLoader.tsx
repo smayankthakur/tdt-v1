@@ -29,9 +29,6 @@ export default function EnergyLoader({ message = 'Aligning with your energy...' 
           <motion.div
             key={i}
             className="absolute left-1/2 top-1/2 h-2 w-2 rounded-full bg-primary"
-            style={{
-              '--delay': `${i * 0.5}s`,
-            }}
             animate={{
               x: [0, -60, 0],
               y: [0, -30, 0],

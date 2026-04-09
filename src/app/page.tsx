@@ -118,7 +118,7 @@ export default function Home() {
                 transition={{ delay: index * 0.2 }}
               >
                 <div className="mb-4 text-amber-400">{'⭐'.split('').map((s, i) => <span key={i}>{s}</span>)}</div>
-                <p className="text-foreground-secondary italic mb-4">"{testimonial.text}"</p>
+                <p className="text-foreground-secondary italic mb-4">&ldquo;{testimonial.text}&rdquo;</p>
                 <div className="flex items-center gap-3">
                   <div className="h-10 w-10 rounded-full bg-primary/20 flex items-center justify-center">
                     <span className="text-primary font-medium">{testimonial.name[0]}</span>

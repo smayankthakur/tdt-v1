@@ -1,8 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { motion } from 'framer-motion'; 
-import { cn } from '@/lib/utils';
+import { motion } from 'framer-motion';
 import { TarotCard as TarotCardType } from '@/data/tarot';
 import TarotCardComponent from './TarotCard';
 import CTAButton from './CTAButton';
@@ -23,7 +22,7 @@ The ${getCardMeaning(cards[1], 'second card')} in your present moment reveals ${
 
 Looking toward your future, the ${getCardMeaning(cards[2], 'third card')} suggests ${getCardMeaning(cards[2], 'what is coming')}. This is not set in stoneâ€”your choices can shape the outcome.
 
-Overall, the cards reveal that you're at a pivotal moment. Trust your intuitionâ€”it's guiding you toward the answer you seek. The clarity you desire is coming, but you must be patient with yourself and trust the journey.`;
+Overall, the cards reveal that you are at a pivotal moment. Trust your intuitionâ€”it is guiding you toward the answer you seek. The clarity you desire is coming, but you must be patient with yourself and trust the journey.`;
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -50,7 +49,7 @@ Overall, the cards reveal that you're at a pivotal moment. Trust your intuitionâ
       >
         <div className="mb-8 text-center">
           <h2 className="font-heading text-3xl mb-2">Your Reading</h2>
-          <p className="text-foreground-secondary italic">"{question}"</p>
+          <p className="text-foreground-secondary italic">&ldquo;{question}&rdquo;</p>
         </div>
 
         <div className="flex justify-center gap-4 mb-8">
@@ -97,7 +96,7 @@ Overall, the cards reveal that you're at a pivotal moment. Trust your intuitionâ
           <div className="p-8 rounded-2xl bg-card border border-primary/20">
             <h3 className="font-heading text-xl mb-4">Full Reading</h3>
             <p className="text-foreground-secondary leading-relaxed">
-              The cards reveal a deeper meaning in your situation. There's more the universe
+              The cards reveal a deeper meaning in your situation. There is more the universe
               wants to show you about your path forward...
             </p>
           </div>
@@ -112,7 +111,7 @@ Overall, the cards reveal that you're at a pivotal moment. Trust your intuitionâ
       >
         <div className="inline-block p-6 bg-amber-50 rounded-2xl border border-amber-200/50">
           <h4 className="font-heading text-lg text-foreground mb-2">
-            There's more the universe wants to reveal...
+            There is more the universe wants to reveal...
           </h4>
           <p className="text-sm text-foreground-secondary mb-4">
             Unlock your full personalized reading with deeper insights

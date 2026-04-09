@@ -39,7 +39,7 @@ export default function ContactPage() {
             Get In Touch
           </h1>
           <p className="text-foreground-secondary">
-            Have a question? We'd love to hear from you.
+            Have a question? We would love to hear from you.
           </p>
         </motion.div>
 
@@ -59,7 +59,7 @@ export default function ContactPage() {
                 Message Sent
               </h3>
               <p className="text-foreground-secondary">
-                We'll get back to you soon.
+                We will get back to you soon.
               </p>
             </motion.div>
           ) : (

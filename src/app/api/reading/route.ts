@@ -4,7 +4,7 @@ import { getRandomCards, generateInterpretation } from '@/data/tarot';
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { question, spreadType = 'three-card' } = body;
+    const { question } = body;
 
     if (!question || question.length < 10) {
       return NextResponse.json(
@@ -21,7 +21,7 @@ export async function POST(request: Request) {
       interpretation,
       timestamp: new Date().toISOString(),
     });
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { error: 'Failed to generate reading' },
       { status: 500 }

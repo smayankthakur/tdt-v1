@@ -1,7 +1,6 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { cn } from '@/lib/utils';
 import { TarotCard as TarotCardType } from '@/data/tarot';
 import TarotCardComponent from './TarotCard';
 

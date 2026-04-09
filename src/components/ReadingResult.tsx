@@ -2,29 +2,25 @@
 
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { TarotCard as TarotCardType } from '@/data/tarot';
+import { TarotCard as TarotCardType, SelectedCard } from '@/data/tarot';
 import TarotCardComponent from './TarotCard';
 import CTAButton from './CTAButton';
 
 interface ReadingResultProps {
   question: string;
   cards: TarotCardType[];
+  selectedCardsWithDetails?: SelectedCard[];
+  interpretation?: string;
   onUnlockFull?: () => void;
 }
 
-export default function ReadingResult({ question, cards, onUnlockFull }: ReadingResultProps) {
+export default function ReadingResult({ question, cards, selectedCardsWithDetails, interpretation, onUnlockFull }: ReadingResultProps) {
   const [displayedText, setDisplayedText] = useState('');
-  const getCardMeaning = (card: TarotCardType | undefined, fallback: string) => card?.meaning.split(',')[0] || fallback;
-  
-  const fullText = `I sense that this situation has been weighing on you more than you admit. The ${getCardMeaning(cards[0], 'first card')} speaks to ${getCardMeaning(cards[0], 'new beginnings')}. This reflects your past and the patterns that have led you here.
 
-The ${getCardMeaning(cards[1], 'second card')} in your present moment reveals ${getCardMeaning(cards[1], 'your current state')}. The universe is asking you to acknowledge what is happening beneath the surface.
-
-Looking toward your future, the ${getCardMeaning(cards[2], 'third card')} suggests ${getCardMeaning(cards[2], 'what is coming')}. This is not set in stone—your choices can shape the outcome.
-
-Overall, the cards reveal that you are at a pivotal moment. Trust your intuition—it is guiding you toward the answer you seek. The clarity you desire is coming, but you must be patient with yourself and trust the journey.`;
+  const fullText = interpretation || `I sense that this situation has been weighing on you more than you admit. The cards reveal that you are at a pivotal moment. Trust your intuition—it is guiding you toward the answer you seek. The clarity you desire is coming, but you must be patient with yourself and trust the journey.`;
 
   useEffect(() => {
+    setDisplayedText('');
     const timer = setTimeout(() => {
       let index = 0;
       const interval = setInterval(() => {
@@ -59,8 +55,19 @@ Overall, the cards reveal that you are at a pivotal moment. Trust your intuition
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.3 }}
+              className="flex flex-col items-center"
             >
               <TarotCardComponent card={card} isFlipped size="md" />
+              {selectedCardsWithDetails && selectedCardsWithDetails[index] && (
+                <motion.p 
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 1 + index * 0.3 }}
+                  className="mt-2 text-xs text-foreground-secondary text-center"
+                >
+                  {selectedCardsWithDetails[index].position}
+                </motion.p>
+              )}
             </motion.div>
           ))}
         </div>

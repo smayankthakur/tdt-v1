@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useReadingStore } from '@/store/reading-store';
+import { selectCards, generateInterpretation, TarotCard } from '@/data/tarot';
 import EnergyLoader from '@/components/EnergyLoader';
 import CardDeck from '@/components/CardDeck';
 import ReadingResult from '@/components/ReadingResult';
@@ -14,14 +15,18 @@ export default function ReadingPage() {
     question,
     deck,
     selectedCards,
+    selectedCardsWithDetails,
     currentStep,
     setQuestion,
     selectCard,
     setCurrentStep,
+    setSelectedCardsWithDetails,
+    setAnalysis,
     reset,
   } = useReadingStore();
 
   const [error, setError] = useState('');
+  const [readingInterpretation, setReadingInterpretation] = useState('');
 
   useEffect(() => {
     if (currentStep === 2) {
@@ -38,6 +43,13 @@ export default function ReadingPage() {
       return;
     }
     setError('');
+    
+    const selected = selectCards(question, 3);
+    const cardsOnly = selected.map(s => s.card);
+    const interpretation = generateInterpretation(question, selected);
+    
+    setSelectedCardsWithDetails(selected);
+    setReadingInterpretation(interpretation);
     setCurrentStep(2);
   };
 
@@ -149,6 +161,8 @@ export default function ReadingPage() {
               <ReadingResult
                 question={question}
                 cards={selectedCards}
+                selectedCardsWithDetails={selectedCardsWithDetails}
+                interpretation={readingInterpretation}
                 onUnlockFull={handleUnlockFull}
               />
 

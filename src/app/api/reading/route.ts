@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getRandomCards, generateInterpretation } from '@/data/tarot';
+import { selectCards, generateInterpretation } from '@/data/tarot';
 
 export async function POST(request: Request) {
   try {
@@ -13,11 +13,11 @@ export async function POST(request: Request) {
       );
     }
 
-    const cards = getRandomCards(3);
-    const interpretation = generateInterpretation(question, cards);
+    const selectedCards = selectCards(question, 3);
+    const interpretation = generateInterpretation(question, selectedCards);
 
     return NextResponse.json({
-      cards,
+      cards: selectedCards,
       interpretation,
       timestamp: new Date().toISOString(),
     });

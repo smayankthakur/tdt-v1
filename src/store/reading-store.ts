@@ -1,31 +1,42 @@
 'use client';
 
 import { create } from 'zustand';
-import { TarotCard, getRandomCards } from '@/data/tarot';
+import { TarotCard, selectCards, SelectedCard } from '@/data/tarot';
 
 interface ReadingState {
   question: string;
   deck: TarotCard[];
   selectedCards: TarotCard[];
+  selectedCardsWithDetails: SelectedCard[];
   readingResult: string;
   currentStep: number;
   isLoading: boolean;
+  analysis: { theme: string; emotion: string; hiddenInsight: string } | null;
   setQuestion: (question: string) => void;
   setDeck: (deck: TarotCard[]) => void;
   selectCard: (card: TarotCard) => void;
   setReadingResult: (result: string) => void;
   setCurrentStep: (step: number) => void;
   setIsLoading: (loading: boolean) => void;
+  setAnalysis: (analysis: { theme: string; emotion: string; hiddenInsight: string }) => void;
+  setSelectedCardsWithDetails: (cards: SelectedCard[]) => void;
   reset: () => void;
+}
+
+function getRandomDeck(): TarotCard[] {
+  const shuffled = [...selectCards('', 7)].map(s => s.card);
+  return shuffled;
 }
 
 export const useReadingStore = create<ReadingState>((set) => ({
   question: '',
-  deck: getRandomCards(7),
+  deck: getRandomDeck(),
   selectedCards: [],
+  selectedCardsWithDetails: [],
   readingResult: '',
   currentStep: 1,
   isLoading: false,
+  analysis: null,
 
   setQuestion: (question) => set({ question }),
 
@@ -43,12 +54,18 @@ export const useReadingStore = create<ReadingState>((set) => ({
 
   setIsLoading: (loading) => set({ isLoading: loading }),
 
+  setAnalysis: (analysis) => set({ analysis }),
+
+  setSelectedCardsWithDetails: (cards) => set({ selectedCardsWithDetails: cards }),
+
   reset: () => set({
     question: '',
-    deck: getRandomCards(7),
+    deck: getRandomDeck(),
     selectedCards: [],
+    selectedCardsWithDetails: [],
     readingResult: '',
     currentStep: 1,
     isLoading: false,
+    analysis: null,
   }),
 }));

@@ -3,12 +3,14 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useReadingStore } from '@/store/reading-store';
+import { useGinniStore } from '@/store/ginni-store';
 import { selectCards, generateInterpretation, TarotCard } from '@/data/tarot';
 import EnergyLoader from '@/components/EnergyLoader';
 import CardDeck from '@/components/CardDeck';
 import ReadingResult from '@/components/ReadingResult';
 import CTAButton from '@/components/CTAButton';
 import { Textarea } from '@/components/ui/textarea';
+import { analyzeQuestion } from '@/data/tarot';
 
 export default function ReadingPage() {
   const {
@@ -24,6 +26,8 @@ export default function ReadingPage() {
     setAnalysis,
     reset,
   } = useReadingStore();
+
+  const { setContext, setTriggerOpen, triggerOpen, clearContext } = useGinniStore();
 
   const [error, setError] = useState('');
   const [readingInterpretation, setReadingInterpretation] = useState('');
@@ -60,6 +64,31 @@ export default function ReadingPage() {
   const handleUnlockFull = () => {
     alert('This would lead to payment/pro signup in the full version');
   };
+
+  const handleTalkToGinni = () => {
+    const analysis = analyzeQuestion(question);
+    const cardNames = selectedCardsWithDetails?.map(c => c.card.name) || [];
+    
+    setContext({
+      question,
+      cards: cardNames,
+      interpretation: readingInterpretation,
+      theme: analysis.theme,
+      emotion: analysis.emotion
+    });
+    
+    setTriggerOpen(true);
+  };
+
+  useEffect(() => {
+    if (triggerOpen && currentStep === 4) {
+      const timer = setTimeout(() => {
+        setTriggerOpen(false);
+        clearContext();
+      }, 10000);
+      return () => clearTimeout(timer);
+    }
+  }, [triggerOpen, currentStep, setTriggerOpen, clearContext]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background-secondary to-amber-50/30 py-24">
@@ -164,6 +193,7 @@ export default function ReadingPage() {
                 selectedCardsWithDetails={selectedCardsWithDetails}
                 interpretation={readingInterpretation}
                 onUnlockFull={handleUnlockFull}
+                onTalkToGinni={handleTalkToGinni}
               />
 
               <div className="mt-12 text-center">

@@ -129,7 +129,7 @@ function seededRandom(seed: number): number {
   return x - Math.floor(x);
 }
 
-function analyzeQuestion(question: string): { theme: Theme; emotion: Emotion; urgency: 'low' | 'medium' | 'high'; hiddenInsight: string } {
+export function analyzeQuestion(question: string): { theme: Theme; emotion: Emotion; urgency: 'low' | 'medium' | 'high'; hiddenInsight: string } {
   const lowerQ = question.toLowerCase();
   
   let theme: Theme = 'general';

@@ -1,43 +1,175 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+
+export interface GinniContext {
+  question?: string;
+  cards?: string[];
+  interpretation?: string;
+  theme?: string;
+  emotion?: string;
+}
 
 interface GinniChatProps {
   autoOpenDelay?: number;
   showNotification?: boolean;
+  context?: GinniContext;
+  triggerOpen?: boolean;
+  onOpen?: () => void;
+  onClose?: () => void;
 }
+
+const GINNI_BASE_URL = 'https://ginni-ki-baatein.lovable.app/';
 
 export default function GinniChat({ 
   autoOpenDelay = 0, 
-  showNotification = true 
+  showNotification = true,
+  context,
+  triggerOpen = false,
+  onOpen,
+  onClose
 }: GinniChatProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [hasAutoOpened, setHasAutoOpened] = useState(false);
   const [showTooltip, setShowTooltip] = useState(false);
+  const [showContextNotice, setShowContextNotice] = useState(false);
+  const [iframeSrc, setIframeSrc] = useState(GINNI_BASE_URL);
+  const iframeRef = useRef<HTMLIFrameElement>(null);
+
+  const buildIframeSrc = useCallback((ctx?: GinniContext) => {
+    if (!ctx?.question) return GINNI_BASE_URL;
+
+    const params = new URLSearchParams();
+    
+    params.set('q', ctx.question.slice(0, 500));
+    
+    if (ctx.theme) {
+      params.set('theme', ctx.theme);
+    }
+    if (ctx.emotion) {
+      params.set('emotion', ctx.emotion);
+    }
+    
+    if (ctx.cards && ctx.cards.length > 0) {
+      const cardSummary = ctx.cards.slice(0, 3).join(', ');
+      params.set('cards', cardSummary.slice(0, 200));
+    }
+    
+    if (ctx.interpretation) {
+      const summary = ctx.interpretation.slice(0, 300).replace(/\n/g, ' ').replace(/\s+/g, ' ').trim();
+      params.set('context', summary);
+    }
+
+    const url = `${GINNI_BASE_URL}?${params.toString()}`;
+    return url;
+  }, []);
 
   useEffect(() => {
-    if (autoOpenDelay > 0 && !hasAutoOpened) {
+    if (context && context.question) {
+      const newSrc = buildIframeSrc(context);
+      setIframeSrc(newSrc);
+    }
+  }, [context, buildIframeSrc]);
+
+  useEffect(() => {
+    if (triggerOpen && !isOpen) {
+      if (context?.question) {
+        setShowContextNotice(true);
+        setTimeout(() => {
+          setShowContextNotice(false);
+          setIsOpen(true);
+          setIsLoading(true);
+          setHasAutoOpened(true);
+          onOpen?.();
+        }, 2500);
+      } else {
+        setIsOpen(true);
+        setIsLoading(true);
+        setHasAutoOpened(true);
+        onOpen?.();
+      }
+    }
+  }, [triggerOpen, isOpen, context, onOpen]);
+
+  useEffect(() => {
+    if (autoOpenDelay > 0 && !hasAutoOpened && !triggerOpen) {
       const timer = setTimeout(() => {
         setIsOpen(true);
+        setIsLoading(true);
         setHasAutoOpened(true);
+        onOpen?.();
       }, autoOpenDelay);
       return () => clearTimeout(timer);
     }
-  }, [autoOpenDelay, hasAutoOpened]);
+  }, [autoOpenDelay, hasAutoOpened, triggerOpen, onOpen]);
+
+  useEffect(() => {
+    if (isOpen && iframeRef.current && context?.question) {
+      const sendContextViaPostMessage = () => {
+        if (iframeRef.current?.contentWindow) {
+          iframeRef.current.contentWindow.postMessage(
+            {
+              type: 'INIT_CONTEXT',
+              payload: {
+                question: context.question,
+                cards: context.cards,
+                interpretation: context.interpretation,
+                theme: context.theme,
+                emotion: context.emotion,
+                timestamp: Date.now()
+              }
+            },
+            '*'
+          );
+        }
+      };
+
+      if (!isLoading) {
+        setTimeout(sendContextViaPostMessage, 500);
+      }
+    }
+  }, [isOpen, isLoading, context]);
 
   const handleOpen = () => {
     setIsOpen(true);
     setIsLoading(true);
+    onOpen?.();
   };
 
   const handleClose = () => {
     setIsOpen(false);
+    onClose?.();
   };
 
   const handleIframeLoad = () => {
     setIsLoading(false);
+    if (context?.question && iframeRef.current?.contentWindow) {
+      setTimeout(() => {
+        iframeRef.current?.contentWindow?.postMessage(
+          { type: 'INIT_CONTEXT', payload: context },
+          '*'
+        );
+      }, 1000);
+    }
+  };
+
+  const getContextMessage = () => {
+    if (!context?.question) return null;
+    
+    const questionPreview = context.question.length > 40 
+      ? context.question.slice(0, 40) + '...' 
+      : context.question;
+    
+    const messages = [
+      `Ginni already knows about "${questionPreview}"…`,
+      `Let's go deeper into this…`,
+      `There's more to explore about your question…`,
+      `Ginni has been listening to your journey…`
+    ];
+    
+    return messages[Math.floor(Date.now() / 10000) % messages.length];
   };
 
   return (
@@ -171,12 +303,27 @@ export default function GinniChat({
               </div>
 
               <div className="flex-1 relative bg-background">
+                <AnimatePresence>
+                  {showContextNotice && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -20 }}
+                      className="absolute top-0 left-0 right-0 z-10 p-3 bg-gradient-to-r from-purple-500/20 to-amber-500/20 border-b border-primary/10"
+                    >
+                      <p className="text-center text-sm text-foreground-secondary">
+                        {getContextMessage()}
+                      </p>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
                 {isLoading && (
                   <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    className="absolute inset-0 bg-card flex flex-col items-center justify-center p-6"
+                    className="absolute inset-0 bg-card flex flex-col items-center justify-center p-6 pt-16"
                   >
                     <motion.div
                       animate={{ 
@@ -192,7 +339,9 @@ export default function GinniChat({
                       <div className="w-full h-full rounded-full bg-gradient-to-br from-amber-400 to-purple-500" />
                     </motion.div>
                     <p className="text-foreground-secondary text-center text-sm">
-                      Ginni is connecting to your energy…
+                      {context?.question 
+                        ? "Ginni is connecting to your energy…" 
+                        : "Ginni is connecting to your energy…"}
                     </p>
                     <div className="flex gap-1 mt-3">
                       {[0, 1, 2].map((i) => (
@@ -215,7 +364,8 @@ export default function GinniChat({
                 )}
                 
                 <motion.iframe
-                  src="https://ginni-ki-baatein.lovable.app/"
+                  ref={iframeRef}
+                  src={iframeSrc}
                   className="w-full h-full border-0"
                   onLoad={handleIframeLoad}
                   initial={{ opacity: 0 }}
@@ -226,6 +376,7 @@ export default function GinniChat({
                     visibility: isLoading ? 'hidden' : 'visible'
                   }}
                   title="Chat with Ginni"
+                  allow="clipboard-read; clipboard-write"
                 />
               </div>
             </div>

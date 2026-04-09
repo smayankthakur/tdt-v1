@@ -12,9 +12,10 @@ interface ReadingResultProps {
   selectedCardsWithDetails?: SelectedCard[];
   interpretation?: string;
   onUnlockFull?: () => void;
+  onTalkToGinni?: () => void;
 }
 
-export default function ReadingResult({ question, cards, selectedCardsWithDetails, interpretation, onUnlockFull }: ReadingResultProps) {
+export default function ReadingResult({ question, cards, selectedCardsWithDetails, interpretation, onUnlockFull, onTalkToGinni }: ReadingResultProps) {
   const [displayedText, setDisplayedText] = useState('');
 
   const fullText = interpretation || `I sense that this situation has been weighing on you more than you admit. The cards reveal that you are at a pivotal moment. Trust your intuition—it is guiding you toward the answer you seek. The clarity you desire is coming, but you must be patient with yourself and trust the journey.`;
@@ -124,11 +125,11 @@ export default function ReadingResult({ question, cards, selectedCardsWithDetail
             Unlock your full personalized reading with deeper insights
           </p>
           <div className="flex flex-nowrap gap-3 justify-center">
-            <CTAButton onClick={onUnlockFull}>
-              Unlock Full Reading
+            <CTAButton onClick={onTalkToGinni}>
+              Talk to Ginni
             </CTAButton>
             <CTAButton variant="secondary" onClick={onUnlockFull}>
-              Get Personal Guidance
+              Unlock Full Reading
             </CTAButton>
           </div>
         </div>

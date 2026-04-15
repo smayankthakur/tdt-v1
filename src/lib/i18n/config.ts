@@ -1,4 +1,4 @@
-export type Language = 'en' | 'hi' | 'hinglish';
+export type Language = 'en' | 'hi' | 'hinglish' | 'ar' | 'he';
 
 export interface LanguageConfig {
   code: Language;
@@ -29,6 +29,20 @@ export const LANGUAGES: Record<Language, LanguageConfig> = {
     nativeName: 'Hinglish',
     direction: 'ltr',
     flag: '💬',
+  },
+  ar: {
+    code: 'ar',
+    name: 'Arabic',
+    nativeName: 'العربية',
+    direction: 'rtl',
+    flag: '🇸🇦',
+  },
+  he: {
+    code: 'he',
+    name: 'Hebrew',
+    nativeName: 'עברית',
+    direction: 'rtl',
+    flag: '🇮🇱',
   },
 };
 

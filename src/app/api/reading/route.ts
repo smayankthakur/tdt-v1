@@ -1,39 +1,35 @@
 import { NextResponse } from 'next/server';
-import { selectCards, generateInterpretation } from '@/data/tarot';
-import { trackUserActivity } from '@/lib/user-tracking';
+import { selectRandomCards } from '@/lib/tarot';
+import { generateReading } from '@/lib/ai';
 
 export async function POST(request: Request) {
   try {
     const body = await request.json();
     const { question, userId } = body;
 
-    if (!question || question.length < 10) {
+    if (!question || question.length < 3) {
       return NextResponse.json(
-        { error: 'Question must be at least 10 characters' },
+        { error: 'Please ask a question to receive guidance from the cards.' },
         { status: 400 }
       );
     }
 
-    const selectedCards = selectCards(question, 3);
-    const interpretation = generateInterpretation(question, selectedCards);
-
-    if (userId) {
-      trackUserActivity(userId, 'reading');
-    }
+    // Select 3 random cards
+    const selectedCards = selectRandomCards(3);
+    
+    // Generate AI reading using OpenAI
+    const result = await generateReading(question, selectedCards);
 
     return NextResponse.json({
-      cards: selectedCards,
-      interpretation,
+      cards: result.cards,
+      interpretation: result.interpretation,
       timestamp: new Date().toISOString(),
-      postReadingMessage: {
-        enabled: true,
-        triggerAfter: '6 hours',
-        message: "I've been thinking about your reading… there's something deeper there."
-      }
     });
-  } catch {
+
+  } catch (error) {
+    console.error('Reading generation error:', error);
     return NextResponse.json(
-      { error: 'Failed to generate reading' },
+      { error: 'The cards are having difficulty connecting. Please try again.' },
       { status: 500 }
     );
   }

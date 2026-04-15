@@ -31,7 +31,7 @@ interface HeroProps {
 }
 
 export default function Hero({ userId }: HeroProps) {
-  const { profile, rules, isLoading, isPersonalized } = usePersonalization(userId);
+  const { profile, rules, isLoading, isPersonalized } = usePersonalization(userId ?? null);
   const heroContent = useHeroContent(rules);
   const { t, isHydrated, getHeroHeadline, getHeroSubheadline, getCTAText, language } = useLanguage();
 

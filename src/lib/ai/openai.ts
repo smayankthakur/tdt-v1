@@ -2,9 +2,18 @@ import OpenAI from 'openai';
 import { buildPrompt } from './prompts';
 import { SelectedCard, formatCardsForAI } from '../tarot/logic';
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY || process.env.OPENAI_KEY,
-});
+let _openai: OpenAI | undefined;
+
+function getOpenAI() {
+  if (!_openai) {
+    const apiKey = process.env.OPENAI_API_KEY || process.env.OPENAI_KEY;
+    if (!apiKey) {
+      throw new Error('Missing OPENAI_API_KEY');
+    }
+    _openai = new OpenAI({ apiKey });
+  }
+  return _openai;
+}
 
 export interface ReadingResult {
   cards: SelectedCard[];
@@ -20,7 +29,7 @@ export async function generateReading(
   const prompt = buildPrompt(question, cardsFormatted, memoryContext);
 
   try {
-    const response = await openai.chat.completions.create({
+    const response = await getOpenAI().chat.completions.create({
       model: 'gpt-4o-mini',
       messages: [
         {

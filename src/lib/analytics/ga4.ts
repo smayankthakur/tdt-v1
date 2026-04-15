@@ -39,8 +39,8 @@ export function initGA4() {
     return;
   }
 
-  window.gtag = window.gtag || function() {
-    window.dataLayer.push(arguments);
+  window.gtag = window.gtag || function(...args: any[]) {
+    window.dataLayer.push(args);
   };
   window.dataLayer = window.dataLayer || [];
 

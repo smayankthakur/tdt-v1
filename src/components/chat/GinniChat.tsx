@@ -56,7 +56,7 @@ export default function GinniChat({
   }, [isHydrated, lang]);
 
   const buildIframeSrc = useCallback((ctx?: GinniContext) => {
-    let baseUrl = GINNI_BASE_URL;
+    const baseUrl = GINNI_BASE_URL;
     
     const params = new URLSearchParams();
     
@@ -238,7 +238,7 @@ export default function GinniChat({
               className="bg-amber-50 border-b border-amber-100 px-4 py-2"
             >
               <p className="text-sm text-amber-800">
-                💫 There's more to your reading... Starting conversation
+                💫 There&apos;s more to your reading... Starting conversation
               </p>
             </motion.div>
           )}

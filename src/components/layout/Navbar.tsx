@@ -37,10 +37,10 @@ export default function Navbar() {
   const getNavLabel = (key: string): string => {
     if (!isHydrated) return key;
     const labels: Record<string, Record<Language, string>> = {
-      Home: { en: 'Home', hi: 'होम', hinglish: 'Home' },
-      Reading: { en: 'Reading', hi: 'रीडिंग', hinglish: 'Reading' },
-      Blog: { en: 'Blog', hi: 'ब्लॉग', hinglish: 'Blog' },
-      Contact: { en: 'Contact', hi: 'संपर्क', hinglish: 'Contact' },
+      Home: { en: 'Home', hi: 'होम', hinglish: 'Home', ar: 'الرئيسية', he: 'בית' },
+      Reading: { en: 'Reading', hi: 'रीडिंग', hinglish: 'Reading', ar: 'القراءة', he: 'קריאה' },
+      Blog: { en: 'Blog', hi: 'ब्लॉग', hinglish: 'Blog', ar: 'المدونة', he: 'בלוג' },
+      Contact: { en: 'Contact', hi: 'संपर्क', hinglish: 'Contact', ar: 'اتصل بنا', he: 'צור קשר' },
     };
     return labels[key]?.[language] || key;
   };

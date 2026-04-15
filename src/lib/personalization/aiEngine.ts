@@ -38,21 +38,29 @@ const TONE_PROMPTS: Record<Tones, Record<Language, string>> = {
     en: "Warm, gentle, inviting. Like a wise friend.",
     hi: "गर्म, कोमल, आमंत्रित करने वाला। जैसे कोई बुद्धिमान मित्र।",
     hinglish: "Warm, gentle, inviting. Jaise koi wise friend.",
+    ar: "دافئ، لطيف، invitating. مثل صديق حكيم.",
+    he: "חמים, עדין, מזמין. כמו חבר חכם.",
   },
   emotional: {
     en: "Deep, empathetic, emotionally connected.",
     hi: "गहरा, सहानुभूतिपूर्ण, भावनात्मक रूप से जुड़ा हुआ।",
     hinglish: "Deep, empathetic, emotionally connected.",
+    ar: "عميق، متعاطف، مرتبط عاطفياً.",
+    he: "עמוק, אמפתי, קשור רגשית.",
   },
   urgent: {
     en: "Direct, compelling, action-oriented.",
     hi: "सीधा, प्रेरक, कार्य-उन्मुख।",
     hinglish: "Direct, compelling, action-oriented.",
+    ar: "مباشر، مقنع، orienté vers l'action.",
+    he: "ישיר, משכנע, מוכוון פעולה.",
   },
   empowering: {
     en: "Confident, strong, motivational.",
     hi: "आत्मविश्वासी, मजबूत, प्रेरणादायक।",
     hinglish: "Confident, strong, motivational.",
+    ar: "واثق، قوي، محفز.",
+    he: "בטוח, חזק, מעורר השראה.",
   },
 };
 
@@ -61,21 +69,29 @@ const INTENT_HEADLINES: Record<string, Record<Language, string>> = {
     en: "Confused about what's happening in your life?",
     hi: "आपके जीवन में क्या हो रहा है इसको लेकर कंफ्यूज़ हैं?",
     hinglish: "Tumhare life mein kya ho rha hai, confuse ho?",
+    ar: "مرتبك بشأن ما يحدث في حياتك؟",
+    he: "מבולבל לגבי מה שקורה בחייך?",
   },
   love: {
     en: "Something about your relationship needs clarity...",
     hi: "आपके रिलेशनशिप के बारे में कुछ स्पष्टता की जरूरत है...",
     hinglish: "Tumhare relationship mein kuch clarity chahiye...",
+    ar: "شيء ما في علاقتك يحتاج إلى وضوح...",
+    he: "משהו במערכת היחסים שלך צריך בהירות...",
   },
   career: {
     en: "You've been thinking about your next move...",
     hi: "आप अपने अगले कदम के बारे में सोच रहे हैं...",
     hinglish: "Tum apni next move ke baare mein soch rahe ho...",
+    ar: "لقد كنت تفكر في خطوتك التالية...",
+    he: "חשבת על הצעד הבא שלך...",
   },
   confusion: {
     en: "You're feeling lost, but answers are closer than you think...",
     hi: "आप खोए हुए महसूस कर रहे हैं, लेकिन जवाब कहीं पास हैं...",
     hinglish: "Tum khoye hue feel kar rahe ho, but answers paas hi hain...",
+    ar: "تشعر بالضياع، لكن الإجابات أقرب مما thinks...",
+    he: "אתה מרגיש אבוד, אבל התשובות קרובות יותר משאתה חושב...",
   },
 };
 
@@ -84,26 +100,36 @@ const CTA_TEXTS: Record<string, Record<Language, string>> = {
     en: "Start Your Reading",
     hi: "अपना रीडिंग शुरू करें",
     hinglish: "Reading start karo",
+    ar: "ابدأ قراءتك",
+    he: "התחל את הקריאה שלך",
   },
   continueJourney: {
     en: "Continue Your Journey",
     hi: "अपनी यात्रा जारी रखें",
     hinglish: "Journey continue karo",
+    ar: "اصلح رحلتك",
+    he: "המשך את המסע שלך",
   },
   unlockClarity: {
     en: "Unlock Full Clarity",
     hi: "पूरी स्पष्टता पाएं",
     hinglish: "Full clarity paao",
+    ar: "احصل على الوضوح الكامل",
+    he: "קבל בהירות מלאה",
   },
   continueReading: {
     en: "Continue Your Reading",
     hi: "अपना रीडिंग जारी रखें",
     hinglish: "Reading continue karo",
+    ar: "اصلح قراءتك",
+    he: "המשך את הקריאה שלך",
   },
   talkToGinni: {
     en: "Talk to Ginni",
     hi: "गिनी से बात करें",
     hinglish: "Ginni se baat karo",
+    ar: "تحدث مع جيني",
+    he: "דבר עם ג\'יני",
   },
 };
 
@@ -117,19 +143,24 @@ const PREFILL_QUESTIONS: Record<string, Record<Language, string[]>> = {
     hi: [
       "मेरा साथी मेरे बारे में क्या सोचता है?",
       "क्या यह रिलेशनशिप स्थायी है?",
-      "हमें एक साथ रहने में क्या रोक रहा है?",
+      "हम���ं एक साथ रहने में क्या रोक रहा है?",
     ],
     hinglish: [
       "Mera partner mere baare mein kya feel karta hai?",
       "Is relationship ka future kaisa hai?",
       "Kya humein ek saath rakh raha hai?",
     ],
+    ar: [
+      "ما الذي يشعر به شوكي حقًا تجاهي؟",
+      "هل هذه العلاقة meant لـ last؟",
+      "ما الذي يمنعنا من быть zusammen؟",
+    ],
+    he: [
+      "מה ה partner שלי באמת מרגיש לגביי?",
+      "האם המערכת הזו מיועדת להימשך?",
+      "מה מונע מאיתנו להיות ביחד?",
+    ],
   },
-  career: [
-    "What career path aligns with my purpose?",
-    "Should I make this career change now?",
-    "What's blocking my professional success?",
-  ],
   career: {
     en: [
       "What career path aligns with my purpose?",
@@ -145,6 +176,16 @@ const PREFILL_QUESTIONS: Record<string, Record<Language, string[]>> = {
       "Konsa career path mera purpose se match karta hai?",
       "Ab career change karna chahiye?",
       "Professional success mein kya block kar raha hai?",
+    ],
+    ar: [
+      "أي مسار مهني يتوافق مع purpose؟",
+      "هل يجب أن أقوم بتغيير المهنة الآن؟",
+      "ما الذي ي blocking نجاحي المهني؟",
+    ],
+    he: [
+      "איזה מסלול קריירה מתאימ לי?",
+      "האם לבצע את שינוי הקריירה עכשיו?",
+      "מה מונע ממני הצלחה מקצועית?",
     ],
   },
   confusion: {
@@ -163,6 +204,16 @@ const PREFILL_QUESTIONS: Record<string, Record<Language, string[]>> = {
       "Kis direction mein jaana chahiye?",
       "Ab konsa choice best hai mere liye?",
     ],
+    ar: [
+      "ماذا يجب أن أفعل بعد ذلك؟",
+      "أي اتجاه يجب أن أسلكه؟",
+      "ما هو الخيار الأفضل لي الآن؟",
+    ],
+    he: [
+      "מה עליי לעשות אחרי זה?",
+      "לאן עליי ללכת?",
+      "מה הבחירה הטובה ביותר בשבילי עכשיו?",
+    ],
   },
   general: {
     en: [
@@ -180,6 +231,16 @@ const PREFILL_QUESTIONS: Record<string, Record<Language, string[]>> = {
       "Kis energy mein main abhi hoon?",
       "Aage kya focus karna chahiye?",
     ],
+    ar: [
+      "ما الرسالة التي يحملها الكون لي؟",
+      "ما الطاقة التي تحيط بي الآن؟",
+      "ما الذي يجب أن أركز عليه في المستقبل؟",
+    ],
+    he: [
+      "איזו הודעה יש ליקום בשבילי?",
+      "איזו אנרגיה מקיפה אותי עכשיו?",
+      "על מה עליי להתמקד בהמשך?",
+    ],
   },
 };
 
@@ -188,11 +249,15 @@ const CHAT_MESSAGES: Record<string, Record<Language, string>> = {
     en: "Namaste! I'm Ginni, your spiritual guide. How can I help you today?",
     hi: "नमस्ते! मैं गिनी हूं, आपकी आध्यात्मिक मार्गदर्शक। आज मैं आपकी कैसे मदद कर सकती हूं?",
     hinglish: "Namaste! Main Ginni hoon, tumhari spiritual guide. Aaj kaise help kar sakti hoon?",
+    ar: "السلام! أنا جيني، مرشدك الروحي. كيف يمكنني مساعدتك اليوم؟",
+    he: "שלום! אני ג\'יני, המדריך הרוחני שלך. איך אוכל לעזור לך היום?",
   },
   afterReading: {
     en: "There's more to this… talk to me",
     hi: "इसमें और है... मुझसे बात करो",
     hinglish: "Isme aur hai... mujhse baat karo",
+    ar: "هناك المزيد من ذلك... تحدث معي",
+    he: "יש עוד לזה... דבר איתי",
   },
 };
 
@@ -260,21 +325,29 @@ function getSubheadline(intent: string, language: Language): string {
       en: "Get answers from the universe in seconds. Experience mystical readings that feel made just for you.",
       hi: "ब्रह्मांड से सेकंडों में जवाब पाएं। ऐसे रहस्यमय रीडिंग का अनुभव करें जो आपके लिए बनाए गए हों।",
       hinglish: "Universe se seconds mein answer paao. Mystical readings jo bilkul tumhare liye bani hain.",
+      ar: "احصل على إجابات من الكون في ثوانٍ. جرب قراءات بطيئة تبدو مصنوعة من أجلك.",
+      he: "קבל תשובות מהיקום בשניות. חווה קריאות מיסטיות שנראות עשויות במיוחד בשבילך.",
     },
     love: {
       en: "The cards see what your heart has been wondering about.",
       hi: "ताश के पत्ते देखते हैं कि आपके दिल में क्या है।",
       hinglish: "Cards dekhte hain ki tumhare dil mein kya chal raha hai.",
+      ar: "ترى البطاقات ما يتساءل عنه قلبك.",
+      he: "הקלפים רואים מה הלב שלך תוהה עליו.",
     },
     career: {
       en: "Let the universe guide your path forward.",
       hi: "ब्रह्मांड आपके रास्ते का मार्गदर्शन करता है।",
       hinglish: "Universe tumhe guide karega.",
+      ar: "دع الكون يوجهك في الطريق إلى الأمام.",
+      he: "תן ליקום להנחות אותך בדרך קדימה.",
     },
     confusion: {
       en: "The tarot sees the way forward.",
       hi: "तरबूत आगे का रास्ता देखता है।",
       hinglish: "Tarot aage ka raasta dekhta hai.",
+      ar: " TAROT يرى الطريق إلى الأمام.",
+      he: "הטארוט רואה את הדרך קדימה.",
     },
   };
   return subheadlines[intent]?.[language] || subheadlines.default[language];
@@ -326,7 +399,9 @@ function trackAIConfigGeneration(
         timestamp: new Date().toISOString(),
       },
     })
-    .catch(console.error);
+    .then(({ error }) => {
+      if (error) console.error(error);
+    });
 }
 
 export function getTonePrompt(tone: Tones, language: Language): string {

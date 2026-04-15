@@ -3,9 +3,18 @@ import { BlogArticle, ContentPromptConfig, buildPrompt, extractTitleFromContent,
 
 export type { ContentPromptConfig };
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY || process.env.OPENAI_KEY,
-});
+let _openai: OpenAI | undefined;
+
+function getOpenAI() {
+  if (!_openai) {
+    const apiKey = process.env.OPENAI_API_KEY || process.env.OPENAI_KEY;
+    if (!apiKey) {
+      throw new Error('Missing OPENAI_API_KEY');
+    }
+    _openai = new OpenAI({ apiKey });
+  }
+  return _openai;
+}
 
 const WORDPRESS_API_URL = process.env.WORDPRESS_API_URL || 'https://blog.thedivinetarot.com/wp-json/wp/v2';
 const WORDPRESS_USERNAME = process.env.WORDPRESS_USERNAME;
@@ -22,7 +31,7 @@ export async function generateArticle(config: ContentPromptConfig): Promise<Gene
   try {
     const prompt = buildPrompt(config);
 
-    const response = await openai.chat.completions.create({
+    const response = await getOpenAI().chat.completions.create({
       model: 'gpt-4o',
       messages: [
         { role: 'system', content: 'You are a mystical tarot content writer. Write in the voice of a wise spiritual guide.' },

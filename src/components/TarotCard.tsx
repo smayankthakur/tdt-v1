@@ -34,8 +34,8 @@ export default function TarotCard({
         isSelected && 'z-10'
       )}
       onClick={onClick}
-      whileHover={{ scale: 1.05 }}
-      whileTap={{ scale: 0.98 }}
+      whileHover={{ scale: 1.05, y: -8 }}
+      whileTap={{ scale: 0.97 }}
       transition={{ type: 'spring', stiffness: 300, damping: 20 }}
     >
       <motion.div
@@ -44,14 +44,21 @@ export default function TarotCard({
         transition={{ duration: 0.6, ease: 'easeInOut' }}
         style={{ transformStyle: 'preserve-3d' }}
       >
-        <div
+        {/* Card Back */}
+        <motion.div
           className={cn(
             'absolute inset-0 backface-hidden rounded-2xl overflow-hidden',
             'bg-gradient-to-br from-[#2D2A26] to-[#4A4540]',
             'flex items-center justify-center',
-            'border-2 border-amber-900/30 shadow-xl',
-            isSelected && 'ring-2 ring-amber-400/50 shadow-amber-400/20'
+            'border-2 border-amber-900/30 shadow-xl'
           )}
+          whileHover={{
+            boxShadow: [
+              '0 0 20px rgba(212,175,55,0.3)',
+              '0 0 40px rgba(212,175,55,0.4)'
+            ]
+          }}
+          transition={{ duration: 0.3 }}
         >
           <div className="absolute inset-0 opacity-20 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-amber-900/40 via-transparent to-transparent" />
           <div className="grid grid-cols-3 gap-1 p-4 opacity-30">
@@ -63,22 +70,34 @@ export default function TarotCard({
             <Moon className="w-4 h-4 text-amber-600/50" />
           </div>
           <Sparkles className="absolute bottom-4 w-6 h-6 text-amber-600/40" />
-        </div>
+        </motion.div>
 
-        <div
+        {/* Card Front */}
+        <motion.div
           className={cn(
             'absolute inset-0 backface-hidden rounded-2xl overflow-hidden',
             'bg-card flex flex-col',
-            'border-2 border-primary/20 shadow-xl',
-            isSelected && 'ring-2 ring-primary/50 shadow-primary/20',
-            '[transform:rotateY(180deg)]'
+            'border-2 border-primary/20 shadow-xl'
           )}
           style={{ transform: 'rotateY(180deg)', backfaceVisibility: 'hidden' }}
+          whileHover={{
+            boxShadow: [
+              '0 0 20px rgba(212,175,55,0.2)',
+              '0 0 30px rgba(212,175,55,0.3)'
+            ]
+          }}
+          transition={{ duration: 0.3 }}
         >
           <div className="absolute inset-0 bg-gradient-to-br from-amber-50 to-amber-100/50" />
           <div className="relative z-10 flex flex-col items-center justify-between h-full p-4">
             <div className="w-full text-center">
-              <span className="text-3xl mb-2 block">{getCardEmoji(card.id)}</span>
+              <motion.span 
+                className="text-3xl mb-2 block"
+                animate={{ scale: [1, 1.1, 1] }}
+                transition={{ duration: 2, repeat: Infinity }}
+              >
+                {getCardEmoji(card.id)}
+              </motion.span>
               <h4 className="font-heading text-sm font-semibold text-foreground leading-tight">
                 {card.name}
               </h4>
@@ -87,7 +106,7 @@ export default function TarotCard({
               {card.meaning.split(',')[0]}
             </p>
           </div>
-        </div>
+        </motion.div>
       </motion.div>
     </motion.div>
   );

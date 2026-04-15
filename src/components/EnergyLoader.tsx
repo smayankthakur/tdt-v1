@@ -1,68 +1,155 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 
 interface EnergyLoaderProps {
   message?: string;
 }
 
-export default function EnergyLoader({ message = 'Aligning with your energy...' }: EnergyLoaderProps) {
+const loaderPhrases = [
+  "Aligning with your energy...",
+  "Tuning into your situation...",
+  "Reading the patterns around you...",
+  "Connecting to the universe...",
+  "Translating the message...",
+];
+
+export default function EnergyLoader({ message }: EnergyLoaderProps) {
+  const [phrase, setPhrase] = useState(loaderPhrases[0]);
+  const [isInitializing, setIsInitializing] = useState(true);
+
+  useEffect(() => {
+    const randomPhrase = loaderPhrases[Math.floor(Math.random() * loaderPhrases.length)];
+    setPhrase(randomPhrase);
+    
+    const timer = setTimeout(() => {
+      setIsInitializing(false);
+    }, 1500);
+    
+    return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    if (!message) return;
+    
+    const randomPhrase = loaderPhrases[Math.floor(Math.random() * loaderPhrases.length)];
+    setPhrase(randomPhrase);
+  }, [message]);
+
   return (
     <div className="flex min-h-[60vh] flex-col items-center justify-center">
       <motion.div
         className="relative"
-        initial={{ scale: 0.8, opacity: 0 }}
+        initial={{ scale: 0.5, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
-        transition={{ duration: 0.8 }}
+        transition={{ duration: 0.8, ease: 'easeOut' }}
       >
+        {/* Outer glow ring */}
         <motion.div
-          className="relative h-40 w-40"
+          className="absolute inset-0 rounded-full"
+          style={{ 
+            background: 'conic-gradient(from 0deg, transparent, rgba(212,175,55,0.3), transparent)' 
+          }}
           animate={{ rotate: 360 }}
-          transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
+          transition={{ duration: 4, repeat: Infinity, ease: 'linear' }}
+        />
+        
+        {/* Main orb container */}
+        <motion.div
+          className="relative w-32 h-32"
+          animate={{ 
+            scale: [1, 1.05, 1],
+          }}
+          transition={{ 
+            duration: 3,
+            repeat: Infinity,
+            ease: 'easeInOut'
+          }}
         >
-          <div className="absolute inset-0 rounded-full bg-gradient-to-r from-primary/0 via-primary/30 to-primary/0 blur-xl" />
-          <div className="absolute inset-4 rounded-full bg-gradient-to-br from-amber-200 to-primary animate-pulse-glow" />
-          <div className="absolute inset-8 rounded-full bg-gradient-to-br from-amber-100 to-amber-200/50" />
+          {/* Inner glow */}
+          <div className="absolute inset-4 rounded-full bg-gradient-to-br from-amber-200/40 to-purple-200/40 blur-xl" />
+          
+          {/* Core orb */}
+          <motion.div
+            className="absolute inset-6 rounded-full bg-gradient-to-br from-amber-300 via-amber-200 to-purple-300"
+            animate={{ 
+              boxShadow: [
+                '0 0 30px rgba(212,175,55,0.4)',
+                '0 0 50px rgba(212,175,55,0.6)',
+                '0 0 30px rgba(212,175,55,0.4)'
+              ]
+            }}
+            transition={{ duration: 2, repeat: Infinity }}
+          />
+          
+          {/* Inner light */}
+          <motion.div
+            className="absolute inset-10 rounded-full bg-gradient-to-br from-amber-100 to-purple-100"
+            animate={{ 
+              opacity: [0.6, 0.8, 0.6],
+              scale: [0.95, 1, 0.95]
+            }}
+            transition={{ duration: 2.5, repeat: Infinity }}
+          />
         </motion.div>
-
-        {[...Array(3)].map((_, i) => (
+        
+        {/* Floating particles */}
+        {[...Array(6)].map((_, i) => (
           <motion.div
             key={i}
-            className="absolute left-1/2 top-1/2 h-2 w-2 rounded-full bg-primary"
+            className="absolute w-1.5 h-1.5 rounded-full bg-amber-400/60"
+            style={{
+              left: '50%',
+              top: '50%',
+            }}
             animate={{
-              x: [0, -60, 0],
-              y: [0, -30, 0],
-              opacity: [0, 1, 0],
+              x: [
+                Math.cos(i * Math.PI / 3) * 50,
+                Math.cos(i * Math.PI / 3) * 70,
+                Math.cos(i * Math.PI / 3) * 50
+              ],
+              y: [
+                Math.sin(i * Math.PI / 3) * 50,
+                Math.sin(i * Math.PI / 3) * 70,
+                Math.sin(i * Math.PI / 3) * 50
+              ],
+              opacity: [0.8, 0, 0.8],
             }}
             transition={{
-              duration: 2,
+              duration: 2 + i * 0.2,
               repeat: Infinity,
-              delay: i * 0.3,
               ease: 'easeInOut',
+              delay: i * 0.3
             }}
           />
         ))}
       </motion.div>
 
       <motion.p
-        className="mt-8 font-heading text-lg text-foreground-secondary"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.5 }}
+        className="mt-10 font-heading text-lg text-[#6B6B6B]"
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: isInitializing ? 0.5 : 0.2 }}
       >
-        {message}
+        {phrase}
       </motion.p>
 
+      {/* Progress bar */}
       <motion.div
-        className="mt-4 h-1 w-32 overflow-hidden rounded-full bg-muted"
+        className="mt-4 h-0.5 w-24 rounded-full bg-amber-200/50 overflow-hidden"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 0.8 }}
+        transition={{ delay: 1 }}
       >
         <motion.div
-          className="h-full bg-primary"
+          className="h-full bg-gradient-to-r from-amber-400 to-purple-400 rounded-full"
           animate={{ x: ['-100%', '100%'] }}
-          transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+          transition={{ 
+            duration: 2,
+            repeat: Infinity,
+            ease: 'easeInOut'
+          }}
         />
       </motion.div>
     </div>

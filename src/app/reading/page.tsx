@@ -34,9 +34,10 @@ export default function ReadingPage() {
 
   useEffect(() => {
     if (currentStep === 2) {
+      // Minimum 2.5s delay for energy alignment (intentional realism)
       const timer = setTimeout(() => {
         setCurrentStep(3);
-      }, 2500);
+      }, 2800);
       return () => clearTimeout(timer);
     }
   }, [currentStep, setCurrentStep]);

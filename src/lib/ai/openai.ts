@@ -11,9 +11,13 @@ export interface ReadingResult {
   interpretation: string;
 }
 
-export async function generateReading(question: string, selectedCards: SelectedCard[]): Promise<ReadingResult> {
+export async function generateReading(
+  question: string, 
+  selectedCards: SelectedCard[],
+  memoryContext?: string
+): Promise<ReadingResult> {
   const cardsFormatted = formatCardsForAI(selectedCards);
-  const prompt = buildPrompt(question, cardsFormatted);
+  const prompt = buildPrompt(question, cardsFormatted, memoryContext);
 
   try {
     const response = await openai.chat.completions.create({

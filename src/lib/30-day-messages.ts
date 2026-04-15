@@ -27,7 +27,7 @@ export const thirtyDayPlan: DayPlan[] = [
     phase: 'hook',
     messages: {
       daily: { category: 'daily', phase: 'hook', message: "Your energy pulled me in today… I pulled a card for you.", cta: "See your card" },
-      reactivation: { category: 'reactivation', phase: 'hook', message: "Welcome to Divine Tarot… your first reading is waiting." },
+      reactivation: { category: 'reactivation', phase: 'hook', message: "Welcome to The Devine Tarot… your first reading is waiting." },
     }
   },
   {

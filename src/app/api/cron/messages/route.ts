@@ -1,134 +1,54 @@
 import { NextResponse } from 'next/server';
-import { 
-  getUsersNeedingDailyPull, 
-  getUsersNeedingReactivation, 
-  getUsersNeedingColdReactivation,
-  getHighIntentUsers,
-  determineMessageType
-} from '@/lib/user-tracking';
-import { getMessageForSegment, MessageType } from '@/lib/whatsapp-messages';
+import { runAutomation } from '@/lib/automation/engine';
+import { startScheduler, stopScheduler, getSchedulerStatus } from '@/lib/automation/scheduler';
 
-interface WhatsAppPayload {
-  messaging_product: string;
-  to: string;
-  type: string;
-  template: {
-    name: string;
-    language: { code: string };
-    components: any[];
-  };
-}
+let schedulerInitialized = false;
 
-async function sendWhatsAppMessage(phone: string, message: string, cta?: string): Promise<boolean> {
-  const payload: WhatsAppPayload = {
-    messaging_product: 'whatsapp',
-    to: phone,
-    type: 'template',
-    template: {
-      name: 'divine_tarot_message',
-      language: { code: 'en' },
-      components: [
-        {
-          type: 'body',
-          parameters: [{ type: 'text', text: message }]
-        }
-      ]
-    }
-  };
-
-  if (cta) {
-    payload.template.components.push({
-      type: 'button',
-      sub_type: 'url',
-      parameters: [{ type: 'text', text: cta }]
-    });
-  }
-
-  const whatsappApiUrl = process.env.WHATSAPP_API_URL;
-  const whatsappToken = process.env.WHATSAPP_TOKEN;
-
-  if (!whatsappApiUrl || !whatsappToken) {
-    console.log('WhatsApp not configured, mock send:', { phone, message, cta });
-    return true;
-  }
-
-  try {
-    const response = await fetch(whatsappApiUrl, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${whatsappToken}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(payload)
-    });
-
-    return response.ok;
-  } catch (error) {
-    console.error('Failed to send WhatsApp message:', error);
-    return false;
+function initScheduler() {
+  if (!schedulerInitialized) {
+    startScheduler();
+    schedulerInitialized = true;
   }
 }
 
-export async function POST() {
+initScheduler();
+
+export async function POST(request: Request) {
   try {
-    const results = {
-      dailyPullSent: 0,
-      reactivationSent: 0,
-      coldReactivationSent: 0,
-      conversionSent: 0,
-      failed: 0
-    };
-
-    const dailyPullUsers = getUsersNeedingDailyPull();
-    for (const user of dailyPullUsers) {
-      if (user.phone) {
-        const { message, cta } = getMessageForSegment(user.segment, 'daily-pull');
-        const sent = await sendWhatsAppMessage(user.phone, message, cta);
-        if (sent) results.dailyPullSent++;
-        else results.failed++;
-      }
-    }
-
-    const reactivationUsers = getUsersNeedingReactivation();
-    for (const user of reactivationUsers) {
-      if (user.phone) {
-        const { message, cta } = getMessageForSegment(user.segment, 'reactivation');
-        const sent = await sendWhatsAppMessage(user.phone, message, cta);
-        if (sent) results.reactivationSent++;
-        else results.failed++;
-      }
-    }
-
-    const coldUsers = getUsersNeedingColdReactivation();
-    for (const user of coldUsers) {
-      if (user.phone) {
-        const { message, cta } = getMessageForSegment(user.segment, 'cold-reactivation');
-        const sent = await sendWhatsAppMessage(user.phone, message, cta);
-        if (sent) results.coldReactivationSent++;
-        else results.failed++;
-      }
-    }
-
-    const highIntentUsers = getHighIntentUsers();
-    for (const user of highIntentUsers) {
-      if (user.phone) {
-        const { message, cta } = getMessageForSegment(user.segment, 'conversion');
-        const sent = await sendWhatsAppMessage(user.phone, message, cta);
-        if (sent) results.conversionSent++;
-        else results.failed++;
-      }
-    }
+    const body = await request.json().catch(() => ({}));
+    const type = body.type || 'all';
+    
+    console.log(`[Cron] Running automation: ${type}`);
+    
+    const result = await runAutomation(type);
 
     return NextResponse.json({
-      success: true,
       timestamp: new Date().toISOString(),
-      results
+      type,
+      ...result
     });
   } catch (error) {
-    console.error('Error processing scheduled messages:', error);
+    console.error('[Cron] Error processing scheduled messages:', error);
     return NextResponse.json(
       { error: 'Failed to process scheduled messages' },
       { status: 500 }
     );
   }
+}
+
+export async function GET() {
+  return NextResponse.json({
+    endpoint: 'Cron Messages',
+    version: '2.0.0',
+    status: 'ready',
+    description: 'Scheduled endpoint for automated WhatsApp messages',
+    supportedTypes: ['all', 'daily', 'reactivation', 'conversion'],
+    usage: 'POST to this endpoint with { type: "daily" } for scheduled runs',
+    recommendedSchedule: {
+      daily: 'Every day at 9 AM',
+      reactivation: 'Every hour',
+      conversion: 'Every 2 hours',
+      all: 'Every 6 hours'
+    }
+  });
 }

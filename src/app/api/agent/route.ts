@@ -158,7 +158,7 @@ export async function GET(request: Request) {
   }
 
   return NextResponse.json({
-    agentName: 'Divine Tarot Agent',
+    agentName: 'The Devine Tarot Agent',
     version: '1.0.0',
     status: 'active',
     usersTracked: mockUsers.length,

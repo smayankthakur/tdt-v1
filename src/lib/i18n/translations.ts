@@ -1,0 +1,400 @@
+import type { Language } from './config';
+
+export interface TranslationSet {
+  [key: string]: string | TranslationSet;
+}
+
+export const TRANSLATIONS: Record<Language, TranslationSet> = {
+  en: {
+    common: {
+      loading: 'Loading...',
+      error: 'Something went wrong',
+      retry: 'Try Again',
+      cancel: 'Cancel',
+      confirm: 'Confirm',
+      save: 'Save',
+      close: 'Close',
+      continue: 'Continue',
+      back: 'Back',
+      next: 'Next',
+      submit: 'Submit',
+      skip: 'Skip',
+    },
+    nav: {
+      home: 'Home',
+      reading: 'Reading',
+      blog: 'Blog',
+      contact: 'Contact',
+      talkToGinni: 'Talk to Ginni',
+    },
+    hero: {
+      headline: {
+        default: "Confused about what's happening in your life?",
+        love: "Something about your relationship needs clarity...",
+        career: "You've been thinking about your next move...",
+        confusion: "You're feeling lost, but answers are closer than you think...",
+      },
+      subheadline: {
+        default: "Get answers from the universe in seconds. Experience mystical readings that feel made just for you.",
+        love: "The cards see what your heart has been wondering about.",
+        career: "Let the universe guide your path forward.",
+        confusion: "The tarot sees the way forward.",
+      },
+    },
+    cta: {
+      startReading: "Start Your Reading",
+      continueJourney: "Continue Your Journey",
+      unlockClarity: "Unlock Full Clarity",
+      continueReading: "Continue Your Reading",
+      talkToGinni: "Talk to Ginni",
+      getDeeperInsights: "Get Deeper Insights",
+      exploreMore: "Explore More",
+    },
+    reading: {
+      title: 'Your Tarot Reading',
+      selectTopic: 'What area calls to you?',
+      love: 'Love & Relationships',
+      career: 'Career & Work',
+      confusion: 'Finding Clarity',
+      general: 'General Guidance',
+      selectQuestion: 'What do you want to know?',
+      askOwn: 'Ask your own question...',
+      reveal: 'Reveal Your Answer',
+      loading: 'Reading your energy...',
+      yourCards: 'Your Cards',
+      interpretation: 'Interpretation',
+      past: 'The Past',
+      present: 'The Present',
+      guidance: 'The Guidance',
+    },
+    paywall: {
+      title: {
+        curious: "The cards are revealing something powerful...",
+        urgent: "Your clarity is waiting...",
+        soft: "A deeper perspective awaits",
+      },
+      description: {
+        curious: "There's more depth to what you're seeing. Would you like to go deeper?",
+        urgent: "This insight could change everything. Don't leave your path uncertain.",
+        soft: "The universe has more to show you. Continue when you're ready.",
+      },
+      cta: {
+        curious: "Continue Reading",
+        urgent: "Unlock Now",
+        soft: "Continue Journey",
+      },
+      timeLimited: 'Limited time offer',
+      savings: 'Save 40% with bundle',
+      securePayment: 'Secure payment • 30-day guarantee',
+    },
+    chat: {
+      button: 'Talk to Ginni',
+      tooltip: 'Need guidance? Chat with Ginni',
+      welcome: 'Namaste! I\'m Ginni, your spiritual guide',
+      afterReading: 'There\'s more to this… talk to me',
+      placeholder: 'Type your message...',
+      send: 'Send',
+    },
+    testimonials: {
+      title: 'What Seekers Say',
+      seeMore: 'See more reviews',
+    },
+    whySection: {
+      title: 'Why The Devine Tarot?',
+      description: 'We combine ancient tarot wisdom with cutting-edge AI technology to create something truly unique - readings that feel personal, profound, and precisely tailored to you.',
+      readings: '10,000+ readings',
+      rating: '4.9 rating',
+      speed: 'Under 60 seconds',
+      features: {
+        personalized: 'Personalized readings based on your energy',
+        ai: 'AI-powered insights with human warmth',
+        privacy: '100% private and secure',
+        instant: 'Instant answers, anytime',
+      },
+    },
+    footer: {
+      tagline: 'Guiding you through clarity and insight. Your journey to understanding begins here.',
+      copyright: 'All rights reserved.',
+      madeWith: 'Made with cosmic energy',
+    },
+    premium: {
+      badge: 'Premium Member',
+      active: 'Premium Access Active',
+      enjoy: 'Enjoy unlimited readings',
+    },
+    urgency: {
+      timeSensitive: 'Time-sensitive',
+      limitedSpots: 'Only 2 slots left',
+      endsTonight: 'Ends tonight',
+      lastChance: 'Last chance',
+    },
+  },
+  hi: {
+    common: {
+      loading: 'लोड हो रहा है...',
+      error: 'कुछ गलत हो गया',
+      retry: 'पुनः प्रयास करें',
+      cancel: 'रद्द करें',
+      confirm: 'पुष्टि करें',
+      save: 'सहेजें',
+      close: 'बंद करें',
+      continue: 'जारी रखें',
+      back: 'वापस',
+      next: 'अगला',
+      submit: 'जमा करें',
+      skip: 'छोड़ें',
+    },
+    nav: {
+      home: 'होम',
+      reading: 'रीडिंग',
+      blog: 'ब्लॉग',
+      contact: 'संपर्क',
+      talkToGinni: 'गिनी से बात करें',
+    },
+    hero: {
+      headline: {
+        default: 'आपके जीवन में क्या हो रहा है इसको लेकर कंफ्यूज़ हैं?',
+        love: 'आपके रिलेशनशिप के बारे में कुछ स्पष्टता की जरूरत है...',
+        career: 'आप अपने अगले कदम के बारे में सोच रहे हैं...',
+        confusion: 'आप खोए हुए महसूस कर रहे हैं, लेकिन जवाब कहीं पास हैं...',
+      },
+      subheadline: {
+        default: 'ब्रह्मांड से सेकंडों में जवाब पाएं। ऐसे रहस्यमय रीडिंग का अनुभव करें जो आपके लिए बनाए गए हों।',
+        love: 'ताश के पत्ते देखते हैं कि आपके दिल में क्या है।',
+        career: 'ब्रह्मांड आपके रास्ते का मार्गदर्शन करता है।',
+        confusion: 'तरबूत आगे का रास्ता देखता है।',
+      },
+    },
+    cta: {
+      startReading: 'अपना रीडिंग शुरू करें',
+      continueJourney: 'अपनी यात्रा जारी रखें',
+      unlockClarity: 'पूरी स्पष्टता पाएं',
+      continueReading: 'अपना रीडिंग जारी रखें',
+      talkToGinni: 'गिनी से बात करें',
+      getDeeperInsights: 'गहरी समझ पाएं',
+      exploreMore: 'और जानें',
+    },
+    reading: {
+      title: 'आपका टैरो रीडिंग',
+      selectTopic: 'आप किस क्षेत्र में जानना चाहते हैं?',
+      love: 'प्यार और रिश्ते',
+      career: 'करियर और काम',
+      confusion: 'स्पष्टता पाना',
+      general: 'सामान्य मार्गदर्शन',
+      selectQuestion: 'आप क्या जानना चाहते हैं?',
+      askOwn: 'अपना सवाल पूछें...',
+      reveal: 'अपना उत्तर जानें',
+      loading: 'आपकी ऊर्जा पढ़ रहे हैं...',
+      yourCards: 'आपके पत्ते',
+      interpretation: 'व्याख्या',
+      past: 'अतीत',
+      present: 'वर्तमान',
+      guidance: 'मार्गदर्शन',
+    },
+    paywall: {
+      title: {
+        curious: "पत्ते कुछ शक्तिशाली दिखा रहे हैं...",
+        urgent: "आपकी स्पष्टता इंतज़ार कर रही है...",
+        soft: "एक गहरा दृष्टिकोण आपका इंतज़ार कर रहा है",
+      },
+      description: {
+        curious: "आप जो देख रहे हैं उससे ज्यादा गहराई है। क्या आप और आगे जाना चाहते हैं?",
+        urgent: "यह समझ सब कुछ बदल सकती है। अपने रास्ते को अनिश्चित न छोड़ें।",
+        soft: "ब्रह्मांड आपको और दिखाना चाहता है। जब तैयार हों तब जारी रखें।",
+      },
+      cta: {
+        curious: "रीडिंग जारी रखें",
+        urgent: "अभी अनलॉक करें",
+        soft: "यात्रा जारी रखें",
+      },
+      timeLimited: 'सीमित ऑफर',
+      savings: 'बंडल से 40% बचत करें',
+      securePayment: 'सुरक्षित भुगतान • 30-दिन की गारंटी',
+    },
+    chat: {
+      button: 'गिनी से बात करें',
+      tooltip: 'मार्गदर्शन चाहिए? गिनी से चैट करें',
+      welcome: 'नमस्ते! मैं गिनी हूं, आपकी आध्यात्मिक मार्गदर्शक',
+      afterReading: 'इसमें और है... मुझसे बात करो',
+      placeholder: 'अपना संदेश लिखें...',
+      send: 'भेजें',
+    },
+    testimonials: {
+      title: 'सीकर क्या कहते हैं',
+      seeMore: 'और समीक्षाएं देखें',
+    },
+    whySection: {
+      title: 'क्यों द डिवाइन टैरो?',
+      description: 'हम प्राचीन तरबूत ज्ञान को अत्याधुनिक AI तकनीक के साथ जोड़ते हैं - ऐसे रीडिंग जो व्यक्तिगत, गहन और आपके लिए सटीक हों।',
+      readings: '10,000+ रीडिंग',
+      rating: '4.9 रेटिंग',
+      speed: '60 सेकंड से कम',
+      features: {
+        personalized: 'आपकी ऊर्जा के आधार पर व्यक्तिगत रीडिंग',
+        ai: 'मानवीय गर्माहट के साथ AI-संचालित अंतर्दृष्टि',
+        privacy: '100% निजी और सुरक्षित',
+        instant: 'तुरंत उत्तर, कभी भी',
+      },
+    },
+    footer: {
+      tagline: 'स्पष्टता और अंतर्दृष्टि के माध्यम से आपका मार्गदर्शन। आपकी समझ की यात्रा यहां से शुरू होती है।',
+      copyright: 'सर्वाधिकार सुरक्षित।',
+      madeWith: 'ब्रह्मांडीय ऊर्जा के साथ बनाया गया',
+    },
+    premium: {
+      badge: 'प्रीमियम सदस्य',
+      active: 'प्रीमियम एक्सेस सक्रिय',
+      enjoy: 'असीमित रीडिंग का आनंद लें',
+    },
+    urgency: {
+      timeSensitive: 'समय-संवेदनशील',
+      limitedSpots: 'केवल 2 स्थान शेष',
+      endsTonight: 'आज रात समाप्त होगा',
+      lastChance: 'आखिरी मौका',
+    },
+  },
+  hinglish: {
+    common: {
+      loading: 'Loading...',
+      error: 'Kuch galat ho gaya',
+      retry: 'Try again',
+      cancel: 'Cancel',
+      confirm: 'Confirm',
+      save: 'Save',
+      close: 'Close',
+      continue: 'Continue',
+      back: 'Back',
+      next: 'Next',
+      submit: 'Submit',
+      skip: 'Skip',
+    },
+    nav: {
+      home: 'Home',
+      reading: 'Reading',
+      blog: 'Blog',
+      contact: 'Contact',
+      talkToGinni: 'Ginni se baat karo',
+    },
+    hero: {
+      headline: {
+        default: 'Tumhare life mein kya ho rha hai, confuse ho?',
+        love: 'Tumhare relationship mein kuch clarity chahiye...',
+        career: 'Tum apni next move ke baare mein soch rahe ho...',
+        confusion: 'Tum khoye hue feel kar rahe ho, but answers paas hi hain...',
+      },
+      subheadline: {
+        default: 'Universe se seconds mein answer paao. Mystical readings jo bilkul tumhare liye bani hain.',
+        love: 'Cards dekhte hain ki tumhare dil mein kya chal raha hai.',
+        career: 'Universe tumhe guide karega.',
+        confusion: 'Tarot aage ka raasta dekhta hai.',
+      },
+    },
+    cta: {
+      startReading: 'Reading start karo',
+      continueJourney: 'Journey continue karo',
+      unlockClarity: 'Full clarity paao',
+      continueReading: 'Reading continue karo',
+      talkToGinni: 'Ginni se baat karo',
+      getDeeperInsights: 'Deeper insights lo',
+      exploreMore: 'Aur explore karo',
+    },
+    reading: {
+      title: 'Tumhara Tarot Reading',
+      selectTopic: 'Kis area mein janna chahoge?',
+      love: 'Pyaar aur Rishte',
+      career: 'Career aur Kaam',
+      confusion: 'Clarity Paana',
+      general: 'General Guidance',
+      selectQuestion: 'Kya jaanna chahte ho?',
+      askOwn: 'Apna sawaal poochho...',
+      reveal: 'Answer reveal karo',
+      loading: 'Tumhari energy read kar rha hoon...',
+      yourCards: 'Tumhare Cards',
+      interpretation: 'Interpretation',
+      past: 'Past',
+      present: 'Present',
+      guidance: 'Guidance',
+    },
+    paywall: {
+      title: {
+        curious: 'Cards kuch powerful dikha rahe hain...',
+        urgent: 'Tumhari clarity wait kar rahi hai...',
+        soft: 'Ek deeper perspective await kar raha hai',
+      },
+      description: {
+        curious: 'Aur bhi depth hai isme. Deep jana chahte ho?',
+        urgent: 'Ye insight sab kuch change kar sakti hai. Confused mat raho.',
+        soft: 'Universe aur dikhana chahta hai. Jab ready ho, continue karo.',
+      },
+      cta: {
+        curious: 'Reading continue karo',
+        urgent: 'Abhi unlock karo',
+        soft: 'Journey continue karo',
+      },
+      timeLimited: 'Limited offer',
+      savings: 'Bundle se 40% bachaao',
+      securePayment: 'Secure payment • 30-day guarantee',
+    },
+    chat: {
+      button: 'Ginni se baat karo',
+      tooltip: 'Guidance chahiye? Ginni se chat karo',
+      welcome: 'Namaste! Main Ginni hoon, tumhari spiritual guide',
+      afterReading: 'Isme aur hai... mujhse baat karo',
+      placeholder: 'Message likho...',
+      send: 'Send',
+    },
+    testimonials: {
+      title: 'Seekers kya kehte hain',
+      seeMore: 'Aur reviews dekho',
+    },
+    whySection: {
+      title: 'Kyun The Devine Tarot?',
+      description: 'Hum ancient tarot wisdom ko AI tech ke saath mix karte hain - readings jo personal, profound aur bilkul tumhare liye perfect hain.',
+      readings: '10,000+ readings',
+      rating: '4.9 rating',
+      speed: '60 seconds se kam',
+      features: {
+        personalized: 'Tumhari energy ke according personalized readings',
+        ai: 'AI-powered insights with human touch',
+        privacy: '100% private aur secure',
+        instant: 'Instant answers, kabhi bhi',
+      },
+    },
+    footer: {
+      tagline: 'Clarity aur insight ke through tumhara guide. Tumhari understanding ki journey yahan se shuru hoti hai.',
+      copyright: 'All rights reserved.',
+      madeWith: 'Cosmic energy se bana',
+    },
+    premium: {
+      badge: 'Premium Member',
+      active: 'Premium Access Active',
+      enjoy: 'Unlimited readings enjoy karo',
+    },
+    urgency: {
+      timeSensitive: 'Time-sensitive',
+      limitedSpots: 'Sirf 2 spots bache hain',
+      endsTonight: 'Aaj raat end hoga',
+      lastChance: 'Last chance',
+    },
+  },
+};
+
+export function getTranslation(key: string, lang: Language): string {
+  const keys = key.split('.');
+  let value: unknown = TRANSLATIONS[lang];
+  
+  for (const k of keys) {
+    if (value && typeof value === 'object' && k in value) {
+      value = (value as Record<string, unknown>)[k];
+    } else {
+      return key;
+    }
+  }
+  
+  return typeof value === 'string' ? value : key;
+}
+
+export function getNestedTranslation(key: string, lang: Language, subKey: string): string {
+  const fullKey = `${key}.${subKey}`;
+  return getTranslation(fullKey, lang);
+}

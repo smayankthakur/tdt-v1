@@ -26,6 +26,6 @@ export function selectRandomCards(count: number = 3): SelectedCard[] {
 
 export function formatCardsForAI(selectedCards: SelectedCard[]): string {
   return selectedCards
-    .map(sc => `- ${sc.card.name}: ${sc.card.meaning} (${sc.position})`)
-    .join('\n');
+    .map(sc => `${sc.card.name}: ${sc.card.meaning}. Position: ${sc.position}`)
+    .join(' | ');
 }

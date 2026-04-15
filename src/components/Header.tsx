@@ -38,7 +38,7 @@ export default function Header() {
             <Sparkles className="h-8 w-8 text-primary" />
           </motion.div>
           <span className="font-heading text-xl font-semibold text-foreground">
-            Divine Tarot
+            The Devine Tarot
           </span>
         </Link>
 

@@ -11,7 +11,7 @@ export default function Footer() {
           <div className="flex items-center gap-2">
             <Sparkles className="h-6 w-6 text-primary" />
             <span className="font-heading text-lg font-semibold text-foreground">
-              Divine Tarot
+The Devine Tarot
             </span>
           </div>
 
@@ -37,7 +37,7 @@ export default function Footer() {
           </nav>
 
           <p className="text-sm text-foreground-secondary">
-            © {new Date().getFullYear()} Divine Tarot. All rights reserved.
+            © {new Date().getFullYear()} The Devine Tarot. All rights reserved.
           </p>
         </div>
       </div>

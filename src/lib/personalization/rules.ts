@@ -70,20 +70,20 @@ const INTENT_MESSAGES: Record<IntentType, { headline: string; subheadline: strin
 
 const CTA_MESSAGES: Record<ConversionStage, { primary: string; secondary: string }> = {
   new: {
-    primary: "Start Your Reading",
-    secondary: "Talk to Ginni",
+    primary: "startReading",
+    secondary: "talkToGinni",
   },
   exploring: {
-    primary: "Continue Your Journey",
-    secondary: "Talk to Ginni",
+    primary: "continueJourney",
+    secondary: "talkToGinni",
   },
   high_intent: {
-    primary: "Unlock Full Clarity",
-    secondary: "Get Deeper Insights",
+    primary: "unlockClarity",
+    secondary: "getDeeperInsights",
   },
   paid: {
-    primary: "Continue Your Reading",
-    secondary: "Explore More",
+    primary: "continueReading",
+    secondary: "exploreMore",
   },
 };
 
@@ -241,8 +241,8 @@ export function getDefaultRules(): PersonalizationRules {
     variant: {
       heroHeadline: "Get answers from the universe in seconds",
       heroSubheadline: "Experience mystical readings that feel made just for you.",
-      ctaPrimary: "Start Your Reading",
-      ctaSecondary: "Talk to Ginni",
+      ctaPrimary: "startReading",
+      ctaSecondary: "talkToGinni",
       showTestimonials: false,
       showUrgency: false,
       showPremiumBadge: false,

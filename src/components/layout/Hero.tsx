@@ -225,15 +225,6 @@ export default function Hero({ userId }: HeroProps) {
                 <div className="relative overflow-hidden rounded-2xl bg-white shadow-2xl border border-amber-100/50">
                   {/* Main Image */}
                   <Image
-                    src="/bg.png"
-                    alt="The Devine Tarot Reading"
-                    width={500}
-                    height={600}
-                    className="w-full h-auto object-cover"
-                    priority
-                    sizes="(max-width: 768px) 100vw, 50vw"
-                  />
-                  <Image
                     src="/img.png"
                     alt="The Devine Tarot Reading"
                     width={500}

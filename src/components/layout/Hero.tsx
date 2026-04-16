@@ -140,7 +140,7 @@ export default function Hero() {
             {/* Main Headline */}
             <motion.h1
               variants={itemVariants}
-              className="font-heading text-4xl md:text-5xl lg:text-6xl text-white leading-tight mb-6"
+              className="font-heading text-4xl md:text-5xl lg:text-6xl text-[#F5F5F5] leading-tight mb-6"
             >
               Your future is already written.
               <br />
@@ -152,7 +152,7 @@ export default function Hero() {
             {/* Subtext */}
             <motion.p
               variants={itemVariants}
-              className="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto lg:mx-0 mb-10 leading-relaxed"
+              className="text-lg md:text-xl text-[#B0B0B0] max-w-2xl mx-auto lg:mx-0 mb-10 leading-relaxed"
             >
               Ask your question, pick your cards, and receive a deeply personal reading that reveals what&apos;s really going on.
             </motion.p>
@@ -205,7 +205,7 @@ export default function Hero() {
                 </motion.button>
               </Link>
               {/* Micro reassurance */}
-              <p className="mt-4 text-sm text-gray-500 text-center">
+              <p className="mt-4 text-sm text-[#7A7A7A] text-center">
                 Takes 30 seconds &bull; No signup needed
               </p>
             </motion.div>
@@ -213,7 +213,7 @@ export default function Hero() {
             {/* Trust indicator */}
             <motion.div
               variants={itemVariants}
-              className="mt-8 flex items-center justify-center lg:justify-start gap-2 text-sm text-gray-500"
+              className="mt-8 flex items-center justify-center lg:justify-start gap-2 text-sm text-[#7A7A7A]"
             >
               <Star className="h-4 w-4 text-purple-400 fill-purple-400" />
               <span>Trusted by 50,000+ seekers for love, career & life clarity</span>

@@ -716,8 +716,8 @@ export default function ReadingPage() {
                       className="w-24 h-36 md:w-28 md:h-40 rounded-xl bg-gradient-to-br from-[#1a1a2e] to-[#0d0d12] border border-purple-700/50 flex items-center justify-center shadow-lg shadow-purple-900/20"
                     >
                       <div className="text-center p-2">
-                        <p className="font-heading text-sm text-purple-200">{card.name}</p>
-                        <p className="text-xs text-purple-400/60 mt-1">
+                        <p className="font-serif text-sm text-[#EAEAEA]">{card.name}</p>
+                        <p className="text-xs text-[#7A7A7A] mt-1 uppercase tracking-wider">
                           {['Past', 'Present', 'Future'][index]}
                         </p>
                       </div>
@@ -734,11 +734,11 @@ export default function ReadingPage() {
                   transition={{ duration: 0.5 }}
                   className="mt-8 p-6 rounded-2xl bg-[#1A1A2E]/50 border border-purple-800/30"
                 >
-                  <h3 className="font-heading text-xl text-purple-200 mb-4 flex items-center gap-2">
+                  <h3 className="font-heading text-xl text-[#EAEAEA] mb-4 flex items-center gap-2">
                     <Sparkles className="h-5 w-5 text-purple-400" />
                     Interpretation
                   </h3>
-                  <div className="text-purple-200/80 leading-relaxed whitespace-pre-wrap">
+                  <div className="text-[#CFCFCF] leading-relaxed whitespace-pre-wrap">
                     {displayText || interpretation}
                     {isTyping && (
                       <motion.span
@@ -789,13 +789,13 @@ export default function ReadingPage() {
                             </h4>
                           </div>
                           
-                          <p className="text-purple-300/60 text-center mb-4">
+                          <p className="text-[#B0B0B0] text-center mb-4">
                             There&apos;s something important your cards are holding back...
                           </p>
                           
                           {/* Blurred preview area */}
                           <div className="relative p-4 rounded-xl bg-[#0B0B0F]/50 border border-purple-900/30 mb-4">
-                            <p className="text-purple-300/40 text-sm leading-relaxed blur-[2px] select-none">
+                            <p className="text-[#7A7A7A] text-sm leading-relaxed blur-[2px] select-none">
                               Your cards reveal a significant timing element that could change everything. 
                               The outcome depends on choices made in the next 7 days. The Three of Swords 
                               in reverse suggests healing is coming, but you need to take action first...
@@ -832,7 +832,7 @@ export default function ReadingPage() {
                         exit={{ opacity: 0, y: -20 }}
                         className="text-center p-6 rounded-2xl bg-gradient-to-b from-purple-900/10 to-transparent border border-purple-800/20"
                       >
-                        <p className="text-purple-300/70 mb-4">
+                        <p className="text-[#B0B0B0] mb-4">
                           Your situation has layers... a deeper interpretation can reveal timing and outcomes.
                         </p>
                         

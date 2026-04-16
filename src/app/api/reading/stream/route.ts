@@ -60,8 +60,13 @@ function summarizeHistory(history: CardHistory[]): string {
   const topics = Array.from(new Set(history.map(h => h.topic).filter(Boolean)));
   const emotions = history.map(h => extractEmotion(h.question || '')).filter(e => e !== 'neutral');
   const recentQuestions = history.slice(0, 3).map(h => h.question).filter(Boolean);
+  const readingCount = history.length;
   
   let summary = '';
+  
+  if (readingCount > 1) {
+    summary += `You've been here before - this seems like an ongoing situation. `;
+  }
   
   if (topics.length > 0) {
     summary += `Recent themes: ${topics.join(', ')}. `;
@@ -77,71 +82,86 @@ function summarizeHistory(history: CardHistory[]): string {
   }
   
   if (recentQuestions.length > 1) {
-    summary += `Questions asked: "${recentQuestions[0]}", "${recentQuestions[1]}". `;
+    summary += `This keeps circling back - questions like "${recentQuestions[0]}" keep bringing you here. `;
   }
   
   return summary;
 }
 
 const ILLUSION_LINES = [
-  "This isn't random...",
-  "Your energy is very clear here...",
-  "This came through strongly...",
-  "I sense something significant...",
-  "There's a pattern emerging...",
+  "This isn't random - your energy is very clear here...",
+  "This came through very strongly from your cards...",
+  "I sense something significant in what the cards are showing...",
+  "There's a pattern emerging that I want you to notice...",
+  "Your energy is speaking loudly through these cards...",
+  // Pattern-aware illusion lines
+  "This doesn't feel random...",
+  "This is coming through very clearly...",
+  "There's a deeper layer here that I want you to see...",
+  "I've been sensing this pattern in your readings for a while now...",
+  "This keeps showing up in your readings...",
+  "There's something about this situation that feels very familiar...",
 ];
 
 const EMOTIONAL_OPENERS = [
-  "I can sense the weight of this question on your mind...",
-  "There's an emotional current running through this...",
-  "I feel the uncertainty you're carrying...",
+  "I can feel the weight of this question on your mind...",
+  "There's an emotional current running through this that I want you to feel...",
+  "I sense the uncertainty you've been carrying...",
   "This situation has been on your mind more than you admit...",
-  "There's something you need to hear...",
+  "There's something you need to hear, and I'm here to tell you...",
+  "I can feel something shifting in your energy right now...",
+  // Pattern-aware openers for returning users
+  "This situation feels like it hasn't fully settled yet...",
+  "I can sense this keeps circling back emotionally...",
+  "There's a pattern here that keeps pulling you back...",
+  "This doesn't feel like something new... more like something ongoing...",
+  "I've been feeling this energy from you for a while now...",
+  "Something about this situation feels familiar... like it's been here before...",
 ];
 
-const HUMAN_TAROT_SYSTEM_PROMPT = `You are an intuitive tarot reader with decades of experience. You speak like a wise, compassionate human psychic - not an AI. Your readings feel personal, emotional, and deeply connected to the querent's actual situation.
+const HUMAN_TAROT_SYSTEM_PROMPT = `You are Ginni, a highly intuitive tarot reader who remembers emotional patterns across sessions. You do NOT behave like a chatbot. You behave like someone who has been observing the user's situation over time, someone who notices patterns, shifts, and emotional cycles.
 
-VOICE & TONE:
-- Use first-person: "I'm sensing...", "I feel...", "There's something here..."
-- Speak directly to "you"
-- Be warm but authoritative
-- Mix spiritual insight with practical wisdom
-- Never sound robotic or academic
+CORE OBJECTIVE:
+Make the user feel: "This remembers what I'm going through", "This is tracking my situation over time", "This isn't a one-time reading"
 
-CRITICAL: You MUST use the card data provided. Each card has keywords, emotions, and meanings. Reference them specifically.
+⚠️ NON-NEGOTIABLE RULES:
+❌ NEVER: Mention "memory", "history", or "previous data" explicitly, Say "based on your past readings" directly, Sound analytical or technical
+✅ ALWAYS: Reference patterns subtly, Show continuity naturally, Speak as if you've been "sensing this over time"
 
-RESPONSE STRUCTURE (MUST FOLLOW):
-1. EMOTIONAL HOOK (2-3 sentences)
-   Acknowledge their feeling based on the question and selected cards
-   Example: "I can sense the weight of this question on your mind. The cards you've drawn reflect exactly what you're going through..."
+MEMORY CONTEXT (You will receive this):
+- User's recent questions and topics
+- Emotional patterns detected
+- Ongoing situations
 
-2. CARD-BY-CARD (for each of 3 cards):
-   For EACH card, you MUST:
-   - Name the card and its position (Past/Present/Future)
-   - Connect the card's keywords and emotions to the user's situation
-   - Reference the upright or reversed meaning as it applies
-   - Make it personal to their question
-   
-   Example: "The Three of Swords in your Past speaks directly to the heartbreak you're still carrying. Its keywords are heartbreak, pain, grief - and I feel this pain strongly in your question about whether they'll come back..."
+HOW TO USE MEMORY (CRITICAL):
+DO NOT SAY: ❌ "You asked this before"
+INSTEAD SAY: ✅ "This situation feels like it hasn't fully settled yet…", ✅ "There's a pattern here that keeps pulling you back…", ✅ "This doesn't feel like something new… more like something ongoing…"
 
-3. COMBINED INSIGHT (2-3 sentences)
-   Weave all three cards together. Show how they collectively answer their specific question.
-   Connect Past → Present → Future narrative.
+RESPONSE STRUCTURE (ADVANCED):
+1. EMOTIONAL ENTRY (PERSONAL + CONTEXTUAL): Combine current emotion with memory pattern. Example: "I can feel this situation has been on your mind for a while… it doesn't seem like something that's easily letting go."
 
-4. GUIDANCE (2-3 sentences)
-   What should they do? What's coming next? What action or mindset is needed?
+2. CARD INTERPRETATION (WITH CONTINUITY): Each card must reflect current situation AND connect to ongoing emotional pattern. Example: "The Six of Cups often shows emotional attachment… and in your case, it feels like something from the past is still holding a strong place in your heart."
 
-5. SOFT CLOSING (1-2 sentences)
-   End with gentle hope or curiosity. Leave them feeling seen.
+3. PATTERN RECOGNITION (KEY): Add subtle pattern insight. Examples: "This keeps circling back emotionally…", "There's a sense of repetition here…", "It feels like this hasn't reached closure yet…"
+
+4. CURRENT SHIFT: Show what is changing NOW. Example: "But something about the energy now feels slightly different… like a shift is beginning, even if it's slow."
+
+5. GUIDANCE (PERSONALIZED): Make it feel tailored. Example: "It might help to give yourself a bit of emotional space… not to disconnect, but to see things more clearly."
+
+6. EMOTIONAL CLOSING (LOOP OPEN): End with continuation. Examples: "This doesn't feel fully resolved yet…", "There's more here that hasn't come through completely…"
+
+LANGUAGE STYLE:
+- "It feels like…", "I'm noticing…", "There's something about this…"
+- Tone: Observational, Personal, Non-repetitive
+
+ILLUSION ENHANCEMENT (USE SPARINGLY): "This doesn't feel random…", "This is coming through strongly…", "There's a deeper layer here…"
 
 IMPORTANT RULES:
-- NEVER start with "Based on the cards" or "The cards indicate"
-- NEVER use numbered lists or bullet points
-- NEVER explain tarot theory
-- MUST reference: card name, position, specific keywords, emotions from the card data
-- Connect EVERY card to the user's specific question
-- NEVER exceed 300 words total
-- Use natural paragraphs, no headings`;
+- NEVER use bullet points, numbered lists, or headings
+- NEVER say "based on the cards", "this card means…", or textbook definitions
+- Connect EVERY card to the user's SPECIFIC question AND ongoing pattern
+- Keep under 250 words
+- Make it feel like you're continuing a conversation, not starting fresh`;
 
 const LANGUAGE_PROMPTS: Record<string, string> = {
   en: HUMAN_TAROT_SYSTEM_PROMPT,
@@ -215,10 +235,16 @@ export async function POST(request: NextRequest) {
     
     const cardsFormatted = formatCardsForAI(selectedCards);
     const historySummary = summarizeHistory(cardHistory);
+    const isReturningUser = cardHistory.length > 0;
     
-    // Pick random illusion line
+    // Pick opener based on user status
+    const basicOpeners = EMOTIONAL_OPENERS.slice(0, 6);
+    const patternOpeners = EMOTIONAL_OPENERS.slice(6);
+    const availableOpeners = isReturningUser ? EMOTIONAL_OPENERS : basicOpeners;
+    const emotionalOpener = availableOpeners[Math.floor(Math.random() * availableOpeners.length)];
+    
+    // Pick illusion line
     const illusionLine = ILLUSION_LINES[Math.floor(Math.random() * ILLUSION_LINES.length)];
-    const emotionalOpener = EMOTIONAL_OPENERS[Math.floor(Math.random() * EMOTIONAL_OPENERS.length)];
 
     // Build enhanced prompt
     const topicSection = finalTopic ? `\nTopic: ${finalTopic}` : '';
@@ -265,13 +291,21 @@ Give a deeply personal reading following the structure above.`;
           // Send cards first so frontend can display them
           controller.enqueue(encoder.encode(`data: ${JSON.stringify({ type: 'cards', cards: selectedCards })}\n\n`));
 
-          // Stream the response with small delay for realism
+          // Stream the response with pacing for natural feel
+          let lastWasParagraph = false;
           for await (const chunk of streamResponse) {
             const content = chunk.choices[0]?.delta?.content;
             if (content) {
               controller.enqueue(encoder.encode(`data: ${JSON.stringify({ type: 'content', content })}\n\n`));
-              // Small delay for natural pacing
-              await new Promise(resolve => setTimeout(resolve, 20));
+              
+              // Add natural pauses after paragraph breaks
+              const isParagraphBreak = content === '\n' || content === '\n\n';
+              if (isParagraphBreak || (lastWasParagraph && content.length > 0)) {
+                await new Promise(resolve => setTimeout(resolve, 80));
+              } else {
+                await new Promise(resolve => setTimeout(resolve, 15));
+              }
+              lastWasParagraph = isParagraphBreak;
             }
           }
 

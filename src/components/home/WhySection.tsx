@@ -38,15 +38,15 @@ export default function WhySection() {
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
           >
-            <h2 className="font-heading text-3xl md:text-4xl text-purple-200 mb-6">
+            <h2 className="font-heading text-3xl md:text-4xl text-[#F5F5F5] mb-6">
               Why The Devine Tarot?
             </h2>
-            <p className="text-lg text-purple-300/70 leading-relaxed mb-8">
+            <p className="text-lg text-[#B0B0B0] leading-relaxed mb-8">
               We combine ancient tarot wisdom with cutting-edge AI technology to 
               create something truly unique - readings that feel personal, profound, 
               and precisely tailored to you.
             </p>
-            <p className="text-purple-300/70 leading-relaxed mb-8">
+            <p className="text-[#B0B0B0] leading-relaxed mb-8">
               Unlike generic fortune tellers, our AI understands context, recognizes 
               emotional patterns, and provides guidance that resonates with your 
               specific journey.
@@ -93,10 +93,10 @@ export default function WhySection() {
                   <feature.icon className="h-6 w-6 text-purple-400" />
                 </motion.div>
                 <div>
-                  <h3 className="font-heading text-lg font-semibold text-purple-200 mb-1">
+                  <h3 className="font-heading text-lg font-semibold text-[#F5F5F5] mb-1">
                     {feature.title}
                   </h3>
-                  <p className="text-sm text-purple-300/60 leading-relaxed">
+                  <p className="text-sm text-[#7A7A7A] leading-relaxed">
                     {feature.description}
                   </p>
                 </div>

@@ -1,6 +1,6 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
-@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -12,6 +12,7 @@
     --background-secondary: 18 18 26;
     --foreground: 234 234 240;
     --foreground-secondary: 160 160 180;
+    --foreground-muted: 122 122 122;
     --card: 18 18 26;
     --card-foreground: 234 234 240;
     --primary: 124 58 237;
@@ -28,6 +29,7 @@
     --radius: 1rem;
     
     --font-heading: 'Cinzel', serif;
+    --font-serif: 'Playfair Display', serif;
     --font-sans: 'Inter', sans-serif;
   }
 
@@ -49,10 +51,15 @@
     font-family: var(--font-sans);
     -webkit-user-select: none;
     user-select: none;
+    line-height: 1.7;
   }
 
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-heading);
+  }
+
+  p {
+    line-height: 1.75;
   }
 }
 
@@ -65,8 +72,76 @@
     font-family: var(--font-heading);
   }
   
+  .font-serif {
+    font-family: var(--font-serif);
+  }
+  
   .font-sans {
     font-family: var(--font-sans);
+  }
+
+  /* Typography hierarchy for dark theme */
+  .text-primary {
+    color: rgb(var(--foreground));
+  }
+  
+  .text-secondary {
+    color: rgb(var(--foreground-secondary));
+  }
+  
+  .text-muted {
+    color: rgb(var(--foreground-muted));
+  }
+  
+  .text-accent-gold {
+    background: linear-gradient(135deg, #F59E0B 0%, #FBBF24 50%, #F59E0B 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  .text-accent-warm {
+    background: linear-gradient(135deg, #FB923C 0%, #FBBF24 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Special mystical text styling */
+  .mystical-quote {
+    font-style: italic;
+    color: rgb(var(--foreground-muted));
+    border-left: 2px solid rgb(var(--primary));
+    padding-left: 1rem;
+  }
+  
+  .mystical-glow {
+    text-shadow: 0 0 20px rgba(124, 58, 237, 0.4);
+    color: rgb(var(--foreground));
+  }
+  
+  .mystical-highlight {
+    color: #A78BFA;
+    font-weight: 500;
+  }
+  
+  .reading-key-phrase {
+    color: #C4B5FD;
+    font-weight: 500;
+    text-shadow: 0 0 15px rgba(167, 139, 250, 0.3);
+  }
+  
+  .reading-card-name {
+    font-family: var(--font-serif);
+    font-weight: 600;
+    color: #A78BFA;
+  }
+  
+  .reading-position {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: rgb(var(--foreground-muted));
   }
 
   .bg-mystical {

@@ -30,6 +30,15 @@ const itemVariants = {
   },
 };
 
+const floatAnimation = {
+  y: [0, -10, 0],
+  transition: {
+    duration: 3,
+    repeat: Infinity,
+    ease: 'easeInOut',
+  },
+};
+
 export default function Hero() {
   const { t, isHydrated } = useLanguage();
 
@@ -118,81 +127,122 @@ export default function Hero() {
       {/* Floating Stars */}
       <FloatingStars />
 
-      {/* Main Content */}
-      <div className="relative z-10 mx-auto max-w-4xl px-6 py-20 text-center">
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
-        >
-          {/* Logo */}
-          <motion.div variants={itemVariants} className="flex justify-center mb-8">
-            <Image
-              src="/tdt-v3/logo.png"
-              alt="The Devine Tarot"
-              width={120}
-              height={120}
-              className="w-24 h-24 lg:w-32 lg:h-32 object-contain drop-shadow-lg"
-              priority
-            />
+      {/* Main Content - Two Column Layout */}
+      <div className="relative z-10 mx-auto max-w-7xl px-6 py-12 lg:py-20">
+        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+          {/* Left Column - Text Content */}
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+            className="text-center lg:text-left"
+          >
+            {/* Main Headline */}
+            <motion.h1
+              variants={itemVariants}
+              className="font-heading text-4xl md:text-5xl lg:text-6xl text-white leading-tight mb-6"
+            >
+              Your future is already written.
+              <br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-indigo-400 to-purple-400">
+                You just need to see it.
+              </span>
+            </motion.h1>
+
+            {/* Subtext */}
+            <motion.p
+              variants={itemVariants}
+              className="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto lg:mx-0 mb-10 leading-relaxed"
+            >
+              Ask. Choose. Reveal what the universe has been trying to tell you.
+            </motion.p>
+
+            {/* CTA Button */}
+            <motion.div variants={itemVariants}>
+              <Link href="/reading">
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="group relative inline-flex items-center gap-3 rounded-full bg-gradient-to-r from-purple-600 via-indigo-600 to-purple-600 px-10 py-4 text-lg font-semibold text-white shadow-lg overflow-hidden"
+                >
+                  <motion.span
+                    className="absolute inset-0 bg-gradient-to-r from-purple-500 to-indigo-500 opacity-0 group-hover:opacity-100 transition-opacity"
+                    animate={{
+                      x: ['-100%', '100%'],
+                    }}
+                    transition={{
+                      duration: 1.5,
+                      repeat: Infinity,
+                      repeatDelay: 2,
+                    }}
+                  />
+                  <Sparkle className="h-5 w-5 text-amber-300" />
+                  <span className="relative z-10">Know Your Fortune</span>
+                  <ArrowRight className="h-5 w-5 relative z-10 group-hover:translate-x-1 transition-transform" />
+                </motion.button>
+              </Link>
+            </motion.div>
+
+            {/* Trust indicator */}
+            <motion.div
+              variants={itemVariants}
+              className="mt-8 flex items-center justify-center lg:justify-start gap-2 text-sm text-gray-500"
+            >
+              <Star className="h-4 w-4 text-purple-400 fill-purple-400" />
+              <span>Trusted by 50,000+ seekers</span>
+              <Moon className="h-4 w-4 ml-2 text-indigo-400" />
+            </motion.div>
           </motion.div>
 
-          {/* Main Headline */}
-          <motion.h1
-            variants={itemVariants}
-            className="font-heading text-4xl md:text-5xl lg:text-6xl text-white leading-tight mb-6"
-          >
-            Your future is already written.
-            <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-indigo-400 to-purple-400">
-              You just need to see it.
-            </span>
-          </motion.h1>
-
-          {/* Subtext */}
-          <motion.p
-            variants={itemVariants}
-            className="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto mb-10 leading-relaxed"
-          >
-            Ask. Choose. Reveal what the universe has been trying to tell you.
-          </motion.p>
-
-          {/* CTA Button */}
-          <motion.div variants={itemVariants}>
-            <Link href="/reading">
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.98 }}
-                className="group relative inline-flex items-center gap-3 rounded-full bg-gradient-to-r from-purple-600 via-indigo-600 to-purple-600 px-10 py-4 text-lg font-semibold text-white shadow-lg overflow-hidden"
-              >
-                <motion.span
-                  className="absolute inset-0 bg-gradient-to-r from-purple-500 to-indigo-500 opacity-0 group-hover:opacity-100 transition-opacity"
-                  animate={{
-                    x: ['-100%', '100%'],
-                  }}
-                  transition={{
-                    duration: 1.5,
-                    repeat: Infinity,
-                    repeatDelay: 2,
-                  }}
-                />
-                <Sparkle className="h-5 w-5 text-amber-300" />
-                <span className="relative z-10">Know Your Fortune</span>
-                <ArrowRight className="h-5 w-5 relative z-10 group-hover:translate-x-1 transition-transform" />
-              </motion.button>
-            </Link>
-          </motion.div>
-
-          {/* Trust indicator */}
+          {/* Right Column - Stacked Image Composition */}
           <motion.div
             variants={itemVariants}
-            className="mt-8 flex items-center justify-center gap-2 text-sm text-gray-500"
+            className="flex justify-center lg:justify-end"
           >
-            <Star className="h-4 w-4 text-purple-400 fill-purple-400" />
-            <span>Trusted by 50,000+ seekers</span>
-            <Moon className="h-4 w-4 ml-2 text-indigo-400" />
+            <div className="relative w-full max-w-[500px] aspect-[3/4]">
+              {/* Layer 1 - Base Background (imgbg.png) */}
+              <div className="absolute inset-0 z-10">
+                <Image
+                  src="/tdt-v3/imgbg.png"
+                  alt=""
+                  fill
+                  className="object-cover rounded-2xl"
+                  priority
+                />
+              </div>
+
+              {/* Layer 2 - Main Image (img.png) with floating animation */}
+              <motion.div
+                className="absolute inset-0 z-20 flex items-center justify-center px-8"
+                animate={floatAnimation}
+              >
+                <div className="relative w-[75%] aspect-square">
+                  <Image
+                    src="/tdt-v3/img.png"
+                    alt="Tarot Reading"
+                    fill
+                    className="object-contain drop-shadow-2xl"
+                    priority
+                  />
+                  {/* Soft glow effect */}
+                  <div className="absolute inset-0 z-[-1] bg-purple-500/20 blur-3xl rounded-full" />
+                </div>
+              </motion.div>
+
+              {/* Layer 3 - Logo (logo.png) at top-left */}
+              <div className="absolute top-4 left-4 z-30">
+                <Image
+                  src="/tdt-v3/logo.png"
+                  alt="The Devine Tarot"
+                  width={60}
+                  height={60}
+                  className="w-12 h-12 lg:w-16 lg:h-16 object-contain drop-shadow-lg"
+                  priority
+                />
+              </div>
+            </div>
           </motion.div>
-        </motion.div>
+        </div>
       </div>
 
       {/* Scroll indicator */}

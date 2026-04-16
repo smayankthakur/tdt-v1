@@ -25,8 +25,8 @@ const CTAButton = forwardRef<HTMLButtonElement, CTAButtonProps>(
           'relative overflow-hidden rounded-full font-medium transition-all duration-300 focus:outline-none',
           sizeClasses[size],
           variant === 'primary'
-            ? 'bg-gold-gradient text-[#2D2A26] hover:scale-105 hover:shadow-xl glow-gold-hover active:scale-[0.98]'
-            : 'border-2 border-secondary text-secondary bg-transparent hover:bg-secondary/10',
+            ? 'bg-gradient-to-r from-purple-600 via-indigo-600 to-purple-600 text-white hover:scale-105 hover:shadow-[0_0_30px_rgba(139,92,246,0.4)] shadow-purple-900/40 active:scale-[0.98]'
+            : 'border-2 border-purple-500 text-purple-300 bg-transparent hover:bg-purple-900/30',
           className
         )}
         whileHover={{ scale: 1.02 }}
@@ -36,7 +36,7 @@ const CTAButton = forwardRef<HTMLButtonElement, CTAButtonProps>(
         <span className="relative z-10 font-heading">{children}</span>
         {variant === 'primary' && (
           <motion.div
-            className="absolute inset-0 bg-gradient-to-r from-[#D4B97A] to-[#C9A962]"
+            className="absolute inset-0 bg-gradient-to-r from-purple-500 via-indigo-500 to-purple-500"
             initial={{ opacity: 0 }}
             whileHover={{ opacity: 1 }}
             transition={{ duration: 0.3 }}

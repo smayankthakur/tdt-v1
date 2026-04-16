@@ -49,7 +49,7 @@ export default function EnergyLoader({ message }: EnergyLoaderProps) {
         <motion.div
           className="absolute inset-0 rounded-full"
           style={{ 
-            background: 'conic-gradient(from 0deg, transparent, rgba(212,175,55,0.3), transparent)' 
+            background: 'conic-gradient(from 0deg, transparent, rgba(124,58,237,0.4), transparent)' 
           }}
           animate={{ rotate: 360 }}
           transition={{ duration: 4, repeat: Infinity, ease: 'linear' }}
@@ -68,16 +68,16 @@ export default function EnergyLoader({ message }: EnergyLoaderProps) {
           }}
         >
           {/* Inner glow */}
-          <div className="absolute inset-4 rounded-full bg-gradient-to-br from-amber-200/40 to-purple-200/40 blur-xl" />
+          <div className="absolute inset-4 rounded-full bg-gradient-to-br from-purple-900/50 to-indigo-900/50 blur-xl" />
           
           {/* Core orb */}
           <motion.div
-            className="absolute inset-6 rounded-full bg-gradient-to-br from-amber-300 via-amber-200 to-purple-300"
+            className="absolute inset-6 rounded-full bg-gradient-to-br from-purple-500 via-indigo-500 to-purple-500"
             animate={{ 
               boxShadow: [
-                '0 0 30px rgba(212,175,55,0.4)',
-                '0 0 50px rgba(212,175,55,0.6)',
-                '0 0 30px rgba(212,175,55,0.4)'
+                '0 0 30px rgba(124,58,237,0.5)',
+                '0 0 60px rgba(124,58,237,0.7)',
+                '0 0 30px rgba(124,58,237,0.5)'
               ]
             }}
             transition={{ duration: 2, repeat: Infinity }}
@@ -85,9 +85,9 @@ export default function EnergyLoader({ message }: EnergyLoaderProps) {
           
           {/* Inner light */}
           <motion.div
-            className="absolute inset-10 rounded-full bg-gradient-to-br from-amber-100 to-purple-100"
+            className="absolute inset-10 rounded-full bg-gradient-to-br from-purple-300 to-indigo-300"
             animate={{ 
-              opacity: [0.6, 0.8, 0.6],
+              opacity: [0.6, 0.9, 0.6],
               scale: [0.95, 1, 0.95]
             }}
             transition={{ duration: 2.5, repeat: Infinity }}
@@ -98,7 +98,7 @@ export default function EnergyLoader({ message }: EnergyLoaderProps) {
         {[...Array(6)].map((_, i) => (
           <motion.div
             key={i}
-            className="absolute w-1.5 h-1.5 rounded-full bg-amber-400/60"
+            className="absolute w-1.5 h-1.5 rounded-full bg-purple-400/60"
             style={{
               left: '50%',
               top: '50%',
@@ -127,7 +127,7 @@ export default function EnergyLoader({ message }: EnergyLoaderProps) {
       </motion.div>
 
       <motion.p
-        className="mt-10 font-heading text-lg text-[#6B6B6B]"
+        className="mt-10 font-heading text-lg text-purple-300/70"
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: isInitializing ? 0.5 : 0.2 }}
@@ -137,13 +137,13 @@ export default function EnergyLoader({ message }: EnergyLoaderProps) {
 
       {/* Progress bar */}
       <motion.div
-        className="mt-4 h-0.5 w-24 rounded-full bg-amber-200/50 overflow-hidden"
+        className="mt-4 h-0.5 w-24 rounded-full bg-purple-800/50 overflow-hidden"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1 }}
       >
         <motion.div
-          className="h-full bg-gradient-to-r from-amber-400 to-purple-400 rounded-full"
+          className="h-full bg-gradient-to-r from-purple-500 to-indigo-500 rounded-full"
           animate={{ x: ['-100%', '100%'] }}
           transition={{ 
             duration: 2,

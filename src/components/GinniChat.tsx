@@ -199,17 +199,17 @@ export default function GinniChat({
                     initial={{ opacity: 0, x: 10 }}
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: 10 }}
-                    className="absolute right-full top-1/2 -translate-y-1/2 mr-4 px-4 py-2.5 bg-card/95 backdrop-blur-sm border border-amber-200/30 rounded-xl shadow-xl whitespace-nowrap"
+                    className="absolute right-full top-1/2 -translate-y-1/2 mr-4 px-4 py-2.5 bg-[#1A1A2E]/95 backdrop-blur-sm border border-purple-800/50 rounded-xl shadow-xl whitespace-nowrap"
                   >
-                    <p className="text-sm text-amber-800/80">Need clarity? Talk to Ginni…</p>
-                    <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-px w-2.5 h-2.5 bg-card border-r border-b border-amber-200/30 rotate-45" />
+                    <p className="text-sm text-purple-200/80">Need clarity? Talk to Ginni…</p>
+                    <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-px w-2.5 h-2.5 bg-[#1A1A2E] border-r border-b border-purple-800/50 rotate-45" />
                   </motion.div>
                 )}
               </AnimatePresence>
 
               <motion.button
                 onClick={handleOpen}
-                className="relative group flex items-center gap-3 h-14 px-6 rounded-full bg-gradient-to-r from-amber-400 via-purple-400 to-purple-500 shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden"
+                className="relative group flex items-center gap-3 h-14 px-6 rounded-full bg-gradient-to-r from-purple-600 via-indigo-600 to-purple-600 shadow-lg hover:shadow-xl shadow-purple-900/40 transition-all duration-300 overflow-hidden"
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.98 }}
                 animate={{
@@ -217,7 +217,7 @@ export default function GinniChat({
                 }}
                 transition={{ type: "spring", stiffness: 300, damping: 30 }}
               >
-                <div className="absolute inset-0 bg-gradient-to-r from-amber-300 via-purple-300 to-purple-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                <div className="absolute inset-0 bg-gradient-to-r from-purple-500 via-indigo-500 to-purple-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 
                 <motion.div
                   animate={{ scale: [1, 1.08, 1] }}
@@ -280,8 +280,8 @@ export default function GinniChat({
             transition={{ type: "spring", stiffness: 300, damping: 25 }}
             className="fixed bottom-24 right-6 z-50 md:bottom-6"
           >
-            <div className="w-[360px] h-[500px] md:w-[400px] md:h-[580px] bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/50 overflow-hidden flex flex-col">
-              <div className="relative bg-gradient-to-r from-amber-400 via-purple-400 to-purple-500 p-5 flex items-center justify-between">
+            <div className="w-[360px] h-[500px] md:w-[400px] md:h-[580px] bg-[#1A1A2E]/90 backdrop-blur-xl rounded-3xl shadow-2xl border border-purple-800/50 overflow-hidden flex flex-col">
+              <div className="relative bg-gradient-to-r from-purple-600 via-indigo-600 to-purple-600 p-5 flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div className="w-11 h-11 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
                     <span className="text-2xl">✨</span>
@@ -301,16 +301,16 @@ export default function GinniChat({
                 </button>
               </div>
 
-              <div className="flex-1 relative bg-gradient-to-b from-cream-50/50 to-white/30">
+              <div className="flex-1 relative bg-gradient-to-b from-[#0B0B0F] to-[#1A1A2E]">
                 <AnimatePresence>
                   {showContextNotice && (
                     <motion.div
                       initial={{ opacity: 0, y: -20 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -20 }}
-                      className="absolute top-0 left-0 right-0 z-10 p-3.5 bg-gradient-to-r from-amber-400/10 to-purple-400/10 border-b border-amber-200/20 backdrop-blur-sm"
+                      className="absolute top-0 left-0 right-0 z-10 p-3.5 bg-gradient-to-r from-purple-900/30 to-indigo-900/30 border-b border-purple-800/30 backdrop-blur-sm"
                     >
-                      <p className="text-center text-sm text-amber-900/70">
+                      <p className="text-center text-sm text-purple-200/70">
                         {getContextMessage()}
                       </p>
                     </motion.div>
@@ -322,7 +322,7 @@ export default function GinniChat({
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    className="absolute inset-0 bg-white/60 backdrop-blur-sm flex flex-col items-center justify-center p-6 pt-16"
+                    className="absolute inset-0 bg-[#1A1A2E]/80 backdrop-blur-sm flex flex-col items-center justify-center p-6 pt-16"
                   >
                     <motion.div
                       animate={{ 
@@ -332,16 +332,16 @@ export default function GinniChat({
                       transition={{ duration: 2, repeat: Infinity }}
                       className="w-20 h-20 mb-5"
                     >
-                      <div className="w-full h-full rounded-full bg-gradient-to-br from-amber-300 to-purple-400 blur-md" />
+                      <div className="w-full h-full rounded-full bg-gradient-to-br from-purple-500 to-indigo-500 blur-md" />
                     </motion.div>
-                    <p className="text-amber-900/70 text-center text-sm font-medium">
+                    <p className="text-purple-200/70 text-center text-sm font-medium">
                       {context?.question ? "Ginni is connecting to your energy…" : "Ginni is connecting to your energy…"}
                     </p>
                     <div className="flex gap-2 mt-4">
                       {[0, 1, 2].map((i) => (
                         <motion.span
                           key={i}
-                          className="w-2.5 h-2.5 rounded-full bg-amber-400/60"
+                          className="w-2.5 h-2.5 rounded-full bg-purple-400/60"
                           animate={{ 
                             y: [0, -10, 0],
                             opacity: [0.3, 0.8, 0.3]

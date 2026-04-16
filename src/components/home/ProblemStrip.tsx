@@ -27,7 +27,7 @@ const itemVariants = {
 
 export default function ProblemStrip() {
   return (
-    <section className="py-20 bg-[#FFFDF8]">
+    <section className="py-20 bg-[#0B0B0F]">
       <div className="mx-auto max-w-6xl px-6">
         <motion.div
           variants={containerVariants}
@@ -41,18 +41,18 @@ export default function ProblemStrip() {
               key={problem.title}
               variants={itemVariants}
               whileHover={{ y: -8, transition: { duration: 0.3 } }}
-              className="group cursor-pointer rounded-2xl bg-white/60 p-8 backdrop-blur-sm border border-amber-100/50 shadow-lg hover:shadow-xl transition-all duration-300"
+              className="group cursor-pointer rounded-2xl bg-[#1A1A2E]/50 p-8 backdrop-blur-sm border border-purple-800/30 hover:border-purple-600/50 hover:shadow-[0_0_30px_rgba(124,58,237,0.2)] transition-all duration-300"
             >
               <motion.div
-                className="mx-auto mb-6 flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-amber-100 to-purple-100"
+                className="mx-auto mb-6 flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-purple-900/50 to-indigo-900/50"
                 whileHover={{ scale: 1.1, transition: { duration: 0.3 } }}
               >
-                <problem.icon className="h-7 w-7 text-purple-500" />
+                <problem.icon className="h-7 w-7 text-purple-400" />
               </motion.div>
-              <h3 className="font-heading text-xl font-semibold text-[#1A1A1A] mb-2 text-center">
+              <h3 className="font-heading text-xl font-semibold text-purple-200 mb-2 text-center">
                 {problem.title}
               </h3>
-              <p className="text-[#6B6B6B] text-sm text-center leading-relaxed">
+              <p className="text-purple-300/60 text-sm text-center leading-relaxed">
                 {problem.description}
               </p>
             </motion.div>

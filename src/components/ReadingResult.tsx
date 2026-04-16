@@ -76,7 +76,7 @@ export default function ReadingResult({
       >
         <div className="mb-8 text-center">
           <motion.h2 
-            className="font-heading text-3xl mb-2 text-[#1A1A1A]"
+            className="font-heading text-3xl mb-2 text-purple-200"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.2 }}
@@ -84,7 +84,7 @@ export default function ReadingResult({
             Your Reading
           </motion.h2>
           <motion.p 
-            className="text-[#6B6B6B] italic"
+            className="text-purple-300/60 italic"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.4 }}
@@ -118,7 +118,7 @@ export default function ReadingResult({
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 1.2 + index * 0.2 }}
-                  className="mt-3 text-xs text-[#6B6B6B] text-center font-medium"
+                  className="mt-3 text-xs text-purple-300/60 text-center font-medium"
                 >
                   {selectedCardsWithDetails[index].position}
                 </motion.p>
@@ -133,11 +133,11 @@ export default function ReadingResult({
         animate={{ opacity: 1 }}
         transition={{ delay: 1.5 }}
       >
-        <div className="p-8 rounded-2xl bg-white/80 backdrop-blur-sm border border-amber-100/50 shadow-lg relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-b from-amber-50/30 to-transparent" />
+        <div className="p-8 rounded-2xl bg-[#1A1A2E]/50 backdrop-blur-sm border border-purple-800/30 shadow-lg shadow-purple-900/20 relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-b from-purple-900/20 to-transparent" />
           <div className="relative">
             <motion.h3 
-              className="font-heading text-xl mb-5 flex items-center gap-2 text-[#1A1A1A]"
+              className="font-heading text-xl mb-5 flex items-center gap-2 text-purple-200"
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 1.8 }}
@@ -145,11 +145,11 @@ export default function ReadingResult({
               <span className="text-xl">✨</span> Interpretation
             </motion.h3>
             
-            <div className="text-[#4A4A4A] leading-relaxed text-lg whitespace-pre-wrap">
+            <div className="text-purple-200/80 leading-relaxed text-lg whitespace-pre-wrap">
               {displayedText}
               {isTyping && (
                 <motion.span
-                  className="inline-block w-0.5 h-5 bg-amber-600 ml-0.5"
+                  className="inline-block w-0.5 h-5 bg-purple-400 ml-0.5"
                   animate={{ opacity: [1, 0, 1] }}
                   transition={{ duration: 0.8, repeat: Infinity }}
                 />
@@ -158,7 +158,7 @@ export default function ReadingResult({
             
             {!isTyping && (
               <motion.span 
-                className="inline-block w-2 h-4 bg-amber-600 ml-1 align-middle"
+                className="inline-block w-2 h-4 bg-purple-400 ml-1 align-middle"
                 animate={{ opacity: [1, 0.3, 1] }}
                 transition={{ duration: 1, repeat: Infinity, repeatDelay: 2 }}
               />
@@ -178,11 +178,11 @@ export default function ReadingResult({
           >
             <div className="text-center">
               <motion.div
-                className="inline-block p-5 bg-gradient-to-r from-amber-100/50 to-purple-100/50 rounded-2xl border border-amber-200/30"
+                className="inline-block p-5 bg-gradient-to-r from-purple-900/30 to-indigo-900/30 rounded-2xl border border-purple-700/30"
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
               >
-                <p className="text-[#4A4A4A] text-sm mb-3">
+                <p className="text-purple-200/70 text-sm mb-3">
                   There&apos;s more to this... Ginni can guide you deeper
                 </p>
                 <div className="flex gap-2 justify-center">
@@ -205,7 +205,7 @@ export default function ReadingResult({
         >
           <button
             onClick={onUnlockFull}
-            className="text-sm text-[#6B6B6B] hover:text-amber-600 transition-colors"
+            className="text-sm text-purple-400/60 hover:text-purple-300 transition-colors"
           >
             Get deeper insights
           </button>

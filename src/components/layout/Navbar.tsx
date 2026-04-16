@@ -51,7 +51,7 @@ export default function Navbar() {
         className={cn(
           'fixed top-0 left-0 right-0 z-50 transition-all duration-300',
           isScrolled || !isHome
-            ? 'bg-white/80 backdrop-blur-md shadow-sm'
+            ? 'bg-[#0B0B0F]/90 backdrop-blur-md shadow-lg shadow-purple-900/20'
             : 'bg-transparent'
         )}
         initial={{ y: -100 }}
@@ -70,7 +70,7 @@ export default function Navbar() {
                 className="object-contain transition-transform duration-300 group-hover:scale-105"
               />
             </div>
-            <span className="font-heading text-xl font-semibold text-[#1A1A1A] hidden sm:block">
+            <span className="font-heading text-xl font-semibold text-purple-200 hidden sm:block">
               The Devine Tarot
             </span>
           </Link>
@@ -82,16 +82,16 @@ export default function Navbar() {
                 key={link.href}
                 href={link.href}
                 className={cn(
-                  'relative font-medium text-sm transition-colors duration-200 hover:text-amber-600',
+                  'relative font-medium text-sm transition-colors duration-200 hover:text-purple-400',
                   pathname === link.href
-                    ? 'text-amber-600'
-                    : 'text-gray-600'
+                    ? 'text-purple-400'
+                    : 'text-purple-200/70'
                 )}
               >
                 {getNavLabel(link.label)}
                 {pathname === link.href && (
                   <motion.div
-                    className="absolute -bottom-1 left-0 h-0.5 w-full bg-amber-500"
+                    className="absolute -bottom-1 left-0 h-0.5 w-full bg-purple-500 shadow-[0_0_10px_rgba(168,85,247,0.5)]"
                     layoutId="navbar-indicator"
                   />
                 )}
@@ -105,7 +105,7 @@ export default function Navbar() {
             <div className="relative hidden md:block">
               <button
                 onClick={() => setIsLangOpen(!isLangOpen)}
-                className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors"
+                className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-purple-200/70 hover:bg-purple-900/30 hover:text-purple-300 transition-colors"
               >
                 <Globe className="h-4 w-4" />
                 <span>{LANGUAGES[language].nativeName}</span>
@@ -118,7 +118,7 @@ export default function Navbar() {
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
-                    className="absolute right-0 mt-2 w-40 rounded-xl bg-white shadow-lg border border-gray-100 py-1"
+                    className="absolute right-0 mt-2 w-40 rounded-xl bg-[#1A1A2E] shadow-lg shadow-purple-900/30 border border-purple-800/50 py-1"
                   >
                     {(Object.keys(LANGUAGES) as Language[]).map((lang) => (
                       <button
@@ -130,8 +130,8 @@ export default function Navbar() {
                         className={cn(
                           'w-full px-4 py-2 text-left text-sm transition-colors',
                           language === lang
-                            ? 'bg-amber-50 text-amber-600 font-medium'
-                            : 'text-gray-600 hover:bg-gray-50'
+                            ? 'bg-purple-900/50 text-purple-300 font-medium'
+                            : 'text-purple-200/70 hover:bg-purple-900/30'
                         )}
                       >
                         <span className="mr-2">{LANGUAGES[lang].flag}</span>
@@ -147,7 +147,7 @@ export default function Navbar() {
             <div className="hidden md:block">
               <Link href="/reading">
                 <motion.button
-                  className="relative overflow-hidden rounded-full bg-gradient-to-r from-amber-400 via-purple-400 to-amber-400 px-6 py-2.5 text-sm font-semibold text-white shadow-lg"
+                  className="relative overflow-hidden rounded-full bg-gradient-to-r from-purple-600 via-indigo-600 to-purple-600 px-6 py-2.5 text-sm font-semibold text-white shadow-lg shadow-purple-900/40"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.98 }}
                 >
@@ -155,7 +155,7 @@ export default function Navbar() {
                     {isHydrated ? t('cta.startReading') : 'Start Reading'}
                   </span>
                   <motion.div
-                    className="absolute inset-0 bg-gradient-to-r from-amber-500 via-purple-500 to-amber-500"
+                    className="absolute inset-0 bg-gradient-to-r from-purple-500 via-indigo-500 to-purple-500"
                     initial={{ x: '-100%' }}
                     whileHover={{ x: 0 }}
                     transition={{ duration: 0.3 }}
@@ -166,7 +166,7 @@ export default function Navbar() {
 
             {/* Mobile Menu Button */}
             <button
-              className="md:hidden p-2 text-gray-600"
+              className="md:hidden p-2 text-purple-200"
               onClick={() => setIsMobileOpen(true)}
             >
               <Menu className="h-6 w-6" />
@@ -187,19 +187,19 @@ export default function Navbar() {
               onClick={() => setIsMobileOpen(false)}
             />
             <motion.div
-              className="fixed right-0 top-0 z-50 h-full w-72 bg-white shadow-2xl"
+              className="fixed right-0 top-0 z-50 h-full w-72 bg-[#0B0B0F] shadow-2xl shadow-purple-900/30 border-l border-purple-800/30"
               initial={{ x: '100%' }}
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 200 }}
             >
               <div className="flex h-16 items-center justify-between px-6">
-                <span className="font-heading text-lg font-semibold text-[#1A1A1A]">
+                <span className="font-heading text-lg font-semibold text-purple-200">
                   Menu
                 </span>
                 <button
                   onClick={() => setIsMobileOpen(false)}
-                  className="p-2 text-gray-600"
+                  className="p-2 text-purple-200"
                 >
                   <X className="h-6 w-6" />
                 </button>
@@ -207,7 +207,7 @@ export default function Navbar() {
 
               {/* Mobile Language Selector */}
               <div className="px-6 py-2">
-                <div className="flex items-center gap-2 text-sm text-gray-500 mb-3">
+                <div className="flex items-center gap-2 text-sm text-purple-300/60 mb-3">
                   <Globe className="h-4 w-4" />
                   <span>Language</span>
                 </div>
@@ -219,8 +219,8 @@ export default function Navbar() {
                       className={cn(
                         'flex-1 rounded-lg py-2 text-sm font-medium transition-colors',
                         language === lang
-                          ? 'bg-amber-100 text-amber-700'
-                          : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
+                          ? 'bg-purple-900/50 text-purple-300'
+                          : 'bg-[#1A1A2E] text-purple-200/70 hover:bg-purple-900/30'
                       )}
                     >
                       {LANGUAGES[lang].nativeName}
@@ -238,8 +238,8 @@ export default function Navbar() {
                     className={cn(
                       'rounded-lg px-4 py-3 font-medium transition-colors',
                       pathname === link.href
-                        ? 'bg-amber-50 text-amber-600'
-                        : 'text-gray-600 hover:bg-gray-50'
+                        ? 'bg-purple-900/30 text-purple-300'
+                        : 'text-purple-200/70 hover:bg-purple-900/20'
                     )}
                   >
                     {getNavLabel(link.label)}
@@ -248,7 +248,7 @@ export default function Navbar() {
                 <Link
                   href="/reading"
                   onClick={() => setIsMobileOpen(false)}
-                  className="mt-4 rounded-full bg-gradient-to-r from-amber-400 via-purple-400 to-amber-400 px-6 py-3 text-center font-semibold text-white"
+                  className="mt-4 rounded-full bg-gradient-to-r from-purple-600 via-indigo-600 to-purple-600 px-6 py-3 text-center font-semibold text-white"
                 >
                   {isHydrated ? t('cta.startReading') : 'Start Reading'}
                 </Link>

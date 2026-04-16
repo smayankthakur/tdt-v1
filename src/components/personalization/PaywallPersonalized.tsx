@@ -88,13 +88,13 @@ export default function PaywallPersonalized({
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="p-6 rounded-2xl bg-gradient-to-r from-amber-50 to-purple-50 border border-amber-200"
+        className="p-6 rounded-2xl bg-gradient-to-r from-purple-900/30 to-indigo-900/30 border border-purple-700/30"
       >
         <div className="flex items-center gap-3">
-          <Crown className="h-6 w-6 text-amber-500" />
+          <Crown className="h-6 w-6 text-purple-400" />
           <div>
-            <p className="font-medium text-[#1A1A1A]">Premium Access Active</p>
-            <p className="text-sm text-[#6B6B6B]">Enjoy unlimited readings</p>
+            <p className="font-medium text-purple-200">Premium Access Active</p>
+            <p className="text-sm text-purple-400/60">Enjoy unlimited readings</p>
           </div>
         </div>
       </motion.div>
@@ -107,20 +107,20 @@ export default function PaywallPersonalized({
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm"
+        className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
       >
         <motion.div
           initial={{ scale: 0.9, y: 20 }}
           animate={{ scale: 1, y: 0 }}
           exit={{ scale: 0.9, y: 20 }}
-          className="relative w-full max-w-md overflow-hidden rounded-3xl bg-white shadow-2xl"
+          className="relative w-full max-w-md overflow-hidden rounded-3xl bg-[#1A1A2E] shadow-2xl shadow-purple-900/30 border border-purple-800/50"
         >
           {onClose && (
             <button
               onClick={onClose}
-              className="absolute top-4 right-4 p-2 rounded-full hover:bg-gray-100 transition-colors"
+              className="absolute top-4 right-4 p-2 rounded-full hover:bg-purple-900/30 transition-colors"
             >
-              <X className="h-5 w-5 text-[#6B6B6B]" />
+              <X className="h-5 w-5 text-purple-400" />
             </button>
           )}
 
@@ -130,9 +130,9 @@ export default function PaywallPersonalized({
                 <motion.div
                   animate={{ scale: [1, 1.1, 1], rotate: [0, 5, -5, 0] }}
                   transition={{ duration: 3, repeat: Infinity }}
-                  className="w-16 h-16 rounded-full bg-gradient-to-br from-amber-100 to-purple-100 flex items-center justify-center"
+                  className="w-16 h-16 rounded-full bg-gradient-to-br from-purple-900/50 to-indigo-900/50 flex items-center justify-center border border-purple-700/30"
                 >
-                  <Sparkles className="h-8 w-8 text-amber-500" />
+                  <Sparkles className="h-8 w-8 text-purple-400" />
                 </motion.div>
               </div>
             </div>
@@ -143,7 +143,7 @@ export default function PaywallPersonalized({
                 animate={{ opacity: 1, y: 0 }}
                 className="mb-4 flex justify-center"
               >
-                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-red-50 border border-red-100 text-red-700 text-sm">
+                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-red-900/30 border border-red-700/30 text-red-400 text-sm">
                   <Clock className="h-4 w-4" />
                   <span>{urgencyBadge}</span>
                   <span className="font-mono">
@@ -153,10 +153,10 @@ export default function PaywallPersonalized({
               </motion.div>
             )}
 
-            <h2 className="text-center font-heading text-2xl text-[#1A1A1A] mb-3">
+            <h2 className="text-center font-heading text-2xl text-purple-200 mb-3">
               {messages.title}
             </h2>
-            <p className="text-center text-[#6B6B6B] mb-8">
+            <p className="text-center text-purple-300/60 mb-8">
               {messages.description}
             </p>
 
@@ -164,7 +164,7 @@ export default function PaywallPersonalized({
               onClick={onUnlock}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className="w-full py-4 rounded-full bg-gradient-to-r from-amber-400 via-purple-400 to-amber-400 font-semibold text-white shadow-lg flex items-center justify-center gap-2"
+              className="w-full py-4 rounded-full bg-gradient-to-r from-purple-600 via-indigo-600 to-purple-600 font-semibold text-white shadow-lg shadow-purple-900/40 flex items-center justify-center gap-2 hover:shadow-[0_0_30px_rgba(124,58,237,0.5)]"
             >
               <Zap className="h-5 w-5" />
               {messages.cta}
@@ -179,26 +179,26 @@ export default function PaywallPersonalized({
                   exit={{ opacity: 0, height: 0 }}
                   className="mt-4 text-center"
                 >
-                  <p className="text-sm text-green-600 font-medium">
+                  <p className="text-sm text-green-400 font-medium">
                     Save 40% with bundle • Instant access
                   </p>
                 </motion.div>
               )}
             </AnimatePresence>
 
-            <div className="mt-6 flex items-center justify-center gap-2 text-sm text-[#9B9B9B]">
+            <div className="mt-6 flex items-center justify-center gap-2 text-sm text-purple-400/50">
               <Lock className="h-4 w-4" />
               <span>Secure payment • 30-day guarantee</span>
             </div>
           </div>
 
-          <div className="bg-gray-50 px-8 py-4">
+          <div className="bg-[#0B0B0F]/50 px-8 py-4 border-t border-purple-800/30">
             <div className="flex items-center justify-center gap-6 text-sm">
-              <div className="flex items-center gap-2 text-[#6B6B6B]">
+              <div className="flex items-center gap-2 text-purple-400/60">
                 <div className="w-2 h-2 rounded-full bg-green-500" />
                 <span>Instant delivery</span>
               </div>
-              <div className="flex items-center gap-2 text-[#6B6B6B]">
+              <div className="flex items-center gap-2 text-purple-400/60">
                 <div className="w-2 h-2 rounded-full bg-green-500" />
                 <span>Unlimited readings</span>
               </div>

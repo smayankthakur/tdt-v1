@@ -92,7 +92,7 @@ export default function ReadingPage() {
   }, [triggerOpen, currentStep, setTriggerOpen, clearContext]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background-secondary to-amber-50/30 py-24">
+    <div className="min-h-screen bg-gradient-to-br from-[#0B0B0F] via-[#1A1A2E] to-[#0B0B0F] py-24">
       <div className="mx-auto max-w-4xl px-6">
         <AnimatePresence mode="wait">
           {currentStep === 1 && (
@@ -104,10 +104,10 @@ export default function ReadingPage() {
               transition={{ duration: 0.5 }}
               className="text-center"
             >
-              <h1 className="font-heading text-4xl text-foreground mb-2">
+              <h1 className="font-heading text-4xl text-purple-200 mb-2">
                 What troubles your heart?
               </h1>
-              <p className="text-foreground-secondary mb-8">
+              <p className="text-purple-200/60 mb-8">
                 Ask the universe anything that is on your mind
               </p>
 
@@ -116,18 +116,18 @@ export default function ReadingPage() {
                   value={question}
                   onChange={(e) => setQuestion(e.target.value)}
                   placeholder="What is troubling your heart right now?"
-                  className="min-h-[150px] resize-none rounded-2xl border-primary/20 bg-card px-6 py-4 text-lg focus:border-primary focus:ring-primary/20"
+                  className="min-h-[150px] resize-none rounded-2xl border-purple-800/50 bg-[#1A1A2E] px-6 py-4 text-lg text-purple-100 placeholder:text-purple-300/40 focus:border-purple-500 focus:ring-purple-500/20"
                 />
                 {error && (
                   <motion.p
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
-                    className="mt-2 text-sm text-red-500"
+                    className="mt-2 text-sm text-red-400"
                   >
                     {error}
                   </motion.p>
                 )}
-                <p className="mt-2 text-sm text-foreground-secondary">
+                <p className="mt-2 text-sm text-purple-300/50">
                   {question.length}/500 characters
                 </p>
               </div>
@@ -200,7 +200,7 @@ export default function ReadingPage() {
               <div className="mt-12 text-center">
                 <button
                   onClick={reset}
-                  className="text-foreground-secondary hover:text-primary transition-colors"
+                  className="text-purple-300/60 hover:text-purple-400 transition-colors"
                 >
                   Start a new reading
                 </button>

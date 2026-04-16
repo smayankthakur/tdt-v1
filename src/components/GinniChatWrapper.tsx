@@ -97,7 +97,7 @@ export default function GinniChatWrapper() {
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.95 }}
             onClick={handleOpenChat}
-            className="fixed bottom-6 right-6 z-40 flex items-center gap-2 rounded-full bg-gradient-to-r from-amber-400 via-purple-400 to-amber-400 px-5 py-3 font-semibold text-white shadow-lg hover:shadow-xl"
+            className="fixed bottom-6 right-6 z-40 flex items-center gap-2 rounded-full bg-gradient-to-r from-purple-600 via-indigo-600 to-purple-600 px-5 py-3 font-semibold text-white shadow-lg shadow-purple-900/40 hover:shadow-[0_0_30px_rgba(124,58,237,0.5)]"
           >
             <MessageCircle className="h-5 w-5" />
             <span>
@@ -131,7 +131,7 @@ function SparkleIcon() {
     <motion.span
       animate={{ rotate: [0, 15, -15, 0], scale: [1, 1.2, 1] }}
       transition={{ duration: 2, repeat: Infinity }}
-      className="text-amber-200"
+      className="text-purple-200"
     >
       ✨
     </motion.span>

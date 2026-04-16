@@ -22,13 +22,13 @@ export default function CardDeck({ cards, selectedCards, onCardSelect }: CardDec
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <h3 className="font-heading text-2xl text-foreground mb-2">
+        <h3 className="font-heading text-2xl text-purple-200 mb-2">
           Choose Your Cards
         </h3>
-        <p className="text-foreground-secondary">
+        <p className="text-purple-300/60">
           Select 3 cards from the deck below
         </p>
-        <p className="mt-2 text-sm text-primary font-medium">
+        <p className="mt-2 text-sm text-purple-400 font-medium">
           {selectedCards.length} / 3 selected
         </p>
       </motion.div>
@@ -68,8 +68,8 @@ export default function CardDeck({ cards, selectedCards, onCardSelect }: CardDec
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.3 }}
         >
-          <div className="px-4 py-2 bg-primary/10 rounded-full text-center">
-            <span className="text-primary font-medium">
+          <div className="px-4 py-2 bg-purple-900/30 rounded-full text-center border border-purple-700/30">
+            <span className="text-purple-300 font-medium">
               ✓ All cards selected - proceed to reveal your reading
             </span>
           </div>

@@ -48,47 +48,53 @@ export default function TarotCard({
         <motion.div
           className={cn(
             'absolute inset-0 backface-hidden rounded-2xl overflow-hidden',
-            'bg-gradient-to-br from-[#2D2A26] to-[#4A4540]',
+            'bg-gradient-to-br from-[#1A1A2E] to-[#0B0B0F]',
             'flex items-center justify-center',
-            'border-2 border-amber-900/30 shadow-xl'
+            isSelected 
+              ? 'border-2 border-purple-500 shadow-[0_0_30px_rgba(124,58,237,0.5)]' 
+              : 'border-2 border-purple-800/30 shadow-xl',
+            isSelected && 'animate-pulse-slow'
           )}
-          whileHover={{
+          whileHover={!isSelected ? {
             boxShadow: [
-              '0 0 20px rgba(212,175,55,0.3)',
-              '0 0 40px rgba(212,175,55,0.4)'
-            ]
-          }}
+              '0 0 20px rgba(124,58,237,0.3)',
+              '0 0 40px rgba(124,58,237,0.5)'
+            ],
+            borderColor: 'rgba(124,58,237,0.5)'
+          } : {}}
           transition={{ duration: 0.3 }}
         >
-          <div className="absolute inset-0 opacity-20 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-amber-900/40 via-transparent to-transparent" />
+          <div className="absolute inset-0 opacity-30 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-purple-900/40 via-transparent to-transparent" />
           <div className="grid grid-cols-3 gap-1 p-4 opacity-30">
             {Array.from({ length: 9 }).map((_, i) => (
-              <div key={i} className="aspect-square rounded-sm bg-amber-950/50" />
+              <div key={i} className="aspect-square rounded-sm bg-purple-950/50" />
             ))}
           </div>
-          <div className="absolute top-4 left-4 right-4 h-8 rounded-full bg-amber-900/20 flex items-center justify-center">
-            <Moon className="w-4 h-4 text-amber-600/50" />
+          <div className="absolute top-4 left-4 right-4 h-8 rounded-full bg-purple-900/20 flex items-center justify-center">
+            <Moon className="w-4 h-4 text-purple-400/50" />
           </div>
-          <Sparkles className="absolute bottom-4 w-6 h-6 text-amber-600/40" />
+          <Sparkles className="absolute bottom-4 w-6 h-6 text-purple-400/40" />
         </motion.div>
 
         {/* Card Front */}
         <motion.div
           className={cn(
             'absolute inset-0 backface-hidden rounded-2xl overflow-hidden',
-            'bg-card flex flex-col',
-            'border-2 border-primary/20 shadow-xl'
+            'bg-gradient-to-br from-[#1A1A2E] to-[#0B0B0F] flex flex-col',
+            isSelected 
+              ? 'border-2 border-purple-500 shadow-[0_0_40px_rgba(124,58,237,0.6)]' 
+              : 'border-2 border-purple-800/30 shadow-xl'
           )}
           style={{ transform: 'rotateY(180deg)', backfaceVisibility: 'hidden' }}
           whileHover={{
             boxShadow: [
-              '0 0 20px rgba(212,175,55,0.2)',
-              '0 0 30px rgba(212,175,55,0.3)'
+              '0 0 20px rgba(124,58,237,0.3)',
+              '0 0 30px rgba(124,58,237,0.5)'
             ]
           }}
           transition={{ duration: 0.3 }}
         >
-          <div className="absolute inset-0 bg-gradient-to-br from-amber-50 to-amber-100/50" />
+          <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 to-indigo-900/20" />
           <div className="relative z-10 flex flex-col items-center justify-between h-full p-4">
             <div className="w-full text-center">
               <motion.span 
@@ -98,11 +104,11 @@ export default function TarotCard({
               >
                 {getCardEmoji(card.id)}
               </motion.span>
-              <h4 className="font-heading text-sm font-semibold text-foreground leading-tight">
+              <h4 className="font-heading text-sm font-semibold text-purple-200 leading-tight">
                 {card.name}
               </h4>
             </div>
-            <p className="text-xs text-center text-foreground-secondary leading-relaxed">
+            <p className="text-xs text-center text-purple-300/60 leading-relaxed">
               {card.meaning.split(',')[0]}
             </p>
           </div>

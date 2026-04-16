@@ -6,11 +6,11 @@ import { Sparkles, ArrowRight } from 'lucide-react';
 
 export default function FinalCTA() {
   return (
-    <section className="relative py-24 bg-gradient-to-br from-[#FFFDF8] via-[#FDF6FF] to-[#FFF7E6] overflow-hidden">
+    <section className="relative py-24 bg-gradient-to-br from-[#0B0B0F] via-[#12121A] to-[#0B0B0F] overflow-hidden">
       {/* Background Effects */}
       <div className="absolute inset-0">
         <motion.div
-          className="absolute top-1/4 left-1/4 h-64 w-64 rounded-full bg-amber-200/20 blur-3xl"
+          className="absolute top-1/4 left-1/4 h-64 w-64 rounded-full bg-purple-600/20 blur-3xl"
           animate={{ 
             scale: [1, 1.2, 1],
             opacity: [0.3, 0.5, 0.3],
@@ -18,7 +18,7 @@ export default function FinalCTA() {
           transition={{ duration: 4, repeat: Infinity }}
         />
         <motion.div
-          className="absolute bottom-1/4 right-1/4 h-64 w-64 rounded-full bg-purple-200/20 blur-3xl"
+          className="absolute bottom-1/4 right-1/4 h-64 w-64 rounded-full bg-indigo-600/20 blur-3xl"
           animate={{ 
             scale: [1.2, 1, 1.2],
             opacity: [0.3, 0.5, 0.3],
@@ -39,7 +39,7 @@ export default function FinalCTA() {
             className="relative inline-block mb-8"
             whileHover={{ scale: 1.05 }}
           >
-            <Sparkles className="h-14 w-14 text-amber-500" />
+            <Sparkles className="h-14 w-14 text-purple-400" />
             <motion.div
               className="absolute inset-0"
               animate={{ 
@@ -48,10 +48,10 @@ export default function FinalCTA() {
               }}
               transition={{ duration: 2, repeat: Infinity }}
             >
-              <Sparkles className="h-14 w-14 text-amber-400" />
+              <Sparkles className="h-14 w-14 text-purple-300" />
             </motion.div>
             <motion.div
-              className="absolute inset-0 rounded-full bg-amber-400/20 blur-xl"
+              className="absolute inset-0 rounded-full bg-purple-400/20 blur-xl"
               animate={{ 
                 scale: [1, 1.5, 1],
                 opacity: [0.3, 0.5, 0.3],
@@ -60,10 +60,10 @@ export default function FinalCTA() {
             />
           </motion.div>
 
-          <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl text-[#1A1A1A] mb-6">
+          <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl text-purple-200 mb-6">
             There&apos;s something waiting for you to discover...
           </h2>
-          <p className="text-lg md:text-xl text-[#6B6B6B] mb-10 leading-relaxed">
+          <p className="text-lg md:text-xl text-purple-300/60 mb-10 leading-relaxed">
             The cards have been laid out. Your guidance is ready. 
             Take the first step toward clarity today.
           </p>
@@ -72,10 +72,10 @@ export default function FinalCTA() {
             <motion.div
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.98 }}
-              className="group relative inline-flex items-center gap-3 rounded-full bg-gradient-to-r from-amber-400 via-purple-400 to-amber-400 px-10 py-5 font-semibold text-white shadow-xl transition-all hover:shadow-2xl"
+              className="group relative inline-flex items-center gap-3 rounded-full bg-gradient-to-r from-purple-600 via-indigo-600 to-purple-600 px-10 py-5 font-semibold text-white shadow-xl shadow-purple-900/40 transition-all hover:shadow-[0_0_40px_rgba(124,58,237,0.5)]"
             >
               <motion.div
-                className="absolute inset-0 rounded-full bg-gradient-to-r from-amber-500 via-purple-500 to-amber-500 opacity-0 group-hover:opacity-100 transition-opacity"
+                className="absolute inset-0 rounded-full bg-gradient-to-r from-purple-500 via-indigo-500 to-purple-500 opacity-0 group-hover:opacity-100 transition-opacity"
                 animate={{ 
                   x: ['-100%', '100%'],
                 }}
@@ -90,7 +90,7 @@ export default function FinalCTA() {
               
               {/* Glow Effect */}
               <motion.div
-                className="absolute inset-0 rounded-full blur-md bg-amber-400/50"
+                className="absolute inset-0 rounded-full blur-md bg-purple-500/50"
                 animate={{ 
                   opacity: [0.3, 0.5, 0.3],
                 }}
@@ -99,7 +99,7 @@ export default function FinalCTA() {
             </motion.div>
           </Link>
           
-          <p className="mt-6 text-sm text-[#9B9B9B]">
+          <p className="mt-6 text-sm text-purple-400/50">
             Takes less than 60 seconds • Free to try
           </p>
         </motion.div>

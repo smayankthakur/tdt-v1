@@ -163,22 +163,22 @@ export default function Hero() {
                 <motion.button
                   whileHover={{ scale: 1.03, y: -2 }}
                   whileTap={{ scale: 0.97 }}
-                  className="group relative inline-flex items-center gap-3 rounded-full bg-gradient-to-r from-purple-600 via-indigo-600 to-purple-600 px-10 py-4 text-lg font-semibold text-white overflow-hidden"
+                  className="group relative inline-flex items-center gap-3 rounded-xl bg-gradient-to-r from-red-500 via-orange-500 to-yellow-400 px-10 py-4 text-lg font-semibold text-white overflow-hidden"
                   style={{
-                    boxShadow: '0 4px 20px rgba(124, 58, 237, 0.3)',
+                    boxShadow: '0 4px 20px rgba(255, 100, 0, 0.3)',
                   }}
                 >
                   {/* Pulsing glow */}
                   <motion.div
-                    className="absolute inset-0 rounded-full"
+                    className="absolute inset-0 rounded-xl"
                     style={{
-                      boxShadow: '0 0 20px rgba(124, 58, 237, 0.4)',
+                      boxShadow: '0 0 20px rgba(255, 150, 0, 0.4)',
                     }}
                     animate={{
                       boxShadow: [
-                        '0 0 15px rgba(124, 58, 237, 0.3)',
-                        '0 0 30px rgba(124, 58, 237, 0.6)',
-                        '0 0 15px rgba(124, 58, 237, 0.3)',
+                        '0 0 15px rgba(255, 100, 0, 0.3)',
+                        '0 0 30px rgba(255, 150, 0, 0.6)',
+                        '0 0 15px rgba(255, 100, 0, 0.3)',
                       ],
                     }}
                     transition={{
@@ -189,7 +189,7 @@ export default function Hero() {
                   />
                   {/* Shine effect */}
                   <motion.span
-                    className="absolute inset-0 bg-gradient-to-r from-purple-500 to-indigo-500 opacity-0 group-hover:opacity-100 transition-opacity"
+                    className="absolute inset-0 bg-gradient-to-r from-red-400 via-orange-400 to-yellow-300 opacity-0 group-hover:opacity-100 transition-opacity"
                     animate={{
                       x: ['-100%', '100%'],
                     }}
@@ -199,7 +199,7 @@ export default function Hero() {
                       repeatDelay: 2,
                     }}
                   />
-                  <Sparkle className="h-5 w-5 text-amber-300 relative z-10" />
+                  <Sparkle className="h-5 w-5 text-white relative z-10" />
                   <span className="relative z-10">Know Your Fortune</span>
                   <ArrowRight className="h-5 w-5 relative z-10 group-hover:translate-x-1 transition-transform" />
                 </motion.button>

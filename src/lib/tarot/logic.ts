@@ -1,15 +1,71 @@
-import { tarotDeck, TarotCard, getAllCards } from './deck';
-import { analyzeQuestion } from '@/data/tarot';
-import type { Theme, Emotion, Suit } from '@/data/tarot';
+import { tarotDeck, getAllCards, TarotCard } from './deck';
 
-export { tarotDeck, getAllCards, analyzeQuestion };
-export type { TarotCard, Theme, Emotion, Suit };
+export { tarotDeck, getAllCards };
+export type { TarotCard };
 
 export interface SelectedCard {
   card: TarotCard;
   position: string;
   isReversed: boolean;
   weight: number;
+}
+
+export interface AnalysisResult {
+  theme: string;
+  emotion: string;
+  urgency: 'low' | 'medium' | 'high';
+  hiddenInsight: string;
+}
+
+export function analyzeQuestion(question: string): AnalysisResult {
+  const lowerQ = question.toLowerCase();
+  let theme = 'general';
+  let emotion = 'neutral';
+  let urgency: 'low' | 'medium' | 'high' = 'medium';
+  
+  // Detect theme
+  if (lowerQ.match(/love|relationship|partner|boyfriend|girlfriend|ex|heart|romance|marriage/)) {
+    theme = 'love';
+  } else if (lowerQ.match(/career|job|work|boss|colleague|promotion|salary|business/)) {
+    theme = 'career';
+  } else if (lowerQ.match(/money|financial|rich|debt|invest|wealth|finance/)) {
+    theme = 'finance';
+  } else if (lowerQ.match(/no contact|hasn.t reached|not talking|silence|blocked|waiting/)) {
+    theme = 'no_contact';
+  }
+  
+  // Detect emotion
+  if (lowerQ.match(/worried|stress|nervous|uncertain|afraid|fear|scared|anxious/)) {
+    emotion = 'anxious';
+    urgency = 'high';
+  } else if (lowerQ.match(/hope|wish|positive|good|better|dream|want/)) {
+    emotion = 'hopeful';
+    urgency = 'low';
+  } else if (lowerQ.match(/confused|lost|direction|don.t know|what should/)) {
+    emotion = 'confused';
+    urgency = 'high';
+  } else if (lowerQ.match(/hurt|pain|broken|miss|heart|sad|grief|breakup/)) {
+    emotion = 'heartbroken';
+    urgency = 'high';
+  } else if (lowerQ.match(/stuck|blocked|can.t|repetitive|going in circles/)) {
+    emotion = 'stuck';
+    urgency = 'medium';
+  } else if (lowerQ.match(/will|determined|must|need to|try|fight/)) {
+    emotion = 'determined';
+    urgency = 'low';
+  }
+  
+  // Hidden insight based on theme
+  let hiddenInsight = '';
+  if (theme === 'no_contact') {
+    hiddenInsight = 'This person is waiting for contact but fear is holding them back.';
+  } else if (theme === 'love') {
+    hiddenInsight = 'There is emotional vulnerability beneath the surface.';
+  } else if (emotion === 'anxious') {
+    hiddenInsight = 'The anxiety stems from a fear of loss of control.';
+  }
+  
+  return { theme, emotion, urgency, hiddenInsight };
 }
 
 export interface CardMetadata {
@@ -341,12 +397,36 @@ export function selectRandomCards(count: number = 3): SelectedCard[] {
   return pickCards({ count });
 }
 
-// Format cards for AI
+// Format cards for AI with FULL data
 export function formatCardsForAI(selectedCards: SelectedCard[]): string {
   return selectedCards
+    .map((sc, index) => {
+      const card = sc.card;
+      const position = sc.position || ['Past', 'Present', 'Future'][index] || `Position ${index + 1}`;
+      const orientation = sc.isReversed ? ' (Reversed)' : '';
+      const meaning = sc.isReversed ? card.reversed : card.upright;
+      const positionMeaning = card.positionMeanings 
+        ? (position.toLowerCase().includes('past') ? card.positionMeanings.past 
+           : position.toLowerCase().includes('present') ? card.positionMeanings.present 
+           : card.positionMeanings.future)
+        : '';
+      
+      return `CARD ${index + 1}: ${card.name} (${position})${orientation}
+Keywords: ${card.keywords.join(', ')}
+Emotions: ${card.emotions.join(', ')}
+Core Meaning: ${meaning}
+Position Meaning: ${positionMeaning}`;
+    })
+    .join('\n\n---\n\n');
+}
+
+// Format cards in a compact way for frontend display
+export function formatCardsCompact(selectedCards: SelectedCard[]): string {
+  return selectedCards
     .map(sc => {
-      const reversed = sc.isReversed ? ' (Reversed)' : '';
-      return `${sc.card.name}: ${sc.card.meaning}. Position: ${sc.position}${reversed}`;
+      const position = sc.position || 'Position';
+      const orientation = sc.isReversed ? ' (Reversed)' : '';
+      return `${sc.card.name} (${position})${orientation}: ${sc.isReversed ? sc.card.reversed : sc.card.upright}`;
     })
     .join(' | ');
 }

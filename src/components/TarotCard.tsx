@@ -178,7 +178,7 @@ function CardFront({
         </div>
         {showMeaning && (
           <p className="text-xs text-purple-300/60 leading-relaxed">
-            {card.meaning.split(',')[0]}
+            {card.upright.split(',')[0]}
           </p>
         )}
       </div>

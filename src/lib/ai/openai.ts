@@ -73,7 +73,7 @@ export async function generateReading(
 
 function generateFallbackReading(question: string, cards: SelectedCard[]): string {
   // Simple fallback for when OpenAI is unavailable
-  const cardMeanings = cards.map(c => c.card.meaning).join(', ');
+  const cardMeanings = cards.map(c => c.card.upright).join(', ');
   const firstCard = cards[0]?.card.name || 'The cards';
   
   return `I sense that your question about "${question.slice(0, 50)}..." weighs heavily on your mind. 

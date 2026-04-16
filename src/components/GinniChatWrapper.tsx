@@ -97,22 +97,22 @@ export default function GinniChatWrapper() {
             whileHover={{ scale: 1.08, y: -2 }}
             whileTap={{ scale: 0.95 }}
             onClick={handleOpenChat}
-            className="fixed bottom-6 right-6 z-40 flex items-center gap-2 rounded-full bg-gradient-to-r from-purple-600 via-indigo-600 to-purple-600 px-5 py-3 font-semibold text-white"
+            className="fixed bottom-6 right-6 z-40 flex items-center gap-2 rounded-xl bg-gradient-to-r from-red-500 via-orange-500 to-yellow-400 px-5 py-3 font-semibold text-white"
             style={{
-              boxShadow: '0 4px 20px rgba(124, 58, 237, 0.4), 0 0 15px rgba(124, 58, 237, 0.2)',
+              boxShadow: '0 4px 20px rgba(255, 100, 0, 0.4), 0 0 15px rgba(255, 150, 0, 0.2)',
             }}
           >
             {/* Pulsing glow effect */}
             <motion.div
-              className="absolute inset-0 rounded-full"
+              className="absolute inset-0 rounded-xl"
               style={{
-                boxShadow: '0 0 20px rgba(124, 58, 237, 0.4)',
+                boxShadow: '0 0 20px rgba(255, 150, 0, 0.4)',
               }}
               animate={{
                 boxShadow: [
-                  '0 0 15px rgba(124, 58, 237, 0.3)',
-                  '0 0 25px rgba(124, 58, 237, 0.5)',
-                  '0 0 15px rgba(124, 58, 237, 0.3)',
+                  '0 0 15px rgba(255, 100, 0, 0.3)',
+                  '0 0 25px rgba(255, 150, 0, 0.5)',
+                  '0 0 15px rgba(255, 100, 0, 0.3)',
                 ],
               }}
               transition={{

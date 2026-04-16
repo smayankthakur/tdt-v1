@@ -3,7 +3,7 @@
 import { useState, useCallback, useRef } from 'react';
 import { SelectedCard } from '@/lib/tarot/logic';
 
-interface StreamReadingOptions {
+export interface StreamReadingOptions {
   question: string;
   topic?: string;
   userId?: string;
@@ -15,12 +15,13 @@ interface StreamReadingOptions {
   onError?: (error: string) => void;
 }
 
-interface StreamState {
+export interface StreamState {
   isLoading: boolean;
   isStreaming: boolean;
   cards: SelectedCard[] | null;
   content: string;
   error: string | null;
+  progress: 'connecting' | 'reading' | 'interpreting' | 'complete';
 }
 
 const initialState: StreamState = {
@@ -29,6 +30,7 @@ const initialState: StreamState = {
   cards: null,
   content: '',
   error: null,
+  progress: 'complete',
 };
 
 export function useStreamReading() {
@@ -60,6 +62,7 @@ export function useStreamReading() {
       cards: null,
       content: '',
       error: null,
+      progress: 'connecting',
     });
 
     // Create new abort controller
@@ -93,7 +96,12 @@ export function useStreamReading() {
         throw new Error('No response stream available');
       }
 
-      setState(prev => ({ ...prev, isLoading: false, isStreaming: true }));
+      setState(prev => ({ 
+        ...prev, 
+        isLoading: false, 
+        isStreaming: true,
+        progress: 'reading',
+      }));
 
       let fullContent = '';
       let cards: SelectedCard[] | null = null;
@@ -114,7 +122,7 @@ export function useStreamReading() {
             
             if (data.type === 'cards') {
               cards = data.cards;
-              setState(prev => ({ ...prev, cards }));
+              setState(prev => ({ ...prev, cards, progress: 'interpreting' }));
               onCardsReceived?.(data.cards);
             } 
             else if (data.type === 'content') {
@@ -123,21 +131,21 @@ export function useStreamReading() {
               onChunk?.(data.content);
             } 
             else if (data.type === 'done') {
-              setState(prev => ({ ...prev, isStreaming: false }));
+              setState(prev => ({ ...prev, isStreaming: false, progress: 'complete' }));
               onComplete?.(fullContent);
             } 
             else if (data.type === 'error') {
               throw new Error(data.error);
             }
           } catch (parseError) {
-            console.error('[Stream Parse Error]', parseError);
+            // Skip malformed JSON
           }
         }
       }
 
     } catch (error: any) {
       if (error.name === 'AbortError') {
-        return; // Cancelled, don't update state
+        return;
       }
       
       const errorMessage = error.message || 'Something went wrong. Please try again.';
@@ -146,6 +154,7 @@ export function useStreamReading() {
         isLoading: false,
         isStreaming: false,
         error: errorMessage,
+        progress: 'complete',
       }));
       onError?.(errorMessage);
     }
@@ -158,6 +167,7 @@ export function useStreamReading() {
         ...prev,
         isLoading: false,
         isStreaming: false,
+        progress: 'complete',
       }));
     }
   }, []);
@@ -175,7 +185,8 @@ export function useStreamReading() {
   };
 }
 
-export function useTypingEffect(text: string, speed: number = 30) {
+// Enhanced typing effect with variable speed for realism
+export function useTypingEffect(initialText: string = '', baseSpeed: number = 30) {
   const [displayText, setDisplayText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -189,18 +200,36 @@ export function useTypingEffect(text: string, speed: number = 30) {
     setIsTyping(true);
     
     let index = 0;
+    
     const typeChar = () => {
       if (index < newText.length) {
+        // Variable speed for natural feel - pause at punctuation
+        const char = newText[index];
+        let charSpeed = baseSpeed;
+        
+        // Longer pause at sentence endings
+        if (['.', '!', '?', '…'].includes(char)) {
+          charSpeed = baseSpeed * 8;
+        } else if ([',', ';', ':'].includes(char)) {
+          charSpeed = baseSpeed * 4;
+        } else if (char === '\n') {
+          charSpeed = baseSpeed * 6;
+        }
+        
+        // Random variation for human feel
+        charSpeed += Math.random() * baseSpeed * 0.5;
+        
         setDisplayText(newText.slice(0, index + 1));
         index++;
-        timeoutRef.current = setTimeout(typeChar, speed + Math.random() * 20);
+        timeoutRef.current = setTimeout(typeChar, charSpeed);
       } else {
         setIsTyping(false);
       }
     };
     
-    typeChar();
-  }, [speed]);
+    // Small initial delay for effect
+    timeoutRef.current = setTimeout(typeChar, 300);
+  }, [baseSpeed]);
 
   const clearTyping = useCallback(() => {
     if (timeoutRef.current) {

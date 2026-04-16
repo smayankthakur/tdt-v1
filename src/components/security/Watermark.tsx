@@ -53,7 +53,7 @@ export default function Watermark() {
       const fontSize = Math.max(10, Math.min(14, w / 80));
       
       ctx.font = `${fontSize}px Inter, sans-serif`;
-      ctx.fillStyle = 'rgba(107, 107, 107, 0.06)';
+      ctx.fillStyle = 'rgba(107, 107, 107, 0.3)';
       ctx.textAlign = 'left';
       ctx.textBaseline = 'top';
 

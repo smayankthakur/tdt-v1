@@ -4,14 +4,15 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useReadingStore } from '@/store/reading-store';
 import { useGinniStore } from '@/store/ginni-store';
-import { analyzeQuestion, pickCards, getAllCards, TarotCard as TarotCardType, SelectedCard } from '@/lib/tarot/logic';
+import { pickCards, getAllCards, TarotCard as TarotCardType, SelectedCard, analyzeQuestion } from '@/lib/tarot/logic';
 import EnergyLoader from '@/components/EnergyLoader';
 import TarotCardComponent from '@/components/TarotCard';
 import CTAButton from '@/components/CTAButton';
+import ContextualGinni from '@/components/ContextualGinni';
 import { useTypingEffect } from '@/hooks/useStreamReading';
 import { Sparkles, Heart, Briefcase, TrendingUp, Wallet, HelpCircle, Moon, ArrowRight, X } from 'lucide-react';
 
-type ReadingStep = 'entry' | 'topic' | 'cards' | 'question' | 'suspense' | 'reveal' | 'complete';
+type ReadingStep = 'entry' | 'topic' | 'cards' | 'question' | 'suspense' | 'reveal' | 'complete' | 'post-reading';
 
 const TOPICS = [
   { id: 'love', label: 'Love', icon: Heart, description: 'Heart matters & relationships' },
@@ -35,10 +36,24 @@ const SUSPENSE_MESSAGES = [
   { delay: 5500, text: "Something significant is coming through..." },
 ];
 
+const EMOTIONAL_HOOKS = [
+  "This is just the surface of what your cards are revealing...",
+  "There's more beneath the surface that hasn't fully come through yet...",
+  "Your cards are holding back something important...",
+];
+
+const RETENTION_HOOKS = [
+  "Your energy is shifting... come back tomorrow for updated guidance.",
+  "The cards may reveal new insights tomorrow. Your situation is evolving.",
+  "Return in 24 hours for your next reading - things will be clearer.",
+];
+
 const REVEAL_MICROCOPY = [
-  "This is not random...",
-  "Your energy is very clear...",
-  "This came through strongly...",
+  "The cards are speaking...",
+  "Your story is being revealed...",
+  "Listen to what the universe is telling you...",
+  "The truth is emerging...",
+  "Your destiny unfolds...",
 ];
 
 export default function ReadingPage() {
@@ -63,9 +78,16 @@ export default function ReadingPage() {
   const [placeholderIndex, setPlaceholderIndex] = useState(0);
   const [interpretation, setInterpretation] = useState('');
   const [error, setError] = useState('');
+  const [isReadingComplete, setIsReadingComplete] = useState(false);
+  const [showPartialLock, setShowPartialLock] = useState(false);
+  const [showDeeperInsight, setShowDeeperInsight] = useState(false);
+  const [showConsultation, setShowConsultation] = useState(false);
+  const [showRetention, setShowRetention] = useState(false);
+  const [userType, setUserType] = useState<'new' | 'returning' | 'high-intent'>('new');
   
   const placeholderRef = useRef<NodeJS.Timeout | null>(null);
   const suspenseTimeoutRef = useRef<NodeJS.Timeout[]>([]);
+  const conversionTimeoutRef = useRef<NodeJS.Timeout[]>([]);
 
   const { displayText, isTyping, startTyping, clearTyping } = useTypingEffect('', 25);
 
@@ -145,9 +167,21 @@ export default function ReadingPage() {
     );
   };
 
-  // Generate the reading (called after suspense)
+  // Generate the reading with real-time streaming
   const generateReading = async () => {
     const analysis = analyzeQuestion(question);
+    let receivedCards: SelectedCard[] = [];
+    
+    // Determine user type based on topic and emotion
+    const topic = selectedTopic || analysis.theme;
+    const emotion = analysis.emotion;
+    if (topic === 'no_contact' || (topic === 'love' && (emotion === 'heartbroken' || emotion === 'anxious'))) {
+      setUserType('high-intent');
+    } else if (typeof window !== 'undefined' && window.localStorage.getItem('returning-user')) {
+      setUserType('returning');
+    } else {
+      setUserType('new');
+    }
     
     try {
       const response = await fetch('/api/reading/stream', {
@@ -173,6 +207,7 @@ export default function ReadingPage() {
 
       if (!reader) throw new Error('No response available');
 
+      // Stream and collect simultaneously
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
@@ -184,20 +219,26 @@ export default function ReadingPage() {
           if (!line.startsWith('data: ')) continue;
           try {
             const data = JSON.parse(line.slice(6));
-            if (data.type === 'content') {
+            if (data.type === 'cards') {
+              receivedCards = data.cards;
+            } else if (data.type === 'content') {
               fullContent += data.content;
+              // Update interpretation in real-time for that "streaming" feel
+              setInterpretation(fullContent);
             }
           } catch {}
         }
       }
 
-      setInterpretation(fullContent);
-      setSelectedCardsWithDetails(selectedCards.map((card, i) => ({
-        card,
-        position: ['Past', 'Present', 'Future'][i],
-        isReversed: Math.random() < 0.2,
-        weight: [10, 20, 30][i],
-      })));
+      setSelectedCardsWithDetails(receivedCards.length > 0 
+        ? receivedCards 
+        : selectedCards.map((card, i) => ({
+            card,
+            position: ['Past', 'Present', 'Future'][i],
+            isReversed: Math.random() < 0.2,
+            weight: [10, 20, 30][i],
+          }))
+      );
       
       // Start reveal sequence
       setStep('reveal');
@@ -209,7 +250,7 @@ export default function ReadingPage() {
     }
   };
 
-  // Handle reveal sequence timing
+  // Handle reveal sequence timing and post-reading flow
   useEffect(() => {
     if (step === 'reveal') {
       if (revealIndex === 0) {
@@ -220,12 +261,34 @@ export default function ReadingPage() {
         const t = setTimeout(() => setRevealIndex(prev => prev + 1), 1500);
         suspenseTimeoutRef.current.push(t);
       }
+      
+      // Mark reading complete when all cards are revealed and typing done
+      if (revealIndex >= 2 && !isTyping) {
+        setIsReadingComplete(true);
+        
+        // Trigger conversion flow sequence
+        conversionTimeoutRef.current.push(
+          // Section 1: Emotional hook after 1 second
+          setTimeout(() => {
+            // This is handled by the UI showing automatically
+          }, 1000),
+          // Section 2: Partial lock after 3 seconds
+          setTimeout(() => setShowPartialLock(true), 3000),
+          // Section 3: Deeper insight after 6 seconds
+          setTimeout(() => setShowDeeperInsight(true), 6000),
+          // Section 4: Consultation after 9 seconds
+          setTimeout(() => setShowConsultation(true), 9000),
+          // Section 5: Retention after 12 seconds
+          setTimeout(() => setShowRetention(true), 12000)
+        );
+      }
     }
     
     return () => {
       suspenseTimeoutRef.current.forEach(clearTimeout);
+      conversionTimeoutRef.current.forEach(clearTimeout);
     };
-  }, [step, revealIndex, interpretation, startTyping]);
+  }, [step, revealIndex, interpretation, startTyping, isTyping]);
 
   // Reset everything
   const handleReset = () => {
@@ -236,6 +299,11 @@ export default function ReadingPage() {
     setInterpretation('');
     setRevealIndex(-1);
     setIsReady(false);
+    setIsReadingComplete(false);
+    setShowPartialLock(false);
+    setShowDeeperInsight(false);
+    setShowConsultation(false);
+    setShowRetention(false);
     clearTyping();
     resetStore();
   };
@@ -267,6 +335,28 @@ export default function ReadingPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#0B0B0F] via-[#12121A] to-[#0B0B0F] py-12 md:py-24">
+      {/* Contextual Ginni - Stage-aware assistant */}
+      <ContextualGinni
+        stage={isReadingComplete ? 'post-reading' : step as any}
+        topic={selectedTopic || undefined}
+        question={question}
+        selectedCardsCount={selectedCards.length}
+        onAction={(action) => {
+          if (action === 'suggest-topic') {
+            setSelectedTopic('love');
+            setStep('topic');
+          } else if (action === 'card-hint') {
+            // User needs help, just pick randomly
+          } else if (action === 'upgrade') {
+            window.location.href = '/premium';
+          } else if (action === 'booking') {
+            window.location.href = '/booking';
+          } else if (action === 'chat') {
+            handleTalkToGinni();
+          }
+        }}
+      />
+      
       <div className="mx-auto max-w-4xl px-4 sm:px-6">
         <AnimatePresence mode="wait">
           {/* STEP 0: ENTRY - Intention Setting */}
@@ -290,7 +380,7 @@ export default function ReadingPage() {
                   Take a moment...
                 </h1>
                 <p className="text-lg text-purple-300/60 max-w-md mx-auto">
-                  Focus on your question in your mind. Let it become clear. When you're ready, the cards will listen.
+                  Focus on your question in your mind. Let it become clear. When you&apos;re ready, the cards will listen.
                 </p>
               </motion.div>
 
@@ -421,16 +511,13 @@ export default function ReadingPage() {
               {/* Card deck */}
               <div className="grid grid-cols-4 md:grid-cols-6 gap-3 justify-center">
                 {deckCards.map((card, index) => {
-                  const isSelected = selectedCards.find(c => c.id === card.id);
+                  const isSelected = !!selectedCards.find(c => c.id === card.id);
                   
                   return (
                     <motion.button
                       key={card.id}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: index * 0.05 }}
                       variants={cardFloatVariants}
-                      initialVariants="initial"
+                      initial="initial"
                       whileHover="hover"
                       onClick={() => handleCardSelect(card)}
                       disabled={isSelected || selectedCards.length >= 3}
@@ -664,30 +751,185 @@ export default function ReadingPage() {
                 </motion.div>
               )}
 
-              {/* Step 6: Post-reading hooks */}
+              {/* Step 6: Multi-layer Post-reading Conversion System */}
               {revealIndex >= 2 && !isTyping && (
                 <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.5 }}
-                  className="space-y-4"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="space-y-8 mt-12"
                 >
-                  <p className="text-center text-purple-300/60 italic">
-                    Your energy may shift soon. Check again tomorrow.
-                  </p>
+                  {/* SECTION 1: EMOTIONAL HOOK */}
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.5 }}
+                    className="text-center"
+                  >
+                    <p className="text-lg text-purple-300/70 italic">
+                      {EMOTIONAL_HOOKS[Math.floor(Math.random() * EMOTIONAL_HOOKS.length)]}
+                    </p>
+                  </motion.div>
 
-                  <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                    <CTAButton onClick={handleTalkToGinni}>
-                      Talk to Ginni ✨
-                    </CTAButton>
-                    <CTAButton 
-                      onClick={() => window.location.href = '/premium'}
-                      variant="secondary"
-                    >
-                      Unlock Full Reading
-                    </CTAButton>
-                  </div>
+                  {/* SECTION 2: PARTIAL LOCK (Psychological Paywall) - Smart CTA based on user type */}
+                  <AnimatePresence>
+                    {showPartialLock && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -20 }}
+                        className="relative p-6 rounded-2xl bg-[#1A1A2E]/50 border border-purple-800/30"
+                      >
+                        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-purple-900/5 to-transparent pointer-events-none" />
+                        
+                        <div className="relative">
+                          <div className="flex items-center justify-center gap-2 mb-3">
+                            <Sparkles className="h-5 w-5 text-purple-400" />
+                            <h4 className="font-heading text-lg text-purple-200">
+                              Hidden Insight Detected
+                            </h4>
+                          </div>
+                          
+                          <p className="text-purple-300/60 text-center mb-4">
+                            There&apos;s something important your cards are holding back...
+                          </p>
+                          
+                          {/* Blurred preview area */}
+                          <div className="relative p-4 rounded-xl bg-[#0B0B0F]/50 border border-purple-900/30 mb-4">
+                            <p className="text-purple-300/40 text-sm leading-relaxed blur-[2px] select-none">
+                              Your cards reveal a significant timing element that could change everything. 
+                              The outcome depends on choices made in the next 7 days. The Three of Swords 
+                              in reverse suggests healing is coming, but you need to take action first...
+                            </p>
+                            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#1A1A2E]/60 to-transparent" />
+                          </div>
+                          
+                          <div className="text-center">
+                            {userType === 'high-intent' ? (
+                              <CTAButton onClick={() => window.location.href = '/booking'}>
+                                Get Full Reading Now
+                              </CTAButton>
+                            ) : userType === 'returning' ? (
+                              <CTAButton onClick={() => window.location.href = '/premium'}>
+                                Unlock with Premium
+                              </CTAButton>
+                            ) : (
+                              <CTAButton onClick={() => window.location.href = '/premium'}>
+                                Unlock Full Reading
+                              </CTAButton>
+                            )}
+                          </div>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
 
+                  {/* SECTION 3: DEEPER INSIGHT OFFER - Smart CTA */}
+                  <AnimatePresence>
+                    {showDeeperInsight && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -20 }}
+                        className="text-center p-6 rounded-2xl bg-gradient-to-b from-purple-900/10 to-transparent border border-purple-800/20"
+                      >
+                        <p className="text-purple-300/70 mb-4">
+                          Your situation has layers... a deeper interpretation can reveal timing and outcomes.
+                        </p>
+                        
+                        <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                          {userType === 'high-intent' ? (
+                            <>
+                              <CTAButton onClick={() => window.location.href = '/booking'}>
+                                See What Happens Next
+                              </CTAButton>
+                              <CTAButton 
+                                onClick={handleTalkToGinni}
+                                variant="secondary"
+                              >
+                                Ask Ginni About It
+                              </CTAButton>
+                            </>
+                          ) : userType === 'returning' ? (
+                            <>
+                              <CTAButton onClick={() => window.location.href = '/premium'}>
+                                Get Detailed Reading
+                              </CTAButton>
+                              <CTAButton 
+                                onClick={handleTalkToGinni}
+                                variant="secondary"
+                              >
+                                Ask Ginni About It
+                              </CTAButton>
+                            </>
+                          ) : (
+                            <>
+                              <CTAButton onClick={() => window.location.href = '/premium'}>
+                                Get Detailed Reading
+                              </CTAButton>
+                              <CTAButton 
+                                onClick={handleTalkToGinni}
+                                variant="secondary"
+                              >
+                                Ask Ginni About It
+                              </CTAButton>
+                            </>
+                          )}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+
+                  {/* SECTION 4: CONSULTATION PUSH - Only for high-intent users */}
+                  <AnimatePresence>
+                    {showConsultation && userType === 'high-intent' && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -20 }}
+                        className="text-center p-6 rounded-2xl border border-amber-500/20 bg-amber-900/5"
+                      >
+                        <p className="text-amber-300/70 mb-4">
+                          Some answers need a human touch...
+                        </p>
+                        
+                        <CTAButton onClick={() => window.location.href = '/booking'}>
+                          Book Personal Reading
+                        </CTAButton>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+
+                  {/* SECTION 5: RETENTION HOOK */}
+                  <AnimatePresence>
+                    {showRetention && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -20 }}
+                        className="text-center"
+                      >
+                        <p className="text-purple-300/50 italic">
+                          {RETENTION_HOOKS[Math.floor(Math.random() * RETENTION_HOOKS.length)]}
+                        </p>
+                        
+                        <div className="mt-6 pt-6 border-t border-purple-800/20">
+                          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                            <CTAButton onClick={handleTalkToGinni}>
+                              Talk to Ginni ✨
+                            </CTAButton>
+                            <CTAButton 
+                              onClick={() => window.location.href = '/premium'}
+                              variant="secondary"
+                            >
+                              View Plans
+                            </CTAButton>
+                          </div>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+
+                  {/* Start new reading */}
                   <button
                     onClick={handleReset}
                     className="block mx-auto mt-4 text-purple-400/50 hover:text-purple-300 text-sm"

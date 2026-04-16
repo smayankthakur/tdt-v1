@@ -13,6 +13,8 @@ import { LANGUAGES, type Language } from '@/lib/i18n/config';
 const navLinks = [
   { href: '/', label: 'Home' },
   { href: '/reading', label: 'Reading' },
+  { href: '/premium', label: 'Premium' },
+  { href: '/booking', label: 'Book Reading' },
   { href: '/blog', label: 'Blog' },
   { href: '/contact', label: 'Contact' },
 ];
@@ -39,6 +41,8 @@ export default function Navbar() {
     const labels: Record<string, Record<Language, string>> = {
       Home: { en: 'Home', hi: 'होम', hinglish: 'Home', ar: 'الرئيسية', he: 'בית' },
       Reading: { en: 'Reading', hi: 'रीडिंग', hinglish: 'Reading', ar: 'القراءة', he: 'קריאה' },
+      Premium: { en: 'Premium', hi: 'प्रीमियम', hinglish: 'Premium', ar: 'المتميز', he: 'פרימיום' },
+      'Book Reading': { en: 'Book Reading', hi: 'बुक रीडिंग', hinglish: 'Book Reading', ar: 'احجز قراءة', he: 'קריאת ספר' },
       Blog: { en: 'Blog', hi: 'ब्लॉग', hinglish: 'Blog', ar: 'المدونة', he: 'בלוג' },
       Contact: { en: 'Contact', hi: 'संपर्क', hinglish: 'Contact', ar: 'اتصل بنا', he: 'צור קשר' },
     };

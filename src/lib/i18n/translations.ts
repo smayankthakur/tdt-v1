@@ -23,6 +23,8 @@ export const TRANSLATIONS: Record<Language, TranslationSet> = {
     nav: {
       home: 'Home',
       reading: 'Reading',
+      premium: 'Premium',
+      bookReading: 'Book Reading',
       blog: 'Blog',
       contact: 'Contact',
       talkToGinni: 'Talk to Ginni',

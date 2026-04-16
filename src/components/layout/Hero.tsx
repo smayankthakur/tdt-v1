@@ -154,7 +154,7 @@ export default function Hero() {
               variants={itemVariants}
               className="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto lg:mx-0 mb-10 leading-relaxed"
             >
-              Ask. Choose. Reveal what the universe has been trying to tell you.
+              Ask your question, pick your cards, and receive a deeply personal reading that reveals what&apos;s really going on.
             </motion.p>
 
             {/* CTA Button - Premium Polish */}
@@ -204,6 +204,10 @@ export default function Hero() {
                   <ArrowRight className="h-5 w-5 relative z-10 group-hover:translate-x-1 transition-transform" />
                 </motion.button>
               </Link>
+              {/* Micro reassurance */}
+              <p className="mt-4 text-sm text-gray-500 text-center">
+                Takes 30 seconds &bull; No signup needed
+              </p>
             </motion.div>
 
             {/* Trust indicator */}
@@ -212,7 +216,7 @@ export default function Hero() {
               className="mt-8 flex items-center justify-center lg:justify-start gap-2 text-sm text-gray-500"
             >
               <Star className="h-4 w-4 text-purple-400 fill-purple-400" />
-              <span>Trusted by 50,000+ seekers</span>
+              <span>Trusted by 50,000+ seekers for love, career & life clarity</span>
               <Moon className="h-4 w-4 ml-2 text-indigo-400" />
             </motion.div>
           </motion.div>

@@ -9,6 +9,7 @@ import EnergyLoader from '@/components/EnergyLoader';
 import CardDeck from '@/components/CardDeck';
 import ReadingResult from '@/components/ReadingResult';
 import CTAButton from '@/components/CTAButton';
+import TopicSelector, { QuestionInput } from '@/components/TopicSelector';
 import { Textarea } from '@/components/ui/textarea';
 import { useStreamReading, useTypingEffect } from '@/hooks/useStreamReading';
 
@@ -28,6 +29,7 @@ export default function ReadingPage() {
 
   const { setContext, setTriggerOpen, triggerOpen, clearContext } = useGinniStore();
 
+  const [selectedTopic, setSelectedTopic] = useState<string | null>(null);
   const [error, setError] = useState('');
   
   // Streaming hook
@@ -61,19 +63,21 @@ export default function ReadingPage() {
     }
   }, [displayText, isTyping]);
 
-  // Transition to card selection after energy loading
+  // Topic selection handler
+  const handleSelectTopic = (topic: string) => {
+    setSelectedTopic(topic);
+  };
+
+  // Direct transition from step 2 to result when streaming completes
   useEffect(() => {
     if (currentStep === 2 && !isLoading && !isStreaming && streamedCards) {
-      const timer = setTimeout(() => {
-        setSelectedCardsWithDetails(streamedCards.map((sc, index) => ({
-          card: sc.card,
-          position: ['Past', 'Present', 'Future'][index],
-          isReversed: sc.isReversed,
-          weight: [10, 20, 30][index],
-        })));
-        setCurrentStep(3);
-      }, 1500);
-      return () => clearTimeout(timer);
+      setSelectedCardsWithDetails(streamedCards.map((sc, index) => ({
+        card: sc.card,
+        position: ['Past', 'Present', 'Future'][index],
+        isReversed: sc.isReversed,
+        weight: [10, 20, 30][index],
+      })));
+      setCurrentStep(3);
     }
   }, [currentStep, isLoading, isStreaming, streamedCards, setSelectedCardsWithDetails, setCurrentStep]);
 
@@ -91,7 +95,7 @@ export default function ReadingPage() {
     try {
       await startReading({
         question,
-        topic: analysis.theme,
+        topic: selectedTopic || analysis.theme,
         selectedCards: undefined, // API will select cards
         onCardsReceived: (cards) => {
           console.log('Cards received:', cards);
@@ -115,12 +119,13 @@ export default function ReadingPage() {
     }
   };
 
-  const handleViewResult = () => {
-    setCurrentStep(4);
+  const handleUnlockFull = () => {
+    // Navigate to premium subscriptions
+    window.location.href = '/premium';
   };
 
-  const handleUnlockFull = () => {
-    alert('This would lead to payment/pro signup in the full version');
+  const handleViewResult = () => {
+    // This is no longer needed - result is shown directly
   };
 
   const handleTalkToGinni = () => {
@@ -142,6 +147,7 @@ export default function ReadingPage() {
     resetStore();
     resetStream();
     clearTyping();
+    setSelectedTopic(null);
   };
 
   useEffect(() => {
@@ -158,7 +164,7 @@ export default function ReadingPage() {
     <div className="min-h-screen bg-gradient-to-br from-[#0B0B0F] via-[#1A1A2E] to-[#0B0B0F] py-24">
       <div className="mx-auto max-w-4xl px-6">
         <AnimatePresence mode="wait">
-          {/* Step 1: Question Input */}
+          {/* Step 1: Topic + Question Input */}
           {currentStep === 1 && (
             <motion.div
               key="step1"
@@ -166,40 +172,52 @@ export default function ReadingPage() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.5 }}
-              className="text-center"
+              className="space-y-8"
             >
-              <h1 className="font-heading text-3xl sm:text-4xl text-purple-200 mb-2">
-                What troubles your heart?
-              </h1>
-              <p className="text-purple-200/60 mb-8">
-                Ask the universe anything that is on your mind
-              </p>
+              {/* Topic Selection */}
+              <TopicSelector
+                selectedTopic={selectedTopic}
+                onSelectTopic={handleSelectTopic}
+              />
 
-              <div className="mx-auto max-w-xl">
-                <Textarea
-                  value={question}
-                  onChange={(e) => setQuestion(e.target.value)}
-                  placeholder="What is troubling your heart right now?"
-                  className="min-h-[150px] resize-none rounded-2xl border-purple-800/50 bg-[#1A1A2E] px-6 py-4 text-lg text-purple-100 placeholder:text-purple-300/40 focus:border-purple-500 focus:ring-purple-500/20"
-                />
-                {error && (
-                  <motion.p
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    className="mt-2 text-sm text-red-400"
-                  >
-                    {error}
-                  </motion.p>
-                )}
-                <p className="mt-2 text-sm text-purple-300/50">
-                  {question.length}/500 characters
+              {/* Question Input */}
+              <div className="mt-12 text-center">
+                <h2 className="font-heading text-2xl sm:text-3xl text-purple-200 mb-2">
+                  What is your question?
+                </h2>
+                <p className="text-purple-200/60 mb-8">
+                  {selectedTopic 
+                    ? `Ask about ${selectedTopic} or anything on your mind`
+                    : 'Select a topic above, or ask anything your heart desires'
+                  }
                 </p>
-              </div>
 
-              <div className="mt-8">
-                <CTAButton onClick={handleStartReading} isLoading={isLoading}>
-                  Reveal My Cards
-                </CTAButton>
+                <div className="mx-auto max-w-xl">
+                  <Textarea
+                    value={question}
+                    onChange={(e) => setQuestion(e.target.value)}
+                    placeholder="What would you like the cards to reveal?"
+                    className="min-h-[120px] resize-none rounded-2xl border-purple-800/50 bg-[#1A1A2E] px-6 py-4 text-lg text-purple-100 placeholder:text-purple-300/40 focus:border-purple-500 focus:ring-purple-500/20"
+                  />
+                  {error && (
+                    <motion.p
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      className="mt-2 text-sm text-red-400"
+                    >
+                      {error}
+                    </motion.p>
+                  )}
+                  <p className="mt-2 text-sm text-purple-300/50">
+                    {question.length}/500 characters
+                  </p>
+                </div>
+
+                <div className="mt-8">
+                  <CTAButton onClick={handleStartReading} isLoading={isLoading}>
+                    Reveal My Destiny
+                  </CTAButton>
+                </div>
               </div>
             </motion.div>
           )}
@@ -211,18 +229,13 @@ export default function ReadingPage() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
+              className="py-12"
             >
-              {(isLoading || isStreaming) && !streamedContent ? (
-                <EnergyLoader message="The universe is listening..." />
-              ) : (
-                <div className="text-center mb-8">
-                  <EnergyLoader />
-                </div>
-              )}
+              <EnergyLoader message={isStreaming ? "The cards are revealing..." : "The universe is listening..."} />
             </motion.div>
           )}
 
-          {/* Step 3: Card Selection */}
+          {/* Step 3: Reading Result */}
           {currentStep === 3 && (
             <motion.div
               key="step3"
@@ -231,43 +244,13 @@ export default function ReadingPage() {
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.5 }}
             >
-              <CardDeck
-                cards={deck}
-                selectedCards={selectedCards}
-                onCardSelect={selectCard}
-              />
-
-              {selectedCards.length === 3 && (
-                <motion.div
-                  className="mt-8 text-center"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.3 }}
-                >
-                  <CTAButton onClick={handleViewResult}>
-                    Reveal My Reading
-                  </CTAButton>
-                </motion.div>
-              )}
-            </motion.div>
-          )}
-
-          {/* Step 4: Reading Result */}
-          {currentStep === 4 && (
-            <motion.div
-              key="step4"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.5 }}
-            >
               <ReadingResult
                 question={question}
-                cards={selectedCards}
-                selectedCardsWithDetails={selectedCardsWithDetails}
+                cards={selectedCardsWithDetails?.map(c => c.card) || []}
+                selectedCardsWithDetails={selectedCardsWithDetails || []}
                 interpretation={displayText || streamedContent}
                 isStreaming={isTyping}
-                onUnlockFull={handleUnlockFull}
+                onUnlockFull={handleViewResult}
                 onTalkToGinni={handleTalkToGinni}
               />
 

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useCallback, useRef } from 'react';
-import { SelectedCard } from '@/data/tarot';
+import { SelectedCard } from '@/lib/tarot/logic';
 
 interface StreamReadingOptions {
   question: string;

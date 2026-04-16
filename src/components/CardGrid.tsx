@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion';
 import TarotCard from '@/components/TarotCard';
-import { TarotCard as TarotCardType } from '@/data/tarot';
+import { TarotCard as TarotCardType } from '@/lib/tarot/logic';
 import { staggerContainer, staggerItem } from '@/lib/motion';
 
 interface CardGridProps {

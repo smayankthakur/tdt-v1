@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { TarotCard as TarotCardType, SelectedCard } from '@/data/tarot';
+import { TarotCard as TarotCardType, SelectedCard } from '@/lib/tarot/logic';
 import TarotCardComponent from './TarotCard';
 import CTAButton from './CTAButton';
 
@@ -11,6 +11,7 @@ interface ReadingResultProps {
   cards: TarotCardType[];
   selectedCardsWithDetails?: SelectedCard[];
   interpretation?: string;
+  isStreaming?: boolean;
   onUnlockFull?: () => void;
   onTalkToGinni?: () => void;
 }
@@ -28,16 +29,33 @@ export default function ReadingResult({
   cards, 
   selectedCardsWithDetails, 
   interpretation, 
+  isStreaming: externalIsStreaming,
   onUnlockFull, 
   onTalkToGinni 
 }: ReadingResultProps) {
   const [displayedText, setDisplayedText] = useState('');
-  const [isTyping, setIsTyping] = useState(true);
+  const [internalIsTyping, setInternalIsTyping] = useState(true);
   const [showGinniPrompt, setShowGinniPrompt] = useState(false);
+
+  // Use external streaming state if provided, otherwise use internal
+  const isTyping = externalIsStreaming ?? internalIsTyping;
+  const setIsTyping = externalIsStreaming !== undefined 
+    ? () => {} 
+    : setInternalIsTyping;
 
   const fullText = interpretation || `I sense that this situation has been weighing on you more than you admit. The cards reveal that you are at a pivotal moment. Trust your intuition—it is guiding you toward the answer you seek. The clarity you desire is coming, but you must be patient with yourself and trust the journey.`;
 
+  // If interpretation is provided externally (streaming), use it directly
   useEffect(() => {
+    if (interpretation && externalIsStreaming) {
+      // When streaming, display directly as it comes
+      setDisplayedText(interpretation);
+      setIsTyping(false);
+      setTimeout(() => setShowGinniPrompt(true), 2000);
+      return;
+    }
+
+    // Otherwise, use internal typing effect
     setDisplayedText('');
     setIsTyping(true);
     setShowGinniPrompt(false);
@@ -54,7 +72,6 @@ export default function ReadingResult({
           clearInterval(interval);
           setIsTyping(false);
           
-          // Show Ginni prompt after cards are revealed
           setTimeout(() => {
             setShowGinniPrompt(true);
           }, 3000);
@@ -65,7 +82,7 @@ export default function ReadingResult({
     }, 800);
     
     return () => clearTimeout(startDelay);
-  }, [fullText]);
+  }, [fullText, interpretation, externalIsStreaming, setIsTyping]);
 
   return (
     <div className="max-w-3xl mx-auto">

@@ -1,16 +1,16 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useReadingStore } from '@/store/reading-store';
 import { useGinniStore } from '@/store/ginni-store';
-import { selectCards, generateInterpretation, TarotCard } from '@/data/tarot';
+import { analyzeQuestion } from '@/lib/tarot/logic';
 import EnergyLoader from '@/components/EnergyLoader';
 import CardDeck from '@/components/CardDeck';
 import ReadingResult from '@/components/ReadingResult';
 import CTAButton from '@/components/CTAButton';
 import { Textarea } from '@/components/ui/textarea';
-import { analyzeQuestion } from '@/data/tarot';
+import { useStreamReading, useTypingEffect } from '@/hooks/useStreamReading';
 
 export default function ReadingPage() {
   const {
@@ -23,39 +23,95 @@ export default function ReadingPage() {
     selectCard,
     setCurrentStep,
     setSelectedCardsWithDetails,
-    setAnalysis,
-    reset,
+    reset: resetStore,
   } = useReadingStore();
 
   const { setContext, setTriggerOpen, triggerOpen, clearContext } = useGinniStore();
 
   const [error, setError] = useState('');
-  const [readingInterpretation, setReadingInterpretation] = useState('');
+  
+  // Streaming hook
+  const {
+    isLoading,
+    isStreaming,
+    cards: streamedCards,
+    content: streamedContent,
+    error: streamError,
+    startReading,
+    reset: resetStream,
+  } = useStreamReading();
 
+  // Typing effect for display
+  const { displayText, isTyping, startTyping, clearTyping } = useTypingEffect(30);
+  
+  // Auto-scroll ref
+  const contentRef = useRef<HTMLDivElement>(null);
+
+  // Start typing when content changes
   useEffect(() => {
-    if (currentStep === 2) {
-      // Minimum 2.5s delay for energy alignment (intentional realism)
+    if (streamedContent && currentStep === 2) {
+      startTyping(streamedContent);
+    }
+  }, [streamedContent, currentStep, startTyping]);
+
+  // Auto-scroll to bottom when typing
+  useEffect(() => {
+    if (contentRef.current && isTyping) {
+      contentRef.current.scrollTop = contentRef.current.scrollHeight;
+    }
+  }, [displayText, isTyping]);
+
+  // Transition to card selection after energy loading
+  useEffect(() => {
+    if (currentStep === 2 && !isLoading && !isStreaming && streamedCards) {
       const timer = setTimeout(() => {
+        setSelectedCardsWithDetails(streamedCards.map((card, index) => ({
+          card,
+          position: ['Past', 'Present', 'Future'][index],
+          isReversed: false,
+        })));
         setCurrentStep(3);
-      }, 2800);
+      }, 1500);
       return () => clearTimeout(timer);
     }
-  }, [currentStep, setCurrentStep]);
+  }, [currentStep, isLoading, isStreaming, streamedCards, setSelectedCardsWithDetails, setCurrentStep]);
 
-  const handleStartReading = () => {
+  const handleStartReading = async () => {
     if (question.length < 10) {
       setError('Please ask a more detailed question (at least 10 characters)');
       return;
     }
     setError('');
     
-    const selected = selectCards(question, 3);
-    const cardsOnly = selected.map(s => s.card);
-    const interpretation = generateInterpretation(question, selected);
+    // Get topic from question
+    const analysis = analyzeQuestion(question);
     
-    setSelectedCardsWithDetails(selected);
-    setReadingInterpretation(interpretation);
-    setCurrentStep(2);
+    // Start streaming reading
+    try {
+      await startReading({
+        question,
+        topic: analysis.theme,
+        selectedCards: undefined, // API will select cards
+        onCardsReceived: (cards) => {
+          console.log('Cards received:', cards);
+        },
+        onChunk: (chunk) => {
+          // Content is being streamed
+        },
+        onComplete: (fullText) => {
+          console.log('Reading complete');
+        },
+        onError: (err) => {
+          setError(err);
+          setCurrentStep(1);
+        },
+      });
+      
+      setCurrentStep(2);
+    } catch (err: any) {
+      setError(err.message || 'Failed to start reading');
+      setCurrentStep(1);
+    }
   };
 
   const handleViewResult = () => {
@@ -73,12 +129,18 @@ export default function ReadingPage() {
     setContext({
       question,
       cards: cardNames,
-      interpretation: readingInterpretation,
+      interpretation: displayText || streamedContent,
       theme: analysis.theme,
       emotion: analysis.emotion
     });
     
     setTriggerOpen(true);
+  };
+
+  const handleReset = () => {
+    resetStore();
+    resetStream();
+    clearTyping();
   };
 
   useEffect(() => {
@@ -95,6 +157,7 @@ export default function ReadingPage() {
     <div className="min-h-screen bg-gradient-to-br from-[#0B0B0F] via-[#1A1A2E] to-[#0B0B0F] py-24">
       <div className="mx-auto max-w-4xl px-6">
         <AnimatePresence mode="wait">
+          {/* Step 1: Question Input */}
           {currentStep === 1 && (
             <motion.div
               key="step1"
@@ -104,7 +167,7 @@ export default function ReadingPage() {
               transition={{ duration: 0.5 }}
               className="text-center"
             >
-              <h1 className="font-heading text-4xl text-purple-200 mb-2">
+              <h1 className="font-heading text-3xl sm:text-4xl text-purple-200 mb-2">
                 What troubles your heart?
               </h1>
               <p className="text-purple-200/60 mb-8">
@@ -133,24 +196,32 @@ export default function ReadingPage() {
               </div>
 
               <div className="mt-8">
-                <CTAButton onClick={handleStartReading}>
+                <CTAButton onClick={handleStartReading} isLoading={isLoading}>
                   Reveal My Cards
                 </CTAButton>
               </div>
             </motion.div>
           )}
 
-          {currentStep === 2 && (
+          {/* Step 2: Energy Loading / Streaming */}
+          {(currentStep === 2 || isLoading || isStreaming) && (
             <motion.div
               key="step2"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
             >
-              <EnergyLoader message="The universe is listening..." />
+              {(isLoading || isStreaming) && !streamedContent ? (
+                <EnergyLoader message="The universe is listening..." />
+              ) : (
+                <div className="text-center mb-8">
+                  <EnergyLoader />
+                </div>
+              )}
             </motion.div>
           )}
 
+          {/* Step 3: Card Selection */}
           {currentStep === 3 && (
             <motion.div
               key="step3"
@@ -180,6 +251,7 @@ export default function ReadingPage() {
             </motion.div>
           )}
 
+          {/* Step 4: Reading Result */}
           {currentStep === 4 && (
             <motion.div
               key="step4"
@@ -192,14 +264,15 @@ export default function ReadingPage() {
                 question={question}
                 cards={selectedCards}
                 selectedCardsWithDetails={selectedCardsWithDetails}
-                interpretation={readingInterpretation}
+                interpretation={displayText || streamedContent}
+                isStreaming={isTyping}
                 onUnlockFull={handleUnlockFull}
                 onTalkToGinni={handleTalkToGinni}
               />
 
               <div className="mt-12 text-center">
                 <button
-                  onClick={reset}
+                  onClick={handleReset}
                   className="text-purple-300/60 hover:text-purple-400 transition-colors"
                 >
                   Start a new reading

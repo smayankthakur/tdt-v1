@@ -1,7 +1,7 @@
 'use client';
 
 import { create } from 'zustand';
-import { TarotCard, selectCards, SelectedCard } from '@/data/tarot';
+import { TarotCard, SelectedCard, pickCards } from '@/lib/tarot/logic';
 
 interface ReadingState {
   question: string;
@@ -23,14 +23,15 @@ interface ReadingState {
   reset: () => void;
 }
 
-function getRandomDeck(): TarotCard[] {
-  const shuffled = [...selectCards('', 7)].map(s => s.card);
-  return shuffled;
+function getWeightedDeck(): TarotCard[] {
+  // Get weighted cards using smart selection (without user context)
+  const selected = pickCards({ count: 7 });
+  return selected.map(s => s.card);
 }
 
 export const useReadingStore = create<ReadingState>((set) => ({
   question: '',
-  deck: getRandomDeck(),
+  deck: getWeightedDeck(),
   selectedCards: [],
   selectedCardsWithDetails: [],
   readingResult: '',
@@ -60,7 +61,7 @@ export const useReadingStore = create<ReadingState>((set) => ({
 
   reset: () => set({
     question: '',
-    deck: getRandomDeck(),
+    deck: getWeightedDeck(),
     selectedCards: [],
     selectedCardsWithDetails: [],
     readingResult: '',

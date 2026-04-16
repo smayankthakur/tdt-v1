@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
-import { TarotCard as TarotCardType } from '@/data/tarot';
+import { TarotCard as TarotCardType } from '@/lib/tarot/logic';
 import { Sparkles, Moon } from 'lucide-react';
 import { cardHover, buttonTap, fadeInScale } from '@/lib/motion';
 

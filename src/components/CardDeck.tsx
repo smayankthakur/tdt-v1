@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { TarotCard as TarotCardType } from '@/data/tarot';
+import { TarotCard as TarotCardType } from '@/lib/tarot/logic';
 import CardGrid, { SelectedCardsIndicator } from '@/components/CardGrid';
 import { fadeInUp } from '@/lib/motion';
 

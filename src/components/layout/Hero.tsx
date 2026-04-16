@@ -157,14 +157,37 @@ export default function Hero() {
               Ask. Choose. Reveal what the universe has been trying to tell you.
             </motion.p>
 
-            {/* CTA Button */}
+            {/* CTA Button - Premium Polish */}
             <motion.div variants={itemVariants}>
               <Link href="/reading">
                 <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="group relative inline-flex items-center gap-3 rounded-full bg-gradient-to-r from-purple-600 via-indigo-600 to-purple-600 px-10 py-4 text-lg font-semibold text-white shadow-lg overflow-hidden"
+                  whileHover={{ scale: 1.03, y: -2 }}
+                  whileTap={{ scale: 0.97 }}
+                  className="group relative inline-flex items-center gap-3 rounded-full bg-gradient-to-r from-purple-600 via-indigo-600 to-purple-600 px-10 py-4 text-lg font-semibold text-white overflow-hidden"
+                  style={{
+                    boxShadow: '0 4px 20px rgba(124, 58, 237, 0.3)',
+                  }}
                 >
+                  {/* Pulsing glow */}
+                  <motion.div
+                    className="absolute inset-0 rounded-full"
+                    style={{
+                      boxShadow: '0 0 20px rgba(124, 58, 237, 0.4)',
+                    }}
+                    animate={{
+                      boxShadow: [
+                        '0 0 15px rgba(124, 58, 237, 0.3)',
+                        '0 0 30px rgba(124, 58, 237, 0.6)',
+                        '0 0 15px rgba(124, 58, 237, 0.3)',
+                      ],
+                    }}
+                    transition={{
+                      duration: 3,
+                      repeat: Infinity,
+                      ease: 'easeInOut',
+                    }}
+                  />
+                  {/* Shine effect */}
                   <motion.span
                     className="absolute inset-0 bg-gradient-to-r from-purple-500 to-indigo-500 opacity-0 group-hover:opacity-100 transition-opacity"
                     animate={{
@@ -176,7 +199,7 @@ export default function Hero() {
                       repeatDelay: 2,
                     }}
                   />
-                  <Sparkle className="h-5 w-5 text-amber-300" />
+                  <Sparkle className="h-5 w-5 text-amber-300 relative z-10" />
                   <span className="relative z-10">Know Your Fortune</span>
                   <ArrowRight className="h-5 w-5 relative z-10 group-hover:translate-x-1 transition-transform" />
                 </motion.button>
@@ -204,7 +227,7 @@ export default function Hero() {
               <div className="absolute inset-0 z-10">
                 <Image
                   src="/tdt-v3/imgbg.png"
-                  alt=""
+                  alt="Tarot Reading Background"
                   fill
                   className="object-cover rounded-2xl"
                   priority
@@ -216,7 +239,7 @@ export default function Hero() {
                 className="absolute inset-0 z-20 flex items-center justify-center px-8"
                 animate={floatAnimation}
               >
-                <div className="relative w-[75%] aspect-square">
+                <div className="relative w-full max-w-[500px] aspect-[3/4]">
                   <Image
                     src="/tdt-v3/img.png"
                     alt="Tarot Reading"

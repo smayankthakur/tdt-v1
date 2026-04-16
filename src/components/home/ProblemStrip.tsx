@@ -41,13 +41,45 @@ export default function ProblemStrip() {
               key={problem.title}
               variants={itemVariants}
               whileHover={{ y: -8, transition: { duration: 0.3 } }}
-              className="group cursor-pointer rounded-2xl bg-[#1A1A2E]/50 p-8 backdrop-blur-sm border border-purple-800/30 hover:border-purple-600/50 hover:shadow-[0_0_30px_rgba(124,58,237,0.2)] transition-all duration-300"
+              className="group cursor-pointer rounded-2xl bg-[#1A1A2E]/50 p-8 backdrop-blur-sm border border-purple-800/30 hover:border-purple-600/50 transition-all duration-300"
+              style={{
+                boxShadow: '0 4px 20px rgba(0, 0, 0, 0.2)',
+              }}
             >
+              {/* Glow effect on hover */}
               <motion.div
-                className="mx-auto mb-6 flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-purple-900/50 to-indigo-900/50"
+                className="absolute inset-0 rounded-2xl pointer-events-none"
+                initial={{ opacity: 0 }}
+                whileHover={{ opacity: 1 }}
+                transition={{ duration: 0.3 }}
+                style={{
+                  boxShadow: '0 0 30px rgba(124, 58, 237, 0.2)',
+                }}
+              />
+              <motion.div
+                className="mx-auto mb-6 flex h-14 w-14 items-center justify-center rounded-full relative"
                 whileHover={{ scale: 1.1, transition: { duration: 0.3 } }}
+                style={{
+                  background: 'linear-gradient(135deg, rgba(124, 58, 237, 0.3), rgba(79, 70, 229, 0.3))',
+                }}
               >
                 <problem.icon className="h-7 w-7 text-purple-400" />
+                {/* Glow behind icon */}
+                <motion.div
+                  className="absolute inset-0 rounded-full"
+                  animate={{
+                    boxShadow: [
+                      '0 0 10px rgba(124, 58, 237, 0.2)',
+                      '0 0 20px rgba(124, 58, 237, 0.4)',
+                      '0 0 10px rgba(124, 58, 237, 0.2)',
+                    ],
+                  }}
+                  transition={{
+                    duration: 2,
+                    repeat: Infinity,
+                    ease: 'easeInOut',
+                  }}
+                />
               </motion.div>
               <h3 className="font-heading text-xl font-semibold text-purple-200 mb-2 text-center">
                 {problem.title}

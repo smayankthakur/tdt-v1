@@ -87,20 +87,42 @@ export default function GinniChatWrapper() {
 
   return (
     <>
-      {/* Floating Button */}
+      {/* Floating Button - Premium Polish */}
       <AnimatePresence>
         {showFloatingButton && floatingButtonVisible && !isOpen && (
           <motion.button
             initial={{ scale: 0, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0, opacity: 0 }}
-            whileHover={{ scale: 1.1 }}
+            whileHover={{ scale: 1.08, y: -2 }}
             whileTap={{ scale: 0.95 }}
             onClick={handleOpenChat}
-            className="fixed bottom-6 right-6 z-40 flex items-center gap-2 rounded-full bg-gradient-to-r from-purple-600 via-indigo-600 to-purple-600 px-5 py-3 font-semibold text-white shadow-lg shadow-purple-900/40 hover:shadow-[0_0_30px_rgba(124,58,237,0.5)]"
+            className="fixed bottom-6 right-6 z-40 flex items-center gap-2 rounded-full bg-gradient-to-r from-purple-600 via-indigo-600 to-purple-600 px-5 py-3 font-semibold text-white"
+            style={{
+              boxShadow: '0 4px 20px rgba(124, 58, 237, 0.4), 0 0 15px rgba(124, 58, 237, 0.2)',
+            }}
           >
-            <MessageCircle className="h-5 w-5" />
-            <span>
+            {/* Pulsing glow effect */}
+            <motion.div
+              className="absolute inset-0 rounded-full"
+              style={{
+                boxShadow: '0 0 20px rgba(124, 58, 237, 0.4)',
+              }}
+              animate={{
+                boxShadow: [
+                  '0 0 15px rgba(124, 58, 237, 0.3)',
+                  '0 0 25px rgba(124, 58, 237, 0.5)',
+                  '0 0 15px rgba(124, 58, 237, 0.3)',
+                ],
+              }}
+              transition={{
+                duration: 3,
+                repeat: Infinity,
+                ease: 'easeInOut',
+              }}
+            />
+            <MessageCircle className="h-5 w-5 relative z-10" />
+            <span className="relative z-10">
               {isHydrated ? getChatButtonText() : 'Talk to Ginni'}
             </span>
             <SparkleIcon />
@@ -131,7 +153,7 @@ function SparkleIcon() {
     <motion.span
       animate={{ rotate: [0, 15, -15, 0], scale: [1, 1.2, 1] }}
       transition={{ duration: 2, repeat: Infinity }}
-      className="text-purple-200"
+      className="text-purple-200 relative z-10"
     >
       ✨
     </motion.span>

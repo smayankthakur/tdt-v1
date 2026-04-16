@@ -69,6 +69,7 @@ export default function ReadingPage() {
           card,
           position: ['Past', 'Present', 'Future'][index],
           isReversed: false,
+          weight: [10, 20, 30][index],
         })));
         setCurrentStep(3);
       }, 1500);

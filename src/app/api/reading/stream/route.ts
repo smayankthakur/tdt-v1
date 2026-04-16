@@ -49,7 +49,7 @@ export async function POST(request: NextRequest) {
 
     // Fetch user memory and history if available
     let memoryContext = '';
-    let cardHistory: CardHistory[] = [];
+    const cardHistory: CardHistory[] = [];
     if (userId && isSupabaseConfigured()) {
       try {
         const memory = await getUserMemory(userId);

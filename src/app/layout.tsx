@@ -5,6 +5,7 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import GinniChatWrapper from "@/components/GinniChatWrapper";
 import AnalyticsProvider from "@/components/AnalyticsProvider";
+import Watermark from "@/components/security/Watermark";
 
 export const viewport: Viewport = {
   width: 'device-width',
@@ -89,6 +90,7 @@ export default function RootLayout({
         )}
       </head>
       <body className="antialiased bg-[#FFFDF8] text-[#1A1A1A]">
+        <Watermark />
         <ClientProviders>
           <AnalyticsProvider />
           <Navbar />

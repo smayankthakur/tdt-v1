@@ -35,6 +35,8 @@ export default function Navbar() {
   }, []);
 
   const isHome = pathname === '/';
+  const isReading = pathname === '/reading';
+  const isFunnelPage = isReading;
 
   const getNavLabel = (key: string): string => {
     if (!isHydrated) return key;
@@ -79,8 +81,11 @@ export default function Navbar() {
             </span>
           </Link>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden items-center gap-6 md:flex">
+          {/* Desktop Navigation - Hidden during funnel */}
+          <nav className={cn(
+            "hidden items-center gap-6 md:flex",
+            isFunnelPage && "opacity-0 pointer-events-none"
+          )}>
             {navLinks.map((link) => (
               <Link
                 key={link.href}
@@ -103,8 +108,8 @@ export default function Navbar() {
             ))}
           </nav>
 
-          {/* Right Side: Language Switcher + CTA */}
-          <div className="flex items-center gap-4">
+          {/* Right Side: Language Switcher + CTA - Hidden during funnel */}
+          <div className={cn("flex items-center gap-4", isFunnelPage && "opacity-0 pointer-events-none")}>
             {/* Language Switcher */}
             <div className="relative hidden md:block">
               <button
@@ -168,9 +173,9 @@ export default function Navbar() {
               </Link>
             </div>
 
-            {/* Mobile Menu Button */}
+            {/* Mobile Menu Button - Hidden during funnel */}
             <button
-              className="md:hidden p-2 text-purple-200"
+              className={cn("md:hidden p-2 text-purple-200", isFunnelPage && "hidden")}
               onClick={() => setIsMobileOpen(true)}
             >
               <Menu className="h-6 w-6" />

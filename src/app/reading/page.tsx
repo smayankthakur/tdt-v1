@@ -120,12 +120,7 @@ export default function ReadingPage() {
   };
 
   const handleUnlockFull = () => {
-    // Navigate to premium subscriptions
     window.location.href = '/premium';
-  };
-
-  const handleViewResult = () => {
-    // This is no longer needed - result is shown directly
   };
 
   const handleTalkToGinni = () => {
@@ -250,7 +245,7 @@ export default function ReadingPage() {
                 selectedCardsWithDetails={selectedCardsWithDetails || []}
                 interpretation={displayText || streamedContent}
                 isStreaming={isTyping}
-                onUnlockFull={handleViewResult}
+                onUnlockFull={handleUnlockFull}
                 onTalkToGinni={handleTalkToGinni}
               />
 

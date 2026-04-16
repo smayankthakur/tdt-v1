@@ -36,6 +36,7 @@ export default function ReadingResult({
   const [displayedText, setDisplayedText] = useState('');
   const [internalIsTyping, setInternalIsTyping] = useState(true);
   const [showGinniPrompt, setShowGinniPrompt] = useState(false);
+  const [showPaywall, setShowPaywall] = useState(false);
 
   // Use external streaming state if provided, otherwise use internal
   const isTyping = externalIsStreaming ?? internalIsTyping;
@@ -45,13 +46,21 @@ export default function ReadingResult({
 
   const fullText = interpretation || `I sense that this situation has been weighing on you more than you admit. The cards reveal that you are at a pivotal moment. Trust your intuition—it is guiding you toward the answer you seek. The clarity you desire is coming, but you must be patient with yourself and trust the journey.`;
 
+  // Calculate partial reveal (show 65% of content)
+  const revealThreshold = Math.floor(fullText.length * 0.65);
+  const revealedText = fullText.substring(0, revealThreshold);
+  const lockedText = fullText.substring(revealThreshold);
+
   // If interpretation is provided externally (streaming), use it directly
   useEffect(() => {
     if (interpretation && externalIsStreaming) {
       // When streaming, display directly as it comes
       setDisplayedText(interpretation);
       setIsTyping(false);
-      setTimeout(() => setShowGinniPrompt(true), 2000);
+      setTimeout(() => {
+        setShowGinniPrompt(true);
+        setShowPaywall(true);
+      }, 2000);
       return;
     }
 
@@ -59,6 +68,7 @@ export default function ReadingResult({
     setDisplayedText('');
     setIsTyping(true);
     setShowGinniPrompt(false);
+    setShowPaywall(false);
     
     const startDelay = setTimeout(() => {
       const words = fullText.split(/(\s+)/);
@@ -74,6 +84,7 @@ export default function ReadingResult({
           
           setTimeout(() => {
             setShowGinniPrompt(true);
+            setShowPaywall(true);
           }, 3000);
         }
       }, 35);
@@ -162,18 +173,37 @@ export default function ReadingResult({
               <span className="text-xl">✨</span> Interpretation
             </motion.h3>
             
-            <div className="text-purple-200/80 leading-relaxed text-lg whitespace-pre-wrap">
-              {displayedText}
-              {isTyping && (
-                <motion.span
-                  className="inline-block w-0.5 h-5 bg-purple-400 ml-0.5"
-                  animate={{ opacity: [1, 0, 1] }}
-                  transition={{ duration: 0.8, repeat: Infinity }}
-                />
+            <div className="text-purple-200/80 leading-relaxed text-lg whitespace-pre-wrap relative">
+              {showPaywall ? (
+                <>
+                  <span>{revealedText}</span>
+                  <span className="blur-sm select-none opacity-50">{lockedText}</span>
+                  {/* Paywall overlay */}
+                  <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[#1A1A2E] via-[#1A1A2E]/95 to-transparent flex flex-col items-center justify-end pb-4">
+                    <p className="text-purple-300/80 text-sm mb-3">Unlock the full reading for deeper insights</p>
+                    <button
+                      onClick={onUnlockFull}
+                      className="px-6 py-2.5 rounded-full bg-gradient-to-r from-amber-500 to-amber-600 text-white font-semibold text-sm hover:from-amber-400 hover:to-amber-500 transition-all shadow-lg shadow-amber-500/30"
+                    >
+                      Unlock Full Reading
+                    </button>
+                  </div>
+                </>
+              ) : (
+                <>
+                  {displayedText}
+                  {isTyping && (
+                    <motion.span
+                      className="inline-block w-0.5 h-5 bg-purple-400 ml-0.5"
+                      animate={{ opacity: [1, 0, 1] }}
+                      transition={{ duration: 0.8, repeat: Infinity }}
+                    />
+                  )}
+                </>
               )}
             </div>
             
-            {!isTyping && (
+            {!isTyping && !showPaywall && (
               <motion.span 
                 className="inline-block w-2 h-4 bg-purple-400 ml-1 align-middle"
                 animate={{ opacity: [1, 0.3, 1] }}
@@ -212,22 +242,6 @@ export default function ReadingResult({
           </motion.div>
         )}
       </AnimatePresence>
-
-      {!showGinniPrompt && cards.length > 0 && (
-        <motion.div
-          className="mt-8 text-center"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 2.5 }}
-        >
-          <button
-            onClick={onUnlockFull}
-            className="text-sm text-purple-400/60 hover:text-purple-300 transition-colors"
-          >
-            Get deeper insights
-          </button>
-        </motion.div>
-      )}
     </div>
   );
 }

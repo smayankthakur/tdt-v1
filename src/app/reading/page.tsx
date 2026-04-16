@@ -42,7 +42,7 @@ export default function ReadingPage() {
   } = useStreamReading();
 
   // Typing effect for display
-  const { displayText, isTyping, startTyping, clearTyping } = useTypingEffect(30);
+  const { displayText, isTyping, startTyping, clearTyping } = useTypingEffect('', 30);
   
   // Auto-scroll ref
   const contentRef = useRef<HTMLDivElement>(null);

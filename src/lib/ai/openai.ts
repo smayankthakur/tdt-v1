@@ -20,13 +20,21 @@ export interface ReadingResult {
   interpretation: string;
 }
 
+const LANGUAGE_SYSTEM_PROMPTS: Record<string, string> = {
+  en: 'You are a mystical, emotionally intelligent tarot reader. Speak like a wise guide, not an AI. Write in elegant English.',
+  hi: 'आप एक रहस्यमय, भावनात्मक रूप से बुद्धिमान टैरो रीडर हैं। एक बुद्धिमान मार्गदर्शक की तरह बोलें, AI की तरह नहीं। हिंदी में लिखें जो प्राकृतिक और सुंदर हो।',
+  hinglish: 'You are a mystical tarot reader. Speak like a friend who really cares. Write in Hinglish - conversational mix of Hindi and English with WhatsApp style. Keep it real, keep it personal.',
+};
+
 export async function generateReading(
   question: string, 
   selectedCards: SelectedCard[],
-  memoryContext?: string
+  memoryContext?: string,
+  language: string = 'en'
 ): Promise<ReadingResult> {
   const cardsFormatted = formatCardsForAI(selectedCards);
   const prompt = buildPrompt(question, cardsFormatted, memoryContext);
+  const systemPrompt = LANGUAGE_SYSTEM_PROMPTS[language] || LANGUAGE_SYSTEM_PROMPTS.en;
 
   try {
     const response = await getOpenAI().chat.completions.create({
@@ -34,7 +42,7 @@ export async function generateReading(
       messages: [
         {
           role: 'system',
-          content: 'You are a mystical, emotionally intelligent tarot reader. Speak like a wise guide, not an AI.'
+          content: systemPrompt
         },
         {
           role: 'user',

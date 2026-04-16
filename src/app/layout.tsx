@@ -33,6 +33,25 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
+        {/* Content Protection Script */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                document.addEventListener('contextmenu', function(e) { e.preventDefault(); });
+                document.addEventListener('keydown', function(e) {
+                  if (e.key === 'PrintScreen') { e.preventDefault(); return; }
+                  if (e.ctrlKey && ['s','u','c'].includes(e.key.toLowerCase())) { e.preventDefault(); return; }
+                  if (e.ctrlKey && e.shiftKey && ['i','j'].includes(e.key.toLowerCase())) { e.preventDefault(); return; }
+                });
+                document.addEventListener('visibilitychange', function() {
+                  document.body.style.filter = document.hidden ? 'blur(8px)' : 'none';
+                });
+              })();
+            `,
+          }}
+        />
+        
         {/* Google Analytics */}
         {GA_MEASUREMENT_ID && (
           <>

@@ -7,7 +7,7 @@ import { updateUserMemory, getUserMemory, buildMemoryContext } from '@/lib/ai/me
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { question, userId } = body;
+    const { question, userId, language = 'en' } = body;
 
     if (!question || question.length < 3) {
       return NextResponse.json(
@@ -26,8 +26,8 @@ export async function POST(request: Request) {
     // Select 3 random cards
     const selectedCards = selectRandomCards(3);
     
-    // Generate AI reading with memory context
-    const result = await generateReading(question, selectedCards, memoryContext);
+    // Generate AI reading with memory context and language
+    const result = await generateReading(question, selectedCards, memoryContext, language);
 
     // Save to database if configured
     if (userId && isSupabaseConfigured()) {

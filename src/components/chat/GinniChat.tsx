@@ -55,6 +55,16 @@ export default function GinniChat({
     }
   }, [isHydrated, lang]);
 
+  // Send language to iframe via postMessage when language changes or iframe loads
+  useEffect(() => {
+    if (iframeRef.current?.contentWindow && isOpen) {
+      iframeRef.current.contentWindow.postMessage(
+        { type: 'SET_LANGUAGE', payload: { language: lang } },
+        '*'
+      );
+    }
+  }, [language, isOpen, lang]);
+
   const buildIframeSrc = useCallback((ctx?: GinniContext) => {
     const baseUrl = GINNI_BASE_URL;
     

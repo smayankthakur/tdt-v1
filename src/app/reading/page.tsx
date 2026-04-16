@@ -65,11 +65,11 @@ export default function ReadingPage() {
   useEffect(() => {
     if (currentStep === 2 && !isLoading && !isStreaming && streamedCards) {
       const timer = setTimeout(() => {
-        setSelectedCardsWithDetails(streamedCards.map((card, index) => ({
-          card,
+        setSelectedCardsWithDetails(streamedCards.map((sc, index) => ({
+          card: sc.card,
           position: ['Past', 'Present', 'Future'][index],
-          isReversed: false,
-          weight: [10, 20, 30][index],
+          isReversed: sc.isReversed,
+          reason: sc.reason,
         })));
         setCurrentStep(3);
       }, 1500);

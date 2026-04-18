@@ -4,33 +4,58 @@ import { forwardRef } from 'react';
 import { motion, HTMLMotionProps } from 'framer-motion';
 import { cn } from '@/lib/utils';
 
-interface CTAButtonProps extends Omit<HTMLMotionProps<'button'>, 'size'> {
-  variant?: 'primary' | 'secondary' | 'ghost';
-  size?: 'sm' | 'md' | 'lg';
+type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'danger';
+type ButtonSize = 'sm' | 'md' | 'lg';
+
+interface MysticalButtonProps extends Omit<HTMLMotionProps<'button'>, 'size'> {
+  variant?: ButtonVariant;
+  size?: ButtonSize;
   fullWidth?: boolean;
   children: React.ReactNode;
   isLoading?: boolean;
+  glow?: boolean;
 }
 
-const sizeClasses = {
-  sm: 'px-4 sm:px-6 py-2 text-sm',
-  md: 'px-6 sm:px-8 py-3 sm:py-4 text-base',
-  lg: 'px-8 sm:px-10 py-4 sm:py-5 text-lg',
+const sizeClasses: Record<ButtonSize, string> = {
+  sm: 'px-5 py-2.5 text-sm',
+  md: 'px-7 py-3.5 text-base',
+  lg: 'px-9 py-4.5 text-lg',
 };
 
-const variantClasses = {
-  primary: 'bg-gradient-to-r from-red-500 via-orange-500 to-yellow-400 text-white shadow-[0_0_20px_rgba(255,100,0,0.4)] hover:shadow-[0_0_35px_rgba(255,150,0,0.6)]',
-  secondary: 'border border-orange-400/60 text-orange-300 bg-black/40 hover:bg-orange-500/20 hover:border-orange-400 hover:shadow-[0_0_15px_rgba(255,150,0,0.3)]',
-  ghost: 'text-orange-300/70 hover:text-orange-200 hover:bg-orange-500/10',
+const variantClasses: Record<ButtonVariant, string> = {
+  primary: `
+    bg-gradient-to-r from-[#F4C542] via-[#FFD84D] to-[#F4C542] 
+    text-black 
+    shadow-[0_0_25px_rgba(244,197,66,0.4)] 
+    hover:shadow-[0_0_40px_rgba(244,197,66,0.6)]
+  `,
+  secondary: `
+    border-2 border-[#F4C542]/40 
+    text-[#F4C542] 
+    bg-transparent 
+    hover:bg-[#F4C542]/10
+    hover:border-[#F4C542]/60
+  `,
+  ghost: `
+    text-[#F4C542]/80 
+    bg-transparent 
+    hover:text-[#F4C542] 
+    hover:bg-[#F4C542]/10
+  `,
+  danger: `
+    bg-gradient-to-r from-[#C1121F] to-[#E63946] 
+    text-white 
+    shadow-[0_0_20px_rgba(193,18,31,0.4)] 
+    hover:shadow-[0_0_35px_rgba(193,18,31,0.6)]
+  `,
 };
 
 const shimmer = {
   rest: { opacity: 0, x: '-100%' },
   hover: { opacity: 0.4, x: '100%', transition: { duration: 0.6 } },
-  animate: { opacity: 0.3, x: ['-100%', '100%'], transition: { duration: 1.5, repeat: Infinity, repeatDelay: 2 } },
 };
 
-const CTAButton = forwardRef<HTMLButtonElement, CTAButtonProps>(
+const MysticalButton = forwardRef<HTMLButtonElement, MysticalButtonProps>(
   ({ 
     className, 
     variant = 'primary', 
@@ -39,39 +64,50 @@ const CTAButton = forwardRef<HTMLButtonElement, CTAButtonProps>(
     isLoading = false,
     children, 
     disabled,
+    glow = true,
     ...props 
   }, ref) => {
     return (
       <motion.button
         ref={ref}
         className={cn(
-          'relative overflow-hidden rounded-xl font-semibold transition-all duration-300 focus:outline-none',
+          'relative overflow-hidden rounded-full font-semibold transition-all duration-300 focus:outline-none',
           'inline-flex items-center justify-center',
           sizeClasses[size],
           variantClasses[variant],
           fullWidth && 'w-full',
-          (disabled || isLoading) && 'opacity-50 cursor-not-allowed'
+          (disabled || isLoading) && 'opacity-50 cursor-not-allowed',
+          !glow && 'shadow-none hover:shadow-none',
+          className
         )}
-        whileHover={{ scale: 1.03, y: -2 }}
+        whileHover={variant !== 'ghost' ? { scale: 1.03, y: -2 } : {}}
         whileTap={{ scale: 0.97 }}
         disabled={disabled || isLoading}
         {...props}
       >
         {isLoading ? (
           <motion.div
-            className="h-5 w-5 border-2 border-white/30 border-t-white rounded-full"
+            className={cn(
+              "h-5 w-5 border-2 rounded-full",
+              variant === 'primary' ? "border-black/30 border-t-black" : "border-white/30 border-t-white"
+            )}
             animate={{ rotate: 360 }}
             transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
           />
         ) : (
           <>
             <span className="relative z-10">{children}</span>
-            {variant === 'primary' && (
+            {(variant === 'primary' || variant === 'danger') && (
               <motion.div
-                className="absolute inset-0 bg-gradient-to-r from-red-400 via-orange-400 to-yellow-300"
-                variants={shimmer}
+                className={cn(
+                  "absolute inset-0",
+                  variant === 'primary' 
+                    ? "bg-gradient-to-r from-[#F4C542]/30 via-[#FFD84D]/30 to-[#F4C542]/30"
+                    : "bg-gradient-to-r from-[#C1121F]/30 to-[#E63946]/30"
+                )}
                 initial="rest"
                 whileHover="hover"
+                variants={shimmer}
               />
             )}
           </>
@@ -81,6 +117,7 @@ const CTAButton = forwardRef<HTMLButtonElement, CTAButtonProps>(
   }
 );
 
-CTAButton.displayName = 'CTAButton';
+MysticalButton.displayName = 'MysticalButton';
 
-export default CTAButton;
+export default MysticalButton;
+export type { MysticalButtonProps, ButtonVariant, ButtonSize };

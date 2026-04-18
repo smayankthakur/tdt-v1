@@ -89,7 +89,7 @@ export default function RootLayout({
           />
         )}
       </head>
-      <body className="antialiased bg-[#0B0B0F] text-purple-200">
+      <body className="antialiased bg-[#0A0A0A] text-[#F5F5F5]">
         <Watermark />
         <ClientProviders>
           <AnalyticsProvider />

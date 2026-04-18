@@ -71,14 +71,14 @@ export default function Hero() {
   }, []);
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#0B0B0F]">
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#0A0A0A]">
       {/* Animated Background */}
       <div className="absolute inset-0">
-        {/* Gradient orbs */}
+        {/* Gold gradient orb - top left */}
         <motion.div
           className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full"
           style={{
-            background: 'radial-gradient(circle, rgba(124, 58, 237, 0.15) 0%, transparent 70%)',
+            background: 'radial-gradient(circle, rgba(244, 197, 66, 0.12) 0%, transparent 70%)',
             filter: 'blur(60px)',
           }}
           animate={{
@@ -91,10 +91,11 @@ export default function Hero() {
             ease: 'easeInOut',
           }}
         />
+        {/* Deep red orb - bottom right */}
         <motion.div
           className="absolute bottom-1/4 right-1/4 w-80 h-80 rounded-full"
           style={{
-            background: 'radial-gradient(circle, rgba(79, 70, 229, 0.12) 0%, transparent 70%)',
+            background: 'radial-gradient(circle, rgba(193, 18, 31, 0.1) 0%, transparent 70%)',
             filter: 'blur(50px)',
           }}
           animate={{
@@ -107,10 +108,11 @@ export default function Hero() {
             ease: 'easeInOut',
           }}
         />
+        {/* Center subtle glow */}
         <motion.div
           className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full"
           style={{
-            background: 'radial-gradient(circle, rgba(124, 58, 237, 0.05) 0%, transparent 50%)',
+            background: 'radial-gradient(circle, rgba(244, 197, 66, 0.05) 0%, transparent 50%)',
             filter: 'blur(80px)',
           }}
           animate={{
@@ -144,7 +146,7 @@ export default function Hero() {
             >
               Your future is already written.
               <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-indigo-400 to-purple-400">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#F4C542] via-[#FFD84D] to-[#F4C542]">
                 You just need to see it.
               </span>
             </motion.h1>
@@ -152,33 +154,33 @@ export default function Hero() {
             {/* Subtext */}
             <motion.p
               variants={itemVariants}
-              className="text-lg md:text-xl text-[#B0B0B0] max-w-2xl mx-auto lg:mx-0 mb-10 leading-relaxed"
+              className="text-lg md:text-xl text-[#A8A8A8] max-w-2xl mx-auto lg:mx-0 mb-10 leading-relaxed"
             >
               Ask your question, pick your cards, and receive a deeply personal reading that reveals what&apos;s really going on.
             </motion.p>
 
-            {/* CTA Button - Premium Polish */}
+            {/* CTA Button - Premium Gold Polish */}
             <motion.div variants={itemVariants}>
               <Link href="/reading">
                 <motion.button
-                  whileHover={{ scale: 1.03, y: -2 }}
+                  whileHover={{ scale: 1.05, y: -2 }}
                   whileTap={{ scale: 0.97 }}
-                  className="group relative inline-flex items-center gap-3 rounded-xl bg-gradient-to-r from-red-500 via-orange-500 to-yellow-400 px-10 py-4 text-lg font-semibold text-white overflow-hidden"
+                  className="group relative inline-flex items-center gap-3 rounded-full bg-gradient-to-r from-[#F4C542] via-[#FFD84D] to-[#F4C542] px-10 py-4 text-lg font-semibold text-black overflow-hidden"
                   style={{
-                    boxShadow: '0 4px 20px rgba(255, 100, 0, 0.3)',
+                    boxShadow: '0 4px 30px rgba(244, 197, 66, 0.4)',
                   }}
                 >
-                  {/* Pulsing glow */}
+                  {/* Pulsing gold glow */}
                   <motion.div
-                    className="absolute inset-0 rounded-xl"
+                    className="absolute inset-0 rounded-full"
                     style={{
-                      boxShadow: '0 0 20px rgba(255, 150, 0, 0.4)',
+                      boxShadow: '0 0 25px rgba(244, 197, 66, 0.5)',
                     }}
                     animate={{
                       boxShadow: [
-                        '0 0 15px rgba(255, 100, 0, 0.3)',
-                        '0 0 30px rgba(255, 150, 0, 0.6)',
-                        '0 0 15px rgba(255, 100, 0, 0.3)',
+                        '0 0 20px rgba(244, 197, 66, 0.3)',
+                        '0 0 40px rgba(244, 197, 66, 0.6)',
+                        '0 0 20px rgba(244, 197, 66, 0.3)',
                       ],
                     }}
                     transition={{
@@ -189,7 +191,7 @@ export default function Hero() {
                   />
                   {/* Shine effect */}
                   <motion.span
-                    className="absolute inset-0 bg-gradient-to-r from-red-400 via-orange-400 to-yellow-300 opacity-0 group-hover:opacity-100 transition-opacity"
+                    className="absolute inset-0 bg-gradient-to-r from-[#F4C542]/50 via-[#FFD84D]/50 to-[#F4C542]/50 opacity-0 group-hover:opacity-100 transition-opacity"
                     animate={{
                       x: ['-100%', '100%'],
                     }}
@@ -199,7 +201,7 @@ export default function Hero() {
                       repeatDelay: 2,
                     }}
                   />
-                  <Sparkle className="h-5 w-5 text-white relative z-10" />
+                  <Sparkle className="h-5 w-5 text-black relative z-10" />
                   <span className="relative z-10">Know Your Fortune</span>
                   <ArrowRight className="h-5 w-5 relative z-10 group-hover:translate-x-1 transition-transform" />
                 </motion.button>
@@ -215,9 +217,9 @@ export default function Hero() {
               variants={itemVariants}
               className="mt-8 flex items-center justify-center lg:justify-start gap-2 text-sm text-[#7A7A7A]"
             >
-              <Star className="h-4 w-4 text-purple-400 fill-purple-400" />
+              <Star className="h-4 w-4 text-[#F4C542] fill-[#F4C542]" />
               <span>Trusted by 50,000+ seekers for love, career & life clarity</span>
-              <Moon className="h-4 w-4 ml-2 text-indigo-400" />
+              <Moon className="h-4 w-4 ml-2 text-[#C1121F]" />
             </motion.div>
           </motion.div>
 
@@ -252,7 +254,7 @@ export default function Hero() {
                     priority
                   />
                   {/* Soft glow effect */}
-                  <div className="absolute inset-0 z-[-1] bg-purple-500/20 blur-3xl rounded-full" />
+                  <div className="absolute inset-0 z-[-1] bg-[#F4C542]/20 blur-3xl rounded-full" />
                 </div>
               </motion.div>
 
@@ -278,9 +280,9 @@ export default function Hero() {
         animate={{ y: [0, 10, 0] }}
         transition={{ duration: 2, repeat: Infinity }}
       >
-        <div className="h-10 w-6 rounded-full border border-purple-500/30 flex justify-center pt-2">
+        <div className="h-10 w-6 rounded-full border border-[#F4C542]/30 flex justify-center pt-2">
           <motion.div
-            className="h-2 w-1 rounded-full bg-purple-500"
+            className="h-2 w-1 rounded-full bg-[#F4C542]"
             animate={{ y: [0, 12, 0] }}
             transition={{ duration: 1.5, repeat: Infinity }}
           />

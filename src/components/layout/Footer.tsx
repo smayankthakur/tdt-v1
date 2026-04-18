@@ -21,26 +21,29 @@ export default function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-[#0B0B0F] border-t border-purple-900/30">
-      <div className="mx-auto max-w-7xl px-6 py-16">
+    <footer className="relative bg-gradient-to-b from-transparent via-[#0A0A0A]/80 to-[#0A0A0A]">
+      <div className="absolute inset-0 bg-gradient-to-t from-[#F4C542]/5 via-transparent to-transparent pointer-events-none" />
+      
+      <div className="relative mx-auto max-w-7xl px-6 py-16">
         <div className="grid gap-12 md:grid-cols-3 md:gap-8">
           {/* Column 1 - Logo & Description */}
           <div className="text-center md:text-left">
-            <Link href="/" className="inline-flex items-center gap-3 mb-4">
+            <Link href="/" className="inline-flex items-center gap-3 mb-4 group">
               <div className="relative w-10 h-10">
                 <Image
                   src="/tdt-v3/logo.png"
                   alt="The Devine Tarot Logo"
                   width={40}
                   height={40}
-                  className="object-contain"
+                  className="object-contain transition-transform duration-300 group-hover:scale-105"
                 />
+                <div className="absolute inset-0 bg-[#F4C542]/20 blur-xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
               </div>
-              <span className="font-heading text-xl font-semibold text-purple-200">
-The Devine Tarot
+              <span className="font-heading text-xl font-semibold text-[#F5F5F5]">
+                The Devine Tarot
               </span>
             </Link>
-            <p className="text-purple-200/60 text-sm leading-relaxed max-w-xs">
+            <p className="text-[#A8A8A8] text-sm leading-relaxed max-w-xs">
               Guiding you through clarity and insight. Your journey to
               understanding begins here.
             </p>
@@ -48,7 +51,7 @@ The Devine Tarot
 
           {/* Column 2 - Navigation Links */}
           <div className="text-center">
-            <h4 className="font-heading font-semibold text-purple-200 mb-4">
+            <h4 className="font-heading font-semibold text-[#F5F5F5] mb-4">
               Quick Links
             </h4>
             <nav className="flex flex-col gap-3">
@@ -56,10 +59,10 @@ The Devine Tarot
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="text-sm text-purple-200/60 hover:text-purple-400 transition-colors inline-flex items-center justify-center md:justify-start"
+                  className="text-sm text-[#A8A8A8] hover:text-[#F4C542] transition-colors inline-flex items-center justify-center md:justify-start group"
                 >
                   {link.label}
-                  <ArrowUpRight className="h-3 w-3 ml-1 opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <ArrowUpRight className="h-3 w-3 ml-1 opacity-0 group-hover:opacity-100 transition-opacity text-[#F4C542]" />
                 </Link>
               ))}
             </nav>
@@ -67,13 +70,13 @@ The Devine Tarot
 
           {/* Column 3 - Contact & Social */}
           <div className="text-center md:text-right">
-            <h4 className="font-heading font-semibold text-purple-200 mb-4">
+            <h4 className="font-heading font-semibold text-[#F5F5F5] mb-4">
               Get in Touch
             </h4>
             <div className="flex flex-col gap-3 items-center md:items-end">
               <a
                 href="mailto:support@thedivinetarot.com"
-                className="inline-flex items-center gap-2 text-sm text-purple-200/60 hover:text-purple-400 transition-colors"
+                className="inline-flex items-center gap-2 text-sm text-[#A8A8A8] hover:text-[#F4C542] transition-colors"
               >
                 <Mail className="h-4 w-4" />
                 support@thedivinetarot.com
@@ -83,7 +86,7 @@ The Devine Tarot
                   <a
                     key={social.label}
                     href={social.href}
-                    className="text-lg opacity-60 hover:opacity-100 transition-opacity"
+                    className="text-lg opacity-40 hover:opacity-100 hover:text-[#F4C542] transition-all"
                     aria-label={social.label}
                   >
                     {social.icon}
@@ -94,16 +97,13 @@ The Devine Tarot
           </div>
         </div>
 
-        {/* Divider */}
-        <div className="my-8 border-t border-purple-900/30" />
-
         {/* Bottom Copyright */}
-        <div className="text-center">
-          <p className="text-sm text-purple-200/60">
+        <div className="mt-12 text-center">
+          <p className="text-sm text-[#7A7A7A]">
             © {currentYear} The Devine Tarot. All rights reserved.
           </p>
-          <div className="mt-2 flex items-center justify-center gap-1 text-xs text-purple-300/40">
-            <Sparkle className="h-3 w-3 text-purple-400" />
+          <div className="mt-2 flex items-center justify-center gap-1 text-xs text-[#7A7A7A]">
+            <Sparkle className="h-3 w-3 text-[#F4C542]" />
             <span>Made with cosmic energy</span>
           </div>
         </div>

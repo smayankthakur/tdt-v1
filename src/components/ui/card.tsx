@@ -1,33 +1,48 @@
 import * as React from "react"
-
+import { motion } from "framer-motion"
 import { cn } from "@/lib/utils"
+
+interface CardProps extends React.ComponentProps<"div"> {
+  variant?: 'default' | 'tarot' | 'glass'
+  interactive?: boolean
+}
 
 function Card({
   className,
-  size = "default",
+  variant = 'default',
+  interactive = false,
+  children,
   ...props
-}: React.ComponentProps<"div"> & { size?: "default" | "sm" }) {
+}: CardProps) {
+  const baseStyles = "relative overflow-hidden rounded-2xl transition-all duration-300"
+  
+  const variantStyles = {
+    default: "bg-[#1A1A1A] border border-[#F4C542]/10 shadow-[0_0_40px_rgba(0,0,0,0.4)]",
+    tarot: "bg-gradient-to-br from-[#1A0F2E] to-[#0A0A0A] border border-[#F4C542]/20 shadow-[0_0_30px_rgba(244,197,66,0.1)]",
+    glass: "bg-[#1A1A1A]/60 backdrop-blur-xl border border-[#F4C542]/10",
+  }
+
+  const Component = interactive ? motion.div : 'div'
+  const motionProps = interactive ? {
+    whileHover: { y: -5, scale: 1.02 },
+    transition: { duration: 0.3 }
+  } : {}
+
   return (
-    <div
-      data-slot="card"
-      data-size={size}
-      className={cn(
-        "group/card flex flex-col gap-4 overflow-hidden rounded-xl bg-card py-4 text-sm text-card-foreground ring-1 ring-foreground/10 has-data-[slot=card-footer]:pb-0 has-[>img:first-child]:pt-0 data-[size=sm]:gap-3 data-[size=sm]:py-3 data-[size=sm]:has-data-[slot=card-footer]:pb-0 *:[img:first-child]:rounded-t-xl *:[img:last-child]:rounded-b-xl",
-        className
-      )}
+    <Component
+      className={cn(baseStyles, variantStyles[variant], className)}
+      {...motionProps}
       {...props}
-    />
+    >
+      {children}
+    </Component>
   )
 }
 
 function CardHeader({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
-      data-slot="card-header"
-      className={cn(
-        "group/card-header @container/card-header grid auto-rows-min items-start gap-1 rounded-t-xl px-4 group-data-[size=sm]/card:px-3 has-data-[slot=card-action]:grid-cols-[1fr_auto] has-data-[slot=card-description]:grid-rows-[auto_auto] [.border-b]:pb-4 group-data-[size=sm]/card:[.border-b]:pb-3",
-        className
-      )}
+      className={cn("px-5 py-4", className)}
       {...props}
     />
   )
@@ -36,11 +51,7 @@ function CardHeader({ className, ...props }: React.ComponentProps<"div">) {
 function CardTitle({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
-      data-slot="card-title"
-      className={cn(
-        "font-heading text-base leading-snug font-medium group-data-[size=sm]/card:text-sm",
-        className
-      )}
+      className={cn("font-serif text-lg text-[#EAEAEA] font-medium", className)}
       {...props}
     />
   )
@@ -49,21 +60,7 @@ function CardTitle({ className, ...props }: React.ComponentProps<"div">) {
 function CardDescription({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
-      data-slot="card-description"
-      className={cn("text-sm text-muted-foreground", className)}
-      {...props}
-    />
-  )
-}
-
-function CardAction({ className, ...props }: React.ComponentProps<"div">) {
-  return (
-    <div
-      data-slot="card-action"
-      className={cn(
-        "col-start-2 row-span-2 row-start-1 self-start justify-self-end",
-        className
-      )}
+      className={cn("text-sm text-[#A8A8A8]", className)}
       {...props}
     />
   )
@@ -72,8 +69,7 @@ function CardAction({ className, ...props }: React.ComponentProps<"div">) {
 function CardContent({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
-      data-slot="card-content"
-      className={cn("px-4 group-data-[size=sm]/card:px-3", className)}
+      className={cn("px-5 py-3", className)}
       {...props}
     />
   )
@@ -82,9 +78,8 @@ function CardContent({ className, ...props }: React.ComponentProps<"div">) {
 function CardFooter({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
-      data-slot="card-footer"
       className={cn(
-        "flex items-center rounded-b-xl border-t bg-muted/50 p-4 group-data-[size=sm]/card:p-3",
+        "flex items-center px-5 py-3 border-t border-[#F4C542]/10 bg-[#0A0A0A]/50",
         className
       )}
       {...props}
@@ -97,7 +92,6 @@ export {
   CardHeader,
   CardFooter,
   CardTitle,
-  CardAction,
   CardDescription,
   CardContent,
 }

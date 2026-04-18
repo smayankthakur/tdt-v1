@@ -8,24 +8,35 @@
 
 @layer base {
   :root {
-    --background: 11 11 15;
-    --background-secondary: 18 18 26;
-    --foreground: 234 234 240;
-    --foreground-secondary: 160 160 180;
+    /* Primary Dark Background */
+    --background: 10 10 10;
+    /* Secondary Layers */
+    --background-secondary: 26 15 46;
+    --background-maroon: 42 13 13;
+    /* Text Colors */
+    --foreground: 245 245 245;
+    --foreground-secondary: 168 168 168;
     --foreground-muted: 122 122 122;
-    --card: 18 18 26;
-    --card-foreground: 234 234 240;
-    --primary: 124 58 237;
-    --primary-foreground: 255 255 255;
-    --secondary: 79 70 229;
+    /* Card */
+    --card: 26 15 46;
+    --card-foreground: 245 245 245;
+    /* Logo Accents */
+    --gold: 244 197 66;
+    --gold-light: 255 216 77;
+    --red-deep: 193 18 31;
+    /* Primary (gold-based) */
+    --primary: 244 197 66;
+    --primary-foreground: 0 0 0;
+    /* Secondary (deep red) */
+    --secondary: 193 18 31;
     --secondary-foreground: 255 255 255;
-    --muted: 30 30 45;
-    --muted-foreground: 160 160 180;
-    --accent: 124 58 237;
-    --accent-foreground: 255 255 255;
-    --border: 40 40 60;
-    --input: 40 40 60;
-    --ring: 124 58 237;
+    /* Muted */
+    --muted: 42 13 13;
+    --muted-foreground: 168 168 168;
+    /* Border */
+    --border: 60 40 30;
+    --input: 60 40 30;
+    --ring: 244 197 66;
     --radius: 1rem;
     
     --font-heading: 'Cinzel', serif;
@@ -52,6 +63,19 @@
     -webkit-user-select: none;
     user-select: none;
     line-height: 1.7;
+    position: relative;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: 
+      radial-gradient(ellipse 80% 50% at 50% -20%, rgba(244, 197, 66, 0.08) 0%, transparent 50%),
+      radial-gradient(ellipse 60% 40% at 100% 50%, rgba(193, 18, 31, 0.06) 0%, transparent 40%),
+      radial-gradient(ellipse 60% 40% at 0% 80%, rgba(124, 58, 237, 0.05) 0%, transparent 40%);
+    pointer-events: none;
+    z-index: -1;
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -93,15 +117,24 @@
     color: rgb(var(--foreground-muted));
   }
   
+  /* Gold accent text (from logo) */
+  .text-gold {
+    color: rgb(var(--gold));
+  }
+  
+  .text-gold-light {
+    color: rgb(var(--gold-light));
+  }
+  
   .text-accent-gold {
-    background: linear-gradient(135deg, #F59E0B 0%, #FBBF24 50%, #F59E0B 100%);
+    background: linear-gradient(135deg, #F4C542 0%, #FFD84D 50%, #F4C542 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
   
   .text-accent-warm {
-    background: linear-gradient(135deg, #FB923C 0%, #FBBF24 100%);
+    background: linear-gradient(135deg, #FB923C 0%, #FFD84D 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -111,30 +144,30 @@
   .mystical-quote {
     font-style: italic;
     color: rgb(var(--foreground-muted));
-    border-left: 2px solid rgb(var(--primary));
+    border-left: 2px solid rgb(var(--gold));
     padding-left: 1rem;
   }
   
   .mystical-glow {
-    text-shadow: 0 0 20px rgba(124, 58, 237, 0.4);
+    text-shadow: 0 0 20px rgba(244, 197, 66, 0.4);
     color: rgb(var(--foreground));
   }
   
   .mystical-highlight {
-    color: #A78BFA;
+    color: rgb(var(--gold-light));
     font-weight: 500;
   }
   
   .reading-key-phrase {
-    color: #C4B5FD;
+    color: rgb(var(--gold));
     font-weight: 500;
-    text-shadow: 0 0 15px rgba(167, 139, 250, 0.3);
+    text-shadow: 0 0 15px rgba(244, 197, 66, 0.3);
   }
   
   .reading-card-name {
     font-family: var(--font-serif);
     font-weight: 600;
-    color: #A78BFA;
+    color: rgb(var(--gold));
   }
   
   .reading-position {
@@ -144,34 +177,57 @@
     color: rgb(var(--foreground-muted));
   }
 
+  /* Background gradients */
   .bg-mystical {
-    background: radial-gradient(ellipse at top, rgba(124, 58, 237, 0.15) 0%, rgb(var(--background)) 50%);
+    background: radial-gradient(ellipse at top, rgba(244, 197, 66, 0.1) 0%, rgb(var(--background)) 50%);
   }
 
   .bg-dark-card {
-    background: rgba(18, 18, 26, 0.8);
+    background: rgba(26, 15, 46, 0.8);
     backdrop-filter: blur(12px);
   }
-
-  .glow-purple {
-    box-shadow: 0 0 30px rgba(124, 58, 237, 0.3);
+  
+  .bg-gold-gradient {
+    background: linear-gradient(135deg, rgb(var(--gold)) 0%, rgb(var(--gold-light)) 100%);
+  }
+  
+  .bg-maroon-gradient {
+    background: linear-gradient(180deg, rgb(var(--background-secondary)) 0%, rgb(var(--background-maroon)) 100%);
   }
 
-  .glow-purple-sm {
-    box-shadow: 0 0 15px rgba(124, 58, 237, 0.2);
+  /* Glow effects */
+  .glow-gold {
+    box-shadow: 0 0 30px rgba(244, 197, 66, 0.3);
   }
 
-  .glow-indigo {
-    box-shadow: 0 0 30px rgba(79, 70, 229, 0.3);
+  .glow-gold-sm {
+    box-shadow: 0 0 15px rgba(244, 197, 66, 0.2);
   }
 
-  .border-glow {
-    border: 1px solid rgba(124, 58, 237, 0.3);
-    box-shadow: 0 0 20px rgba(124, 58, 237, 0.15);
+  .glow-red {
+    box-shadow: 0 0 30px rgba(193, 18, 31, 0.3);
+  }
+  
+  .glow-red-sm {
+    box-shadow: 0 0 15px rgba(193, 18, 31, 0.2);
   }
 
-  .text-glow {
-    text-shadow: 0 0 20px rgba(124, 58, 237, 0.5);
+  .border-glow-gold {
+    border: 1px solid rgba(244, 197, 66, 0.3);
+    box-shadow: 0 0 20px rgba(244, 197, 66, 0.15);
+  }
+  
+  .border-glow-red {
+    border: 1px solid rgba(193, 18, 31, 0.3);
+    box-shadow: 0 0 20px rgba(193, 18, 31, 0.15);
+  }
+
+  .text-glow-gold {
+    text-shadow: 0 0 20px rgba(244, 197, 66, 0.5);
+  }
+  
+  .text-glow-red {
+    text-shadow: 0 0 20px rgba(193, 18, 31, 0.5);
   }
 
   .animate-float {
@@ -186,11 +242,23 @@
     background: linear-gradient(
       90deg,
       transparent 0%,
-      rgba(124, 58, 237, 0.1) 50%,
+      rgba(244, 197, 66, 0.1) 50%,
       transparent 100%
     );
     background-size: 200% 100%;
     animation: shimmer 3s infinite;
+  }
+  
+  /* Gold shimmer for CTAs */
+  .animate-gold-shimmer {
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(244, 197, 66, 0.3) 50%,
+      transparent 100%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 2s infinite;
   }
 
   .noise-overlay {
@@ -223,44 +291,98 @@
 
 @layer components {
   .card-mystical {
-    background: rgba(18, 18, 26, 0.8);
+    background: rgba(26, 15, 46, 0.8);
     backdrop-filter: blur(12px);
-    border: 1px solid rgba(124, 58, 237, 0.2);
+    border: 1px solid rgba(244, 197, 66, 0.2);
     border-radius: 1rem;
   }
 
+  /* PRIMARY GOLD BUTTON - Main CTA */
   .btn-primary {
-    @apply inline-flex items-center justify-center rounded-full bg-gradient-to-r from-purple-600 to-indigo-600 px-6 py-3 font-semibold text-white transition-all hover:shadow-lg hover:scale-105 active:scale-95;
-    box-shadow: 0 0 20px rgba(124, 58, 237, 0.4);
+    @apply inline-flex items-center justify-center rounded-full px-8 py-4 font-semibold transition-all;
+    background: linear-gradient(135deg, #F4C542 0%, #FFD84D 100%);
+    color: #000000;
+    box-shadow: 0 0 25px rgba(244, 197, 66, 0.4);
   }
 
   .btn-primary:hover {
-    box-shadow: 0 0 30px rgba(124, 58, 237, 0.6);
+    transform: scale(1.05);
+    box-shadow: 0 0 40px rgba(244, 197, 66, 0.6);
   }
 
+  .btn-primary:active {
+    transform: scale(0.98);
+  }
+
+  /* SECONDARY BUTTON - Transparent with gold border */
   .btn-secondary {
-    @apply inline-flex items-center justify-center rounded-full border-2 border-purple-500/50 px-6 py-3 font-medium text-purple-300 transition-all hover:bg-purple-500/20;
+    @apply inline-flex items-center justify-center rounded-full border-2 px-6 py-3 font-medium transition-all;
+    border-color: rgba(244, 197, 66, 0.6);
+    color: rgb(var(--gold));
+    background: transparent;
   }
 
+  .btn-secondary:hover {
+    background: linear-gradient(135deg, #F4C542 0%, #FFD84D 100%);
+    color: #000000;
+    box-shadow: 0 0 20px rgba(244, 197, 66, 0.3);
+  }
+
+  /* DANGER / URGENCY BUTTON - Red */
+  .btn-danger {
+    @apply inline-flex items-center justify-center rounded-full px-6 py-3 font-semibold transition-all;
+    background: linear-gradient(135deg, #C1121F 0%, #E63946 100%);
+    color: #FFFFFF;
+    box-shadow: 0 0 20px rgba(193, 18, 31, 0.4);
+  }
+
+  .btn-danger:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 35px rgba(193, 18, 31, 0.6);
+    animation: pulse-red 2s infinite;
+  }
+
+  @keyframes pulse-red {
+    0%, 100% {
+      box-shadow: 0 0 20px rgba(193, 18, 31, 0.4);
+    }
+    50% {
+      box-shadow: 0 0 40px rgba(193, 18, 31, 0.6);
+    }
+  }
+
+  /* Input styling */
   .input-mystical {
-    @apply w-full rounded-xl border border-purple-500/30 bg-dark-card px-4 py-3 text-foreground placeholder:text-muted-foreground transition-all focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20;
-    backdrop-filter: blur(8px);
+    @apply w-full rounded-none border-0 border-b-2 px-4 py-3 transition-all bg-transparent;
+    border-color: rgba(244, 197, 66, 0.2);
+    color: rgb(var(--foreground));
   }
 
+  .input-mystical::placeholder {
+    color: rgb(var(--foreground-muted));
+  }
+
+  .input-mystical:focus {
+    border-color: rgb(var(--gold));
+    box-shadow: 0 4px 20px rgba(244, 197, 66, 0.15);
+    outline: none;
+  }
+
+  /* Tarot card styling */
   .tarot-card {
     @apply relative overflow-hidden rounded-xl transition-all duration-300;
-    background: linear-gradient(145deg, rgba(30, 30, 50, 0.9), rgba(18, 18, 26, 0.9));
-    border: 1px solid rgba(124, 58, 237, 0.2);
+    background: linear-gradient(145deg, rgba(42, 13, 13, 0.9), rgba(26, 15, 46, 0.9));
+    border: 1px solid rgba(244, 197, 66, 0.2);
   }
 
   .tarot-card:hover {
     transform: translateY(-8px) scale(1.02);
-    border-color: rgba(124, 58, 237, 0.5);
-    box-shadow: 0 0 30px rgba(124, 58, 237, 0.3);
+    border-color: rgba(244, 197, 66, 0.5);
+    box-shadow: 0 0 30px rgba(244, 197, 66, 0.3);
   }
 
   .tarot-card.selected {
-    border-color: #7C3AED;
-    box-shadow: 0 0 40px rgba(124, 58, 237, 0.5);
+    border-color: #F4C542;
+    box-shadow: 0 0 40px rgba(244, 197, 66, 0.5);
   }
 }

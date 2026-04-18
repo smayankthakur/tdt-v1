@@ -1,17 +1,44 @@
 import * as React from "react"
-
+import { motion } from "framer-motion"
 import { cn } from "@/lib/utils"
 
-function Textarea({ className, ...props }: React.ComponentProps<"textarea">) {
+interface TextareaProps extends React.ComponentProps<"textarea"> {
+  label?: string
+  error?: string
+}
+
+function Textarea({ label, error, className, ...props }: TextareaProps) {
   return (
-    <textarea
-      data-slot="textarea"
-      className={cn(
-        "flex field-sizing-content min-h-16 w-full rounded-lg border border-input bg-transparent px-2.5 py-2 text-base transition-colors outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:bg-input/50 disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 md:text-sm dark:bg-input/30 dark:disabled:bg-input/80 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40",
-        className
+    <div className="relative w-full">
+      {label && (
+        <label className="block mb-2 font-serif text-sm text-[#EAEAEA]">
+          {label}
+        </label>
       )}
-      {...props}
-    />
+      <div className="relative">
+        <textarea
+          className={cn(
+            "w-full bg-transparent border-0 border-b-2 border-[#ffffff]/10",
+            "py-3 px-0 text-[#EAEAEA] placeholder:text-[#7A7A7A]",
+            "transition-all duration-300 resize-none min-h-[100px]",
+            "focus:outline-none focus:border-[#F4C542]",
+            "focus:shadow-[0_4px_20px_rgba(244,197,66,0.15)]",
+            error && "border-[#C1121F] focus:border-[#C1121F]",
+            className
+          )}
+          {...props}
+        />
+        <motion.div
+          className="absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-[#F4C542] to-[#FFD84D]"
+          initial={{ width: 0 }}
+          whileFocus={{ width: '100%' }}
+          transition={{ duration: 0.3 }}
+        />
+      </div>
+      {error && (
+        <p className="mt-1 text-xs text-[#C1121F]">{error}</p>
+      )}
+    </div>
   )
 }
 

@@ -28,7 +28,7 @@ const features = [
 
 export default function WhySection() {
   return (
-    <section className="py-20 bg-gradient-to-br from-[#0B0B0F] via-[#12121A] to-[#0B0B0F]">
+    <section className="py-20 bg-gradient-to-br from-[#0A0A0A] via-[#1A0F2E] to-[#0A0A0A]">
       <div className="mx-auto max-w-6xl px-6">
         <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
           {/* Left Content */}
@@ -53,15 +53,15 @@ export default function WhySection() {
             </p>
             
             <div className="flex flex-wrap gap-4">
-              <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-purple-900/30 text-purple-300 text-sm font-medium border border-purple-700/30">
+              <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-[#F4C542]/20 text-[#F4C542] text-sm font-medium border border-[#F4C542]/30">
                 <Sparkles className="h-4 w-4" />
                 <span>10,000+ readings</span>
               </div>
-              <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-900/30 text-indigo-300 text-sm font-medium border border-indigo-700/30">
+              <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-[#C1121F]/20 text-[#C1121F] text-sm font-medium border border-[#C1121F]/30">
                 <Heart className="h-4 w-4" />
                 <span>4.9 rating</span>
               </div>
-              <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-purple-900/30 text-purple-300 text-sm font-medium border border-purple-700/30">
+              <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-[#F4C542]/20 text-[#F4C542] text-sm font-medium border border-[#F4C542]/30">
                 <Zap className="h-4 w-4" />
                 <span>Under 60 seconds</span>
               </div>
@@ -84,13 +84,13 @@ export default function WhySection() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: 0.1 * index }}
                 whileHover={{ x: 8, transition: { duration: 0.3 } }}
-                className="flex gap-4 p-6 rounded-2xl bg-[#1A1A2E]/50 backdrop-blur-sm border border-purple-800/30 hover:border-purple-600/50 hover:shadow-[0_0_30px_rgba(124,58,237,0.15)] transition-all cursor-pointer"
+                className="flex gap-4 p-6 rounded-2xl bg-[#1A0F2E]/50 backdrop-blur-sm border border-[#F4C542]/20 hover:border-[#F4C542]/50 hover:shadow-[0_0_30px_rgba(244,197,66,0.15)] transition-all cursor-pointer"
               >
                 <motion.div
-                  className="flex-shrink-0 flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-purple-900/50 to-indigo-900/50 border border-purple-700/30"
+                  className="flex-shrink-0 flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-[#F4C542]/20 to-[#C1121F]/20 border border-[#F4C542]/30"
                   whileHover={{ scale: 1.1, transition: { duration: 0.3 } }}
                 >
-                  <feature.icon className="h-6 w-6 text-purple-400" />
+                  <feature.icon className="h-6 w-6 text-[#F4C542]" />
                 </motion.div>
                 <div>
                   <h3 className="font-heading text-lg font-semibold text-[#F5F5F5] mb-1">

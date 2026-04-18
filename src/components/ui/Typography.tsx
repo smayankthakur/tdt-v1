@@ -14,17 +14,17 @@ const variantStyles: Record<string, string> = {
   h2: 'font-heading text-2xl md:text-3xl lg:text-4xl font-semibold leading-tight',
   h3: 'font-heading text-xl md:text-2xl font-medium',
   h4: 'font-heading text-lg md:text-xl font-medium',
-  body: 'font-sans text-base font-normal leading-relaxed',
-  'body-sm': 'font-sans text-sm leading-relaxed',
-  caption: 'font-sans text-xs leading-normal',
-  label: 'font-sans text-sm font-medium tracking-wide uppercase',
+  body: 'text-body',
+  'body-sm': 'text-body-sm',
+  caption: 'text-xs text-foreground-muted',
+  label: 'text-sm font-medium tracking-wide uppercase text-foreground-secondary',
 };
 
 const colorStyles: Record<string, string> = {
-  primary: 'text-[rgb(var(--foreground))]',
-  secondary: 'text-[rgb(var(--foreground-secondary))]',
-  muted: 'text-[rgb(var(--foreground-muted))]',
-  gold: 'text-[rgb(var(--gold))]',
+  primary: 'text-foreground',
+  secondary: 'text-foreground-secondary',
+  muted: 'text-foreground-muted',
+  gold: 'text-gold',
 };
 
 export default function Typography({

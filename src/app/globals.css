@@ -118,12 +118,24 @@
     background-color: rgb(var(--surface));
   }
   
-  .text-primary {
+  .text-foreground {
     color: rgb(var(--foreground));
   }
   
-  .text-secondary {
+  .text-foreground-secondary {
     color: rgb(var(--foreground-secondary));
+  }
+  
+  .text-foreground-muted {
+    color: rgb(var(--foreground-muted));
+  }
+  
+  .text-gold {
+    color: rgb(var(--gold));
+  }
+  
+  .text-gold-light {
+    color: rgb(var(--gold-light));
   }
   
   .text-muted {
@@ -234,6 +246,11 @@
   /* Body */
   .text-body {
     @apply font-sans text-base font-normal leading-relaxed;
+  }
+  
+  /* Body Small */
+  .text-body-sm {
+    @apply font-sans text-sm font-normal leading-relaxed;
   }
   
   /* Small */

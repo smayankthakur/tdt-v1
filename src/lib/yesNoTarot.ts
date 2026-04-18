@@ -112,9 +112,9 @@ const confusedKeywords = [
 function analyzeQuestionTone(question: string): QuestionTone {
   const lowerQ = question.toLowerCase();
   
-  let positiveCount = positiveKeywords.filter(k => lowerQ.includes(k)).length;
-  let negativeCount = negativeKeywords.filter(k => lowerQ.includes(k)).length;
-  let confusedCount = confusedKeywords.filter(k => lowerQ.includes(k)).length;
+  const positiveCount = positiveKeywords.filter(k => lowerQ.includes(k)).length;
+  const negativeCount = negativeKeywords.filter(k => lowerQ.includes(k)).length;
+  const confusedCount = confusedKeywords.filter(k => lowerQ.includes(k)).length;
   
   if (confusedCount > positiveCount && confusedCount > negativeCount) return 'confused';
   if (negativeCount > positiveCount) return 'negative';

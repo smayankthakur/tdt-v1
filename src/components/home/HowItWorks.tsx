@@ -42,7 +42,7 @@ const itemVariants = {
 
 export default function HowItWorks() {
   return (
-    <section className="py-20 bg-gradient-to-br from-[#0B0B0F] via-[#12121A] to-[#0B0B0F]">
+    <section className="py-20 bg-[#0A0A0A]">
       <div className="mx-auto max-w-6xl px-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -51,10 +51,10 @@ export default function HowItWorks() {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <h2 className="font-heading text-3xl md:text-4xl text-purple-200">
+          <h2 className="font-serif text-3xl md:text-4xl text-[#EAEAEA]">
             How It Works
           </h2>
-          <p className="mt-4 text-purple-300/60">
+          <p className="mt-4 text-[#A8A8A8]">
             Three simple steps to unlock your clarity
           </p>
         </motion.div>
@@ -74,13 +74,13 @@ export default function HowItWorks() {
             >
               <div className="mb-6 flex justify-center">
                 <motion.div
-                  className="relative flex h-20 w-20 items-center justify-center rounded-2xl bg-[#1A1A2E]/80 shadow-lg border border-purple-800/30"
+                  className="relative flex h-20 w-20 items-center justify-center rounded-2xl bg-[#1A1A1A]/80 shadow-[0_0_30px_rgba(0,0,0,0.4)] border border-[#F4C542]/10"
                   whileHover={{ scale: 1.05, transition: { duration: 0.3 } }}
                 >
-                  <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-purple-900/30 to-indigo-900/30" />
-                  <step.icon className="h-9 w-9 text-purple-400 relative z-10" />
+                  <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-[#F4C542]/10 to-[#C1121F]/10" />
+                  <step.icon className="h-9 w-9 text-[#F4C542] relative z-10" />
                   <motion.div
-                    className="absolute -right-2 -top-2 flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-r from-purple-600 to-indigo-600 text-sm font-bold text-white shadow-md"
+                    className="absolute -right-2 -top-2 flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-r from-[#F4C542] to-[#FFD84D] text-sm font-bold text-black shadow-md"
                   >
                     {step.number}
                   </motion.div>
@@ -90,7 +90,7 @@ export default function HowItWorks() {
               {index < steps.length - 1 && (
                 <div className="absolute top-[60%] left-[60%] hidden h-px w-[80%] md:block">
                   <motion.div
-                    className="h-full w-full bg-gradient-to-r from-purple-800 via-purple-600 to-purple-800"
+                    className="h-full w-full bg-gradient-to-r from-[#F4C542]/20 via-[#F4C542]/40 to-[#F4C542]/20"
                     initial={{ scaleX: 0 }}
                     whileInView={{ scaleX: 1 }}
                     viewport={{ once: true }}
@@ -99,10 +99,10 @@ export default function HowItWorks() {
                 </div>
               )}
               
-              <h3 className="font-heading text-xl font-semibold text-purple-200 mb-2">
+              <h3 className="font-serif text-xl font-semibold text-[#EAEAEA] mb-2">
                 {step.title}
               </h3>
-              <p className="text-purple-300/60 text-sm leading-relaxed">
+              <p className="text-[#A8A8A8] text-sm leading-relaxed">
                 {step.description}
               </p>
             </motion.div>

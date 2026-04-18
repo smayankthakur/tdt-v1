@@ -8,21 +8,26 @@
 
 @layer base {
   :root {
-    /* Primary Dark Background */
-    --background: 10 10 10;
+    /* Primary Dark Background - #0e0e0e */
+    --background: 14 14 14;
+    /* Surface Layers - #1a1a1a */
+    --surface: 26 26 26;
+    --surface-elevated: 32 32 32;
     /* Secondary Layers */
     --background-secondary: 26 15 46;
     --background-maroon: 42 13 13;
-    /* Text Colors */
-    --foreground: 245 245 245;
-    --foreground-secondary: 168 168 168;
+    /* Text Colors - Exact from design spec */
+    --foreground: 234 234 234;
+    --foreground-secondary: 176 176 176;
     --foreground-muted: 122 122 122;
     /* Card */
     --card: 26 15 46;
-    --card-foreground: 245 245 245;
-    /* Logo Accents */
+    --card-foreground: 234 234 234;
+    /* Logo Accents - Gold gradient */
     --gold: 244 197 66;
-    --gold-light: 255 216 77;
+    --gold-light: 255 228 168;
+    --gold-start: 255 228 168;
+    --gold-end: 244 197 66;
     --red-deep: 193 18 31;
     /* Primary (gold-based) */
     --primary: 244 197 66;
@@ -32,7 +37,7 @@
     --secondary-foreground: 255 255 255;
     /* Muted */
     --muted: 42 13 13;
-    --muted-foreground: 168 168 168;
+    --muted-foreground: 176 176 176;
     /* Border */
     --border: 60 40 30;
     --input: 60 40 30;
@@ -127,10 +132,24 @@
   }
   
   .text-accent-gold {
-    background: linear-gradient(135deg, #F4C542 0%, #FFD84D 50%, #F4C542 100%);
+    background: linear-gradient(135deg, rgb(var(--gold-start)) 0%, rgb(var(--gold-end)) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+  }
+  
+  .bg-gold-gradient {
+    background: linear-gradient(135deg, rgb(var(--gold-start)) 0%, rgb(var(--gold-end)) 100%);
+  }
+  
+  .from-gold-start {
+    --tw-gradient-from: rgb(var(--gold-start)) var(--tw-gradient-from-position);
+    --tw-gradient-to: rgb(var(--gold-end)) var(--tw-gradient-to-position);
+    --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
+  }
+  
+  .to-gold-end {
+    --tw-gradient-to: rgb(var(--gold-end)) var(--tw-gradient-to-position);
   }
   
   .text-accent-warm {

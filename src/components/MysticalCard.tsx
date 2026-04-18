@@ -1,17 +1,18 @@
 'use client';
 
-import { motion, HTMLMotionProps } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 
 type CardVariant = 'default' | 'tarot' | 'glass' | 'elevated';
 type CardSize = 'sm' | 'md' | 'lg';
 
-interface MysticalCardProps extends Omit<HTMLMotionProps<'div'>, 'size'> {
+interface MysticalCardProps {
   variant?: CardVariant;
   size?: CardSize;
   interactive?: boolean;
   glow?: boolean;
   children: React.ReactNode;
+  className?: string;
 }
 
 const variantStyles: Record<CardVariant, string> = {
@@ -41,7 +42,6 @@ export default function MysticalCard({
   glow = true,
   className,
   children,
-  ...props
 }: MysticalCardProps) {
   const baseStyles = cn(
     'relative overflow-hidden transition-all duration-300',
@@ -55,26 +55,18 @@ export default function MysticalCard({
     return (
       <motion.div
         className={baseStyles}
-        whileHover={{ 
-          y: -5, 
-          scale: 1.02,
-          boxShadow: variant === 'tarot' 
-            ? '0 0 50px rgba(244,197,66,0.2)' 
-            : '0 0 40px rgba(244,197,66,0.15)'
-        }}
+        whileHover={{ scale: 1.02, y: -2 }}
         whileTap={{ scale: 0.98 }}
         transition={{ duration: 0.3 }}
-        {...props}
       >
         {children}
-        {/* Hover Glow Overlay */}
         <div className="absolute inset-0 bg-gradient-to-br from-[#F4C542]/5 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
       </motion.div>
     );
   }
 
   return (
-    <div className={baseStyles} {...props}>
+    <div className={baseStyles}>
       {children}
     </div>
   );

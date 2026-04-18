@@ -5,8 +5,18 @@ import { motion } from 'framer-motion';
 import { Sparkles, Lock, RefreshCw, ArrowRight } from 'lucide-react';
 import { READING_TYPES, type ReadingType, useReadingLimitStore } from '@/store/reading-types';
 import { useLanguage } from '@/hooks/useLanguage';
+import dynamic from 'next/dynamic';
 
-type HubStep = 'select-type' | 'reading' | 'paywall';
+const ReadingForm = dynamic(() => import('@/components/ReadingForm'), { 
+  ssr: false,
+  loading: () => (
+    <div className="flex items-center justify-center min-h-screen">
+      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gold"></div>
+    </div>
+  )
+});
+
+type HubStep = 'select-type' | 'form' | 'result' | 'paywall';
 
 export default function ReadingHub() {
   const [step, setStep] = useState<HubStep>('select-type');
@@ -40,14 +50,18 @@ export default function ReadingHub() {
     }
     
     setSelectedType(type);
-    setIsTransitioning(true);
     incrementReading(type);
     
     if (type === 'yesno') {
       window.location.href = '/yesno';
     } else {
-      window.location.href = `/reading?type=${type}`;
+      setStep('form');
     }
+  };
+  
+  const handleBackFromForm = () => {
+    setStep('select-type');
+    setSelectedType(null);
   };
   
   const handleUnlock = () => {
@@ -113,7 +127,7 @@ export default function ReadingHub() {
           ))}
         </div>
         
-        {/* Paywall Overlay */}
+{/* Paywall Overlay */}
         {step === 'paywall' && (
           <motion.div
             initial={{ opacity: 0 }}
@@ -136,12 +150,12 @@ export default function ReadingHub() {
               <h2 className="font-heading text-2xl text-foreground mb-4">
                 Lagta hai tum seriously answers dhundh rahe ho…
               </h2>
-              
+               
               <p className="text-foreground-secondary mb-6">
                 Yahan se jo aage aata hai, woh thoda deeper hota hai. 
                 Unlimited guidance ke liye upgrade karo.
               </p>
-              
+               
               <div className="space-y-3">
                 <button
                   onClick={handleUnlock}
@@ -160,6 +174,14 @@ export default function ReadingHub() {
               </div>
             </motion.div>
           </motion.div>
+        )}
+        
+        {/* Form Step - Show reading form when type selected */}
+        {step === 'form' && selectedType && (
+          <ReadingForm 
+            readingType={selectedType} 
+            onBack={handleBackFromForm} 
+          />
         )}
       </div>
     </div>

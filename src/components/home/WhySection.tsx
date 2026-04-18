@@ -6,7 +6,7 @@ import { Brain, Sparkles, Zap, Heart } from 'lucide-react';
 const features = [
   { 
     icon: Brain, 
-    title: 'AI That Feels Human', 
+    title: 'Reading That Feels You', 
     description: 'Not robotic responses - emotionally intelligent guidance that connects with you personally.' 
   },
   { 

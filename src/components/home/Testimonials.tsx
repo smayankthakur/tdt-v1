@@ -54,7 +54,7 @@ const itemVariants = {
 
 export default function Testimonials() {
   return (
-    <section className="py-24 bg-[#0e0e0e] overflow-hidden">
+    <section className="py-16 md:py-20 bg-[rgb(var(--background))] overflow-hidden">
       <div className="mx-auto max-w-6xl px-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -63,10 +63,10 @@ export default function Testimonials() {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <h2 className="font-heading text-3xl md:text-4xl text-[#EAEAEA]">
+          <h2 className="font-heading text-2xl md:text-3xl lg:text-4xl text-[rgb(var(--foreground))]">
             Voices of the Illuminated
           </h2>
-          <p className="mt-4 text-[#7A7A7A]">
+          <p className="mt-4 text-[rgb(var(--foreground-muted))]">
             What seekers are saying about their journey
           </p>
         </motion.div>
@@ -83,25 +83,25 @@ export default function Testimonials() {
               key={testimonial.name}
               variants={itemVariants}
               whileHover={{ y: -4, transition: { duration: 0.3 } }}
-              className="group p-8 rounded-2xl bg-[#1a1a1a]/60 border border-[#F4C542]/10 hover:border-[#F4C542]/30 hover:shadow-[0_0_30px_rgba(244,197,66,0.1)] transition-all duration-300"
+              className="group p-8 rounded-2xl bg-[rgb(var(--surface))/60] border border-[rgb(var(--gold))/10] hover:border-[rgb(var(--gold))/30] hover:shadow-[0_0_30px_rgba(244,197,66,0.1)] transition-all duration-300"
             >
               <div className="mb-4 flex gap-1">
                 {[...Array(testimonial.rating)].map((_, i) => (
-                  <Star key={i} className="h-4 w-4 text-[#F4C542] fill-[#F4C542]" />
+                  <Star key={i} className="h-4 w-4 text-[rgb(var(--gold))] fill-[rgb(var(--gold))]" />
                 ))}
               </div>
-              <p className="text-[#B0B0B0] italic mb-6 leading-relaxed">
+              <p className="text-[rgb(var(--foreground-secondary))] italic mb-6 leading-relaxed">
                 &ldquo;{testimonial.text}&rdquo;
               </p>
               <div className="flex items-center gap-3">
-                <div className="h-10 w-10 rounded-full bg-gradient-to-br from-[#F4C542]/20 to-[#C1121F]/20 flex items-center justify-center border border-[#F4C542]/20">
-                  <span className="text-[#EAEAEA] font-medium">
+                <div className="h-10 w-10 rounded-full bg-gradient-to-br from-[rgb(var(--gold))/20] to-[rgb(var(--secondary))/20] flex items-center justify-center border border-[rgb(var(--gold))/20">
+                  <span className="text-[rgb(var(--foreground))] font-medium">
                     {testimonial.name.charAt(0)}
                   </span>
                 </div>
                 <div>
-                  <p className="font-medium text-[#EAEAEA]">{testimonial.name}</p>
-                  <p className="text-xs text-[#7A7A7A]">{testimonial.role}</p>
+                  <p className="font-medium text-[rgb(var(--foreground))]">{testimonial.name}</p>
+                  <p className="text-xs text-[rgb(var(--foreground-muted))]">{testimonial.role}</p>
                 </div>
               </div>
             </motion.div>

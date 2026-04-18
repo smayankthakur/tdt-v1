@@ -18,7 +18,7 @@ function Card({
   
   const variantStyles = {
     default: "bg-[rgb(var(--surface))] border border-[rgb(var(--gold))/10] shadow-[0_0_40px_rgba(0,0,0,0.4)]",
-    tarot: "bg-gradient-to-br from-[#1A0F2E] to-[#0A0A0A] border border-[rgb(var(--gold))/20] shadow-[0_0_30px_rgba(244,197,66,0.1)]",
+    tarot: "bg-gradient-to-br from-[rgb(var(--surface))] to-[rgb(var(--background))] border border-[rgb(var(--gold))/20] shadow-[0_0_30px_rgba(244,197,66,0.1)]",
     glass: "bg-[rgb(var(--surface))/60] backdrop-blur-xl border border-[rgb(var(--gold))/10]",
   }
 

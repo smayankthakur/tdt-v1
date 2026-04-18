@@ -57,7 +57,7 @@ export default function Navbar() {
         className={cn(
           'fixed top-0 left-0 right-0 z-50 transition-all duration-300',
           isScrolled || !isHome
-            ? 'bg-[#0A0A0A]/90 backdrop-blur-md shadow-lg shadow-[#F4C542]/10'
+            ? 'bg-[rgb(var(--background))/90] backdrop-blur-md shadow-lg shadow-[rgb(var(--gold))/10]'
             : 'bg-transparent'
         )}
         initial={{ y: -100 }}
@@ -76,7 +76,7 @@ export default function Navbar() {
                 className="object-contain transition-transform duration-300 group-hover:scale-105"
               />
             </div>
-            <span className="font-heading text-xl font-semibold text-[#F5F5F5] hidden sm:block">
+            <span className="font-heading text-xl font-semibold text-[rgb(var(--foreground))] hidden sm:block">
               The Devine Tarot
             </span>
           </Link>
@@ -91,16 +91,16 @@ export default function Navbar() {
                 key={link.href}
                 href={link.href}
                 className={cn(
-                  'relative font-medium text-sm transition-colors duration-200 hover:text-[#F4C542]',
+                  'relative font-medium text-sm transition-colors duration-200 hover:text-[rgb(var(--gold))]',
                   pathname === link.href
-                    ? 'text-[#F4C542]'
-                    : 'text-[#A8A8A8]'
+                    ? 'text-[rgb(var(--gold))]'
+                    : 'text-[rgb(var(--foreground-secondary))]'
                 )}
               >
                 {getNavLabel(link.label)}
                 {pathname === link.href && (
                   <motion.div
-                    className="absolute -bottom-1 left-0 h-0.5 w-full bg-[#F4C542] shadow-[0_0_10px_rgba(244,197,66,0.5)]"
+                    className="absolute -bottom-1 left-0 h-0.5 w-full bg-[rgb(var(--gold))] shadow-[0_0_10px_rgba(244,197,66,0.5)]"
                     layoutId="navbar-indicator"
                   />
                 )}
@@ -114,7 +114,7 @@ export default function Navbar() {
             <div className="relative hidden md:block">
               <button
                 onClick={() => setIsLangOpen(!isLangOpen)}
-                className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-[#A8A8A8] hover:bg-[#F4C542]/10 hover:text-[#F4C542] transition-colors"
+                className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-[rgb(var(--foreground-secondary))] hover:bg-[rgb(var(--gold))/10] hover:text-[rgb(var(--gold))] transition-colors"
               >
                 <Globe className="h-4 w-4" />
                 <span>{LANGUAGES[language].nativeName}</span>
@@ -127,7 +127,7 @@ export default function Navbar() {
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
-                    className="absolute right-0 mt-2 w-40 rounded-xl bg-[#1A0F2E] shadow-lg shadow-[#F4C542]/10 border border-[#F4C542]/20 py-1"
+                    className="absolute right-0 mt-2 w-40 rounded-xl bg-[rgb(var(--surface))] shadow-lg shadow-[rgb(var(--gold))/10] border border-[rgb(var(--gold))/20] py-1"
                   >
                     {(Object.keys(LANGUAGES) as Language[]).map((lang) => (
                       <button
@@ -139,8 +139,8 @@ export default function Navbar() {
                         className={cn(
                           'w-full px-4 py-2 text-left text-sm transition-colors',
                           language === lang
-                            ? 'bg-[#F4C542]/20 text-[#F4C542] font-medium'
-                            : 'text-[#A8A8A8] hover:bg-[#F4C542]/10'
+                            ? 'bg-[rgb(var(--gold))/20] text-[rgb(var(--gold))] font-medium'
+                            : 'text-[rgb(var(--foreground-secondary))] hover:bg-[rgb(var(--gold))/10'
                         )}
                       >
                         <span className="mr-2">{LANGUAGES[lang].flag}</span>
@@ -156,15 +156,15 @@ export default function Navbar() {
             <div className="hidden md:block">
               <Link href="/reading">
                 <motion.button
-                  className="relative overflow-hidden rounded-full bg-gradient-to-r from-[#F4C542] via-[#FFD84D] to-[#F4C542] px-6 py-2.5 text-sm font-semibold text-black shadow-lg shadow-[#F4C542]/30"
+                  className="relative overflow-hidden rounded-full bg-gradient-to-r from-[rgb(var(--gold-start))] via-[rgb(var(--gold))] to-[rgb(var(--gold-start))] px-6 py-2.5 text-sm font-semibold text-black shadow-lg shadow-[rgb(var(--gold))/30]"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.98 }}
                 >
                   <span className="relative z-10">
-                    {isHydrated ? t('cta.startReading') : 'Start Reading'}
+                    {isHydrated ? t('cta.startReading') : 'Begin Your Reading'}
                   </span>
                   <motion.div
-                    className="absolute inset-0 bg-gradient-to-r from-[#F4C542]/80 via-[#FFD84D]/80 to-[#F4C542]/80"
+                    className="absolute inset-0 bg-gradient-to-r from-[rgb(var(--gold-start))/80] via-[rgb(var(--gold))/80] to-[rgb(var(--gold-start))/80]"
                     initial={{ x: '-100%' }}
                     whileHover={{ x: 0 }}
                     transition={{ duration: 0.3 }}
@@ -175,7 +175,7 @@ export default function Navbar() {
 
             {/* Mobile Menu Button - Hidden during funnel */}
             <button
-              className={cn("md:hidden p-2 text-[#F5F5F5]", isFunnelPage && "hidden")}
+              className={cn("md:hidden p-2 text-[rgb(var(--foreground))]", isFunnelPage && "hidden")}
               onClick={() => setIsMobileOpen(true)}
             >
               <Menu className="h-6 w-6" />
@@ -196,19 +196,19 @@ export default function Navbar() {
               onClick={() => setIsMobileOpen(false)}
             />
             <motion.div
-              className="fixed right-0 top-0 z-50 h-full w-72 bg-[#0A0A0A] shadow-2xl shadow-[#F4C542]/10 border-l border-[#F4C542]/20"
+              className="fixed right-0 top-0 z-50 h-full w-72 bg-[rgb(var(--background))] shadow-2xl shadow-[rgb(var(--gold))/10] border-l border-[rgb(var(--gold))/20"
               initial={{ x: '100%' }}
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 200 }}
             >
               <div className="flex h-16 items-center justify-between px-6">
-                <span className="font-heading text-lg font-semibold text-[#F5F5F5]">
+                <span className="font-heading text-lg font-semibold text-[rgb(var(--foreground))]">
                   Menu
                 </span>
                 <button
                   onClick={() => setIsMobileOpen(false)}
-                  className="p-2 text-[#F5F5F5]"
+                  className="p-2 text-[rgb(var(--foreground))]"
                 >
                   <X className="h-6 w-6" />
                 </button>
@@ -216,7 +216,7 @@ export default function Navbar() {
 
               {/* Mobile Language Selector */}
               <div className="px-6 py-2">
-                <div className="flex items-center gap-2 text-sm text-[#7A7A7A] mb-3">
+                <div className="flex items-center gap-2 text-sm text-[rgb(var(--foreground-muted))] mb-3">
                   <Globe className="h-4 w-4" />
                   <span>Language</span>
                 </div>
@@ -228,8 +228,8 @@ export default function Navbar() {
                       className={cn(
                         'flex-1 rounded-lg py-2 text-sm font-medium transition-colors',
                         language === lang
-                          ? 'bg-[#F4C542]/20 text-[#F4C542]'
-                          : 'bg-[#1A0F2E] text-[#A8A8A8] hover:bg-[#F4C542]/10'
+                          ? 'bg-[rgb(var(--gold))/20] text-[rgb(var(--gold))]'
+                          : 'bg-[rgb(var(--surface))] text-[rgb(var(--foreground-secondary))] hover:bg-[rgb(var(--gold))/10]'
                       )}
                     >
                       {LANGUAGES[lang].nativeName}
@@ -247,8 +247,8 @@ export default function Navbar() {
                     className={cn(
                       'rounded-lg px-4 py-3 font-medium transition-colors',
                       pathname === link.href
-                        ? 'bg-[#F4C542]/20 text-[#F4C542]'
-                        : 'text-[#A8A8A8] hover:bg-[#F4C542]/10'
+                        ? 'bg-[rgb(var(--gold))/20] text-[rgb(var(--gold))]'
+                        : 'text-[rgb(var(--foreground-secondary))] hover:bg-[rgb(var(--gold))/10]'
                     )}
                   >
                     {getNavLabel(link.label)}
@@ -257,9 +257,9 @@ export default function Navbar() {
                 <Link
                   href="/reading"
                   onClick={() => setIsMobileOpen(false)}
-                  className="mt-4 rounded-full bg-gradient-to-r from-[#F4C542] via-[#FFD84D] to-[#F4C542] px-6 py-3 text-center font-semibold text-black"
+                  className="mt-4 rounded-full bg-gradient-to-r from-[rgb(var(--gold-start))] via-[rgb(var(--gold))] to-[rgb(var(--gold-start))] px-6 py-3 text-center font-semibold text-black"
                 >
-                  {isHydrated ? t('cta.startReading') : 'Start Reading'}
+                  {isHydrated ? t('cta.startReading') : 'Begin Your Reading'}
                 </Link>
               </nav>
             </motion.div>

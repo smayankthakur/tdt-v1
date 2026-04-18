@@ -16,10 +16,10 @@ interface MysticalCardProps {
 }
 
 const variantStyles: Record<CardVariant, string> = {
-  default: 'bg-[#1A1A1A] border border-[#F4C542]/10',
-  tarot: 'bg-gradient-to-br from-[#1A0F2E] to-[#0A0A0A] border border-[#F4C542]/20',
-  glass: 'bg-[#1A1A1A]/60 backdrop-blur-xl border border-[#F4C542]/10',
-  elevated: 'bg-[#1A1A1A] border border-[#F4C542]/20 shadow-[0_0_40px_rgba(244,197,66,0.1)]',
+  default: 'bg-[rgb(var(--surface))] border border-[rgb(var(--gold))/10]',
+  tarot: 'bg-gradient-to-br from-[rgb(var(--surface))] to-[rgb(var(--background))] border border-[rgb(var(--gold))/20]',
+  glass: 'bg-[rgb(var(--surface))/60] backdrop-blur-xl border border-[rgb(var(--gold))/10]',
+  elevated: 'bg-[rgb(var(--surface))] border border-[rgb(var(--gold))/20] shadow-[0_0_40px_rgba(244,197,66,0.1)]',
 };
 
 const variantShadows: Record<CardVariant, string> = {
@@ -60,7 +60,7 @@ export default function MysticalCard({
         transition={{ duration: 0.3 }}
       >
         {children}
-        <div className="absolute inset-0 bg-gradient-to-br from-[#F4C542]/5 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[rgb(var(--gold))/5] to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
       </motion.div>
     );
   }
@@ -77,11 +77,11 @@ export function CardHeader({ className, children }: { className?: string; childr
 }
 
 export function CardTitle({ className, children }: { className?: string; children: React.ReactNode }) {
-  return <h3 className={cn('font-serif text-lg text-[#EAEAEA] font-medium', className)}>{children}</h3>;
+  return <h3 className={cn('font-serif text-lg text-[rgb(var(--foreground))] font-medium', className)}>{children}</h3>;
 }
 
 export function CardDescription({ className, children }: { className?: string; children: React.ReactNode }) {
-  return <p className={cn('text-sm text-[#A8A8A8] mt-1', className)}>{children}</p>;
+  return <p className={cn('text-sm text-[rgb(var(--foreground-secondary))] mt-1', className)}>{children}</p>;
 }
 
 export function CardContent({ className, children }: { className?: string; children: React.ReactNode }) {
@@ -90,7 +90,7 @@ export function CardContent({ className, children }: { className?: string; child
 
 export function CardFooter({ className, children }: { className?: string; children: React.ReactNode }) {
   return (
-    <div className={cn('mt-4 pt-3 border-t border-[#F4C542]/10', className)}>
+    <div className={cn('mt-4 pt-3 border-t border-[rgb(var(--gold))/10]', className)}>
       {children}
     </div>
   );

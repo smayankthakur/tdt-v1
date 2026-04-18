@@ -527,7 +527,7 @@ export default function ReadingPage() {
                           : 'hover:shadow-lg hover:shadow-[rgb(var(--gold))]/20'
                       }`}
                     >
-                      <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-[#1A0F2E] to-[#0A0A0A] border border-[rgb(var(--gold))]/30 flex items-center justify-center overflow-hidden">
+                      <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-[rgb(var(--surface))] to-[rgb(var(--background))] border border-[rgb(var(--gold))]/30 flex items-center justify-center overflow-hidden">
                         <div className="absolute inset-0 bg-[url('/tarot-pattern.svg')] opacity-10" />
                         <motion.div 
                           className="w-full h-full flex items-center justify-center"
@@ -713,7 +713,7 @@ export default function ReadingPage() {
                   >
                     <motion.div
                       whileHover={{ y: -4 }}
-                      className="w-24 h-36 md:w-28 md:h-40 rounded-xl bg-gradient-to-br from-[#1A0F2E] to-[#0A0A0A] border border-[rgb(var(--gold))]/30 flex items-center justify-center shadow-lg shadow-[rgb(var(--gold))]/20"
+                      className="w-24 h-36 md:w-28 md:h-40 rounded-xl bg-gradient-to-br from-[rgb(var(--surface))] to-[rgb(var(--background))] border border-[rgb(var(--gold))]/30 flex items-center justify-center shadow-lg shadow-[rgb(var(--gold))]/20"
                     >
                       <div className="text-center p-2">
                         <p className="font-serif text-sm text-[#EAEAEA]">{card.name}</p>
@@ -794,7 +794,7 @@ export default function ReadingPage() {
                           </p>
                           
                           {/* Blurred preview area */}
-                          <div className="relative p-4 rounded-xl bg-[#0A0A0A]/50 border border-[rgb(var(--gold))]/30 mb-4">
+                          <div className="relative p-4 rounded-xl bg-[rgb(var(--background))]/50 border border-[rgb(var(--gold))]/30 mb-4">
                             <p className="text-[rgb(var(--foreground-muted))] text-sm leading-relaxed blur-[2px] select-none">
                               Your cards reveal a significant timing element that could change everything. 
                               The outcome depends on choices made in the next 7 days. The Three of Swords 

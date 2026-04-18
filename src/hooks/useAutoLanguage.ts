@@ -15,6 +15,13 @@ import {
   getStoredRegion, 
   type UserRegion 
 } from '@/lib/regionDetector';
+import { Language } from '@/lib/i18n/config';
+
+const DETECTED_TO_LANGUAGE: Record<DetectedLanguage, Language> = {
+  hindi: 'hi',
+  english: 'en',
+  hinglish: 'hinglish',
+};
 
 export function useAutoLanguage() {
   const { language, setLanguage, t, isHydrated } = useLanguage();
@@ -64,7 +71,7 @@ export function useAutoLanguage() {
       const { language: detectedLang, confidence } = detectLanguageWithConfidence(text);
       
       if (shouldAutoSwitch(language, detectedLang, confidence)) {
-        setLanguage(detectedLang);
+        setLanguage(DETECTED_TO_LANGUAGE[detectedLang]);
       }
     }
     
@@ -73,7 +80,7 @@ export function useAutoLanguage() {
   
   const manuallySetLanguage = useCallback((lang: DetectedLanguage) => {
     lockLanguage(lang);
-    setLanguage(lang);
+    setLanguage(DETECTED_TO_LANGUAGE[lang]);
   }, [setLanguage]);
   
   const resetLanguageDetection = useCallback(() => {

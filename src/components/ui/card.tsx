@@ -1,10 +1,12 @@
 import * as React from "react"
-import { motion } from "framer-motion"
+import { motion, HTMLMotionProps } from "framer-motion"
 import { cn } from "@/lib/utils"
 
-interface CardProps extends React.ComponentProps<"div"> {
+interface CardProps {
   variant?: 'default' | 'tarot' | 'glass'
   interactive?: boolean
+  className?: string
+  children?: React.ReactNode
 }
 
 function Card({
@@ -22,20 +24,26 @@ function Card({
     glass: "bg-[rgb(var(--surface))/60] backdrop-blur-xl border border-[rgb(var(--gold))/10]",
   }
 
-  const Component = interactive ? motion.div : 'div'
-  const motionProps = interactive ? {
-    whileHover: { y: -5, scale: 1.02 },
-    transition: { duration: 0.3 }
-  } : {}
+  if (interactive) {
+    return (
+      <motion.div
+        className={cn(baseStyles, variantStyles[variant], className)}
+        whileHover={{ y: -5, scale: 1.02 }}
+        transition={{ duration: 0.3 }}
+        {...(props as HTMLMotionProps<'div'>)}
+      >
+        {children}
+      </motion.div>
+    )
+  }
 
   return (
-    <Component
+    <div
       className={cn(baseStyles, variantStyles[variant], className)}
-      {...motionProps}
       {...props}
     >
       {children}
-    </Component>
+    </div>
   )
 }
 

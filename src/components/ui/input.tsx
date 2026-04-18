@@ -93,6 +93,7 @@ export interface TextareaProps extends React.TextareaHTMLAttributes<HTMLTextArea
   label?: string;
   error?: string;
   icon?: React.ReactNode;
+  variant?: 'underline' | 'filled' | 'glass';
 }
 
 export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(

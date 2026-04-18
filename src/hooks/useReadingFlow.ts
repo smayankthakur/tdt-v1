@@ -113,7 +113,7 @@ const READING_PATTERNS = {
 
 function generateOpening(name: string, language: string): string {
   const openings = PERSONALITY_OPENINGS[language as keyof typeof PERSONALITY_OPENINGS] || PERSONALITY_OPENINGS.english;
-  let opening = openings[Math.floor(Math.random() * openings.length)];
+  const opening = openings[Math.floor(Math.random() * openings.length)];
   return opening.replace('{name}', name);
 }
 

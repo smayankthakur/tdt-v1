@@ -255,5 +255,3 @@ export const yesNoSuspenseMessages = [
 ];
 
 export const yesNoEmptyQuestionMessage = "Pehle apna sawal likho... tabhi kuch clear aayega";
-
-export type { YesNoTarotCard };

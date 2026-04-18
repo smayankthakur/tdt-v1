@@ -129,12 +129,13 @@ function generateReadingContent(question: string, readingType: string, language:
     const lowerQ = question.toLowerCase();
     
     for (const p of patterns) {
-      if (p.pattern && lowerQ.includes(p.pattern)) {
+      if ('pattern' in p && p.pattern && lowerQ.includes(p.pattern)) {
         return p.content;
       }
     }
     
-    return patterns[Math.floor(Math.random() * patterns.length)].content;
+    const randomItem = patterns[Math.floor(Math.random() * patterns.length)];
+    return randomItem.content;
   }
   
   return patterns.content;

@@ -69,6 +69,25 @@ export const TRANSLATIONS: Record<Language, TranslationSet> = {
       present: 'The Present',
       guidance: 'The Guidance',
     },
+    readingHub: {
+      title: 'What would you like to explore today?',
+      subtitle: 'Choose your path to clarity',
+      remaining: 'readings free today',
+      noRemaining: 'No free readings left',
+    },
+    yesno: {
+      title: 'Yes or No?',
+      subtitle: 'A simple question, a clear answer',
+      questionPlaceholder: 'Think of your question… What yes/no answer do you seek?',
+      decode: 'Decode My Answer',
+      result: {
+        yes: 'YES',
+        no: 'NO',
+        maybe: 'THINK AGAIN',
+      },
+      share: 'This result seems meant for others too?',
+      newReading: 'Try another',
+    },
     paywall: {
       title: {
         curious: "The cards are revealing something powerful...",
@@ -193,6 +212,25 @@ export const TRANSLATIONS: Record<Language, TranslationSet> = {
       present: 'वर्तमान',
       guidance: 'मार्गदर्शन',
     },
+    readingHub: {
+      title: 'आज क्या एक्सप्लोर करना चाहते हो?',
+      subtitle: 'क्लैरिटी के लिए अपना पाथ चुनो',
+      remaining: 'आज फ्री रीडिंग्स बाकी हैं',
+      noRemaining: 'कोई फ्री रीडिंग नहीं बची',
+    },
+    yesno: {
+      title: 'Haan ya Nahin?',
+      subtitle: 'Ek simple sawaal, ek seedha uttar',
+      questionPlaceholder: 'Apna question socho… kya jaan na chahte ho?',
+      decode: 'Decode My Answer',
+      result: {
+        yes: 'HAAN',
+        no: 'NAHIN',
+        maybe: 'SOCH DOBAARA',
+      },
+      share: 'Result sirf tumhare liye nahi lag raha?',
+      newReading: 'Naya reading',
+    },
     paywall: {
       title: {
         curious: "पत्ते कुछ शक्तिशाली दिखा रहे हैं...",
@@ -245,7 +283,7 @@ export const TRANSLATIONS: Record<Language, TranslationSet> = {
     },
     premium: {
       badge: 'प्रीमियम सदस्य',
-      active: 'प्रीमियम एक्सेस सक्रिय',
+      active: 'प्रीमियम एक्से��� सक्रिय',
       enjoy: 'असीमित रीडिंग का आनंद लें',
     },
     urgency: {

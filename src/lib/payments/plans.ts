@@ -1,3 +1,5 @@
+import { getRegionalPricing, type UserRegion } from '@/lib/regionDetector';
+
 export type PlanType = 'free' | 'premium' | 'pro';
 export type SubscriptionStatus = 'active' | 'inactive' | 'cancelled' | 'past_due';
 
@@ -115,8 +117,16 @@ export function getNextPlan(currentPlan: PlanType): PlanType | null {
   return upgrades[currentPlan];
 }
 
-export function getPlanDisplayPrice(plan: PlanType): string {
-  const price = SUBSCRIPTION_PLANS[plan].price;
+export function getPlanDisplayPrice(plan: PlanType, region: UserRegion = 'india'): string {
+  const pricing = getRegionalPricing(region);
+  const price = plan === 'free' ? 0 : pricing.monthly;
   if (price === 0) return 'Free';
-  return `₹${price}/month`;
+  return `${pricing.symbol}${price}/month`;
+}
+
+export function getYearlyDisplayPrice(plan: PlanType, region: UserRegion = 'india'): string {
+  const pricing = getRegionalPricing(region);
+  const price = plan === 'free' ? 0 : pricing.yearly;
+  if (price === 0) return 'Free';
+  return `${pricing.symbol}${price}/year`;
 }

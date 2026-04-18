@@ -33,7 +33,7 @@ export default function Typography({
   className,
   children,
 }: TypographyProps) {
-  const Component = variant.startsWith('h') ? variant : 'p';
+  const Component = variant.startsWith('h') ? (variant as any) : 'p';
   
   return (
     <Component className={cn(variantStyles[variant], colorStyles[color], className)}>

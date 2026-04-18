@@ -1,946 +1,166 @@
 'use client';
 
-import { useState, useEffect, useRef, useCallback } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { useReadingStore } from '@/store/reading-store';
-import { useGinniStore } from '@/store/ginni-store';
-import { pickCards, getAllCards, TarotCard as TarotCardType, SelectedCard, analyzeQuestion } from '@/lib/tarot/logic';
-import EnergyLoader from '@/components/EnergyLoader';
-import TarotCardComponent from '@/components/TarotCard';
-import CTAButton from '@/components/CTAButton';
-import ContextualGinni from '@/components/ContextualGinni';
-import { useTypingEffect } from '@/hooks/useStreamReading';
-import { Sparkles, Heart, Briefcase, TrendingUp, Wallet, HelpCircle, Moon, ArrowRight, X } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
+import { Sparkles, Lock, RefreshCw, ArrowRight } from 'lucide-react';
+import { READING_TYPES, type ReadingType, useReadingLimitStore } from '@/store/reading-types';
+import { useLanguage } from '@/hooks/useLanguage';
 
-type ReadingStep = 'entry' | 'topic' | 'cards' | 'question' | 'suspense' | 'reveal' | 'complete' | 'post-reading';
+type HubStep = 'select-type' | 'reading' | 'paywall';
 
-const TOPICS = [
-  { id: 'love', label: 'Love', icon: Heart, description: 'Heart matters & relationships' },
-  { id: 'career', label: 'Career', icon: Briefcase, description: 'Work & professional path' },
-  { id: 'no_contact', label: 'No Contact', icon: Moon, description: 'Someone who hasn\'t reached out' },
-  { id: 'finance', label: 'Finance', icon: Wallet, description: 'Money & abundance' },
-  { id: 'general', label: 'General', icon: HelpCircle, description: 'Any question' },
-];
-
-const PLACEHOLDERS = [
-  "You already have a question in your heart...",
-  "What is it you truly need to know?",
-  "Let your inner voice speak...",
-  "The cards are listening...",
-  "What has been weighing on your mind?",
-];
-
-const SUSPENSE_MESSAGES = [
-  { delay: 0, text: "Connecting with your energy..." },
-  { delay: 2500, text: "Your cards are revealing something..." },
-  { delay: 5500, text: "The universe is speaking..." },
-];
-
-const EMOTIONAL_HOOKS = [
-  "This is just the surface of what your cards are revealing...",
-  "There's more beneath the surface that hasn't fully come through yet...",
-  "Your cards are holding back something important...",
-];
-
-const RETENTION_HOOKS = [
-  "Your energy is shifting... come back tomorrow for updated guidance.",
-  "The cards may reveal new insights tomorrow. Your situation is evolving.",
-  "Return in 24 hours for your next reading - things will be clearer.",
-];
-
-const REVEAL_MICROCOPY = [
-  "The cards are speaking...",
-  "Your story is being revealed...",
-  "Listen to what the universe is telling you...",
-  "The truth is emerging...",
-  "Your destiny unfolds...",
-];
-
-export default function ReadingPage() {
-  const {
-    question,
-    selectedCardsWithDetails,
-    currentStep: storeStep,
-    setQuestion,
-    setSelectedCardsWithDetails,
-    reset: resetStore,
-  } = useReadingStore();
-
-  const { setContext, setTriggerOpen, clearContext } = useGinniStore();
-
-  const [step, setStep] = useState<ReadingStep>('entry');
-  const [selectedTopic, setSelectedTopic] = useState<string | null>(null);
-  const [deckCards, setDeckCards] = useState<TarotCardType[]>([]);
-  const [selectedCards, setSelectedCards] = useState<TarotCardType[]>([]);
-  const [isReady, setIsReady] = useState(false);
-  const [suspenseMessage, setSuspenseMessage] = useState(SUSPENSE_MESSAGES[0].text);
-  const [revealIndex, setRevealIndex] = useState(-1);
-  const [placeholderIndex, setPlaceholderIndex] = useState(0);
-  const [interpretation, setInterpretation] = useState('');
-  const [error, setError] = useState('');
-  const [isReadingComplete, setIsReadingComplete] = useState(false);
-  const [showPartialLock, setShowPartialLock] = useState(false);
-  const [showDeeperInsight, setShowDeeperInsight] = useState(false);
-  const [showConsultation, setShowConsultation] = useState(false);
-  const [showRetention, setShowRetention] = useState(false);
-  const [userType, setUserType] = useState<'new' | 'returning' | 'high-intent'>('new');
+export default function ReadingHub() {
+  const [step, setStep] = useState<HubStep>('select-type');
+  const [selectedType, setSelectedType] = useState<ReadingType | null>(null);
+  const [isTransitioning, setIsTransitioning] = useState(false);
   
-  const placeholderRef = useRef<NodeJS.Timeout | null>(null);
-  const suspenseTimeoutRef = useRef<NodeJS.Timeout[]>([]);
-  const conversionTimeoutRef = useRef<NodeJS.Timeout[]>([]);
-
-  const { displayText, isTyping, startTyping, clearTyping } = useTypingEffect('', 25);
-
-  // Step 0: Entry - 3 second pause before enabling
+  const { t } = useLanguage();
+  
+  const { 
+    canRead, 
+    getRemainingReadings, 
+    incrementReading, 
+    showPaywall, 
+    paywallShown,
+    dismissPaywall,
+    resetDaily 
+  } = useReadingLimitStore();
+  
+  const remainingReadings = getRemainingReadings();
+  
   useEffect(() => {
-    if (step === 'entry') {
-      const timer = setTimeout(() => setIsReady(true), 3000);
-      return () => clearTimeout(timer);
-    }
-  }, [step]);
-
-  // Initialize deck with shuffled cards
-  useEffect(() => {
-    const allCards = getAllCards();
-    const shuffled = [...allCards].sort(() => Math.random() - 0.5);
-    setDeckCards(shuffled.slice(0, 8));
-  }, []);
-
-  // Placeholder rotation for question input
-  useEffect(() => {
-    if (step === 'question') {
-      placeholderRef.current = setInterval(() => {
-        setPlaceholderIndex(prev => (prev + 1) % PLACEHOLDERS.length);
-      }, 3000);
-      return () => {
-        if (placeholderRef.current) clearInterval(placeholderRef.current);
-      };
-    }
-  }, [step]);
-
-  // Handle card selection
-  const handleCardSelect = (card: TarotCardType) => {
-    if (selectedCards.length >= 3) return;
-    if (selectedCards.find(c => c.id === card.id)) return;
-    
-    setSelectedCards([...selectedCards, card]);
-  };
-
-  // Handle remove card
-  const handleRemoveCard = (cardId: string) => {
-    setSelectedCards(selectedCards.filter(c => c.id !== cardId));
-  };
-
-  // Start the reading flow
-  const handleBeginReading = () => {
-    setStep('topic');
-  };
-
-  // Handle topic selection
-  const handleTopicSelect = (topicId: string) => {
-    setSelectedTopic(topicId);
-    setStep('cards');
-  };
-
-  // Handle question submit and start suspense
-  const handleQuestionSubmit = async () => {
-    if (question.length < 5) {
-      setError('Take a moment to form your question in your mind...');
+    resetDaily();
+  }, [resetDaily]);
+  
+  const handleTypeSelect = (type: ReadingType) => {
+    if (!canRead()) {
+      if (!paywallShown) {
+        setStep('paywall');
+      }
       return;
     }
-    if (selectedCards.length !== 3) {
-      setError('Please select 3 cards - let your intuition guide you');
-      return;
-    }
-    setError('');
-    setStep('suspense');
-
-    // Clear any existing timeouts
-    suspenseTimeoutRef.current.forEach(clearTimeout);
-    suspenseTimeoutRef.current = [];
-
-    // Set up suspense message progression
-    suspenseTimeoutRef.current.push(
-      setTimeout(() => setSuspenseMessage(SUSPENSE_MESSAGES[1].text), SUSPENSE_MESSAGES[1].delay),
-      setTimeout(() => setSuspenseMessage(SUSPENSE_MESSAGES[2].text), SUSPENSE_MESSAGES[2].delay),
-      setTimeout(() => generateReading(), 8000)
-    );
-  };
-
-  // Generate the reading with real-time streaming
-  const generateReading = async () => {
-    const analysis = analyzeQuestion(question);
-    let receivedCards: SelectedCard[] = [];
     
-    // Determine user type based on topic and emotion
-    const topic = selectedTopic || analysis.theme;
-    const emotion = analysis.emotion;
-    if (topic === 'no_contact' || (topic === 'love' && (emotion === 'heartbroken' || emotion === 'anxious'))) {
-      setUserType('high-intent');
-    } else if (typeof window !== 'undefined' && window.localStorage.getItem('returning-user')) {
-      setUserType('returning');
+    setSelectedType(type);
+    setIsTransitioning(true);
+    incrementReading(type);
+    
+    if (type === 'yesno') {
+      window.location.href = '/yesno';
     } else {
-      setUserType('new');
-    }
-    
-    try {
-      const response = await fetch('/api/reading/stream', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          question,
-          topic: selectedTopic || analysis.theme,
-          selectedCards: selectedCards.map((card, i) => ({
-            card,
-            position: ['Past', 'Present', 'Future'][i],
-            isReversed: Math.random() < 0.2,
-            weight: [10, 20, 30][i],
-          })),
-        }),
-      });
-
-      if (!response.ok) throw new Error('Failed to generate reading');
-
-      const reader = response.body?.getReader();
-      const decoder = new TextDecoder();
-      let fullContent = '';
-
-      if (!reader) throw new Error('No response available');
-
-      // Stream and collect simultaneously
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        
-        const chunk = decoder.decode(value);
-        const lines = chunk.split('\n');
-        
-        for (const line of lines) {
-          if (!line.startsWith('data: ')) continue;
-          try {
-            const data = JSON.parse(line.slice(6));
-            if (data.type === 'cards') {
-              receivedCards = data.cards;
-            } else if (data.type === 'content') {
-              fullContent += data.content;
-              // Update interpretation in real-time for that "streaming" feel
-              setInterpretation(fullContent);
-            }
-          } catch {}
-        }
-      }
-
-      setSelectedCardsWithDetails(receivedCards.length > 0 
-        ? receivedCards 
-        : selectedCards.map((card, i) => ({
-            card,
-            position: ['Past', 'Present', 'Future'][i],
-            isReversed: Math.random() < 0.2,
-            weight: [10, 20, 30][i],
-          }))
-      );
-      
-      // Start reveal sequence
-      setStep('reveal');
-      setRevealIndex(0);
-      
-    } catch (err) {
-      setError('The cards are having difficulty connecting. Please try again.');
-      setStep('question');
+      window.location.href = `/reading?type=${type}`;
     }
   };
-
-  // Handle reveal sequence timing and post-reading flow
-  useEffect(() => {
-    if (step === 'reveal') {
-      if (revealIndex === 0) {
-        const t1 = setTimeout(() => setRevealIndex(1), 1500);
-        const t2 = setTimeout(() => startTyping(interpretation), 2000);
-        suspenseTimeoutRef.current.push(t1, t2);
-      } else if (revealIndex >= 1) {
-        const t = setTimeout(() => setRevealIndex(prev => prev + 1), 1500);
-        suspenseTimeoutRef.current.push(t);
-      }
-      
-      // Mark reading complete when all cards are revealed and typing done
-      if (revealIndex >= 2 && !isTyping) {
-        setIsReadingComplete(true);
-        
-        // Trigger conversion flow sequence
-        conversionTimeoutRef.current.push(
-          // Section 1: Emotional hook after 1 second
-          setTimeout(() => {
-            // This is handled by the UI showing automatically
-          }, 1000),
-          // Section 2: Partial lock after 3 seconds
-          setTimeout(() => setShowPartialLock(true), 3000),
-          // Section 3: Deeper insight after 6 seconds
-          setTimeout(() => setShowDeeperInsight(true), 6000),
-          // Section 4: Consultation after 9 seconds
-          setTimeout(() => setShowConsultation(true), 9000),
-          // Section 5: Retention after 12 seconds
-          setTimeout(() => setShowRetention(true), 12000)
-        );
-      }
-    }
-    
-    return () => {
-      suspenseTimeoutRef.current.forEach(clearTimeout);
-      conversionTimeoutRef.current.forEach(clearTimeout);
-    };
-  }, [step, revealIndex, interpretation, startTyping, isTyping]);
-
-  // Reset everything
-  const handleReset = () => {
-    setStep('entry');
-    setSelectedTopic(null);
-    setSelectedCards([]);
-    setQuestion('');
-    setInterpretation('');
-    setRevealIndex(-1);
-    setIsReady(false);
-    setIsReadingComplete(false);
-    setShowPartialLock(false);
-    setShowDeeperInsight(false);
-    setShowConsultation(false);
-    setShowRetention(false);
-    clearTyping();
-    resetStore();
+  
+  const handleUnlock = () => {
+    window.location.href = '/premium';
   };
-
-  // Handle talking to Ginni
-  const handleTalkToGinni = () => {
-    const analysis = analyzeQuestion(question);
-    setContext({
-      question,
-      cards: selectedCards.map(c => c.name),
-      interpretation: displayText || interpretation,
-      theme: analysis.theme,
-      emotion: analysis.emotion
-    });
-    setTriggerOpen(true);
-  };
-
-  // Animation variants
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: { opacity: 1, transition: { duration: 0.5 } },
-    exit: { opacity: 0, y: -20, transition: { duration: 0.3 } },
-  };
-
-  const cardFloatVariants = {
-    initial: { y: 0 },
-    hover: { y: -8, transition: { duration: 0.3 } },
-  };
-
+  
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[rgb(var(--background))] via-[#12121A] to-[rgb(var(--background))] py-12 md:py-20">
-      {/* Contextual Ginni - Stage-aware assistant */}
-      <ContextualGinni
-        stage={isReadingComplete ? 'post-reading' : step as any}
-        topic={selectedTopic || undefined}
-        question={question}
-        selectedCardsCount={selectedCards.length}
-        onAction={(action) => {
-          if (action === 'suggest-topic') {
-            setSelectedTopic('love');
-            setStep('topic');
-          } else if (action === 'card-hint') {
-            // User needs help, just pick randomly
-          } else if (action === 'upgrade') {
-            window.location.href = '/premium';
-          } else if (action === 'booking') {
-            window.location.href = '/booking';
-          } else if (action === 'chat') {
-            handleTalkToGinni();
-          }
-        }}
-      />
-      
+    <div className="min-h-screen bg-gradient-to-br from-[#0B0B0F] via-[#12121A] to-[#0B0B0F] pt-24 pb-12 md:pt-32 md:py-24">
       <div className="mx-auto max-w-4xl px-4 sm:px-6">
-        <AnimatePresence mode="wait">
-          {/* STEP 0: ENTRY - Intention Setting */}
-          {step === 'entry' && (
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-center mb-12"
+        >
+          <div className="inline-flex rounded-full p-4 bg-gold/10 mb-6">
+            <Sparkles className="h-8 w-8 text-gold" />
+          </div>
+          <h1 className="font-heading text-3xl md:text-4xl text-foreground mb-4">
+            {t('readingHub.title') || 'What would you like to explore today?'}
+          </h1>
+          <p className="text-foreground-secondary">
+            {t('readingHub.subtitle') || 'Choose your path to clarity'}
+          </p>
+        </motion.div>
+        
+        {/* Free readings indicator */}
+        {remainingReadings < 3 && (
+          <div className="text-center mb-8">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-surface/50 border border-gold/20">
+              <RefreshCw className="h-4 w-4 text-gold" />
+              <span className="text-foreground-secondary text-sm">
+                {remainingReadings === 3 
+                  ? "3 readings free today" 
+                  : remainingReadings === 2 
+                  ? "2 readings remaining" 
+                  : remainingReadings === 1 
+                  ? "1 reading remaining" 
+                  : "No free readings left"}
+              </span>
+            </div>
+          </div>
+        )}
+        
+        {/* Reading type grid */}
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+          {READING_TYPES.map((type, index) => (
+            <motion.button
+              key={type.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.03 }}
+              onClick={() => handleTypeSelect(type.id)}
+              disabled={isTransitioning}
+              className="group p-4 md:p-6 rounded-2xl bg-surface/50 border border-gold/10 hover:border-gold/30 hover:bg-surface/80 transition-all text-center"
+            >
+              <span className="text-3xl md:text-4xl block mb-2">
+                {type.emoji}
+              </span>
+              <span className="font-medium text-foreground text-sm md:text-base block group-hover:text-gold transition-colors">
+                {type.label}
+              </span>
+            </motion.button>
+          ))}
+        </div>
+        
+        {/* Paywall Overlay */}
+        {step === 'paywall' && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-50 p-4"
+          >
             <motion.div
-              key="entry"
-              variants={containerVariants}
-              initial="hidden"
-              animate="visible"
-              exit="exit"
-              className="flex flex-col items-center justify-center min-h-[60vh] text-center"
+              initial={{ scale: 0.9 }}
+              animate={{ scale: 1 }}
+              className="w-full max-w-md p-8 rounded-3xl bg-gradient-to-b from-surface to-background border border-gold/30 text-center"
             >
               <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.8 }}
-                className="mb-8"
-              >
-                <Sparkles className="h-16 w-16 text-[rgb(var(--gold))] mx-auto mb-4" />
-                <h1 className="font-heading text-3xl md:text-4xl text-[rgb(var(--foreground))] mb-4">
-                  Take a moment...
-                </h1>
-                <p className="text-lg text-[rgb(var(--foreground-secondary))]/60 max-w-md mx-auto">
-                  Focus on your question in your mind. Let it become clear. When you&apos;re ready, the cards will listen.
-                </p>
-              </motion.div>
-
-              <motion.p
-                initial={{ opacity: 0 }}
-                animate={{ opacity: [0.3, 0.7, 0.3] }}
+                animate={{ scale: [1, 1.1, 1] }}
                 transition={{ duration: 2, repeat: Infinity }}
-                className="text-[rgb(var(--gold))]/50 text-sm mb-8"
+                className="inline-flex rounded-full p-4 bg-gold/10 mb-6"
               >
-                {isReady ? 'You may proceed...' : 'Still in 3...'}
-              </motion.p>
-
-              <CTAButton 
-                onClick={handleBeginReading} 
-                disabled={!isReady}
-                className={!isReady ? 'opacity-50 cursor-not-allowed' : ''}
-              >
-                I&apos;m Ready
-              </CTAButton>
-            </motion.div>
-          )}
-
-          {/* STEP 1: Topic Selection - Emotional Priming */}
-          {step === 'topic' && (
-            <motion.div
-              key="topic"
-              variants={containerVariants}
-              initial="hidden"
-              animate="visible"
-              exit="exit"
-              className="space-y-8"
-            >
-              <div className="text-center">
-                <motion.h2 
-                  className="font-heading text-2xl md:text-3xl text-[rgb(var(--foreground))] mb-2"
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                >
-                  Choose what&apos;s weighing on your heart
-                </motion.h2>
-                <motion.p 
-                  className="text-[rgb(var(--foreground-secondary))]/60"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.2 }}
-                >
-                  Don&apos;t overthink. Your intuition already knows.
-                </motion.p>
-              </div>
-
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                {TOPICS.map((topic, index) => {
-                  const Icon = topic.icon;
-                  const isSelected = selectedTopic === topic.id;
-                  
-                  return (
-                    <motion.button
-                      key={topic.id}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: index * 0.1 }}
-                      onClick={() => handleTopicSelect(topic.id)}
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                      className={`p-4 rounded-2xl border-2 transition-all text-center ${
-                        isSelected 
-                          ? 'border-[rgb(var(--gold))]/50 bg-[rgb(var(--gold))]/20 shadow-lg shadow-[rgb(var(--gold))]/20' 
-                          : 'border-[rgb(var(--gold))]/30 bg-[#1A0F2E]/50 hover:border-[rgb(var(--gold))]/50 hover:bg-[rgb(var(--gold))]/10'
-                      }`}
-                    >
-                      <Icon className={`h-8 w-8 mx-auto mb-2 ${isSelected ? 'text-[rgb(var(--gold))]' : 'text-[rgb(var(--gold))]/70'}`} />
-                      <span className="font-medium text-[rgb(var(--foreground))] block">{topic.label}</span>
-                      <span className="text-xs text-[rgb(var(--gold))]/50 hidden sm:block">{topic.description}</span>
-                    </motion.button>
-                  );
-                })}
-              </div>
-            </motion.div>
-          )}
-
-          {/* STEP 2: Card Selection */}
-          {step === 'cards' && (
-            <motion.div
-              key="cards"
-              variants={containerVariants}
-              initial="hidden"
-              animate="visible"
-              exit="exit"
-              className="space-y-6"
-            >
-              <div className="text-center">
-                <h2 className="font-heading text-2xl md:text-3xl text-[rgb(var(--foreground))] mb-2">
-                  Select 3 cards
-                </h2>
-                <p className="text-[rgb(var(--foreground-secondary))]/60">
-                  Don&apos;t overthink. Your intuition already knows which ones call to you.
-                </p>
-              </div>
-
-              {/* Selected cards display */}
-              {selectedCards.length > 0 && (
-                <motion.div 
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  className="flex justify-center gap-2 flex-wrap"
-                >
-                  {selectedCards.map((card, i) => (
-                    <motion.button
-                      key={card.id}
-                      initial={{ scale: 0 }}
-                      animate={{ scale: 1 }}
-                      onClick={() => handleRemoveCard(card.id)}
-                      className="relative group"
-                    >
-                      <div className="w-16 h-24 rounded-lg bg-gradient-to-br from-[rgb(var(--gold))]/20 to-[rgb(var(--secondary))]/20 flex items-center justify-center text-xs text-white/80 text-center p-1 border border border-[rgb(var(--gold))]/30">
-                        {card.name}
-                      </div>
-                      <X className="absolute -top-2 -right-2 h-5 w-5 bg-red-500 rounded-full text-white opacity-0 group-hover:opacity-100 transition-opacity" />
-                    </motion.button>
-                  ))}
-                </motion.div>
-              )}
-
-              <p className="text-center text-[rgb(var(--foreground-secondary))]/50 text-sm">
-                {selectedCards.length}/3 selected
-              </p>
-
-              {/* Card deck */}
-              <div className="grid grid-cols-4 md:grid-cols-6 gap-3 justify-center">
-                {deckCards.map((card, index) => {
-                  const isSelected = !!selectedCards.find(c => c.id === card.id);
-                  
-                  return (
-                    <motion.button
-                      key={card.id}
-                      variants={cardFloatVariants}
-                      initial="initial"
-                      whileHover="hover"
-                      onClick={() => handleCardSelect(card)}
-                      disabled={isSelected || selectedCards.length >= 3}
-                      className={`relative w-20 h-28 md:w-24 md:h-36 rounded-xl transition-all ${
-                        isSelected 
-                          ? 'opacity-30 scale-95' 
-                          : 'hover:shadow-lg hover:shadow-[rgb(var(--gold))]/20'
-                      }`}
-                    >
-                      <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-[rgb(var(--surface))] to-[rgb(var(--background))] border border-[rgb(var(--gold))]/30 flex items-center justify-center overflow-hidden">
-                        <div className="absolute inset-0 bg-[url('/tarot-pattern.svg')] opacity-10" />
-                        <motion.div 
-                          className="w-full h-full flex items-center justify-center"
-                          animate={!isSelected ? { 
-                            y: [0, -3, 0],
-                          } : {}}
-                          transition={{ 
-                            duration: 3, 
-                            repeat: Infinity, 
-                            ease: "easeInOut",
-                            delay: index * 0.2 
-                          }}
-                        >
-                          <div className="w-16 h-24 md:w-20 md:h-28 rounded-lg bg-gradient-to-br from-[rgb(var(--gold))]/20 to-[rgb(var(--secondary))]/20 border border-[rgb(var(--gold))]/30 flex items-center justify-center">
-                            <span className="text-[rgb(var(--gold))]/30 text-2xl">✦</span>
-                          </div>
-                        </motion.div>
-                      </div>
-                    </motion.button>
-                  );
-                })}
-              </div>
-
-              <div className="text-center mt-8">
-                <CTAButton 
-                  onClick={() => setStep('question')} 
-                  disabled={selectedCards.length !== 3}
-                  className={selectedCards.length !== 3 ? 'opacity-50 cursor-not-allowed' : ''}
-                >
-                  Continue
-                </CTAButton>
-              </div>
-            </motion.div>
-          )}
-
-          {/* STEP 3: Question Input */}
-          {step === 'question' && (
-            <motion.div
-              key="question"
-              variants={containerVariants}
-              initial="hidden"
-              animate="visible"
-              exit="exit"
-              className="space-y-6 max-w-xl mx-auto"
-            >
-              <div className="text-center">
-                <h2 className="font-heading text-2xl md:text-3xl text-[rgb(var(--foreground))] mb-2">
-                  What would you like to know?
-                </h2>
-                <p className="text-[rgb(var(--foreground-secondary))]/60">
-                  Speak your question silently in your mind. The cards will hear you.
-                </p>
-              </div>
-
-              <div className="relative">
-                <textarea
-                  value={question}
-                  onChange={(e) => setQuestion(e.target.value)}
-                  placeholder={PLACEHOLDERS[placeholderIndex]}
-                  className="w-full min-h-[140px] p-5 rounded-2xl border-2 border-[rgb(var(--gold))]/30 bg-[#1A0F2E]/80 text-[rgb(var(--foreground))] placeholder:text-[rgb(var(--foreground-muted))] focus:border-[rgb(var(--gold))] focus:ring-2 focus:ring-[rgb(var(--gold))]/20 resize-none transition-all font-sans text-lg leading-relaxed"
-                  maxLength={500}
-                />
-                {error && (
-                  <motion.p
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    className="mt-2 text-sm text-red-400 text-center"
-                  >
-                    {error}
-                  </motion.p>
-                )}
-                <p className="mt-2 text-sm text-[rgb(var(--gold))]/40 text-right">
-                  {question.length}/500
-                </p>
-              </div>
-
-              <div className="text-center">
-                <CTAButton onClick={handleQuestionSubmit}>
-                  Reveal My Destiny
-                </CTAButton>
-              </div>
-
-              <motion.button
-                onClick={() => setStep('cards')}
-                className="block mx-auto text-sm text-[rgb(var(--gold))]/50 hover:text-[rgb(var(--foreground-secondary))]"
-              >
-                ← Back to card selection
-              </motion.button>
-            </motion.div>
-          )}
-
-          {/* STEP 4: Suspense Engine */}
-          {step === 'suspense' && (
-            <motion.div
-              key="suspense"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="flex flex-col items-center justify-center min-h-[50vh]"
-            >
-              <motion.div
-                animate={{ 
-                  scale: [1, 1.05, 1],
-                  opacity: [0.3, 0.6, 0.3],
-                }}
-                transition={{ duration: 3, repeat: Infinity }}
-                className="absolute inset-0 bg-gradient-to-b from-[rgb(var(--gold))]/5 to-transparent pointer-events-none"
-              />
+                <Lock className="h-8 w-8 text-gold" />
+              </motion.div>
               
-              <motion.div
-                key={suspenseMessage}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="text-center"
-              >
-                <Sparkles className="h-12 w-12 text-[rgb(var(--gold))] mx-auto mb-4 animate-pulse" />
-                <p className="font-heading text-xl md:text-2xl text-[rgb(var(--foreground))]">
-                  {suspenseMessage}
-                </p>
-              </motion.div>
-
-              <motion.div 
-                className="mt-8 flex gap-1"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.5 }}
-              >
-                {[0, 1, 2].map((i) => (
-                  <motion.div
-                    key={i}
-                    className="w-2 h-2 rounded-full bg-[rgb(var(--gold))]"
-                    animate={{ 
-                      scale: [1, 1.5, 1],
-                      opacity: [0.3, 1, 0.3],
-                    }}
-                    transition={{ 
-                      duration: 1, 
-                      repeat: Infinity, 
-                      delay: i * 0.2 
-                    }}
-                  />
-                ))}
-              </motion.div>
-            </motion.div>
-          )}
-
-          {/* STEP 5: Reveal */}
-          {step === 'reveal' && (
-            <motion.div
-              key="reveal"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="space-y-8"
-            >
-              {/* Microcopy before cards */}
-              {revealIndex === 0 && (
-                <motion.p
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  className="text-center text-[rgb(var(--foreground-secondary))]/60 italic"
+              <h2 className="font-heading text-2xl text-foreground mb-4">
+                Lagta hai tum seriously answers dhundh rahe ho…
+              </h2>
+              
+              <p className="text-foreground-secondary mb-6">
+                Yahan se jo aage aata hai, woh thoda deeper hota hai. 
+                Unlimited guidance ke liye upgrade karo.
+              </p>
+              
+              <div className="space-y-3">
+                <button
+                  onClick={handleUnlock}
+                  className="w-full py-4 rounded-xl bg-gold-gradient font-semibold text-black hover:opacity-90 transition-all flex items-center justify-center gap-2"
                 >
-                  {REVEAL_MICROCOPY[Math.floor(Math.random() * REVEAL_MICROCOPY.length)]}
-                </motion.p>
-              )}
-
-              {/* Cards reveal */}
-              <div className="flex justify-center gap-4 flex-wrap">
-                {selectedCards.map((card, index) => (
-                  <motion.div
-                    key={card.id}
-                    initial={{ opacity: 0, y: 30, rotateY: -90 }}
-                    animate={{ 
-                      opacity: revealIndex >= index ? 1 : 0,
-                      y: revealIndex >= index ? 0 : 30,
-                      rotateY: revealIndex >= index ? 0 : -90,
-                    }}
-                    transition={{ 
-                      duration: 0.6, 
-                      delay: revealIndex === index ? 0 : 0,
-                      type: 'spring',
-                      stiffness: 100,
-                    }}
-                    className="flex flex-col items-center"
-                  >
-                    <motion.div
-                      whileHover={{ y: -4 }}
-                      className="w-24 h-36 md:w-28 md:h-40 rounded-xl bg-gradient-to-br from-[rgb(var(--surface))] to-[rgb(var(--background))] border border-[rgb(var(--gold))]/30 flex items-center justify-center shadow-lg shadow-[rgb(var(--gold))]/20"
-                    >
-                      <div className="text-center p-2">
-                        <p className="font-serif text-sm text-[#EAEAEA]">{card.name}</p>
-                        <p className="text-xs text-[rgb(var(--foreground-muted))] mt-1 uppercase tracking-wider">
-                          {['Past', 'Present', 'Future'][index]}
-                        </p>
-                      </div>
-                    </motion.div>
-                  </motion.div>
-                ))}
+                  <Sparkles className="h-5 w-5" />
+                  Unlock unlimited guidance — ₹199/mo
+                </button>
+                
+                <button
+                  onClick={dismissPaywall}
+                  className="w-full py-3 rounded-xl border border-gold/20 text-foreground-secondary hover:text-foreground transition-all"
+                >
+                  Koi mauka nahi, phir se try karta hoon
+                </button>
               </div>
-
-              {/* Interpretation reveal */}
-              {revealIndex >= 1 && (
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5 }}
-                  className="mt-8 p-6 rounded-2xl bg-[#1A0F2E]/50 border border-[rgb(var(--gold))]/30"
-                >
-                  <h3 className="font-heading text-xl text-[#EAEAEA] mb-4 flex items-center gap-2">
-                    <Sparkles className="h-5 w-5 text-[rgb(var(--gold))]" />
-                    Interpretation
-                  </h3>
-                  <div className="text-[#CFCFCF] leading-relaxed whitespace-pre-wrap">
-                    {displayText || interpretation}
-                    {isTyping && (
-                      <motion.span
-                        className="inline-block w-0.5 h-5 bg-[rgb(var(--gold))] ml-1"
-                        animate={{ opacity: [1, 0, 1] }}
-                        transition={{ duration: 0.8, repeat: Infinity }}
-                      />
-                    )}
-                  </div>
-                </motion.div>
-              )}
-
-              {/* Step 6: Multi-layer Post-reading Conversion System */}
-              {revealIndex >= 2 && !isTyping && (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  className="space-y-8 mt-12"
-                >
-                  {/* SECTION 1: EMOTIONAL HOOK */}
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.5 }}
-                    className="text-center"
-                  >
-                    <p className="text-lg text-[rgb(var(--foreground-secondary))]/70 italic">
-                      {EMOTIONAL_HOOKS[Math.floor(Math.random() * EMOTIONAL_HOOKS.length)]}
-                    </p>
-                  </motion.div>
-
-                  {/* SECTION 2: PARTIAL LOCK (Psychological Paywall) - Smart CTA based on user type */}
-                  <AnimatePresence>
-                    {showPartialLock && (
-                      <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -20 }}
-                        className="relative p-6 rounded-2xl bg-[#1A0F2E]/50 border border-[rgb(var(--gold))]/30"
-                      >
-                        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[rgb(var(--gold))]/5 to-transparent pointer-events-none" />
-                        
-                        <div className="relative">
-                          <div className="flex items-center justify-center gap-2 mb-3">
-                            <Sparkles className="h-5 w-5 text-[rgb(var(--gold))]" />
-                            <h4 className="font-heading text-lg text-[rgb(var(--foreground))]">
-                              Hidden Insight Detected
-                            </h4>
-                          </div>
-                          
-                          <p className="text-[#B0B0B0] text-center mb-4">
-                            There&apos;s something important your cards are holding back...
-                          </p>
-                          
-                          {/* Blurred preview area */}
-                          <div className="relative p-4 rounded-xl bg-[rgb(var(--background))]/50 border border-[rgb(var(--gold))]/30 mb-4">
-                            <p className="text-[rgb(var(--foreground-muted))] text-sm leading-relaxed blur-[2px] select-none">
-                              Your cards reveal a significant timing element that could change everything. 
-                              The outcome depends on choices made in the next 7 days. The Three of Swords 
-                              in reverse suggests healing is coming, but you need to take action first...
-                            </p>
-                            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#1A0F2E]/60 to-transparent" />
-                          </div>
-                          
-                          <div className="text-center">
-                            {userType === 'high-intent' ? (
-                              <CTAButton onClick={() => window.location.href = '/booking'}>
-                                Get Full Reading Now
-                              </CTAButton>
-                            ) : userType === 'returning' ? (
-                              <CTAButton onClick={() => window.location.href = '/premium'}>
-                                Unlock with Premium
-                              </CTAButton>
-                            ) : (
-                              <CTAButton onClick={() => window.location.href = '/premium'}>
-                                Unlock Full Reading
-                              </CTAButton>
-                            )}
-                          </div>
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-
-                  {/* SECTION 3: DEEPER INSIGHT OFFER - Smart CTA */}
-                  <AnimatePresence>
-                    {showDeeperInsight && (
-                      <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -20 }}
-                        className="text-center p-6 rounded-2xl bg-gradient-to-b from-[rgb(var(--gold))]/10 to-transparent border border-[rgb(var(--gold))]/20"
-                      >
-                        <p className="text-[#B0B0B0] mb-4">
-                          Your situation has layers... a deeper interpretation can reveal timing and outcomes.
-                        </p>
-                        
-                        <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                          {userType === 'high-intent' ? (
-                            <>
-                              <CTAButton onClick={() => window.location.href = '/booking'}>
-                                See What Happens Next
-                              </CTAButton>
-                              <CTAButton 
-                                onClick={handleTalkToGinni}
-                                variant="secondary"
-                              >
-                                Ask Ginni About It
-                              </CTAButton>
-                            </>
-                          ) : userType === 'returning' ? (
-                            <>
-                              <CTAButton onClick={() => window.location.href = '/premium'}>
-                                Get Detailed Reading
-                              </CTAButton>
-                              <CTAButton 
-                                onClick={handleTalkToGinni}
-                                variant="secondary"
-                              >
-                                Ask Ginni About It
-                              </CTAButton>
-                            </>
-                          ) : (
-                            <>
-                              <CTAButton onClick={() => window.location.href = '/premium'}>
-                                Get Detailed Reading
-                              </CTAButton>
-                              <CTAButton 
-                                onClick={handleTalkToGinni}
-                                variant="secondary"
-                              >
-                                Ask Ginni About It
-                              </CTAButton>
-                            </>
-                          )}
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-
-                  {/* SECTION 4: CONSULTATION PUSH - Only for high-intent users */}
-                  <AnimatePresence>
-                    {showConsultation && userType === 'high-intent' && (
-                      <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -20 }}
-                        className="text-center p-6 rounded-2xl border border-amber-500/20 bg-amber-900/5"
-                      >
-                        <p className="text-amber-300/70 mb-4">
-                          Some answers need a human touch...
-                        </p>
-                        
-                        <CTAButton onClick={() => window.location.href = '/booking'}>
-                          Book Personal Reading
-                        </CTAButton>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-
-                  {/* SECTION 5: RETENTION HOOK */}
-                  <AnimatePresence>
-                    {showRetention && (
-                      <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -20 }}
-                        className="text-center"
-                      >
-                        <p className="text-[rgb(var(--foreground-secondary))]/50 italic">
-                          {RETENTION_HOOKS[Math.floor(Math.random() * RETENTION_HOOKS.length)]}
-                        </p>
-                        
-                        <div className="mt-6 pt-6 border-t border-[rgb(var(--gold))]/20">
-                          <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                            <CTAButton onClick={handleTalkToGinni}>
-                              Talk to Ginni ✨
-                            </CTAButton>
-                            <CTAButton 
-                              onClick={() => window.location.href = '/premium'}
-                              variant="secondary"
-                            >
-                              View Plans
-                            </CTAButton>
-                          </div>
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-
-                  {/* Start new reading */}
-                  <button
-                    onClick={handleReset}
-                    className="block mx-auto mt-4 text-[rgb(var(--gold))]/50 hover:text-[rgb(var(--foreground-secondary))] text-sm"
-                  >
-                    Start a new reading
-                  </button>
-                </motion.div>
-              )}
             </motion.div>
-          )}
-        </AnimatePresence>
+          </motion.div>
+        )}
       </div>
     </div>
   );

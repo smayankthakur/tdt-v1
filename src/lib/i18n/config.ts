@@ -46,7 +46,7 @@ export const LANGUAGES: Record<Language, LanguageConfig> = {
   },
 };
 
-export const DEFAULT_LANGUAGE: Language = 'en';
+export const DEFAULT_LANGUAGE: Language = 'hinglish';
 
 export const LANGUAGE_STORAGE_KEY = 'divine_tarot_language';
 

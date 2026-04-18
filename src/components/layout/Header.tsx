@@ -12,6 +12,7 @@ interface HeaderProps {
 
 const navLinks = [
   { href: '/', label: 'Home' },
+  { href: '/yesno', label: 'Yes/No' },
   { href: '/reading', label: 'Reading' },
   { href: '/premium', label: 'Premium' },
   { href: '/booking', label: 'Book Reading' },

@@ -55,26 +55,26 @@ export default function Modal({
               )}
             >
               {/* Glass Panel */}
-              <div className="relative bg-[#1A1A1A]/80 backdrop-blur-xl rounded-2xl p-6 border border-[#F4C542]/20 shadow-[0_0_60px_rgba(244,197,66,0.1)]">
+              <div className="relative bg-[rgb(var(--surface))/80] backdrop-blur-xl rounded-2xl p-6 border border-[rgb(var(--gold))/20] shadow-[0_0_60px_rgba(244,197,66,0.1)]">
                 {/* Glow accent */}
-                <div className="absolute -top-px left-1/2 -translate-x-1/2 w-20 h-px bg-gradient-to-r from-transparent via-[#F4C542] to-transparent" />
+                <div className="absolute -top-px left-1/2 -translate-x-1/2 w-20 h-px bg-gradient-to-r from-transparent via-[rgb(var(--gold))] to-transparent" />
                 
                 {/* Close button */}
                 <button
                   onClick={onClose}
-                  className="absolute top-4 right-4 p-2 rounded-full text-[#7A7A7A] hover:text-[#EAEAEA] hover:bg-[#ffffff]/5 transition-all"
+                  className="absolute top-4 right-4 p-2 rounded-full text-[rgb(var(--foreground-muted))] hover:text-[rgb(var(--foreground))] hover:bg-white/5 transition-all"
                 >
                   <X className="w-5 h-5" />
                 </button>
 
                 {/* Content */}
                 {title && (
-                  <h2 className="font-serif text-xl text-[#EAEAEA] mb-2">
+                  <h2 className="font-serif text-xl text-[rgb(var(--foreground))] mb-2">
                     {title}
                   </h2>
                 )}
                 {description && (
-                  <p className="text-sm text-[#A8A8A8] mb-4">
+                  <p className="text-sm text-[rgb(var(--foreground-secondary))] mb-4">
                     {description}
                   </p>
                 )}

@@ -2,6 +2,49 @@
   "extends": ["next/core-web-vitals", "next/typescript"],
   "rules": {
     "@typescript-eslint/no-unused-vars": "warn",
-    "@typescript-eslint/no-explicit-any": "warn"
+    "@typescript-eslint/no-explicit-any": "warn",
+    "no-restricted-patterns": [
+      "error",
+      {
+        "patterns": [
+          {
+            "group": "CallExpression[callee.name='className']",
+            "message": "Use cn() or other class utility for conditional classes"
+          }
+        ],
+        "custom": "Don't use raw hex colors in classNames"
+      }
+    ],
+    "@typescript-eslint/no-restricted-imports": [
+      "error",
+      {
+        "paths": [
+          {
+            "name": "react",
+            "importNames": ["FC"],
+            "message": "Use explicit typing instead of FC"
+          }
+        ]
+      }
+    ]
+  },
+  "overrides": [
+    {
+      "files": ["*.tsx", "*.ts"],
+      "rules": {
+        "no-restricted-syntax": [
+          "error",
+          {
+            "selector": "CallExpression[callee.object.name='className'][callee.property.name=' literal]",
+            "message": "Use design tokens instead of raw className assignments"
+          }
+        ]
+      }
+    }
+  ],
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
   }
 }

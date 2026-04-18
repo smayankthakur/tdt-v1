@@ -24,26 +24,26 @@ const sizeClasses: Record<ButtonSize, string> = {
 
 const variantClasses: Record<ButtonVariant, string> = {
   primary: `
-    bg-gradient-to-r from-[#F4C542] via-[#FFD84D] to-[#F4C542] 
+    bg-gradient-to-r from-[rgb(var(--gold-start))] via-[rgb(var(--gold))] to-[rgb(var(--gold-start))] 
     text-black 
     shadow-[0_0_25px_rgba(244,197,66,0.4)] 
     hover:shadow-[0_0_40px_rgba(244,197,66,0.6)]
   `,
   secondary: `
-    border-2 border-[#F4C542]/40 
-    text-[#F4C542] 
+    border-2 border-[rgb(var(--gold))/40] 
+    text-[rgb(var(--gold))] 
     bg-transparent 
-    hover:bg-[#F4C542]/10
-    hover:border-[#F4C542]/60
+    hover:bg-[rgb(var(--gold))/10]
+    hover:border-[rgb(var(--gold))/60]
   `,
   ghost: `
-    text-[#F4C542]/80 
+    text-[rgb(var(--gold))/80] 
     bg-transparent 
-    hover:text-[#F4C542] 
-    hover:bg-[#F4C542]/10
+    hover:text-[rgb(var(--gold))] 
+    hover:bg-[rgb(var(--gold))/10]
   `,
   danger: `
-    bg-gradient-to-r from-[#C1121F] to-[#E63946] 
+    bg-gradient-to-r from-[rgb(var(--secondary))] to-[#E63946] 
     text-white 
     shadow-[0_0_20px_rgba(193,18,31,0.4)] 
     hover:shadow-[0_0_35px_rgba(193,18,31,0.6)]
@@ -102,8 +102,8 @@ const MysticalButton = forwardRef<HTMLButtonElement, MysticalButtonProps>(
                 className={cn(
                   "absolute inset-0",
                   variant === 'primary' 
-                    ? "bg-gradient-to-r from-[#F4C542]/30 via-[#FFD84D]/30 to-[#F4C542]/30"
-                    : "bg-gradient-to-r from-[#C1121F]/30 to-[#E63946]/30"
+                    ? "bg-gradient-to-r from-[rgb(var(--gold-start))/30] via-[rgb(var(--gold))/30] to-[rgb(var(--gold-start))/30]"
+                    : "bg-gradient-to-r from-[rgb(var(--secondary))/30] to-[#E63946]/30"
                 )}
                 initial="rest"
                 whileHover="hover"

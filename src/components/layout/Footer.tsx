@@ -21,8 +21,8 @@ export default function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="relative bg-gradient-to-b from-transparent via-[#0A0A0A]/80 to-[#0A0A0A]">
-      <div className="absolute inset-0 bg-gradient-to-t from-[#F4C542]/5 via-transparent to-transparent pointer-events-none" />
+    <footer className="relative bg-background">
+      <div className="absolute inset-0 bg-gradient-to-t from-gold/5 via-transparent to-transparent pointer-events-none" />
       
       <div className="relative mx-auto max-w-7xl px-6 py-16">
         <div className="grid gap-12 md:grid-cols-3 md:gap-8">
@@ -37,13 +37,13 @@ export default function Footer() {
                   height={40}
                   className="object-contain transition-transform duration-300 group-hover:scale-105"
                 />
-                <div className="absolute inset-0 bg-[#F4C542]/20 blur-xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
+                <div className="absolute inset-0 bg-gold/20 blur-xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
               </div>
-              <span className="font-heading text-xl font-semibold text-[#F5F5F5]">
+              <span className="font-heading text-xl font-semibold text-foreground">
                 The Devine Tarot
               </span>
             </Link>
-            <p className="text-[#A8A8A8] text-sm leading-relaxed max-w-xs">
+            <p className="text-foreground-secondary text-sm leading-relaxed max-w-xs">
               Guiding you through clarity and insight. Your journey to
               understanding begins here.
             </p>
@@ -51,7 +51,7 @@ export default function Footer() {
 
           {/* Column 2 - Navigation Links */}
           <div className="text-center">
-            <h4 className="font-heading font-semibold text-[#F5F5F5] mb-4">
+            <h4 className="font-heading font-semibold text-foreground mb-4">
               Quick Links
             </h4>
             <nav className="flex flex-col gap-3">
@@ -59,10 +59,10 @@ export default function Footer() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="text-sm text-[#A8A8A8] hover:text-[#F4C542] transition-colors inline-flex items-center justify-center md:justify-start group"
+                  className="text-sm text-foreground-secondary hover:text-gold transition-colors inline-flex items-center justify-center md:justify-start group"
                 >
                   {link.label}
-                  <ArrowUpRight className="h-3 w-3 ml-1 opacity-0 group-hover:opacity-100 transition-opacity text-[#F4C542]" />
+                  <ArrowUpRight className="h-3 w-3 ml-1 opacity-0 group-hover:opacity-100 transition-opacity text-gold" />
                 </Link>
               ))}
             </nav>
@@ -70,13 +70,13 @@ export default function Footer() {
 
           {/* Column 3 - Contact & Social */}
           <div className="text-center md:text-right">
-            <h4 className="font-heading font-semibold text-[#F5F5F5] mb-4">
+            <h4 className="font-heading font-semibold text-foreground mb-4">
               Get in Touch
             </h4>
             <div className="flex flex-col gap-3 items-center md:items-end">
               <a
                 href="mailto:support@thedivinetarot.com"
-                className="inline-flex items-center gap-2 text-sm text-[#A8A8A8] hover:text-[#F4C542] transition-colors"
+                className="inline-flex items-center gap-2 text-sm text-foreground-secondary hover:text-gold transition-colors"
               >
                 <Mail className="h-4 w-4" />
                 support@thedivinetarot.com
@@ -86,7 +86,7 @@ export default function Footer() {
                   <a
                     key={social.label}
                     href={social.href}
-                    className="text-lg opacity-40 hover:opacity-100 hover:text-[#F4C542] transition-all"
+                    className="text-lg opacity-40 hover:opacity-100 hover:text-gold transition-all"
                     aria-label={social.label}
                   >
                     {social.icon}
@@ -99,12 +99,20 @@ export default function Footer() {
 
         {/* Bottom Copyright */}
         <div className="mt-12 text-center">
-          <p className="text-sm text-[#7A7A7A]">
+          <p className="text-sm text-foreground-muted">
             © {currentYear} The Devine Tarot. All rights reserved.
           </p>
-          <div className="mt-2 flex items-center justify-center gap-1 text-xs text-[#7A7A7A]">
-            <Sparkle className="h-3 w-3 text-[#F4C542]" />
-            <span>Made with cosmic energy</span>
+          <div className="mt-3 flex items-center justify-center gap-1 text-xs text-foreground-muted">
+            <Sparkle className="h-3 w-3 text-gold" />
+            <span>Crafted by</span>
+            <a 
+              href="https://sitelytc.com" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="text-gold hover:text-gold-light transition-colors"
+            >
+              Sitelytc Digital Media
+            </a>
           </div>
         </div>
       </div>

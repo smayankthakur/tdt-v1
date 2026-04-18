@@ -34,7 +34,7 @@ export const SUBSCRIPTION_PLANS: Record<PlanType, SubscriptionPlan> = {
     id: 'premium',
     name: 'Premium',
     type: 'premium',
-    price: 299,
+    price: 199,
     priceId: 'premium_monthly',
     features: [
       'Unlimited tarot readings',

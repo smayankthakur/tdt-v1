@@ -71,14 +71,14 @@ export default function Hero() {
   }, []);
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#0A0A0A]">
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[rgb(var(--background))]">
       {/* Animated Background */}
       <div className="absolute inset-0">
         {/* Gold gradient orb - top left */}
         <motion.div
           className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full"
           style={{
-            background: 'radial-gradient(circle, rgba(244, 197, 66, 0.12) 0%, transparent 70%)',
+            background: 'radial-gradient(circle, rgba(244, 197, 66, 0.08) 0%, transparent 70%)',
             filter: 'blur(60px)',
           }}
           animate={{
@@ -142,11 +142,11 @@ export default function Hero() {
             {/* Main Headline */}
             <motion.h1
               variants={itemVariants}
-              className="font-heading text-4xl md:text-5xl lg:text-6xl text-[#F5F5F5] leading-tight mb-6"
+              className="font-heading text-4xl md:text-5xl lg:text-6xl text-[rgb(var(--foreground))] leading-tight mb-6"
             >
               Your future is already written.
               <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#F4C542] via-[#FFD84D] to-[#F4C542]">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[rgb(var(--gold-start))] via-[rgb(var(--gold))] to-[rgb(var(--gold-start))]">
                 You just need to see it.
               </span>
             </motion.h1>
@@ -154,7 +154,7 @@ export default function Hero() {
             {/* Subtext */}
             <motion.p
               variants={itemVariants}
-              className="text-lg md:text-xl text-[#A8A8A8] max-w-2xl mx-auto lg:mx-0 mb-10 leading-relaxed"
+              className="text-lg md:text-xl text-[rgb(var(--foreground-secondary))] max-w-2xl mx-auto lg:mx-0 mb-10 leading-relaxed"
             >
               Ask your question, pick your cards, and receive a deeply personal reading that reveals what&apos;s really going on.
             </motion.p>
@@ -165,7 +165,7 @@ export default function Hero() {
                 <motion.button
                   whileHover={{ scale: 1.05, y: -2 }}
                   whileTap={{ scale: 0.97 }}
-                  className="group relative inline-flex items-center gap-3 rounded-full bg-gradient-to-r from-[#F4C542] via-[#FFD84D] to-[#F4C542] px-10 py-4 text-lg font-semibold text-black overflow-hidden"
+                  className="group relative inline-flex items-center gap-3 rounded-full bg-gradient-to-r from-[rgb(var(--gold-start))] via-[rgb(var(--gold))] to-[rgb(var(--gold-start))] px-10 py-4 text-lg font-semibold text-black overflow-hidden"
                   style={{
                     boxShadow: '0 4px 30px rgba(244, 197, 66, 0.4)',
                   }}
@@ -191,7 +191,7 @@ export default function Hero() {
                   />
                   {/* Shine effect */}
                   <motion.span
-                    className="absolute inset-0 bg-gradient-to-r from-[#F4C542]/50 via-[#FFD84D]/50 to-[#F4C542]/50 opacity-0 group-hover:opacity-100 transition-opacity"
+                    className="absolute inset-0 bg-gradient-to-r from-[rgb(var(--gold-start))/50] via-[rgb(var(--gold))/50] to-[rgb(var(--gold-start))/50] opacity-0 group-hover:opacity-100 transition-opacity"
                     animate={{
                       x: ['-100%', '100%'],
                     }}
@@ -202,12 +202,12 @@ export default function Hero() {
                     }}
                   />
                   <Sparkle className="h-5 w-5 text-black relative z-10" />
-                  <span className="relative z-10">Know Your Fortune</span>
+                  <span className="relative z-10">Begin Your Reading</span>
                   <ArrowRight className="h-5 w-5 relative z-10 group-hover:translate-x-1 transition-transform" />
                 </motion.button>
               </Link>
               {/* Micro reassurance */}
-              <p className="mt-4 text-sm text-[#7A7A7A] text-center">
+              <p className="mt-4 text-sm text-[rgb(var(--foreground-muted))] text-center">
                 Takes 30 seconds &bull; No signup needed
               </p>
             </motion.div>
@@ -215,11 +215,11 @@ export default function Hero() {
             {/* Trust indicator */}
             <motion.div
               variants={itemVariants}
-              className="mt-8 flex items-center justify-center lg:justify-start gap-2 text-sm text-[#7A7A7A]"
+              className="mt-8 flex items-center justify-center lg:justify-start gap-2 text-sm text-[rgb(var(--foreground-muted))]"
             >
-              <Star className="h-4 w-4 text-[#F4C542] fill-[#F4C542]" />
+              <Star className="h-4 w-4 text-[rgb(var(--gold))] fill-[rgb(var(--gold))]" />
               <span>Trusted by 50,000+ seekers for love, career & life clarity</span>
-              <Moon className="h-4 w-4 ml-2 text-[#C1121F]" />
+              <Moon className="h-4 w-4 ml-2 text-[rgb(var(--secondary))]" />
             </motion.div>
           </motion.div>
 
@@ -254,7 +254,7 @@ export default function Hero() {
                     priority
                   />
                   {/* Soft glow effect */}
-                  <div className="absolute inset-0 z-[-1] bg-[#F4C542]/20 blur-3xl rounded-full" />
+                  <div className="absolute inset-0 z-[-1] bg-[rgb(var(--gold))]/20 blur-3xl rounded-full" />
                 </div>
               </motion.div>
 
@@ -280,9 +280,9 @@ export default function Hero() {
         animate={{ y: [0, 10, 0] }}
         transition={{ duration: 2, repeat: Infinity }}
       >
-        <div className="h-10 w-6 rounded-full border border-[#F4C542]/30 flex justify-center pt-2">
+        <div className="h-10 w-6 rounded-full border border-[rgb(var(--gold))/30] flex justify-center pt-2">
           <motion.div
-            className="h-2 w-1 rounded-full bg-[#F4C542]"
+            className="h-2 w-1 rounded-full bg-[rgb(var(--gold))]"
             animate={{ y: [0, 12, 0] }}
             transition={{ duration: 1.5, repeat: Infinity }}
           />

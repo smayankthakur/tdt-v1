@@ -17,9 +17,9 @@ function Card({
   const baseStyles = "relative overflow-hidden rounded-2xl transition-all duration-300"
   
   const variantStyles = {
-    default: "bg-[#1A1A1A] border border-[#F4C542]/10 shadow-[0_0_40px_rgba(0,0,0,0.4)]",
-    tarot: "bg-gradient-to-br from-[#1A0F2E] to-[#0A0A0A] border border-[#F4C542]/20 shadow-[0_0_30px_rgba(244,197,66,0.1)]",
-    glass: "bg-[#1A1A1A]/60 backdrop-blur-xl border border-[#F4C542]/10",
+    default: "bg-[rgb(var(--surface))] border border-[rgb(var(--gold))/10] shadow-[0_0_40px_rgba(0,0,0,0.4)]",
+    tarot: "bg-gradient-to-br from-[#1A0F2E] to-[#0A0A0A] border border-[rgb(var(--gold))/20] shadow-[0_0_30px_rgba(244,197,66,0.1)]",
+    glass: "bg-[rgb(var(--surface))/60] backdrop-blur-xl border border-[rgb(var(--gold))/10]",
   }
 
   const Component = interactive ? motion.div : 'div'
@@ -51,7 +51,7 @@ function CardHeader({ className, ...props }: React.ComponentProps<"div">) {
 function CardTitle({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
-      className={cn("font-serif text-lg text-[#EAEAEA] font-medium", className)}
+      className={cn("font-serif text-lg text-[rgb(var(--foreground))] font-medium", className)}
       {...props}
     />
   )
@@ -60,7 +60,7 @@ function CardTitle({ className, ...props }: React.ComponentProps<"div">) {
 function CardDescription({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
-      className={cn("text-sm text-[#A8A8A8]", className)}
+      className={cn("text-sm text-[rgb(var(--foreground-secondary))]", className)}
       {...props}
     />
   )
@@ -79,7 +79,7 @@ function CardFooter({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       className={cn(
-        "flex items-center px-5 py-3 border-t border-[#F4C542]/10 bg-[#0A0A0A]/50",
+        "flex items-center px-5 py-3 border-t border-[rgb(var(--gold))/10] bg-[#0A0A0A]/50",
         className
       )}
       {...props}

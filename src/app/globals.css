@@ -13,22 +13,19 @@
     /* Surface Layers - #1a1a1a */
     --surface: 26 26 26;
     --surface-elevated: 32 32 32;
-    /* Secondary Layers */
-    --background-secondary: 26 15 46;
-    --background-maroon: 42 13 13;
     /* Text Colors - Exact from design spec */
     --foreground: 234 234 234;
     --foreground-secondary: 176 176 176;
     --foreground-muted: 122 122 122;
     /* Card */
-    --card: 26 15 46;
+    --card: 26 26 26;
     --card-foreground: 234 234 234;
     /* Logo Accents - Gold gradient */
     --gold: 244 197 66;
     --gold-light: 255 228 168;
     --gold-start: 255 228 168;
     --gold-end: 244 197 66;
-    --red-deep: 193 18 31;
+    --accent-gold: 244 197 66;
     /* Primary (gold-based) */
     --primary: 244 197 66;
     --primary-foreground: 0 0 0;
@@ -97,6 +94,7 @@
     text-wrap: balance;
   }
   
+  /* Typography fonts */
   .font-heading {
     font-family: var(--font-heading);
   }
@@ -109,7 +107,17 @@
     font-family: var(--font-sans);
   }
 
-  /* Typography hierarchy for dark theme */
+  /* === DESIGN TOKENS === */
+  
+  /* Colors - Token-based */
+  .bg-background {
+    background-color: rgb(var(--background));
+  }
+  
+  .bg-surface {
+    background-color: rgb(var(--surface));
+  }
+  
   .text-primary {
     color: rgb(var(--foreground));
   }
@@ -122,7 +130,7 @@
     color: rgb(var(--foreground-muted));
   }
   
-  /* Gold accent text (from logo) */
+  /* Gold accent text */
   .text-gold {
     color: rgb(var(--gold));
   }
@@ -138,6 +146,7 @@
     background-clip: text;
   }
   
+  /* Gold gradient backgrounds */
   .bg-gold-gradient {
     background: linear-gradient(135deg, rgb(var(--gold-start)) 0%, rgb(var(--gold-end)) 100%);
   }
@@ -151,70 +160,34 @@
   .to-gold-end {
     --tw-gradient-to: rgb(var(--gold-end)) var(--tw-gradient-to-position);
   }
+
+  /* === SPACING SYSTEM === */
+  .section-padding {
+    @apply py-16 md:py-20;
+  }
   
-  .text-accent-warm {
-    background: linear-gradient(135deg, #FB923C 0%, #FFD84D 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+  .component-spacing {
+    @apply gap-6 md:gap-8;
   }
 
-  /* Special mystical text styling */
-  .mystical-quote {
-    font-style: italic;
-    color: rgb(var(--foreground-muted));
-    border-left: 2px solid rgb(var(--gold));
-    padding-left: 1rem;
+  /* === RADIUS SYSTEM === */
+  .radius-sm {
+    @apply rounded-lg;
   }
   
-  .mystical-glow {
-    text-shadow: 0 0 20px rgba(244, 197, 66, 0.4);
-    color: rgb(var(--foreground));
+  .radius-md {
+    @apply rounded-xl;
   }
   
-  .mystical-highlight {
-    color: rgb(var(--gold-light));
-    font-weight: 500;
+  .radius-lg {
+    @apply rounded-2xl;
   }
   
-  .reading-key-phrase {
-    color: rgb(var(--gold));
-    font-weight: 500;
-    text-shadow: 0 0 15px rgba(244, 197, 66, 0.3);
-  }
-  
-  .reading-card-name {
-    font-family: var(--font-serif);
-    font-weight: 600;
-    color: rgb(var(--gold));
-  }
-  
-  .reading-position {
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: rgb(var(--foreground-muted));
+  .radius-pill {
+    @apply rounded-full;
   }
 
-  /* Background gradients */
-  .bg-mystical {
-    background: radial-gradient(ellipse at top, rgba(244, 197, 66, 0.1) 0%, rgb(var(--background)) 50%);
-  }
-
-  .bg-dark-card {
-    background: rgba(26, 15, 46, 0.8);
-    backdrop-filter: blur(12px);
-  }
-  
-  .bg-gold-gradient {
-    background: linear-gradient(135deg, rgb(var(--gold)) 0%, rgb(var(--gold-light)) 100%);
-  }
-  
-  .bg-maroon-gradient {
-    background: linear-gradient(180deg, rgb(var(--background-secondary)) 0%, rgb(var(--background-maroon)) 100%);
-  }
-
-  /* Glow effects */
+  /* === SHADOW/GLOW SYSTEM (Gold only) === */
   .glow-gold {
     box-shadow: 0 0 30px rgba(244, 197, 66, 0.3);
   }
@@ -223,32 +196,52 @@
     box-shadow: 0 0 15px rgba(244, 197, 66, 0.2);
   }
 
-  .glow-red {
-    box-shadow: 0 0 30px rgba(193, 18, 31, 0.3);
-  }
-  
-  .glow-red-sm {
-    box-shadow: 0 0 15px rgba(193, 18, 31, 0.2);
+  .glow-gold-hover {
+    box-shadow: 0 0 25px rgba(244, 197, 66, 0.25);
   }
 
+  .glow-gold-hover:hover {
+    box-shadow: 0 0 40px rgba(244, 197, 66, 0.4);
+  }
+
+  /* Border glow */
   .border-glow-gold {
     border: 1px solid rgba(244, 197, 66, 0.3);
     box-shadow: 0 0 20px rgba(244, 197, 66, 0.15);
   }
-  
-  .border-glow-red {
-    border: 1px solid rgba(193, 18, 31, 0.3);
-    box-shadow: 0 0 20px rgba(193, 18, 31, 0.15);
-  }
 
+  /* Text glow */
   .text-glow-gold {
     text-shadow: 0 0 20px rgba(244, 197, 66, 0.5);
   }
+
+  /* === TYPOGRAPHY SCALE === */
+  /* H1 - Hero */
+  .text-h1 {
+    @apply font-heading text-4xl md:text-5xl lg:text-6xl font-semibold leading-tight;
+  }
   
-  .text-glow-red {
-    text-shadow: 0 0 20px rgba(193, 18, 31, 0.5);
+  /* H2 - Section Titles */
+  .text-h2 {
+    @apply font-heading text-2xl md:text-3xl lg:text-4xl font-semibold leading-tight;
+  }
+  
+  /* H3 */
+  .text-h3 {
+    @apply font-heading text-xl md:text-2xl font-medium;
+  }
+  
+  /* Body */
+  .text-body {
+    @apply font-sans text-base font-normal leading-relaxed;
+  }
+  
+  /* Small */
+  .text-small {
+    @apply font-sans text-sm;
   }
 
+  /* === ANIMATIONS === */
   .animate-float {
     animation: float 6s ease-in-out infinite;
   }
@@ -310,7 +303,7 @@
 
 @layer components {
   .card-mystical {
-    background: rgba(26, 15, 46, 0.8);
+    background: rgb(var(--surface));
     backdrop-filter: blur(12px);
     border: 1px solid rgba(244, 197, 66, 0.2);
     border-radius: 1rem;
@@ -319,7 +312,7 @@
   /* PRIMARY GOLD BUTTON - Main CTA */
   .btn-primary {
     @apply inline-flex items-center justify-center rounded-full px-8 py-4 font-semibold transition-all;
-    background: linear-gradient(135deg, #F4C542 0%, #FFD84D 100%);
+    background: linear-gradient(135deg, rgb(var(--gold-start)) 0%, rgb(var(--gold-end)) 100%);
     color: #000000;
     box-shadow: 0 0 25px rgba(244, 197, 66, 0.4);
   }
@@ -342,32 +335,9 @@
   }
 
   .btn-secondary:hover {
-    background: linear-gradient(135deg, #F4C542 0%, #FFD84D 100%);
+    background: linear-gradient(135deg, rgb(var(--gold-start)) 0%, rgb(var(--gold-end)) 100%);
     color: #000000;
     box-shadow: 0 0 20px rgba(244, 197, 66, 0.3);
-  }
-
-  /* DANGER / URGENCY BUTTON - Red */
-  .btn-danger {
-    @apply inline-flex items-center justify-center rounded-full px-6 py-3 font-semibold transition-all;
-    background: linear-gradient(135deg, #C1121F 0%, #E63946 100%);
-    color: #FFFFFF;
-    box-shadow: 0 0 20px rgba(193, 18, 31, 0.4);
-  }
-
-  .btn-danger:hover {
-    transform: scale(1.05);
-    box-shadow: 0 0 35px rgba(193, 18, 31, 0.6);
-    animation: pulse-red 2s infinite;
-  }
-
-  @keyframes pulse-red {
-    0%, 100% {
-      box-shadow: 0 0 20px rgba(193, 18, 31, 0.4);
-    }
-    50% {
-      box-shadow: 0 0 40px rgba(193, 18, 31, 0.6);
-    }
   }
 
   /* Input styling */
@@ -401,7 +371,7 @@
   }
 
   .tarot-card.selected {
-    border-color: #F4C542;
+    border-color: rgb(var(--gold));
     box-shadow: 0 0 40px rgba(244, 197, 66, 0.5);
   }
 }

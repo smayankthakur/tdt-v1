@@ -9,22 +9,22 @@ interface TypographyProps {
   children: React.ReactNode;
 }
 
-const variantStyles = {
+const variantStyles: Record<string, string> = {
   h1: 'font-heading text-4xl md:text-5xl lg:text-6xl font-semibold leading-tight',
-  h2: 'font-heading text-3xl md:text-4xl font-semibold leading-tight',
-  h3: 'font-heading text-2xl md:text-3xl font-medium',
-  h4: 'font-heading text-xl md:text-2xl font-medium',
-  body: 'font-sans text-base leading-relaxed',
+  h2: 'font-heading text-2xl md:text-3xl lg:text-4xl font-semibold leading-tight',
+  h3: 'font-heading text-xl md:text-2xl font-medium',
+  h4: 'font-heading text-lg md:text-xl font-medium',
+  body: 'font-sans text-base font-normal leading-relaxed',
   'body-sm': 'font-sans text-sm leading-relaxed',
   caption: 'font-sans text-xs leading-normal',
   label: 'font-sans text-sm font-medium tracking-wide uppercase',
 };
 
-const colorStyles = {
-  primary: 'text-[#EAEAEA]',
-  secondary: 'text-[#A8A8A8]',
-  muted: 'text-[#7A7A7A]',
-  gold: 'text-[#F4C542]',
+const colorStyles: Record<string, string> = {
+  primary: 'text-[rgb(var(--foreground))]',
+  secondary: 'text-[rgb(var(--foreground-secondary))]',
+  muted: 'text-[rgb(var(--foreground-muted))]',
+  gold: 'text-[rgb(var(--gold))]',
 };
 
 export default function Typography({
@@ -42,7 +42,6 @@ export default function Typography({
   );
 }
 
-// Convenience components
 export function H1({ className, children }: { className?: string; children: React.ReactNode }) {
   return <Typography variant="h1" className={className}>{children}</Typography>;
 }

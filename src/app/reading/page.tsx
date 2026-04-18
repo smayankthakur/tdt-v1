@@ -334,7 +334,7 @@ export default function ReadingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#0B0B0F] via-[#12121A] to-[#0B0B0F] py-12 md:py-24">
+    <div className="min-h-screen bg-gradient-to-br from-[rgb(var(--background))] via-[#12121A] to-[rgb(var(--background))] py-12 md:py-20">
       {/* Contextual Ginni - Stage-aware assistant */}
       <ContextualGinni
         stage={isReadingComplete ? 'post-reading' : step as any}
@@ -375,11 +375,11 @@ export default function ReadingPage() {
                 transition={{ duration: 0.8 }}
                 className="mb-8"
               >
-                <Sparkles className="h-16 w-16 text-[#F4C542] mx-auto mb-4" />
-                <h1 className="font-heading text-3xl md:text-4xl text-[#F5F5F5] mb-4">
+                <Sparkles className="h-16 w-16 text-[rgb(var(--gold))] mx-auto mb-4" />
+                <h1 className="font-heading text-3xl md:text-4xl text-[rgb(var(--foreground))] mb-4">
                   Take a moment...
                 </h1>
-                <p className="text-lg text-[#A8A8A8]/60 max-w-md mx-auto">
+                <p className="text-lg text-[rgb(var(--foreground-secondary))]/60 max-w-md mx-auto">
                   Focus on your question in your mind. Let it become clear. When you&apos;re ready, the cards will listen.
                 </p>
               </motion.div>
@@ -388,7 +388,7 @@ export default function ReadingPage() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: [0.3, 0.7, 0.3] }}
                 transition={{ duration: 2, repeat: Infinity }}
-                className="text-[#F4C542]/50 text-sm mb-8"
+                className="text-[rgb(var(--gold))]/50 text-sm mb-8"
               >
                 {isReady ? 'You may proceed...' : 'Still in 3...'}
               </motion.p>
@@ -415,14 +415,14 @@ export default function ReadingPage() {
             >
               <div className="text-center">
                 <motion.h2 
-                  className="font-heading text-2xl md:text-3xl text-[#F5F5F5] mb-2"
+                  className="font-heading text-2xl md:text-3xl text-[rgb(var(--foreground))] mb-2"
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                 >
                   Choose what&apos;s weighing on your heart
                 </motion.h2>
                 <motion.p 
-                  className="text-[#A8A8A8]/60"
+                  className="text-[rgb(var(--foreground-secondary))]/60"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.2 }}
@@ -447,13 +447,13 @@ export default function ReadingPage() {
                       whileTap={{ scale: 0.98 }}
                       className={`p-4 rounded-2xl border-2 transition-all text-center ${
                         isSelected 
-                          ? 'border-[#F4C542]/50 bg-[#F4C542]/20 shadow-lg shadow-[#F4C542]/20' 
-                          : 'border-[#F4C542]/30 bg-[#1A0F2E]/50 hover:border-[#F4C542]/50 hover:bg-[#F4C542]/10'
+                          ? 'border-[rgb(var(--gold))]/50 bg-[rgb(var(--gold))]/20 shadow-lg shadow-[rgb(var(--gold))]/20' 
+                          : 'border-[rgb(var(--gold))]/30 bg-[#1A0F2E]/50 hover:border-[rgb(var(--gold))]/50 hover:bg-[rgb(var(--gold))]/10'
                       }`}
                     >
-                      <Icon className={`h-8 w-8 mx-auto mb-2 ${isSelected ? 'text-[#F4C542]' : 'text-[#F4C542]/70'}`} />
-                      <span className="font-medium text-[#F5F5F5] block">{topic.label}</span>
-                      <span className="text-xs text-[#F4C542]/50 hidden sm:block">{topic.description}</span>
+                      <Icon className={`h-8 w-8 mx-auto mb-2 ${isSelected ? 'text-[rgb(var(--gold))]' : 'text-[rgb(var(--gold))]/70'}`} />
+                      <span className="font-medium text-[rgb(var(--foreground))] block">{topic.label}</span>
+                      <span className="text-xs text-[rgb(var(--gold))]/50 hidden sm:block">{topic.description}</span>
                     </motion.button>
                   );
                 })}
@@ -472,10 +472,10 @@ export default function ReadingPage() {
               className="space-y-6"
             >
               <div className="text-center">
-                <h2 className="font-heading text-2xl md:text-3xl text-[#F5F5F5] mb-2">
+                <h2 className="font-heading text-2xl md:text-3xl text-[rgb(var(--foreground))] mb-2">
                   Select 3 cards
                 </h2>
-                <p className="text-[#A8A8A8]/60">
+                <p className="text-[rgb(var(--foreground-secondary))]/60">
                   Don&apos;t overthink. Your intuition already knows which ones call to you.
                 </p>
               </div>
@@ -495,7 +495,7 @@ export default function ReadingPage() {
                       onClick={() => handleRemoveCard(card.id)}
                       className="relative group"
                     >
-                      <div className="w-16 h-24 rounded-lg bg-gradient-to-br from-[#F4C542]/20 to-[#C1121F]/20 flex items-center justify-center text-xs text-white/80 text-center p-1 border border border-[#F4C542]/30">
+                      <div className="w-16 h-24 rounded-lg bg-gradient-to-br from-[rgb(var(--gold))]/20 to-[rgb(var(--secondary))]/20 flex items-center justify-center text-xs text-white/80 text-center p-1 border border border-[rgb(var(--gold))]/30">
                         {card.name}
                       </div>
                       <X className="absolute -top-2 -right-2 h-5 w-5 bg-red-500 rounded-full text-white opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -504,7 +504,7 @@ export default function ReadingPage() {
                 </motion.div>
               )}
 
-              <p className="text-center text-[#A8A8A8]/50 text-sm">
+              <p className="text-center text-[rgb(var(--foreground-secondary))]/50 text-sm">
                 {selectedCards.length}/3 selected
               </p>
 
@@ -524,10 +524,10 @@ export default function ReadingPage() {
                       className={`relative w-20 h-28 md:w-24 md:h-36 rounded-xl transition-all ${
                         isSelected 
                           ? 'opacity-30 scale-95' 
-                          : 'hover:shadow-lg hover:shadow-[#F4C542]/20'
+                          : 'hover:shadow-lg hover:shadow-[rgb(var(--gold))]/20'
                       }`}
                     >
-                      <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-[#1A0F2E] to-[#0A0A0A] border border-[#F4C542]/30 flex items-center justify-center overflow-hidden">
+                      <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-[#1A0F2E] to-[#0A0A0A] border border-[rgb(var(--gold))]/30 flex items-center justify-center overflow-hidden">
                         <div className="absolute inset-0 bg-[url('/tarot-pattern.svg')] opacity-10" />
                         <motion.div 
                           className="w-full h-full flex items-center justify-center"
@@ -541,8 +541,8 @@ export default function ReadingPage() {
                             delay: index * 0.2 
                           }}
                         >
-                          <div className="w-16 h-24 md:w-20 md:h-28 rounded-lg bg-gradient-to-br from-[#F4C542]/20 to-[#C1121F]/20 border border-[#F4C542]/30 flex items-center justify-center">
-                            <span className="text-[#F4C542]/30 text-2xl">✦</span>
+                          <div className="w-16 h-24 md:w-20 md:h-28 rounded-lg bg-gradient-to-br from-[rgb(var(--gold))]/20 to-[rgb(var(--secondary))]/20 border border-[rgb(var(--gold))]/30 flex items-center justify-center">
+                            <span className="text-[rgb(var(--gold))]/30 text-2xl">✦</span>
                           </div>
                         </motion.div>
                       </div>
@@ -574,10 +574,10 @@ export default function ReadingPage() {
               className="space-y-6 max-w-xl mx-auto"
             >
               <div className="text-center">
-                <h2 className="font-heading text-2xl md:text-3xl text-[#F5F5F5] mb-2">
+                <h2 className="font-heading text-2xl md:text-3xl text-[rgb(var(--foreground))] mb-2">
                   What would you like to know?
                 </h2>
-                <p className="text-[#A8A8A8]/60">
+                <p className="text-[rgb(var(--foreground-secondary))]/60">
                   Speak your question silently in your mind. The cards will hear you.
                 </p>
               </div>
@@ -587,7 +587,7 @@ export default function ReadingPage() {
                   value={question}
                   onChange={(e) => setQuestion(e.target.value)}
                   placeholder={PLACEHOLDERS[placeholderIndex]}
-                  className="w-full min-h-[140px] p-5 rounded-2xl border-2 border-[#F4C542]/30 bg-[#1A0F2E]/80 text-[#F5F5F5] placeholder:text-[#7A7A7A] focus:border-[#F4C542] focus:ring-2 focus:ring-[#F4C542]/20 resize-none transition-all font-sans text-lg leading-relaxed"
+                  className="w-full min-h-[140px] p-5 rounded-2xl border-2 border-[rgb(var(--gold))]/30 bg-[#1A0F2E]/80 text-[rgb(var(--foreground))] placeholder:text-[rgb(var(--foreground-muted))] focus:border-[rgb(var(--gold))] focus:ring-2 focus:ring-[rgb(var(--gold))]/20 resize-none transition-all font-sans text-lg leading-relaxed"
                   maxLength={500}
                 />
                 {error && (
@@ -599,7 +599,7 @@ export default function ReadingPage() {
                     {error}
                   </motion.p>
                 )}
-                <p className="mt-2 text-sm text-[#F4C542]/40 text-right">
+                <p className="mt-2 text-sm text-[rgb(var(--gold))]/40 text-right">
                   {question.length}/500
                 </p>
               </div>
@@ -612,7 +612,7 @@ export default function ReadingPage() {
 
               <motion.button
                 onClick={() => setStep('cards')}
-                className="block mx-auto text-sm text-[#F4C542]/50 hover:text-[#A8A8A8]"
+                className="block mx-auto text-sm text-[rgb(var(--gold))]/50 hover:text-[rgb(var(--foreground-secondary))]"
               >
                 ← Back to card selection
               </motion.button>
@@ -633,7 +633,7 @@ export default function ReadingPage() {
                   opacity: [0.3, 0.6, 0.3],
                 }}
                 transition={{ duration: 3, repeat: Infinity }}
-                className="absolute inset-0 bg-gradient-to-b from-[#F4C542]/5 to-transparent pointer-events-none"
+                className="absolute inset-0 bg-gradient-to-b from-[rgb(var(--gold))]/5 to-transparent pointer-events-none"
               />
               
               <motion.div
@@ -642,8 +642,8 @@ export default function ReadingPage() {
                 animate={{ opacity: 1, y: 0 }}
                 className="text-center"
               >
-                <Sparkles className="h-12 w-12 text-[#F4C542] mx-auto mb-4 animate-pulse" />
-                <p className="font-heading text-xl md:text-2xl text-[#F5F5F5]">
+                <Sparkles className="h-12 w-12 text-[rgb(var(--gold))] mx-auto mb-4 animate-pulse" />
+                <p className="font-heading text-xl md:text-2xl text-[rgb(var(--foreground))]">
                   {suspenseMessage}
                 </p>
               </motion.div>
@@ -657,7 +657,7 @@ export default function ReadingPage() {
                 {[0, 1, 2].map((i) => (
                   <motion.div
                     key={i}
-                    className="w-2 h-2 rounded-full bg-[#F4C542]"
+                    className="w-2 h-2 rounded-full bg-[rgb(var(--gold))]"
                     animate={{ 
                       scale: [1, 1.5, 1],
                       opacity: [0.3, 1, 0.3],
@@ -686,7 +686,7 @@ export default function ReadingPage() {
                 <motion.p
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  className="text-center text-[#A8A8A8]/60 italic"
+                  className="text-center text-[rgb(var(--foreground-secondary))]/60 italic"
                 >
                   {REVEAL_MICROCOPY[Math.floor(Math.random() * REVEAL_MICROCOPY.length)]}
                 </motion.p>
@@ -713,11 +713,11 @@ export default function ReadingPage() {
                   >
                     <motion.div
                       whileHover={{ y: -4 }}
-                      className="w-24 h-36 md:w-28 md:h-40 rounded-xl bg-gradient-to-br from-[#1A0F2E] to-[#0A0A0A] border border-[#F4C542]/30 flex items-center justify-center shadow-lg shadow-[#F4C542]/20"
+                      className="w-24 h-36 md:w-28 md:h-40 rounded-xl bg-gradient-to-br from-[#1A0F2E] to-[#0A0A0A] border border-[rgb(var(--gold))]/30 flex items-center justify-center shadow-lg shadow-[rgb(var(--gold))]/20"
                     >
                       <div className="text-center p-2">
                         <p className="font-serif text-sm text-[#EAEAEA]">{card.name}</p>
-                        <p className="text-xs text-[#7A7A7A] mt-1 uppercase tracking-wider">
+                        <p className="text-xs text-[rgb(var(--foreground-muted))] mt-1 uppercase tracking-wider">
                           {['Past', 'Present', 'Future'][index]}
                         </p>
                       </div>
@@ -732,17 +732,17 @@ export default function ReadingPage() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5 }}
-                  className="mt-8 p-6 rounded-2xl bg-[#1A0F2E]/50 border border-[#F4C542]/30"
+                  className="mt-8 p-6 rounded-2xl bg-[#1A0F2E]/50 border border-[rgb(var(--gold))]/30"
                 >
                   <h3 className="font-heading text-xl text-[#EAEAEA] mb-4 flex items-center gap-2">
-                    <Sparkles className="h-5 w-5 text-[#F4C542]" />
+                    <Sparkles className="h-5 w-5 text-[rgb(var(--gold))]" />
                     Interpretation
                   </h3>
                   <div className="text-[#CFCFCF] leading-relaxed whitespace-pre-wrap">
                     {displayText || interpretation}
                     {isTyping && (
                       <motion.span
-                        className="inline-block w-0.5 h-5 bg-[#F4C542] ml-1"
+                        className="inline-block w-0.5 h-5 bg-[rgb(var(--gold))] ml-1"
                         animate={{ opacity: [1, 0, 1] }}
                         transition={{ duration: 0.8, repeat: Infinity }}
                       />
@@ -765,7 +765,7 @@ export default function ReadingPage() {
                     transition={{ delay: 0.5 }}
                     className="text-center"
                   >
-                    <p className="text-lg text-[#A8A8A8]/70 italic">
+                    <p className="text-lg text-[rgb(var(--foreground-secondary))]/70 italic">
                       {EMOTIONAL_HOOKS[Math.floor(Math.random() * EMOTIONAL_HOOKS.length)]}
                     </p>
                   </motion.div>
@@ -777,14 +777,14 @@ export default function ReadingPage() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -20 }}
-                        className="relative p-6 rounded-2xl bg-[#1A0F2E]/50 border border-[#F4C542]/30"
+                        className="relative p-6 rounded-2xl bg-[#1A0F2E]/50 border border-[rgb(var(--gold))]/30"
                       >
-                        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#F4C542]/5 to-transparent pointer-events-none" />
+                        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[rgb(var(--gold))]/5 to-transparent pointer-events-none" />
                         
                         <div className="relative">
                           <div className="flex items-center justify-center gap-2 mb-3">
-                            <Sparkles className="h-5 w-5 text-[#F4C542]" />
-                            <h4 className="font-heading text-lg text-[#F5F5F5]">
+                            <Sparkles className="h-5 w-5 text-[rgb(var(--gold))]" />
+                            <h4 className="font-heading text-lg text-[rgb(var(--foreground))]">
                               Hidden Insight Detected
                             </h4>
                           </div>
@@ -794,8 +794,8 @@ export default function ReadingPage() {
                           </p>
                           
                           {/* Blurred preview area */}
-                          <div className="relative p-4 rounded-xl bg-[#0A0A0A]/50 border border-[#F4C542]/30 mb-4">
-                            <p className="text-[#7A7A7A] text-sm leading-relaxed blur-[2px] select-none">
+                          <div className="relative p-4 rounded-xl bg-[#0A0A0A]/50 border border-[rgb(var(--gold))]/30 mb-4">
+                            <p className="text-[rgb(var(--foreground-muted))] text-sm leading-relaxed blur-[2px] select-none">
                               Your cards reveal a significant timing element that could change everything. 
                               The outcome depends on choices made in the next 7 days. The Three of Swords 
                               in reverse suggests healing is coming, but you need to take action first...
@@ -830,7 +830,7 @@ export default function ReadingPage() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -20 }}
-                        className="text-center p-6 rounded-2xl bg-gradient-to-b from-[#F4C542]/10 to-transparent border border-[#F4C542]/20"
+                        className="text-center p-6 rounded-2xl bg-gradient-to-b from-[rgb(var(--gold))]/10 to-transparent border border-[rgb(var(--gold))]/20"
                       >
                         <p className="text-[#B0B0B0] mb-4">
                           Your situation has layers... a deeper interpretation can reveal timing and outcomes.
@@ -908,11 +908,11 @@ export default function ReadingPage() {
                         exit={{ opacity: 0, y: -20 }}
                         className="text-center"
                       >
-                        <p className="text-[#A8A8A8]/50 italic">
+                        <p className="text-[rgb(var(--foreground-secondary))]/50 italic">
                           {RETENTION_HOOKS[Math.floor(Math.random() * RETENTION_HOOKS.length)]}
                         </p>
                         
-                        <div className="mt-6 pt-6 border-t border-[#F4C542]/20">
+                        <div className="mt-6 pt-6 border-t border-[rgb(var(--gold))]/20">
                           <div className="flex flex-col sm:flex-row gap-3 justify-center">
                             <CTAButton onClick={handleTalkToGinni}>
                               Talk to Ginni ✨
@@ -932,7 +932,7 @@ export default function ReadingPage() {
                   {/* Start new reading */}
                   <button
                     onClick={handleReset}
-                    className="block mx-auto mt-4 text-[#F4C542]/50 hover:text-[#A8A8A8] text-sm"
+                    className="block mx-auto mt-4 text-[rgb(var(--gold))]/50 hover:text-[rgb(var(--foreground-secondary))] text-sm"
                   >
                     Start a new reading
                   </button>

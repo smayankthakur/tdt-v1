@@ -27,7 +27,7 @@ const itemVariants = {
 
 export default function ProblemStrip() {
   return (
-    <section className="py-20 bg-[#0A0A0A]">
+    <section className="py-16 md:py-20 bg-[rgb(var(--background))]">
       <div className="mx-auto max-w-6xl px-6">
         <motion.div
           variants={containerVariants}
@@ -41,7 +41,7 @@ export default function ProblemStrip() {
               key={problem.title}
               variants={itemVariants}
               whileHover={{ y: -8, transition: { duration: 0.3 } }}
-              className="group cursor-pointer rounded-2xl bg-[#1A1A1A]/50 p-8 backdrop-blur-sm border border-[#F4C542]/10 hover:border-[#F4C542]/30 transition-all duration-300"
+              className="group cursor-pointer rounded-2xl bg-[rgb(var(--surface))/60] p-8 backdrop-blur-sm border border-[rgb(var(--gold))/10 hover:border-[rgb(var(--gold))/30] hover:shadow-[0_0_30px_rgba(244,197,66,0.1)] transition-all duration-300"
             >
               <motion.div
                 className="mx-auto mb-6 flex h-14 w-14 items-center justify-center rounded-full relative"
@@ -50,7 +50,7 @@ export default function ProblemStrip() {
                   background: 'linear-gradient(135deg, rgba(244,197,66,0.2), rgba(193,18,31,0.2))',
                 }}
               >
-                <problem.icon className="h-7 w-7 text-[#F4C542]" />
+                <problem.icon className="h-7 w-7 text-[rgb(var(--gold))]" />
                 <motion.div
                   className="absolute inset-0 rounded-full"
                   animate={{
@@ -67,10 +67,10 @@ export default function ProblemStrip() {
                   }}
                 />
               </motion.div>
-              <h3 className="font-serif text-xl font-semibold text-[#EAEAEA] mb-2 text-center">
+              <h3 className="font-heading text-xl font-semibold text-[rgb(var(--foreground))] mb-2 text-center">
                 {problem.title}
               </h3>
-              <p className="text-[#A8A8A8] text-sm text-center leading-relaxed">
+              <p className="text-[rgb(var(--foreground-muted))] text-sm text-center leading-relaxed">
                 {problem.description}
               </p>
             </motion.div>

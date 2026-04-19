@@ -205,7 +205,7 @@ export default function Hero() {
             {/* Powerful Quote (Hook) */}
             <motion.div variants={itemVariants} className="mb-block">
               <p className="font-serif text-hero text-text-primary leading-tight text-glow">
-                "Jo tum poochne wale ho… uska answer tum already feel kar rahe ho."
+                &quot;Jo tum poochne wale ho… uska answer tum already feel kar rahe ho.&quot;
               </p>
             </motion.div>
 

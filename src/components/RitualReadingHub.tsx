@@ -706,7 +706,7 @@ function SuspensePause({ domain }: { domain?: DomainAnalysis }) {
         animate={{ opacity: 1, y: 0 }}
         className="font-serif text-2xl md:text-4xl text-foreground leading-relaxed max-w-xl mx-auto"
       >
-        "{getSuspenseMessage()}"
+        &quot;{getSuspenseMessage()}&quot;
       </motion.p>
 
       {domain && (
@@ -937,7 +937,7 @@ function ReadingDelivery({
           className="text-center space-y-6"
         >
           <p className="font-serif text-xl md:text-2xl text-foreground-secondary leading-relaxed">
-            "Ab jo next step hai… woh tum already feel kar rahe ho."
+            &quot;Ab jo next step hai… woh tum already feel kar rahe ho.&quot;
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">

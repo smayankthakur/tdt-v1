@@ -3,9 +3,14 @@ import "./globals.css";
 import ClientProviders from "@/components/ClientProviders";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
-import GinniChatWrapper from "@/components/GinniChatWrapper";
 import AnalyticsProvider from "@/components/AnalyticsProvider";
 import Watermark from "@/components/security/Watermark";
+import dynamic from 'next/dynamic';
+
+const GinniChatWrapper = dynamic(() => import('@/components/GinniChatWrapper'), {
+  ssr: false,
+  loading: () => null
+});
 
 export const viewport: Viewport = {
   width: 'device-width',
@@ -34,7 +39,6 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        {/* Content Protection Script - Production Only */}
         {process.env.NODE_ENV === 'production' && (
           <script
             dangerouslySetInnerHTML={{
@@ -55,7 +59,6 @@ export default function RootLayout({
           />
         )}
         
-        {/* Google Analytics */}
         {GA_MEASUREMENT_ID && (
           <>
             <script async src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`} />
@@ -75,7 +78,6 @@ export default function RootLayout({
           </>
         )}
         
-        {/* Microsoft Clarity */}
         {CLARITY_PROJECT_ID && (
           <script
             type="text/javascript"
@@ -98,6 +100,7 @@ export default function RootLayout({
           <Navbar />
           <main className="min-h-screen">{children}</main>
           <Footer />
+          <GinniChatWrapper />
         </ClientProviders>
       </body>
     </html>

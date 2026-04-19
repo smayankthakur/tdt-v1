@@ -302,6 +302,7 @@ export function useReadingFlow() {
       let readingContent: string;
       let guidance: string;
       let streamingLines: string[] = [];
+      let greeting: string;
 
       if (input.selectedCards && input.selectedCards.length > 0) {
         const generated = generateReadingFromCards(
@@ -314,7 +315,9 @@ export function useReadingFlow() {
         readingContent = generated.reading;
         guidance = generated.guidance;
         streamingLines = generated.streamingLines;
+        greeting = generated.greeting || generateOpening(input.name, detectedLang);
       } else {
+        greeting = generateOpening(input.name, detectedLang);
         readingContent = generateReadingContent(input.question, input.readingType, detectedLang);
         guidance = generateGuidance(input.readingType, detectedLang);
         // Fallback streaming lines
@@ -329,8 +332,6 @@ export function useReadingFlow() {
           "Tum already feel kar rahe ho kya sahi hai… bas ab usse ignore mat karo.",
         ];
       }
-      
-      const greeting = generateOpening(input.name, detectedLang);
       
       const readingResult: ReadingResult = {
         name: input.name,

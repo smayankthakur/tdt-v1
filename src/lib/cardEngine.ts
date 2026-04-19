@@ -70,7 +70,7 @@ export function analyzeIntent(question: string, readingType?: string): DomainAna
   let secondaryDomain: IntentDomain | undefined;
 
   // Combined keyword detection
-  const keywordMap: Record<string, IntentDomain[]> = {
+  const keywordMap: Record<string, string[]> = {
     love: ['love', 'relationship', 'partner', 'boyfriend', 'girlfriend', 'ex', 'heart', 'romance', 'marriage', 'shaadi', 'pyaar', 'crush', 'dating', 'union'],
     career: ['career', 'job', 'work', 'boss', 'colleague', 'promotion', 'salary', 'business', 'kaam', 'office', 'professional'],
     finance: ['money', 'financial', 'debt', 'invest', 'wealth', 'finance', 'paise', 'rich', 'income', 'lottery'],

@@ -1,7 +1,7 @@
 import type { Language } from './config';
 
 export interface TranslationSet {
-  [key: string]: string | TranslationSet;
+  [key: string]: string | TranslationSet | string[];
 }
 
 export const TRANSLATIONS: Record<Language, TranslationSet> = {

@@ -1,14 +1,16 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Sparkles, ArrowRight, Loader2, Heart, Briefcase, TrendingUp, Users, Home, Compass } from 'lucide-react';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useReadingFlow } from '@/hooks/useReadingFlow';
 import { useReadingStore } from '@/store/reading-store';
+import { useFunnelStore } from '@/store/funnel-store';
 import { READING_TYPES, type ReadingType } from '@/store/reading-types';
 import { SelectedCard } from '@/lib/tarot/logic';
 import { generateCardSet, analyzeIntent, recordReadingSelection, finalizeReadingCards, type DomainAnalysis } from '@/lib/cardEngine';
+import Button from '@/components/ui/button';
 import TarotCardComponent from '@/components/TarotCard';
 import { FloatingTextarea } from '@/components/ui/FloatingInput';
 import StreamingOutput from './StreamingOutput';
@@ -79,6 +81,13 @@ export default function RitualReadingHub() {
   const { t } = useLanguage();
   const { generateReading, result, isLoading, error } = useReadingFlow();
   const { reset: resetReadingStore, setDeck, setSelectedCardsWithDetails, selectedCardsWithDetails } = useReadingStore();
+  const { setCurrentStage, setQuestion: setFunnelQuestion, incrementReadingCount } = useFunnelStore();
+
+  useEffect(() => {
+    if (step === 'topic-select') setCurrentStage('input');
+    else if (step === 'card-select') setCurrentStage('selection');
+    else if (step === 'reading-delivery') setCurrentStage('reading');
+  }, [step, setCurrentStage]);
 
   // Topic selection handler
   const handleTopicSelect = (topic: ReadingType) => {
@@ -93,43 +102,6 @@ export default function RitualReadingHub() {
     }, 1500);
    };
 
-  // Card selection complete
-  const handleCardSelectionComplete = (selectedCards: SelectedCard[]) => {
-    // Suspense pause
-    setStep('suspense');
-
-    setTimeout(() => {
-      // Proceed to reveal (cards flip sequentially)
-      setStep('card-reveal');
-    }, 1500);
-  };
-
-  // Card reveal complete - generate reading
-  const handleCardRevealComplete = () => {
-    // Generate the reading with emotional pacing
-    setStep('loading-result');
-    setLoadingText('Jo tum pooch rahe ho… uski clarity aa rahi hai…');
-
-    generateReading({
-      name: 'Seeker',  // Generic name for ritual feel
-      question: question,
-      readingType: selectedTopic!,
-      selectedCards: selectedCardsWithDetails,
-    }).then(() => {
-      setTimeout(() => {
-        setStep('reading-delivery');
-      }, 2000);
-    });
-  };
-
-  // Reset and start over
-  const handleStartOver = () => {
-    resetReadingStore();
-    setSelectedTopic(null);
-    setQuestion('');
-    setStep('topic-select');
-  };
-
   // Question submission
   const handleQuestionSubmit = async () => {
     if (!question.trim() || question.length < 5) return;
@@ -137,7 +109,6 @@ export default function RitualReadingHub() {
 
     // 1. Analyze intent of the question
     const analysis = analyzeIntent(question, selectedTopic || undefined);
-    setDomainAnalysis(analysis);
 
     // 2. Generate card pool using ENGINE (seeded, intent-aware)
     const { cards, analysis: cardAnalysis } = generateCardSet({
@@ -148,7 +119,7 @@ export default function RitualReadingHub() {
       count: 9, // Show 9 cards for user selection
     });
 
-    // 3. Store analysis in store for later
+    // 3. Store analysis - use the engine's analysis for consistency
     setDomainAnalysis(cardAnalysis);
 
     // 4. Set the deck for this reading
@@ -246,6 +217,8 @@ export default function RitualReadingHub() {
             onSelectionComplete={handleCardSelectionComplete}
             readingType={selectedTopic!}
             question={question}
+            analysis={domainAnalysis}
+            sessionId={sessionId}
           />
         );
 
@@ -258,6 +231,7 @@ export default function RitualReadingHub() {
             onComplete={handleCardRevealComplete}
             readingType={selectedTopic!}
             question={question}
+            domain={domainAnalysis}
           />
         );
 
@@ -308,10 +282,10 @@ function TopicSelection({ onSelect }: { onSelect: (topic: ReadingType) => void }
           <Sparkles className="h-8 w-8 text-gold" />
         </motion.div>
         <h1 className="font-heading text-3xl md:text-4xl text-foreground mb-4">
-          Aaj tum kis baare mein clarity chahte ho?
+          {t('ritualHub.topicSelect.title')}
         </h1>
         <p className="text-foreground-secondary max-w-xl mx-auto">
-          Inme se woh topic choose karo jo tumhare dil ke kareeb hai…
+          {t('ritualHub.topicSelect.subtitle')}
         </p>
       </motion.div>
 
@@ -402,6 +376,8 @@ function QuestionInput({
   onQuestionChange: (q: string) => void;
   onSubmit: () => void;
 }) {
+  const { t } = useLanguage();
+  
   return (
     <div className="space-y-8">
       <motion.div
@@ -413,10 +389,10 @@ function QuestionInput({
           <Sparkles className="h-8 w-8 text-gold" />
         </div>
         <h1 className="font-heading text-2xl md:text-3xl text-foreground mb-2">
-          Jo tumhare mind mein baar baar aa raha hai…
+          {t('ritualHub.question.title')}
         </h1>
         <p className="text-foreground-secondary text-sm md:text-base">
-          Usse likho. Pure dil se likho.
+          {t('ritualHub.question.subtitle')}
         </p>
       </motion.div>
 
@@ -424,31 +400,33 @@ function QuestionInput({
          label="Tumhara sawal"
          value={question}
          onChange={onQuestionChange}
-         placeholder="Kya janna chahte ho?"
+         placeholder={t('ritualHub.question.placeholder')}
          maxLength={500}
          autoFocus
        />
 
       <p className="text-center text-foreground-muted text-sm">
-        Jitna clear sawal… utni clear direction
+        {t('ritualHub.question.hint')}
       </p>
 
       <motion.button
         onClick={onSubmit}
         disabled={!question.trim() || question.length < 5}
-        className="w-full py-4 rounded-full bg-gradient-to-r from-red-600 via-[rgb(var(--gold))] to-yellow-400 font-medium tracking-wide text-black disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2 shadow-lg"
+        className="w-full py-4"
         whileHover={{ scale: 1.02 }}
         whileTap={{ scale: 0.98 }}
       >
-        <span>Aage badhte hain</span>
-        <ArrowRight className="h-5 w-5" />
+        <Button size="lg" className="w-full" disabled={!question.trim() || question.length < 5}>
+          <span>{t('ritualHub.question.submit')}</span>
+          <ArrowRight className="h-5 w-5" />
+        </Button>
       </motion.button>
 
       <button
         onClick={() => window.history.back()}
         className="w-full py-3 text-foreground-secondary hover:text-foreground transition-colors text-center text-sm"
       >
-        ← Wapas
+        {t('ritualHub.question.back')}
       </button>
     </div>
   );
@@ -518,15 +496,19 @@ function ShuffleAnimation({ message, messages }: { message: string; messages: st
     onSelectionComplete,
     readingType,
     question,
+    analysis,
+    sessionId,
   }: {
     onSelectionComplete: (cards: SelectedCard[]) => void;
     readingType: ReadingType;
     question: string;
+    analysis: DomainAnalysis | null;
+    sessionId: string;
   }) {
+    const { t } = useLanguage();
     const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
     const allCards = useReadingStore(state => state.deck);
     const setSelectedCardsWithDetails = useReadingStore(state => state.setSelectedCardsWithDetails);
-    const analysis = domainAnalysis;
 
     // Get 9 cards from deck
     const displayCards = allCards.length > 0 ? allCards.slice(0, 9) : [];
@@ -582,7 +564,7 @@ function ShuffleAnimation({ message, messages }: { message: string; messages: st
 
     // Intent-aware messaging
     const getIntentMessage = () => {
-      if (!analysis) return "Inme se woh cards chuno jo tumhe attract kar rahe hain…";
+      if (!analysis) return t('ritualHub.cardSelect.title');
 
       const domain = analysis.primaryDomain;
       const emotion = analysis.emotionalTone;
@@ -608,7 +590,7 @@ function ShuffleAnimation({ message, messages }: { message: string; messages: st
           className="text-center"
         >
           <h2 className="font-heading text-2xl md:text-3xl text-foreground mb-2">
-            Inme se woh cards chuno jo tumhe attract kar rahe hain…
+            {t('ritualHub.cardSelect.title')}
           </h2>
           <p className="text-foreground-secondary text-sm md:text-base leading-relaxed max-w-lg mx-auto">
             {getIntentMessage()}
@@ -670,7 +652,7 @@ function ShuffleAnimation({ message, messages }: { message: string; messages: st
 
         {selectedIds.size > 0 && selectedIds.size < 3 && (
           <p className="text-center text-foreground-muted text-sm">
-            {selectedIds.size} cards select kiye — abhi {3 - selectedIds.size} or chuno
+            {t('ritualHub.cardSelect.selectionMessage', { count: selectedIds.size, remaining: 3 - selectedIds.size })}
           </p>
         )}
 
@@ -680,7 +662,7 @@ function ShuffleAnimation({ message, messages }: { message: string; messages: st
             animate={{ opacity: 1, y: 0 }}
             className="text-center text-purple-300 font-medium"
           >
-            Perfect! Tumhara selection complete hai…
+            {t('ritualHub.cardSelect.complete')}
           </motion.p>
         )}
       </div>
@@ -743,10 +725,12 @@ function CardReveal({
   onComplete,
   readingType,
   question,
+  domain,
 }: {
   onComplete: () => void;
   readingType: ReadingType;
   question: string;
+  domain?: DomainAnalysis | null;
 }) {
   const [revealState, setRevealState] = useState<'idle' | 'flipping' | 'done'>('idle');
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
@@ -781,9 +765,13 @@ function CardReveal({
     }
   }, [currentCardIndex, selectedCards.length, revealState, onComplete]);
 
-  const getRevealMessage = () => {
+  const getRevealMessage = (cardIndex: number, card: any) => {
     const messages = REVEAL_MESSAGES;
-    return messages[currentCardIndex % messages.length];
+    // Make message personal to the card if we have domain info
+    if (domain && card) {
+      return `Card ${cardIndex + 1}: ${card.name} — ${card.keywords?.[0] || 'energy'} ${messages[cardIndex % messages.length].replace('Yeh', 'is card mein').replace('Ab jo aa raha hai', 'energy')}`;
+    }
+    return messages[cardIndex % messages.length];
   };
 
   return (
@@ -950,18 +938,12 @@ function ReadingDelivery({
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button
-              onClick={onStartOver}
-              className="px-6 py-3 rounded-xl border border-gold/30 text-foreground hover:border-gold/50 transition-all"
-            >
+            <Button variant="secondary" size="md" onClick={onStartOver}>
               Phir se shuru karein
-            </button>
-            <button
-              onClick={() => window.location.href = '/premium'}
-              className="px-6 py-3 rounded-xl bg-gold-gradient text-black font-semibold hover:opacity-90 transition-opacity"
-            >
+            </Button>
+            <Button variant="primary" size="md" onClick={() => window.location.href = '/premium'}>
               Full Access 🔓
-            </button>
+            </Button>
           </div>
         </motion.div>
       )}

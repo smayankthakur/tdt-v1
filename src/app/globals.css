@@ -188,12 +188,29 @@
   }
 
   /* === SPACING SYSTEM === */
+  /* Section: 80px - Between major sections */
   .section-padding {
     @apply py-16 md:py-20;
   }
   
+  /* Component: 40px - Between components */
   .component-spacing {
     @apply gap-6 md:gap-8;
+  }
+
+  /* Element: 20px - Between elements */
+  .mb-element {
+    @apply mb-5;
+  }
+
+  /* Tight: 10px - Tight spacing */
+  .mb-tight {
+    @apply mb-2.5;
+  }
+
+  /* Block: 40px standard spacing */
+  .mb-block {
+    @apply mb-10;
   }
 
   /* === RADIUS SYSTEM === */
@@ -358,39 +375,39 @@
    }
 
    /* === TYPOGRAPHY SCALE === */
-   /* H1 - Hero */
-   .text-h1 {
-     @apply font-heading text-4xl md:text-5xl lg:text-6xl font-semibold leading-tight;
-   }
-   
-   /* Hero Quote - Large serif for quote hook */
-   .text-hero {
-     @apply font-serif text-4xl md:text-5xl lg:text-6xl font-medium leading-tight;
-   }
+  /* Hero - Largest text for main hooks */
+  .text-hero {
+    @apply font-serif text-4xl md:text-5xl lg:text-6xl font-medium leading-tight;
+  }
   
-  /* H2 - Section Titles */
+  /* Page Title - H1 equivalent */
+  .text-h1 {
+    @apply font-heading text-3xl md:text-4xl lg:text-5xl font-semibold leading-tight;
+  }
+  
+  /* Section Title - H2 equivalent */
   .text-h2 {
     @apply font-heading text-2xl md:text-3xl lg:text-4xl font-semibold leading-tight;
   }
   
-  /* H3 */
+  /* Subsection Title - H3 equivalent */
   .text-h3 {
-    @apply font-heading text-xl md:text-2xl font-medium;
+    @apply font-heading text-xl md:text-2xl font-medium leading-tight;
   }
   
-  /* Body */
+  /* Body - Standard body text */
   .text-body {
     @apply font-sans text-base font-normal leading-relaxed;
   }
   
-  /* Body Small */
+  /* Body Small - Secondary body text */
   .text-body-sm {
     @apply font-sans text-sm font-normal leading-relaxed;
   }
   
-  /* Small */
-  .text-small {
-    @apply font-sans text-sm;
+  /* Caption - Small text */
+  .text-caption {
+    @apply font-sans text-xs font-normal leading-relaxed;
   }
 
   /* === ANIMATIONS === */

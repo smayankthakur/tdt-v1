@@ -390,6 +390,51 @@ readingHub: {
       savings: 'Bundle se 40% bachaao',
       securePayment: 'Secure payment • 30-day guarantee',
     },
+    ritualHub: {
+      topicSelect: {
+        title: "Aaj tum kis baare mein clarity chahte ho?",
+        subtitle: "Inme se woh topic choose karo jo tumhare dil ke kareeb hai…",
+      },
+      question: {
+        title: "Jo tumhare mind mein baar baar aa raha hai…",
+        subtitle: "Usse likho. Pure dil se likho.",
+        placeholder: "Kya jaan na chahte ho?",
+        submit: "Aage badhte hain",
+        hint: "Jitna clear sawal… utni clear direction",
+        back: "← Wapas",
+      },
+      shuffle: [
+        "Thoda ruk jao…",
+        "Energy align ho rahi hai…",
+        "Jo aana hai… woh aa raha hai…",
+        "Cards bat rahe hain tumhare liye…",
+        "Signal pakad rahe hain…",
+      ],
+      cardSelect: {
+        title: "Inme se woh cards chuno jo tumhe attract kar rahe hain…",
+        selectionMessage: "{count} cards select kiye — abhi {remaining} or chuno",
+        complete: "Perfect! Tumhara selection complete hai…",
+      },
+      suspense: {
+        default: "Jo tumne choose kiya hai… woh random nahi hota",
+      },
+      reveal: [
+        "Yeh pehla signal hai…",
+        "Ab jo aa raha hai woh important hai…",
+        "Dekho kya hidden hai…",
+        "Energy clear ho rahi hai…",
+        "Jo tum dhundh rahe the woh yahi hai…",
+      ],
+      loading: "Thoda ruk jao… signals pakad rahe hain",
+      preStream: "Thoda dhyaan se dekhna… jo aa raha hai woh important hai.",
+      closing: "Ab jo next step hai… woh tum already feel kar rahe ho.",
+      startOver: "Phir se shuru karein",
+      unlockAccess: "Full Access 🔓",
+    },
+    hero: {
+      cta: "Know Your Fortune",
+      ctaSubtext: "Shayad yeh wahi answer hai jiska tum wait kar rahe the…",
+    },
     chat: {
       button: 'Ginni se baat karo',
       tooltip: 'Guidance chahiye? Ginni se chat karo',

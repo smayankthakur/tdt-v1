@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Sparkles, ArrowRight } from 'lucide-react';
+import MysticalButton from '../CTAButton';
 
 export default function Preview() {
   return (
@@ -84,10 +85,10 @@ export default function Preview() {
           className="mt-block text-center"
         >
           <Link href="/reading">
-            <Button size="lg" className="btn-glow btn-glow-hover">
+            <MysticalButton size="lg" glow>
               Begin Your Reading
               <ArrowRight className="h-5 w-5" />
-            </Button>
+            </MysticalButton>
           </Link>
           <p className="mt-element text-body-sm text-foreground-muted">
             Takes less than 60 seconds

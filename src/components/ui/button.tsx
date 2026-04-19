@@ -4,15 +4,15 @@ import { cn } from "@/lib/utils"
 /**
  * === DESIGN SYSTEM BUTTON ===
  * Single source of truth for all buttons
- * Follows strict design token usage
+ * Uses design tokens from globals.css
  */
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center rounded-xl font-medium transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accentEnd/50 active:scale-95 disabled:pointer-events-none disabled:opacity-50",
+  "inline-flex items-center justify-center rounded-xl font-medium transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accentEnd/50 disabled:pointer-events-none disabled:opacity-50",
   {
     variants: {
       variant: {
-        // PRIMARY: Gradient from accentStart to accentEnd
+        // PRIMARY: Gold gradient - Main CTA
         primary: `
           bg-gradient-to-r from-accentStart to-accentEnd
           text-black
@@ -28,11 +28,17 @@ const buttonVariants = cva(
           hover:bg-gradient-to-r hover:from-accentStart hover:to-accentEnd hover:text-black hover:shadow-lg
           active:scale-95
         `,
-        // GHOST: Minimal
+        // GHOST: Minimal, transparent
         ghost: `
-          text-textPrimary
+          text-foreground
           hover:bg-white/5
           active:bg-white/10
+        `,
+        // GHOST GOLD: Gold text, transparent bg
+        ghostGold: `
+          text-gold
+          hover:bg-gold/10
+          active:bg-gold/20
         `,
         // DESTRUCTIVE: Red warning
         destructive: `
@@ -64,6 +70,17 @@ interface ButtonProps extends VariantProps<typeof buttonVariants> {
   type?: "button" | "submit" | "reset"
 }
 
+/**
+ * DESIGN SYSTEM BUTTON
+ * Use this component for ALL buttons throughout the app
+ * 
+ * Usage:
+ * - Primary: Main CTA (get started, submit, etc.)
+ * - Secondary: Alternative actions (back, cancel)
+ * - Ghost: Subtle actions (skip, maybe later)
+ * - GhostGold: Premium/special actions
+ * - Destructive: Warning actions (delete, remove)
+ */
 export default function Button({
   children,
   onClick,

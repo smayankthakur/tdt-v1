@@ -1,161 +1,202 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import GinniChat from '@/components/GinniChat';
 import { useGinniStore } from '@/store/ginni-store';
-import { usePersonalizationContext } from '@/components/personalization/PersonalizationProvider';
-import { useLanguage } from '@/hooks/useLanguage';
-import type { GinniContext } from '@/components/GinniChat';
+import { useFunnelStore } from '@/store/funnel-store';
+import { 
+  FunnelStage, 
+  getTriggerForStage, 
+  getHesitationTrigger,
+  saveGinniMemory,
+  buildGinniContext 
+} from '@/lib/ginniTriggers';
 import { MessageCircle, X } from 'lucide-react';
 
 export default function GinniChatWrapper() {
-  const { context, triggerOpen, isOpen, setIsOpen, setTriggerOpen } = useGinniStore();
-  const { profile, rules, isPersonalized } = usePersonalizationContext();
-  const { t, getChatButtonText, getChatTooltip, isHydrated } = useLanguage();
-  const idleTimerRef = useRef<NodeJS.Timeout | null>(null);
-  const [showFloatingButton, setShowFloatingButton] = useState(false);
-  const [floatingButtonVisible, setFloatingButtonVisible] = useState(true);
+  const { context, triggerOpen, isOpen, setIsOpen, setTriggerOpen, setContext, clearContext } = useGinniStore();
+  const { currentStage } = useFunnelStore();
+  
+  const hesitationTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const autoHideTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const mountedRef = useRef(false);
+  
+  const [showGinniBubble, setShowGinniBubble] = useState(false);
+  const [currentTrigger, setCurrentTrigger] = useState(getTriggerForStage(currentStage));
+  const [lastActivityTime, setLastActivityTime] = useState(Date.now());
+  const [hasTriggeredOnce, setHasTriggeredOnce] = useState(false);
+
+  const triggerGinni = useCallback((stage: FunnelStage) => {
+    const trigger = getTriggerForStage(stage);
+    setCurrentTrigger(trigger);
+    setShowGinniBubble(true);
+    setContext(buildGinniContext(stage));
+    
+    if (trigger.action === 'open') {
+      setTriggerOpen(true);
+    }
+    
+    if (trigger.autoCloseDelay) {
+      if (autoHideTimerRef.current) {
+        clearTimeout(autoHideTimerRef.current);
+      }
+      autoHideTimerRef.current = setTimeout(() => {
+        setShowGinniBubble(false);
+        clearContext();
+      }, trigger.autoCloseDelay);
+    }
+  }, [setContext, setTriggerOpen, clearContext]);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowFloatingButton(true);
-    }, 5000);
-    return () => clearTimeout(timer);
+    if (mountedRef.current) return;
+    mountedRef.current = true;
+    
+    if (currentStage === 'homepage') {
+      const timer = setTimeout(() => {
+        triggerGinni('homepage');
+        setHasTriggeredOnce(true);
+      }, 4000);
+      return () => clearTimeout(timer);
+    }
   }, []);
 
   useEffect(() => {
-    if (!isPersonalized || !profile) return;
+    if (currentStage === 'homepage' && !hasTriggeredOnce) {
+      return;
+    }
     
-    const { triggerOnIdle, idleTimeoutMinutes } = rules.chat;
-    
-    if (!triggerOnIdle) return;
+    if (currentStage !== 'homepage') {
+      const timer = setTimeout(() => {
+        triggerGinni(currentStage);
+        setHasTriggeredOnce(true);
+      }, 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [currentStage, hasTriggeredOnce, triggerGinni]);
+
+  useEffect(() => {
+    if (currentStage !== 'input') return;
 
     const handleActivity = () => {
-      if (idleTimerRef.current) {
-        clearTimeout(idleTimerRef.current);
+      setLastActivityTime(Date.now());
+      
+      if (hesitationTimerRef.current) {
+        clearTimeout(hesitationTimerRef.current);
       }
       
-      idleTimerRef.current = setTimeout(() => {
-        if (!isOpen && profile.engagementLevel !== 'low') {
-          const store = useGinniStore.getState();
-          if (!store.triggerOpen) {
-            store.setTriggerOpen(true);
-          }
+      hesitationTimerRef.current = setTimeout(() => {
+        const timeSinceLastActivity = Date.now() - lastActivityTime;
+        if (timeSinceLastActivity > 5000) {
+          const hesitation = getHesitationTrigger('input');
+          setCurrentTrigger(hesitation);
+          setShowGinniBubble(true);
+          setTriggerOpen(true);
         }
-      }, idleTimeoutMinutes * 60 * 1000);
+      }, 6000);
     };
 
-    window.addEventListener('mousemove', handleActivity);
     window.addEventListener('keydown', handleActivity);
+    window.addEventListener('click', handleActivity);
 
     return () => {
-      window.removeEventListener('mousemove', handleActivity);
       window.removeEventListener('keydown', handleActivity);
-      if (idleTimerRef.current) {
-        clearTimeout(idleTimerRef.current);
+      window.removeEventListener('click', handleActivity);
+      if (hesitationTimerRef.current) {
+        clearTimeout(hesitationTimerRef.current);
       }
     };
-  }, [isPersonalized, profile, rules.chat, isOpen]);
+  }, [currentStage, lastActivityTime, setTriggerOpen]);
 
-  const getPersonalizedContext = (): GinniContext | undefined => {
-    if (!context && isPersonalized && profile) {
-      return {
-        question: rules.chat.contextMessage,
-        theme: profile.dominantIntent,
-        emotion: profile.engagementLevel === 'high' ? 'intense' : 
-                 profile.engagementLevel === 'low' ? 'calm' : 'neutral',
-      };
-    }
-    return undefined;
-  };
-
-  const personalizedContext = getPersonalizedContext();
-  const finalContext = context || personalizedContext;
-
-  const autoOpenDelay = isPersonalized && profile?.isHighIntent ? 3000 : 0;
+  useEffect(() => {
+    return () => {
+      if (hesitationTimerRef.current) clearTimeout(hesitationTimerRef.current);
+      if (autoHideTimerRef.current) clearTimeout(autoHideTimerRef.current);
+    };
+  }, []);
 
   const handleOpenChat = () => {
+    setShowGinniBubble(false);
     setIsOpen(true);
-    setFloatingButtonVisible(false);
+    setTriggerOpen(true);
+    saveGinniMemory({ stage: currentStage });
   };
 
   const handleCloseChat = () => {
     setIsOpen(false);
-    setTimeout(() => setFloatingButtonVisible(true), 2000);
+    setShowGinniBubble(false);
+    clearContext();
+  };
+
+  const handleDismissBubble = () => {
+    setShowGinniBubble(false);
+    clearContext();
   };
 
   return (
     <>
-      {/* Floating Button - Premium Polish */}
       <AnimatePresence>
-        {showFloatingButton && floatingButtonVisible && !isOpen && (
-          <motion.button
-            initial={{ scale: 0, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0, opacity: 0 }}
-            whileHover={{ scale: 1.08, y: -2 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={handleOpenChat}
-            className="fixed bottom-6 right-6 z-40 flex items-center gap-2 rounded-xl bg-gradient-to-r from-red-500 via-orange-500 to-yellow-400 px-5 py-3 font-semibold text-white"
-            style={{
-              boxShadow: '0 4px 20px rgba(255, 100, 0, 0.4), 0 0 15px rgba(255, 150, 0, 0.2)',
-            }}
+        {showGinniBubble && !isOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: 20, scale: 0.9 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 10, scale: 0.95 }}
+            transition={{ type: "spring", stiffness: 300, damping: 25 }}
+            className="fixed bottom-24 right-6 z-40 max-w-xs"
           >
-            {/* Pulsing glow effect */}
-            <motion.div
-              className="absolute inset-0 rounded-xl"
-              style={{
-                boxShadow: '0 0 20px rgba(255, 150, 0, 0.4)',
-              }}
-              animate={{
-                boxShadow: [
-                  '0 0 15px rgba(255, 100, 0, 0.3)',
-                  '0 0 25px rgba(255, 150, 0, 0.5)',
-                  '0 0 15px rgba(255, 100, 0, 0.3)',
-                ],
-              }}
-              transition={{
-                duration: 3,
-                repeat: Infinity,
-                ease: 'easeInOut',
-              }}
-            />
-            <MessageCircle className="h-5 w-5 relative z-10" />
-            <span className="relative z-10">
-              {isHydrated ? getChatButtonText() : 'Talk to Ginni'}
-            </span>
-            <SparkleIcon />
-          </motion.button>
+            <div className="relative">
+              <div className="absolute -top-3 -left-1 text-2xl">✨</div>
+              <div className="bg-gradient-to-br from-[#1A1A2E] to-[#252540] backdrop-blur-xl rounded-2xl p-4 border border-purple-500/30 shadow-xl shadow-purple-900/20">
+                <p className="text-sm text-purple-100 leading-relaxed">
+                  {currentTrigger.message}
+                </p>
+                
+                {currentTrigger.ctaLabel && currentTrigger.ctaAction && (
+                  <a
+                    href={currentTrigger.ctaAction}
+                    className="mt-3 block w-full text-center py-2 px-4 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 text-white text-sm font-medium hover:from-purple-500 hover:to-indigo-500 transition-all"
+                  >
+                    {currentTrigger.ctaLabel}
+                  </a>
+                )}
+                
+                <div className="flex items-center justify-between mt-3">
+                  <button
+                    onClick={handleOpenChat}
+                    className="text-xs text-purple-300 hover:text-purple-200 transition-colors"
+                  >
+                    Baat karni hai
+                  </button>
+                  <button
+                    onClick={handleDismissBubble}
+                    className="text-xs text-gray-400 hover:text-gray-300 transition-colors"
+                  >
+                    Nahi, dhanyavad
+                  </button>
+                </div>
+              </div>
+              
+              <motion.button
+                onClick={handleOpenChat}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="absolute -bottom-3 -right-3 w-12 h-12 rounded-full bg-gradient-to-r from-purple-600 to-indigo-600 shadow-lg flex items-center justify-center"
+              >
+                <MessageCircle className="w-5 h-5 text-white" />
+              </motion.button>
+            </div>
+          </motion.div>
         )}
       </AnimatePresence>
 
       <GinniChat 
-        autoOpenDelay={autoOpenDelay}
-        showNotification={rules.chat.triggerOnIdle && profile?.engagementLevel !== 'low'}
-        context={finalContext}
+        context={context}
         triggerOpen={triggerOpen}
         onOpen={() => {
           setTriggerOpen(false);
-          setFloatingButtonVisible(false);
         }}
-        onClose={() => {
-          setIsOpen(false);
-          setTimeout(() => setFloatingButtonVisible(true), 2000);
-        }}
+        onClose={handleCloseChat}
       />
     </>
-  );
-}
-
-function SparkleIcon() {
-  return (
-    <motion.span
-      animate={{ rotate: [0, 15, -15, 0], scale: [1, 1.2, 1] }}
-      transition={{ duration: 2, repeat: Infinity }}
-      className="text-purple-200 relative z-10"
-    >
-      ✨
-    </motion.span>
   );
 }

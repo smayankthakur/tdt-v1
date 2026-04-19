@@ -37,18 +37,31 @@ export default function Typography({
   className,
   children,
 }: TypographyProps) {
-  const Tag = variant.startsWith('h') || variant === 'hero' 
-    ? (variant === 'hero' ? 'h1' : variant) 
+  const Tag: 'p' | 'h1' | 'h2' | 'h3' | 'h4' | 'span' = variant.startsWith('h') || variant === 'hero' 
+    ? (variant === 'hero' ? 'h1' : variant === 'h1' ? 'h1' : variant === 'h2' ? 'h2' : variant === 'h3' ? 'h3' : variant === 'h4' ? 'h4' : 'p') 
     : 'p';
   
   const variantClass = variantStyles[variant];
   const colorClass = colorStyles[color];
   
-  return (
-    <Tag className={cn(variantClass, colorClass, className)}>
-      {children}
-    </Tag>
-  );
+  const classNames = cn(variantClass, colorClass, className);
+  
+  if (Tag === 'p') {
+    return <p className={classNames}>{children}</p>;
+  }
+  if (Tag === 'h1') {
+    return <h1 className={classNames}>{children}</h1>;
+  }
+  if (Tag === 'h2') {
+    return <h2 className={classNames}>{children}</h2>;
+  }
+  if (Tag === 'h3') {
+    return <h3 className={classNames}>{children}</h3>;
+  }
+  if (Tag === 'h4') {
+    return <h4 className={classNames}>{children}</h4>;
+  }
+  return <p className={classNames}>{children}</p>;
 }
 
 // Convenience components for common use cases

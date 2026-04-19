@@ -135,7 +135,7 @@ function generateReadingFromCards(
   readingType: string,
   name: string = 'Seeker',
   domainAnalysis?: DomainAnalysis
-): { reading: string; guidance: string; streamingLines: string[] } {
+): { reading: string; guidance: string; streamingLines: string[]; greeting?: string } {
   // Build context using precomputed domain analysis if available
   let context;
   if (domainAnalysis) {
@@ -200,6 +200,7 @@ function generateReadingFromCards(
     reading: fullText,
     guidance: reading.guidance,
     streamingLines: lines,
+    greeting: reading.opening,
   };
 }
 

@@ -6,6 +6,9 @@ import { useLanguage } from '@/hooks/useLanguage';
 import { useAutoLanguage } from '@/hooks/useAutoLanguage';
 import { type ReadingType } from '@/store/reading-types';
 import { SelectedCard } from '@/lib/tarot/logic';
+import { generateHumanizedReading, createContextFromAnalysis } from '@/lib/humanizeReading';
+import type { DomainAnalysis } from '@/lib/cardEngine';
+import { DomainAnalysis } from '@/lib/cardEngine';
 
 export interface ReadingResult {
   name: string;
@@ -13,6 +16,7 @@ export interface ReadingResult {
   greeting: string;
   reading: string;
   guidance: string;
+  streamingLines: string[]; // For streaming output
   language: string;
   timestamp: string;
 }
@@ -22,6 +26,7 @@ interface GenerateInput {
   question: string;
   readingType: ReadingType;
   selectedCards?: SelectedCard[];
+  domainAnalysis?: DomainAnalysis;
 }
 
 const PERSONALITY_OPENINGS = {
@@ -124,58 +129,113 @@ function generateGuidance(readingType: string, language: string): string {
   return templates[Math.floor(Math.random() * templates.length)];
 }
 
-// Generate reading based on actual selected cards
+// Generate reading based on actual selected cards using humanization engine
 function generateReadingFromCards(
   selectedCards: SelectedCard[],
   question: string,
   readingType: string,
-  language: string
-): { reading: string; guidance: string } {
-  const cardInterpretations = selectedCards.map((sc, idx) => {
-    const card = sc.card;
-    const orientation = sc.isReversed ? ' (Reversed)' : '';
-    const meaning = sc.isReversed ? card.reversed : card.upright;
-    const position = ['Past', 'Present', 'Future'][idx] || `Position ${idx + 1}`;
-    
-    return `CARD ${idx + 1} — ${card.name} (${position})${orientation}:
-Keywords: ${card.keywords.join(', ').toLowerCase()}
-Message: ${meaning}`;
-  }).join('\n\n');
-
-  const readingContent = `Jo tum pooch rahe ho… usme confusion hai, par direction clear ho rahi hai.
-
-Yeh cards tumhare liye signal bhej rahe hain:
-
-${cardInterpretations}
-
-Yeh keh rahe hain ki tum already feel kar rahe ho kya right hai. Tumhara focus wahi hai jo matter karta hai. Ab tumhe clarity milni shuru ho rahi hai – par ready raho, kuch truths uncomfortable bhi ho sakte hain.
-
-Sitaare sirf show nahi kar rahe, woh actually tumhare liye message bhej rahe hain.`;
-
-  const guidanceTemplates = {
-    hinglish: [
-      "Toh ab kya karein? Patience rakhho aur apni instinct pe trust karo. Jo chahte ho woh apne aap milega.",
-      "Direction clear hai. Bas thoda time lagega, par progress zaroor hogi.",
-      "Situation thoda complex hai, par solution simple hai. Soch kar samajh ao.",
-      "Energy abhi shifting hai. Thoda wait karo, results aayenge.",
-    ],
-    english: [
-      "Trust your instincts here. The universe is guiding you, even if the path isn't clear yet.",
-      "What you're seeking is already on its way. Just stay open.",
-      "There's more to this than meets the eye. Take your time processing.",
-      "The timing isn't right yet, but it will be. Stay patient.",
-    ],
-    hindi: [
-      "Abhi wait karna pad sakta hai. Par jo chahte ho woh zaroor milega.",
-      "Situation clear ho raha hai. Thoda time do.",
-      "Apni instinct pe bharosa rakho. Answers aayenge.",
-    ],
+  name: string = 'Seeker',
+  domainAnalysis?: DomainAnalysis
+): { reading: string; guidance: string; streamingLines: string[] } {
+  // Build context using precomputed domain analysis if available
+  let context;
+  if (domainAnalysis) {
+    context = createContextFromAnalysis(domainAnalysis, question, name);
+  } else {
+    // Fallback: analyze question inline
+    context = createContextFromAnalysis(
+      {
+        primaryDomain: 'general',
+        emotionalTone: 'neutral',
+        keywords: [],
+      },
+      question,
+      name
+    );
+  }
+  
+  // Generate full reading using humanization engine
+  const reading = generateHumanizedReading(context, selectedCards);
+  
+  // Create array of lines for streaming
+  const lines: string[] = [];
+  
+  // Opening hook
+  lines.push(reading.opening);
+  lines.push('');
+  
+  // Present Energy
+  lines.push('• Jo tumhare liye abhi chal raha hai:');
+  lines.push(reading.presentEnergy);
+  lines.push('');
+  
+  // Card interpretations (numbered)
+  reading.cardInterpretations.forEach((interp, idx) => {
+    lines.push(`Card ${idx + 1}:`);
+    lines.push(interp);
+    lines.push('');
+  });
+  
+  // Pattern (underlying)
+  lines.push('• Iske pichhe jo pattern hai:');
+  lines.push(reading.underlyingPattern);
+  lines.push('');
+  
+  // Direction
+  lines.push('• Aage kya aa raha hai:');
+  lines.push(reading.direction);
+  lines.push('');
+  
+  // Guidance
+  lines.push('• Ab tum kya karte ho:');
+  lines.push(reading.guidance);
+  lines.push('');
+  
+  // Closing (emotional lock)
+  lines.push(reading.closing);
+  
+  // Full text for backward compatibility
+  const fullText = lines.join('\n\n');
+  
+  return {
+    reading: fullText,
+    guidance: reading.guidance,
+    streamingLines: lines,
   };
+}
 
-  const templates = guidanceTemplates[language as keyof typeof guidanceTemplates] || guidanceTemplates.english;
-  const guidance = templates[Math.floor(Math.random() * templates.length)];
-
-  return { reading: readingContent, guidance };
+// Helper to convert humanized reading to streaming lines
+function formatReadingSections(reading: ReturnType<typeof generateHumanizedReading>): string[] {
+  const sections: string[] = [];
+  
+  sections.push(reading.opening);
+  sections.push('');
+  
+  sections.push('• Jo tumhare liye abhi chal raha hai:');
+  sections.push(reading.presentEnergy);
+  sections.push('');
+  
+  reading.cardInterpretations.forEach((interp, idx) => {
+    sections.push(`Card ${idx + 1}:`);
+    sections.push(interp);
+    sections.push('');
+  });
+  
+  sections.push('• Iske pichhe jo pattern hai:');
+  sections.push(reading.underlyingPattern);
+  sections.push('');
+  
+  sections.push('• Aage kya aa raha hai:');
+  sections.push(reading.direction);
+  sections.push('');
+  
+  sections.push('• Ab tum kya karte ho:');
+  sections.push(reading.guidance);
+  sections.push('');
+  
+  sections.push(reading.closing);
+  
+  return sections;
 }
 
 // Fallback reading when no cards
@@ -242,19 +302,33 @@ export function useReadingFlow() {
       // Generate reading based on actual cards if provided
       let readingContent: string;
       let guidance: string;
-      
+      let streamingLines: string[] = [];
+
       if (input.selectedCards && input.selectedCards.length > 0) {
         const generated = generateReadingFromCards(
           input.selectedCards,
           input.question,
           input.readingType,
-          detectedLang
+          input.name,
+          input.domainAnalysis
         );
         readingContent = generated.reading;
         guidance = generated.guidance;
+        streamingLines = generated.streamingLines;
       } else {
         readingContent = generateReadingContent(input.question, input.readingType, detectedLang);
         guidance = generateGuidance(input.readingType, detectedLang);
+        // Fallback streaming lines
+        streamingLines = [
+          `${greeting}`,
+          '',
+          readingContent,
+          '',
+          '• Ab tum kya karte ho:',
+          guidance,
+          '',
+          "Tum already feel kar rahe ho kya sahi hai… bas ab usse ignore mat karo.",
+        ];
       }
       
       const greeting = generateOpening(input.name, detectedLang);
@@ -265,6 +339,7 @@ export function useReadingFlow() {
         greeting,
         reading: readingContent,
         guidance,
+        streamingLines,
         language: detectedLang,
         timestamp: new Date().toISOString(),
       };

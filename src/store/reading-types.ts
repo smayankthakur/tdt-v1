@@ -4,20 +4,12 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
 export type ReadingType = 
-  | 'detailed'
-  | 'yesno'
-  | 'daily'
-  | 'union'
-  | 'thirdparty'
-  | 'shaadi'
-  | 'soulmate'
-  | 'baby'
-  | 'partner'
-  | 'spiritual'
-  | 'month'
-  | 'universe'
-  | 'action'
-  | 'relationship';
+  | 'love'
+  | 'career'
+  | 'finance'
+  | 'marriage'
+  | 'no_contact'
+  | 'general';
 
 export interface ReadingLimitState {
   dailyReadings: number;
@@ -45,20 +37,12 @@ export const useReadingLimitStore = create<ReadingLimitState>()(
       dailyReadings: 0,
       lastResetDate: null,
       typeUsage: {
-        detailed: 0,
-        yesno: 0,
-        daily: 0,
-        union: 0,
-        thirdparty: 0,
-        shaadi: 0,
-        soulmate: 0,
-        baby: 0,
-        partner: 0,
-        spiritual: 0,
-        month: 0,
-        universe: 0,
-        action: 0,
-        relationship: 0,
+        love: 0,
+        career: 0,
+        finance: 0,
+        marriage: 0,
+        no_contact: 0,
+        general: 0,
       },
       isSubscribed: false,
       paywallShown: false,
@@ -111,18 +95,10 @@ export const useReadingLimitStore = create<ReadingLimitState>()(
 );
 
 export const READING_TYPES: { id: ReadingType; label: string; emoji: string; icon?: string }[] = [
-  { id: 'detailed', label: 'Detailed Reading', emoji: '🔮' },
-  { id: 'yesno', label: 'Yes / No', emoji: '⚡' },
-  { id: 'daily', label: 'Aaj ka din', emoji: '☀️' },
-  { id: 'union', label: 'Union Kab', emoji: '💕' },
-  { id: 'thirdparty', label: 'Third Party End', emoji: '🚫' },
-  { id: 'shaadi', label: 'Shaadi Kab', emoji: '💒' },
-  { id: 'soulmate', label: 'Soulmate Kab', emoji: '✨' },
-  { id: 'baby', label: 'Baby Kab', emoji: '👶' },
-  { id: 'partner', label: 'Partner Feelings', emoji: '💭' },
-  { id: 'spiritual', label: 'Spiritual Journey', emoji: '🧘' },
-  { id: 'month', label: 'This Month', emoji: '📅' },
-  { id: 'universe', label: 'Universe Guidance', emoji: '🌟' },
-  { id: 'action', label: 'Partner Next Action', emoji: '👁️' },
-  { id: 'relationship', label: 'Relationship (Past-Present-Future)', emoji: '📈' },
+  { id: 'love', label: 'Love', emoji: '💕' },
+  { id: 'career', label: 'Career', emoji: '💼' },
+  { id: 'finance', label: 'Finance', emoji: '💰' },
+  { id: 'marriage', label: 'Marriage', emoji: '💒' },
+  { id: 'no_contact', label: 'No Contact', emoji: '🔇' },
+  { id: 'general', label: 'General', emoji: '🔮' },
 ];

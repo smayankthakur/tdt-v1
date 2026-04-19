@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState, useRef } from 'react';
+import { shouldShowWatermark } from '@/lib/securityConfig';
 
 function getUserId(): string {
   if (typeof window === 'undefined') return 'anonymous';
@@ -77,7 +78,7 @@ export default function Watermark() {
     return () => window.removeEventListener('resize', resize);
   }, [userId, offset]);
 
-  if (!userId) return null;
+  if (!userId || !shouldShowWatermark()) return null;
 
   return (
     <canvas

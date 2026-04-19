@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef, useCallback, forwardRef } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Sparkles, ArrowRight, Loader2, Heart, Briefcase, TrendingUp, Users, Home, Compass } from 'lucide-react';
 import { useLanguage } from '@/hooks/useLanguage';
@@ -8,8 +8,13 @@ import { useReadingFlow } from '@/hooks/useReadingFlow';
 import { useReadingStore } from '@/store/reading-store';
 import { READING_TYPES, type ReadingType } from '@/store/reading-types';
 import { pickCards, SelectedCard } from '@/lib/tarot/logic';
+import { generateCardSet, analyzeIntent, recordReadingSelection, finalizeReadingCards, type DomainAnalysis } from '@/lib/cardEngine';
 import TarotCardComponent from '@/components/TarotCard';
 import { FloatingTextarea } from '@/components/ui/FloatingInput';
+import StreamingOutput from './StreamingOutput';
+
+// Generate simple unique session ID
+const generateSessionId = () => `session_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`;
 
 type RitualStep =
   | 'topic-select'
@@ -31,20 +36,12 @@ interface TopicCard {
 }
 
 const TOPIC_CARDS: TopicCard[] = [
-  { id: 'detailed', label: 'Detailed Reading', emoji: '🔮', icon: Sparkles, color: 'from-purple-500/20 to-blue-500/20' },
-  { id: 'yesno', label: 'Yes / No', emoji: '⚡', icon: TrendingUp, color: 'from-yellow-500/20 to-orange-500/20' },
-  { id: 'daily', label: 'Aaj ka din', emoji: '☀️', icon: Sparkles, color: 'from-amber-500/20 to-yellow-500/20' },
-  { id: 'union', label: 'Union Kab', emoji: '💕', icon: Heart, color: 'from-pink-500/20 to-rose-500/20' },
-  { id: 'thirdparty', label: 'Third Party End', emoji: '🚫', icon: Users, color: 'from-red-500/20 to-rose-500/20' },
-  { id: 'shaadi', label: 'Shaadi Kab', emoji: '💒', icon: Home, color: 'from-emerald-500/20 to-teal-500/20' },
-  { id: 'soulmate', label: 'Soulmate Kab', emoji: '✨', icon: Heart, color: 'from-indigo-500/20 to-purple-500/20' },
-  { id: 'baby', label: 'Baby Kab', emoji: '👶', icon: Sparkles, color: 'from-blue-500/20 to-cyan-500/20' },
-  { id: 'partner', label: 'Partner Feelings', emoji: '💭', icon: Users, color: 'from-violet-500/20 to-purple-500/20' },
-  { id: 'spiritual', label: 'Spiritual Journey', emoji: '🧘', icon: Compass, color: 'from-cyan-500/20 to-teal-500/20' },
-  { id: 'month', label: 'This Month', emoji: '📅', icon: TrendingUp, color: 'from-green-500/20 to-emerald-500/20' },
-  { id: 'universe', label: 'Universe Guidance', emoji: '🌟', icon: Compass, color: 'from-sky-500/20 to-blue-500/20' },
-  { id: 'action', label: 'Partner Next Action', emoji: '👁️', icon: Briefcase, color: 'from-amber-500/20 to-orange-500/20' },
-  { id: 'relationship', label: 'Relationship (Past-Present-Future)', emoji: '📈', icon: Heart, color: 'from-rose-500/20 to-pink-500/20' },
+  { id: 'love', label: 'Love', emoji: '💕', icon: Heart, color: 'from-pink-500/20 to-rose-500/20' },
+  { id: 'career', label: 'Career', emoji: '💼', icon: Briefcase, color: 'from-amber-500/20 to-orange-500/20' },
+  { id: 'finance', label: 'Finance', emoji: '💰', icon: TrendingUp, color: 'from-emerald-500/20 to-teal-500/20' },
+  { id: 'marriage', label: 'Marriage', emoji: '💒', icon: Home, color: 'from-purple-500/20 to-violet-500/20' },
+  { id: 'no_contact', label: 'No Contact', emoji: '🔇', icon: Users, color: 'from-red-500/20 to-rose-500/20' },
+  { id: 'general', label: 'General', emoji: '🔮', icon: Sparkles, color: 'from-blue-500/20 to-cyan-500/20' },
 ];
 
 const SHUFFLE_MESSAGES = [
@@ -76,6 +73,8 @@ export default function RitualReadingHub() {
   const [question, setQuestion] = useState('');
   const [shuffleMessage, setShuffleMessage] = useState('');
   const [loadingText, setLoadingText] = useState('Bas dekhte hain kya aa raha hai…');
+  const [sessionId] = useState(() => generateSessionId());
+  const [domainAnalysis, setDomainAnalysis] = useState<DomainAnalysis | null>(null);
 
   const { t } = useLanguage();
   const { generateReading, result, isLoading, error } = useReadingFlow();
@@ -92,38 +91,7 @@ export default function RitualReadingHub() {
     setTimeout(() => {
       setStep('question-input');
     }, 1500);
-  };
-
-  // Question submission
-  const handleQuestionSubmit = () => {
-    if (!question.trim() || question.length < 5) return;
-    vibrate();
-
-    // Generate card pool based on topic + question (6-9 cards)
-    const cardPool = pickCards({
-      topic: selectedTopic,
-      question: question,
-      count: 9, // Show 9 cards for selection
-    });
-
-    // Set the deck for this reading (first 9 will be shown)
-    setDeck(cardPool.map(sc => sc.card));
-
-    setStep('shuffle');
-
-    // Shuffle messages rotation
-    let msgIndex = 0;
-    const shuffleInterval = setInterval(() => {
-      msgIndex = (msgIndex + 1) % SHUFFLE_MESSAGES.length;
-      setShuffleMessage(SHUFFLE_MESSAGES[msgIndex]);
-    }, 800);
-
-    // After shuffle, proceed to card selection
-    setTimeout(() => {
-      clearInterval(shuffleInterval);
-      setStep('card-select');
-    }, 3000);
-  };
+   };
 
   // Card selection complete
   const handleCardSelectionComplete = (selectedCards: SelectedCard[]) => {
@@ -163,20 +131,29 @@ export default function RitualReadingHub() {
   };
 
   // Question submission
-  const handleQuestionSubmit = () => {
+  const handleQuestionSubmit = async () => {
     if (!question.trim() || question.length < 5) return;
     vibrate();
 
-    // Generate card pool based on topic + question (6-9 cards)
-    const cardPool = pickCards({
-      topic: selectedTopic,
-      question: question,
-      count: 9, // Show 9 cards for selection
+    // 1. Analyze intent of the question
+    const analysis = analyzeIntent(question, selectedTopic || undefined);
+    setDomainAnalysis(analysis);
+
+    // 2. Generate card pool using ENGINE (seeded, intent-aware)
+    const { cards, analysis: cardAnalysis } = generateCardSet({
+      question,
+      readingType: selectedTopic || 'general',
+      timestamp: Date.now(),
+      sessionId,
+      count: 9, // Show 9 cards for user selection
     });
 
-    // Set the deck for this reading (first 9 will be shown)
+    // 3. Store analysis in store for later
+    setDomainAnalysis(cardAnalysis);
+
+    // 4. Set the deck for this reading
     const { setDeck } = useReadingStore.getState();
-    setDeck(cardPool.map(sc => sc.card));
+    setDeck(cards);
 
     setStep('shuffle');
 
@@ -211,10 +188,15 @@ export default function RitualReadingHub() {
     setStep('loading-result');
     setLoadingText('Jo tum pooch rahe ho… uski clarity aa rahi hai…');
 
+    // Use the selected cards from store
+    const { selectedCardsWithDetails } = useReadingStore.getState();
+
     generateReading({
-      name: 'Seeker',  // Generic name for ritual feel
+      name: 'Seeker',
       question: question,
       readingType: selectedTopic!,
+      selectedCards: selectedCardsWithDetails,
+      domainAnalysis: domainAnalysis!,
     }).then(() => {
       setTimeout(() => {
         setStep('reading-delivery');
@@ -227,12 +209,9 @@ export default function RitualReadingHub() {
     resetReadingStore();
     setSelectedTopic(null);
     setQuestion('');
+    setDomainAnalysis(null);
     setStep('topic-select');
-    // Also re-randomize deck on fresh start
-    const { setDeck } = useReadingStore.getState();
-    const allCards = useReadingStore.getState().deck;
-    // Shuffle deck again
-    setDeck([...allCards].sort(() => Math.random() - 0.5).slice(0, 9));
+    // No need to manually set deck - fresh reading will generate new cards
   };
 
   // Render individual step
@@ -271,7 +250,7 @@ export default function RitualReadingHub() {
         );
 
       case 'suspense':
-        return <SuspensePause />;
+        return <SuspensePause domain={domainAnalysis || undefined} />;
 
       case 'card-reveal':
         return (
@@ -534,251 +513,204 @@ function ShuffleAnimation({ message, messages }: { message: string; messages: st
   );
 }
 
-// ========== STEP 5: CARD SELECTION ==========
-function CardSelection({
-  onSelectionComplete,
-  readingType,
-  question,
-}: {
-  onSelectionComplete: (cards: SelectedCard[]) => void;
-  readingType: ReadingType;
-  question: string;
-}) {
-  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
-  const allCards = useReadingStore(state => state.deck);
-  const setSelectedCardsWithDetails = useReadingStore(state => state.setSelectedCardsWithDetails);
+  // ========== STEP 5: CARD SELECTION ==========
+  function CardSelection({
+    onSelectionComplete,
+    readingType,
+    question,
+  }: {
+    onSelectionComplete: (cards: SelectedCard[]) => void;
+    readingType: ReadingType;
+    question: string;
+  }) {
+    const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+    const allCards = useReadingStore(state => state.deck);
+    const setSelectedCardsWithDetails = useReadingStore(state => state.setSelectedCardsWithDetails);
+    const analysis = domainAnalysis;
 
-  // Get 9 random cards from deck
-  const displayCards = allCards.length > 0 ? allCards.slice(0, 9) : [];
+    // Get 9 cards from deck
+    const displayCards = allCards.length > 0 ? allCards.slice(0, 9) : [];
 
-  const handleCardClick = (cardId: string) => {
-    vibrate();
-    const newSelection = new Set(selectedIds);
-    if (newSelection.has(cardId)) {
-      newSelection.delete(cardId);
-    } else if (newSelection.size < 3) {
-      newSelection.add(cardId);
+    const handleCardClick = (cardId: string) => {
+      vibrate();
+      const newSelection = new Set(selectedIds);
+      if (newSelection.has(cardId)) {
+        newSelection.delete(cardId);
+      } else if (newSelection.size < 3) {
+        newSelection.add(cardId);
+      }
+      setSelectedIds(newSelection);
+
+      if (newSelection.size === 3) {
+        // 1. Get the actual card objects for the selected IDs
+        const selectedCardObjects = finalizeReadingCards(
+          Array.from(newSelection),
+          displayCards,
+          analysis!,
+          undefined, // userId would come from auth in real app
+          sessionId
+        );
+
+        // 2. Record selection in history for repetition control
+        recordReadingSelection(
+          undefined, // userId
+          sessionId,
+          selectedCardObjects.map(sc => ({
+            cardId: sc.card.id,
+            timestamp: Date.now(),
+            position: sc.position,
+          }))
+        );
+
+        // 3. Save to store
+        setSelectedCardsWithDetails(selectedCardObjects);
+
+        // 4. Small pause then proceed
+        setTimeout(() => {
+          onSelectionComplete(selectedCardObjects);
+        }, 600);
+      }
+    };
+
+    if (displayCards.length === 0) {
+      return (
+        <div className="text-center py-10">
+          <p className="text-foreground-secondary">Cards laade ja rahe hain…</p>
+        </div>
+      );
     }
-    setSelectedIds(newSelection);
 
-    if (newSelection.size === 3) {
-      // Get full card objects with metadata
-      const selectedCardObjects: SelectedCard[] = displayCards
-        .filter(c => newSelection.has(c.id))
-        .map((card, idx) => ({
-          card,
-          position: ['Past', 'Present', 'Future'][idx] || `Position ${idx + 1}`,
-          isReversed: Math.random() < 0.2,
-          weight: 1,
-        }));
+    // Intent-aware messaging
+    const getIntentMessage = () => {
+      if (!analysis) return "Inme se woh cards chuno jo tumhe attract kar rahe hain…";
 
-      // Save to store
-      setSelectedCardsWithDetails(selectedCardObjects);
+      const domain = analysis.primaryDomain;
+      const emotion = analysis.emotionalTone;
 
-      setTimeout(() => {
-        onSelectionComplete(selectedCardObjects);
-      }, 500);
-    }
-  };
+      const messages: Record<string, string> = {
+        love: "Tumhare dil ke baare mein jo baar baar soch rahe ho… woh energy inme hai. Jo cards tumhe attract kar rahe hain, woh tumhare pyaar ki energy se connected hain.",
+        career: "Tumhare professional life ka sawal tumhare mann mein chal raha hai. Jo cards tum feel kar rahe ho, woh tumhari career ki energy reflect kar rahe hain.",
+        finance: "Tum financial clarity chahte ho. Jo cards attract kar rahe hain, woh tumhare money matters ke signals lae rahe hain.",
+        conflict: "Tension ya conflict jo tum feel kar rahe ho… uski energy cards mein dikh rahi hai. Jo chuno, woh meaningful hai.",
+        action: "Kya karna chahiye? Tumhara internal signal har card mein hai. Jo attract kar raha hai, woh tumhara next step indication kar raha hai.",
+        spiritual: "Tum spiritual clarity dhundh rahe ho. Jo cards tumhe pull kar rahe hain, woh universe ke messages lae rahe hain.",
+        general: "Tumhare question ki energy tumhare saath hai. Jo cards chuno, woh tumhare liye meaningful signals hain.",
+      };
 
-  if (displayCards.length === 0) {
+      return messages[domain] || messages.general;
+    };
+
     return (
-      <div className="text-center py-10">
-        <p className="text-foreground-secondary">Loading cards…</p>
+      <div className="space-y-8">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-center"
+        >
+          <h2 className="font-heading text-2xl md:text-3xl text-foreground mb-2">
+            Inme se woh cards chuno jo tumhe attract kar rahe hain…
+          </h2>
+          <p className="text-foreground-secondary text-sm md:text-base leading-relaxed max-w-lg mx-auto">
+            {getIntentMessage()}
+          </p>
+          {analysis && (
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.3 }}
+              className="mt-3 text-xs text-purple-400/60"
+            >
+              Energy detected: {analysis.emotionalTone} • Domain: {analysis.primaryDomain}
+            </motion.p>
+          )}
+        </motion.div>
+
+        <div className="grid grid-cols-3 md:grid-cols-3 gap-3 md:gap-4">
+          {displayCards.map((card, index) => {
+            const isSelected = selectedIds.has(card.id);
+            return (
+              <motion.div
+                key={card.id}
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: index * 0.05 }}
+                onClick={() => handleCardClick(card.id)}
+                className="relative"
+              >
+                {/* Visual trust layer: glow and scale on selection */}
+                {isSelected && (
+                  <motion.div
+                    layoutId="selectedGlow"
+                    className="absolute inset-0 rounded-2xl bg-purple-500/20 blur-xl -z-10"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.3 }}
+                  />
+                )}
+                <TarotCardComponent
+                  card={card}
+                  isFlipped={false}
+                  isSelected={isSelected}
+                  size="lg"
+                  showMeaning={false}
+                />
+                {isSelected && (
+                  <motion.div
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    className="absolute -top-2 -right-2 w-6 h-6 bg-purple-500 rounded-full flex items-center justify-center"
+                  >
+                    <span className="text-white text-xs font-bold">✓</span>
+                  </motion.div>
+                )}
+              </motion.div>
+            );
+          })}
+        </div>
+
+        {selectedIds.size > 0 && selectedIds.size < 3 && (
+          <p className="text-center text-foreground-muted text-sm">
+            {selectedIds.size} cards select kiye — abhi {3 - selectedIds.size} or chuno
+          </p>
+        )}
+
+        {selectedIds.size === 3 && (
+          <motion.p
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-center text-purple-300 font-medium"
+          >
+            Perfect! Tumhara selection complete hai…
+          </motion.p>
+        )}
       </div>
     );
   }
 
-  return (
-    <div className="space-y-8">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="text-center"
-      >
-        <h2 className="font-heading text-2xl md:text-3xl text-foreground mb-2">
-          Inme se woh cards chuno jo tumhe attract kar rahe hain…
-        </h2>
-        <p className="text-foreground-secondary">
-          {3 - selectedIds.size} cards baki hain
-        </p>
-      </motion.div>
-
-      <div className="grid grid-cols-3 md:grid-cols-3 gap-4 md:gap-6">
-        {displayCards.map((card, index) => {
-          const isSelected = selectedIds.has(card.id);
-          return (
-            <motion.div
-              key={card.id}
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: index * 0.05 }}
-              onClick={() => handleCardClick(card.id)}
-            >
-              <TarotCardComponent
-                card={card}
-                isFlipped={false}
-                isSelected={isSelected}
-                size="lg"
-                showMeaning={false}
-              />
-            </motion.div>
-          );
-        })}
-      </div>
-
-      {selectedIds.size > 0 && selectedIds.size < 3 && (
-        <p className="text-center text-foreground-muted text-sm">
-          {selectedIds.size} cards selected — abhi 3 cards chuno total
-        </p>
-      )}
-    </div>
-  );
-}
-    setSelectedIds(newSelection);
-
-    if (newSelection.size === 3) {
-      // Get full card objects with metadata
-      const selectedCardObjects: SelectedCard[] = displayCards
-        .filter(c => newSelection.has(c.id))
-        .map((card, idx) => ({
-          card,
-          position: ['Past', 'Present', 'Future'][idx] || `Position ${idx + 1}`,
-          isReversed: Math.random() < 0.2,
-          weight: 1,
-        }));
-
-      // Save to store
-      setSelectedCardsWithDetails(selectedCardObjects);
-
-      setTimeout(() => {
-        onSelectionComplete(selectedCardObjects);
-      }, 500);
-    }
-  };
-
-  return (
-    <div className="space-y-8">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="text-center"
-      >
-        <h2 className="font-heading text-2xl md:text-3xl text-foreground mb-2">
-          Inme se woh cards chuno jo tumhe attract kar rahe hain…
-        </h2>
-        <p className="text-foreground-secondary">
-          {3 - selectedIds.size} cards baki hain
-        </p>
-      </motion.div>
-
-      <div className="grid grid-cols-3 md:grid-cols-3 gap-4 md:gap-6">
-        {displayCards.map((card, index) => {
-          const isSelected = selectedIds.has(card.id);
-          return (
-            <motion.div
-              key={card.id}
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: index * 0.05 }}
-              onClick={() => handleCardClick(card.id)}
-            >
-              <TarotCardComponent
-                card={card}
-                isFlipped={false}
-                isSelected={isSelected}
-                size="lg"
-                showMeaning={false}
-              />
-            </motion.div>
-          );
-        })}
-      </div>
-
-      {selectedIds.size > 0 && selectedIds.size < 3 && (
-        <p className="text-center text-foreground-muted text-sm">
-          {selectedIds.size} cards selected — abhi 3 cards chuno total
-        </p>
-      )}
-    </div>
-  );
-}
-    setSelectedIds(newSelection);
-
-    if (newSelection.size === 3) {
-      // Get full card objects
-      const selectedCardObjects = displayCards
-        .filter(c => newSelection.has(c.id))
-        .map(card => ({
-          card,
-          position: 'Present',
-          isReversed: Math.random() < 0.2,
-          weight: 1,
-        }));
-
-      setTimeout(() => {
-        onSelectionComplete(selectedCardObjects);
-      }, 500);
-    }
-  };
-
-  return (
-    <div className="space-y-8">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="text-center"
-      >
-        <h2 className="font-heading text-2xl md:text-3xl text-foreground mb-2">
-          Inme se woh cards chuno jo tumhe attract kar rahe hain…
-        </h2>
-        <p className="text-foreground-secondary">
-          {3 - selectedIds.size} cards baki hain
-        </p>
-      </motion.div>
-
-      <div
-        ref={cardSelectRef}
-        className="grid grid-cols-3 md:grid-cols-3 gap-4 md:gap-6"
-      >
-        {displayCards.map((card, index) => {
-          const isSelected = selectedIds.has(card.id);
-          return (
-            <motion.div
-              key={card.id}
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: index * 0.05 }}
-              onClick={() => handleCardClick(card.id)}
-            >
-              <TarotCardComponent
-                card={card}
-                isFlipped={false}
-                isSelected={isSelected}
-                size="lg"
-                showMeaning={false}
-              />
-            </motion.div>
-          );
-        })}
-      </div>
-
-      {selectedIds.size > 0 && selectedIds.size < 3 && (
-        <p className="text-center text-foreground-muted text-sm">
-          {selectedIds.size} cards selected — 3 cards chuno total
-        </p>
-      )}
-    </div>
-  );
-}
-
 // ========== STEP 6: SUSPENSE PAUSE ==========
-function SuspensePause() {
+function SuspensePause({ domain }: { domain?: DomainAnalysis }) {
+  // Intent-aware suspense messages
+  const getSuspenseMessage = () => {
+    if (!domain) return "Jo tumne choose kiya hai… woh random nahi hota";
+
+    const messages: Record<string, string> = {
+      love: "Jo tumne select kiye… woh tumhare pyaar ke signals hain. Ab dekhte hain kya keh rahe hai.",
+      career: "Tumhare career ki energy select hui hai. Thoda or wait karo… clarity aa rahi hai.",
+      finance: "Financial signals card mein capture huye hain. Ab signal clear ho raha hai…",
+      conflict: "Conflict ki energy capture hui hai. Dekhte hain kya nature ke paas kehna hai.",
+      action: "Tumhara next step card mein chhupa hai… bas thoda or wait karo.",
+      spiritual: "Universe ke messages tumhare cards mein hai. Ab unhe decode kar rahe hain…",
+      general: "Jo tumne choose kiya… woh tumhare question ke liye meaningful hai. Ab dekhte hain kya bataya ja raha hai.",
+    };
+
+    return messages[domain.primaryDomain] || messages.general;
+  };
+
   return (
     <div className="text-center py-20">
       <motion.div
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ opacity: 1, scale: 1 }}
+        initial={{ scale: 0.8, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
         className="inline-flex rounded-full p-8 bg-purple-900/20 mb-8 border-2 border-purple-500/30"
       >
         <Sparkles className="h-16 w-16 text-gold animate-pulse" />
@@ -789,8 +721,19 @@ function SuspensePause() {
         animate={{ opacity: 1, y: 0 }}
         className="font-serif text-2xl md:text-4xl text-foreground leading-relaxed max-w-xl mx-auto"
       >
-        "Jo tumne choose kiya hai… woh random nahi hota"
+        "{getSuspenseMessage()}"
       </motion.p>
+
+      {domain && (
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.5 }}
+          className="mt-4 text-sm text-purple-400/60"
+        >
+          Pattern detected: {domain.emotionalTone} • {domain.primaryDomain}
+        </motion.p>
+      )}
     </div>
   );
 }
@@ -921,7 +864,7 @@ function LoadingState({ text }: { text: string }) {
   );
 }
 
-// ========== STEP 9: READING DELIVERY ==========
+// ========== STEP 9: READING DELIVERY (HUMANIZED, STREAMING) ==========
 function ReadingDelivery({
   result,
   onStartOver,
@@ -929,88 +872,77 @@ function ReadingDelivery({
   result: any;
   onStartOver: () => void;
 }) {
-  const fullText = result.reading || "Jo tum pooch rahe ho… usme confusion hai, par direction clear ho rahi hai.";
-  const [displayedText, setDisplayedText] = useState('');
-  const [showGuidance, setShowGuidance] = useState(false);
-  const [showClosing, setShowClosing] = useState(false);
-
-  // Streaming effect
+  const [streamComplete, setStreamComplete] = useState(false);
+  const [showPreStream, setShowPreStream] = useState(true);
+  
+  // Pre-stream message then start streaming after 2 seconds
   useEffect(() => {
-    let mounted = true;
-    const words = fullText.split(/(\s+)/);
-    let index = 0;
-
-    const interval = setInterval(() => {
-      if (index < words.length && mounted) {
-        setDisplayedText(prev => prev + words[index]);
-        index++;
-      } else if (mounted) {
-        clearInterval(interval);
-        setTimeout(() => setShowGuidance(true), 1000);
-        setTimeout(() => setShowClosing(true), 3000);
-      }
-    }, 40);
-
-    return () => { mounted = false; clearInterval(interval); };
-  }, [fullText]);
+    const timer = setTimeout(() => {
+      setShowPreStream(false);
+    }, 2000);
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
     <div className="space-y-8">
-      {/* Personal Opening */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="text-center"
-      >
+      {/* Pre-stream message */}
+      <AnimatePresence>
+        {showPreStream && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.5 }}
+            className="p-6 md:p-8 rounded-2xl bg-surface/50 border border-gold/20 backdrop-blur-sm text-center"
+          >
+            <p className="font-serif text-xl md:text-2xl text-foreground/80 leading-relaxed">
+              Thoda dhyaan se dekhna… jo aa raha hai woh important hai.
+            </p>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Main reading content - streamed */}
+      {!showPreStream && (
         <motion.div
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          className="inline-flex rounded-full p-3 bg-gold/10 mb-4"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.3 }}
+          className="p-6 md:p-8 rounded-2xl bg-surface/50 border border-gold/20 backdrop-blur-sm"
         >
-          <Sparkles className="h-6 w-6 text-gold" />
-        </motion.div>
-        <p className="text-gold font-medium mb-2">{result.greeting}</p>
-      </motion.div>
-
-      {/* Main Reading - Streaming */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.3 }}
-        className="p-6 md:p-8 rounded-2xl bg-surface/50 border border-gold/20 backdrop-blur-sm"
-      >
-        <div className="font-serif text-lg md:text-xl text-foreground leading-relaxed whitespace-pre-wrap">
-          {displayedText}
-          <motion.span
-            animate={{ opacity: [1, 0] }}
-            transition={{ duration: 0.8, repeat: Infinity }}
-            className="inline-block w-2 h-5 bg-gold ml-1 align-middle"
+          <StreamingOutput 
+            lines={result.streamingLines || [
+              result.reading || "Jo tum pooch rahe ho… usme confusion hai, par direction clear ho rahi hai."
+            ]}
+            onComplete={() => setStreamComplete(true)}
+            startDelay={0}
           />
-        </div>
-      </motion.div>
+        </motion.div>
+      )}
 
-      {/* Card-wise Interpretation */}
-      {showGuidance && (
+      {/* Guidance Box - appears after stream */}
+      {streamComplete && (
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="p-6 rounded-2xl bg-gold/5 border border-gold/30"
+          className="p-6 rounded-2xl bg-gold/5 border border-gold/30 shadow-lg shadow-gold/10"
         >
           <h3 className="font-heading text-lg text-gold mb-3 flex items-center gap-2">
             <Sparkles className="h-5 w-5" />
             Tumhare cards yeh keh rahe hain:
           </h3>
-          <p className="text-foreground leading-relaxed">
+          <p className="text-foreground leading-relaxed font-serif">
             {result.guidance}
           </p>
         </motion.div>
       )}
 
-      {/* Closing */}
-      {showClosing && (
+      {/* Closing - appears after guidance */}
+      {streamComplete && (
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5 }}
           className="text-center space-y-6"
         >
           <p className="font-serif text-xl md:text-2xl text-foreground-secondary leading-relaxed">
@@ -1036,3 +968,4 @@ function ReadingDelivery({
     </div>
   );
 }
+

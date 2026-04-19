@@ -1,9 +1,13 @@
 'use client';
 
 import { useEffect } from 'react';
+import { shouldBlockContextMenu, shouldBlockDevTools, shouldBlockScreenshots } from '../securityConfig';
 
 export function useContentProtection() {
   useEffect(() => {
+    const shouldProtect = shouldBlockContextMenu() || shouldBlockDevTools() || shouldBlockScreenshots();
+    if (!shouldProtect) return;
+
     const handleContextMenu = (e: MouseEvent) => {
       e.preventDefault();
     };
@@ -86,6 +90,9 @@ export function initializeProtection() {
   'use client';
   
   if (typeof window === 'undefined') return;
+
+  const shouldProtect = shouldBlockContextMenu() || shouldBlockDevTools() || shouldBlockScreenshots();
+  if (!shouldProtect) return;
 
   document.addEventListener('contextmenu', (e) => {
     e.preventDefault();

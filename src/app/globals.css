@@ -47,10 +47,6 @@
   }
 
   * {
-    user-select: none;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
     border-color: rgb(var(--border)) / 0.3);
   }
 
@@ -62,10 +58,20 @@
     background-color: rgb(var(--background));
     color: rgb(var(--foreground));
     font-family: var(--font-sans);
-    -webkit-user-select: none;
-    user-select: none;
     line-height: 1.7;
     position: relative;
+  }
+
+  /* Allow text selection by default */
+  body, p, h1, h2, h3, h4, h5, h6, span, div {
+    user-select: text;
+    -webkit-user-select: text;
+  }
+
+  /* Disable selection on interactive elements when in production */
+  .production-no-select {
+    user-select: none;
+    -webkit-user-select: none;
   }
 
   body::before {

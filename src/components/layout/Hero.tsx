@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { useLanguage } from '@/hooks/useLanguage';
+import { shouldBlockContextMenu, shouldBlockDevTools, shouldBlockScreenshots } from '@/lib/securityConfig';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -42,6 +43,9 @@ export default function Hero() {
   const { t, isHydrated } = useLanguage();
 
   useEffect(() => {
+    const shouldProtect = shouldBlockContextMenu() || shouldBlockDevTools() || shouldBlockScreenshots();
+    if (!shouldProtect) return;
+
     const handleContextMenu = (e: MouseEvent) => e.preventDefault();
     const handleKeyDown = (e: KeyboardEvent) => {
       if (

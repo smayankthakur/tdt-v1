@@ -1,8 +1,10 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 import { cn } from '@/lib/utils';
 import { TarotCard as TarotCardType } from '@/lib/tarot/logic';
+import { getCardImage } from '@/lib/cardImageMap';
 import { Sparkles, Moon } from 'lucide-react';
 import { cardHover, buttonTap, fadeInScale } from '@/lib/motion';
 

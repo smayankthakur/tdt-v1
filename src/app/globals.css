@@ -391,4 +391,25 @@
     border-color: rgb(var(--gold));
     box-shadow: 0 0 40px rgba(244, 197, 66, 0.5);
   }
+
+  /* 3D Card Utilities */
+  .perspective {
+    perspective: 1000px;
+  }
+
+  .preserve-3d {
+    transform-style: preserve-3d;
+  }
+
+  .backface-hidden {
+    backface-visibility: hidden;
+  }
+
+  .rotate-y-180 {
+    transform: rotateY(180deg);
+  }
+
+  .rotate-x-180 {
+    transform: rotateX(180deg);
+  }
 }

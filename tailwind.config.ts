@@ -9,6 +9,14 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        // === DESIGN TOKENS ===
+        bgPrimary: "#0B0B0F",
+        textPrimary: "#EAEAF0",
+        textSecondary: "#A1A1AA",
+        accentStart: "#FF4D4D",
+        accentEnd: "#FFD700",
+
+        // Existing tokens (preserved for backward compatibility)
         background: "rgb(var(--background) / <alpha-value>)",
         "background-secondary": "rgb(var(--background-secondary) / <alpha-value>)",
         foreground: "rgb(var(--foreground) / <alpha-value>)",
@@ -41,13 +49,27 @@ const config: Config = {
         'mystical-gradient': 'radial-gradient(ellipse at top, rgba(244, 197, 66, 0.1) 0%, #0A0A0A 50%)',
       },
       fontSize: {
-        'hero': ['3rem', { lineHeight: '1.1', fontWeight: '600', letterSpacing: '-0.02em' }],
+        // === TYPOGRAPHY SCALE ===
+        hero: ["42px", { lineHeight: "1.2", fontWeight: "500", letterSpacing: "-0.02em", fontFamily: "var(--font-serif)" }],
+        heading: ["28px", { lineHeight: "1.3", fontWeight: "600", letterSpacing: "-0.01em", fontFamily: "var(--font-heading)" }],
+        subheading: ["20px", { lineHeight: "1.4", fontWeight: "500", fontFamily: "var(--font-sans)" }],
+        body: ["16px", { lineHeight: "1.6", fontWeight: "400", fontFamily: "var(--font-sans)" }],
+        caption: ["13px", { lineHeight: "1.5", fontWeight: "400", fontFamily: "var(--font-sans)" }],
+
+        // Existing scales (preserved for compatibility)
+        'hero-legacy': ['3rem', { lineHeight: '1.1', fontWeight: '600', letterSpacing: '-0.02em' }],
         'h1': ['2rem', { lineHeight: '1.2', fontWeight: '600' }],
         'h2': ['1.5rem', { lineHeight: '1.3', fontWeight: '500' }],
         'h3': ['1.25rem', { lineHeight: '1.4', fontWeight: '500' }],
-        'body': ['1rem', { lineHeight: '1.6' }],
         'small': ['0.875rem', { lineHeight: '1.5' }],
         'xs': ['0.75rem', { lineHeight: '1.4' }],
+      },
+      spacing: {
+        // === SPACING SYSTEM ===
+        section: "80px",
+        block: "40px",
+        element: "20px",
+        tight: "10px",
       },
       boxShadow: {
         'glow-gold': '0 0 30px rgba(244, 197, 66, 0.3)',

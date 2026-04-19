@@ -42,29 +42,29 @@ const itemVariants = {
 
 export default function HowItWorks() {
   return (
-    <section className="py-16 md:py-20 bg-[rgb(var(--background))]">
+    <section className="py-section bg-background">
       <div className="mx-auto max-w-6xl px-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-16"
+          className="text-center mb-block"
         >
-          <h2 className="font-heading text-2xl md:text-3xl lg:text-4xl text-[rgb(var(--foreground))]">
+          <h2 className="font-heading text-heading text-foreground">
             How It Works
           </h2>
-          <p className="mt-4 text-[rgb(var(--foreground-muted))]">
+          <p className="mt-element text-foreground-muted">
             Three simple steps to unlock your clarity
           </p>
         </motion.div>
-        
+
         <motion.div
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: '-100px' }}
-          className="grid gap-8 md:grid-cols-3"
+          className="grid gap-block md:grid-cols-3"
         >
           {steps.map((step, index) => (
             <motion.div
@@ -72,25 +72,25 @@ export default function HowItWorks() {
               variants={itemVariants}
               className="relative text-center p-8"
             >
-              <div className="mb-6 flex justify-center">
+              <div className="mb-element flex justify-center">
                 <motion.div
-                  className="relative flex h-20 w-20 items-center justify-center rounded-2xl bg-[rgb(var(--surface))/80] shadow-[0_0_30px_rgba(0,0,0,0.4)] border border-[rgb(var(--gold))/10]"
+                  className="relative flex h-20 w-20 items-center justify-center rounded-2xl bg-surface-60 shadow-gold-sm border border-gold-10"
                   whileHover={{ scale: 1.05, transition: { duration: 0.3 } }}
                 >
-                  <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-[rgb(var(--gold))/5] to-[rgb(var(--secondary))/5]" />
-                  <step.icon className="h-9 w-9 text-[rgb(var(--gold))] relative z-10" />
+                  <div className="absolute inset-0 rounded-2xl gradient-gold-subtle" />
+                  <step.icon className="h-9 w-9 text-gold relative z-10" />
                   <motion.div
-                    className="absolute -right-2 -top-2 flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-r from-[rgb(var(--gold-start))] to-[rgb(var(--gold))] text-sm font-bold text-black shadow-md"
+                    className="absolute -right-2 -top-2 flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-r from-accent-start to-accent-end text-sm font-bold text-black shadow-md"
                   >
                     {step.number}
                   </motion.div>
                 </motion.div>
               </div>
-              
+
               {index < steps.length - 1 && (
                 <div className="absolute top-[60%] left-[60%] hidden h-px w-[80%] md:block">
                   <motion.div
-                    className="h-full w-full bg-gradient-to-r from-[rgb(var(--gold))/10] via-[rgb(var(--gold))/20] to-[rgb(var(--gold))/10]"
+                    className="h-full w-full bg-gradient-to-r from-gold-10 via-gold-20 to-gold-10"
                     initial={{ scaleX: 0 }}
                     whileInView={{ scaleX: 1 }}
                     viewport={{ once: true }}
@@ -98,11 +98,11 @@ export default function HowItWorks() {
                   />
                 </div>
               )}
-              
-              <h3 className="font-heading text-xl font-semibold text-[rgb(var(--foreground))] mb-2">
+
+              <h3 className="font-heading text-heading-sm text-foreground mb-element">
                 {step.title}
               </h3>
-              <p className="text-[rgb(var(--foreground-muted))] text-sm leading-relaxed">
+              <p className="text-body-sm text-foreground-muted leading-relaxed">
                 {step.description}
               </p>
             </motion.div>

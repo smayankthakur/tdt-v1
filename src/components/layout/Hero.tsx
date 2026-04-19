@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { useLanguage } from '@/hooks/useLanguage';
 import { shouldBlockContextMenu, shouldBlockDevTools, shouldBlockScreenshots } from '@/lib/securityConfig';
+import Button from '@/components/ui/button';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -74,62 +75,50 @@ export default function Hero() {
   }, []);
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[rgb(var(--background))]">
-       {/* Animated Background */}
-       <div className="absolute inset-0">
-         {/* Gold gradient orb - top left */}
-         <motion.div
-           className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full"
-           style={{
-             background: 'radial-gradient(circle, rgba(244, 197, 66, 0.08) 0%, transparent 70%)',
-             filter: 'blur(60px)',
-           }}
-           animate={{
-             scale: [1, 1.2, 1],
-             opacity: [0.5, 0.8, 0.5],
-           }}
-           transition={{
-             duration: 8,
-             repeat: Infinity,
-             ease: 'easeInOut',
-           }}
-         />
-         {/* Deep red orb - bottom right */}
-         <motion.div
-           className="absolute bottom-1/4 right-1/4 w-80 h-80 rounded-full"
-           style={{
-             background: 'radial-gradient(circle, rgba(193, 18, 31, 0.1) 0%, transparent 70%)',
-             filter: 'blur(50px)',
-           }}
-           animate={{
-             scale: [1.2, 1, 1.2],
-             opacity: [0.4, 0.7, 0.4],
-           }}
-           transition={{
-             duration: 6,
-             repeat: Infinity,
-             ease: 'easeInOut',
-           }}
-         />
-         {/* Center subtle glow */}
-         <motion.div
-           className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full"
-           style={{
-             background: 'radial-gradient(circle, rgba(244, 197, 66, 0.05) 0%, transparent 50%)',
-             filter: 'blur(80px)',
-           }}
-           animate={{
-             rotate: [0, 360],
-           }}
-           transition={{
-             duration: 30,
-             repeat: Infinity,
-             ease: 'linear',
-           }}
-         />
-         {/* Soft gradient overlay */}
-         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[rgb(var(--background))]/30 to-transparent pointer-events-none" />
-       </div>
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-background">
+      {/* Animated Background */}
+      <div className="absolute inset-0">
+        {/* Gold gradient orb - top left */}
+        <motion.div
+          className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full glow-orb"
+          animate={{
+            scale: [1, 1.2, 1],
+            opacity: [0.5, 0.8, 0.5],
+          }}
+          transition={{
+            duration: 8,
+            repeat: Infinity,
+            ease: 'easeInOut',
+          }}
+        />
+        {/* Deep red orb - bottom right (using secondary accent) */}
+        <motion.div
+          className="absolute bottom-1/4 right-1/4 w-80 h-80 rounded-full glow-orb-secondary"
+          animate={{
+            scale: [1.2, 1, 1.2],
+            opacity: [0.4, 0.7, 0.4],
+          }}
+          transition={{
+            duration: 6,
+            repeat: Infinity,
+            ease: 'easeInOut',
+          }}
+        />
+        {/* Center subtle glow */}
+        <motion.div
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full glow-orb-center"
+          animate={{
+            rotate: [0, 360],
+          }}
+          transition={{
+            duration: 30,
+            repeat: Infinity,
+            ease: 'linear',
+          }}
+        />
+        {/* Soft gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/30 to-transparent pointer-events-none" />
+      </div>
 
       {/* Floating Stars */}
       <FloatingStars />
@@ -138,18 +127,13 @@ export default function Hero() {
       <div className="relative z-10 mx-auto max-w-7xl px-6 py-12 lg:py-20">
         {/* Subtle glow behind text area */}
         <motion.div
-          className="absolute left-0 top-1/2 -translate-y-1/2 w-full lg:w-1/2 h-full max-h-[600px] pointer-events-none"
-          style={{
-            background: 'radial-gradient(ellipse at center, rgba(244, 197, 66, 0.06) 0%, transparent 60%)',
-            filter: 'blur(60px)',
-          }}
+          className="absolute left-0 top-1/2 -translate-y-1/2 w-full lg:w-1/2 h-full max-h-[600px] pointer-events-none glow-orb-center"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 2, delay: 0.5 }}
         />
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           {/* Mobile: Image first, Desktop: Text first */}
-          {/* Mobile: Image column shows first, Text column shows second */}
           {/* Right Column - Stacked Image Composition */}
           <motion.div
             variants={itemVariants}
@@ -181,7 +165,7 @@ export default function Hero() {
                     priority
                   />
                   {/* Soft glow effect */}
-                  <div className="absolute inset-0 z-[-1] bg-[rgb(var(--gold))]/20 blur-3xl rounded-full" />
+                  <div className="absolute inset-0 z-[-1] bg-accent-end/20 blur-3xl rounded-full" />
                 </div>
               </motion.div>
 
@@ -209,7 +193,7 @@ export default function Hero() {
             {/* Micro Bio */}
             <motion.p
               variants={itemVariants}
-              className="text-body text-textSecondary max-w-2xl mx-auto lg:mx-0 mb-6 leading-relaxed"
+              className="text-body text-text-secondary max-w-2xl mx-auto lg:mx-0 mb-element leading-relaxed"
             >
               Yeh sirf tarot nahi hai…
               <br />
@@ -219,10 +203,8 @@ export default function Hero() {
             </motion.p>
 
             {/* Powerful Quote (Hook) */}
-            <motion.div variants={itemVariants} className="mb-8">
-              <p className="font-serif text-hero text-textPrimary leading-tight" style={{
-                textShadow: '0 0 30px rgba(244, 197, 66, 0.3), 0 0 60px rgba(244, 197, 66, 0.15)'
-              }}>
+            <motion.div variants={itemVariants} className="mb-block">
+              <p className="font-serif text-hero text-text-primary leading-tight text-glow">
                 "Jo tum poochne wale ho… uska answer tum already feel kar rahe ho."
               </p>
             </motion.div>
@@ -230,44 +212,20 @@ export default function Hero() {
             {/* Emotional Layer - Text below quote */}
             <motion.p
               variants={itemVariants}
-              className="text-body-sm text-foreground-muted max-w-xl mx-auto lg:mx-0 mb-8 leading-relaxed"
+              className="text-body-sm text-foreground-muted max-w-xl mx-auto lg:mx-0 mb-block leading-relaxed"
             >
               Agar tum yahan tak aaye ho… toh kuch toh hai jo tumhe yeh jaan na hai.
             </motion.p>
 
-            {/* CTA Button - Red to Yellow Gradient with Pulse */}
+            {/* CTA Button - Primary gradient with hover effects */}
             <motion.div variants={itemVariants}>
               <Link href="/reading">
-                <motion.button
-                  whileHover={{ scale: 1.05, y: -2 }}
-                  whileTap={{ scale: 0.97 }}
-                  className="group relative inline-flex items-center gap-3 rounded-full bg-gradient-to-r from-red-600 via-[rgb(var(--gold))] to-yellow-400 px-10 py-4 text-lg font-medium tracking-wide text-black overflow-hidden"
-                  style={{
-                    boxShadow: '0 0 30px rgba(244, 197, 66, 0.5), 0 4px 20px rgba(255, 0, 0, 0.3)',
-                  }}
-                >
-                  {/* Pulsing glow */}
-                  <motion.div
-                    className="absolute inset-0 rounded-full"
-                    style={{
-                      background: 'radial-gradient(circle, rgba(244, 197, 66, 0.6) 0%, transparent 70%)',
-                      filter: 'blur(15px)',
-                    }}
-                    animate={{
-                      scale: [1, 1.2, 1],
-                      opacity: [0.7, 1, 0.7],
-                    }}
-                    transition={{
-                      duration: 2,
-                      repeat: Infinity,
-                      ease: 'easeInOut',
-                    }}
-                  />
-                  <span className="relative z-10">Know Your Fortune</span>
-                </motion.button>
+                <Button size="xl" className="btn-glow btn-glow-hover">
+                  Know Your Fortune
+                </Button>
               </Link>
               {/* Subtext below CTA */}
-              <p className="mt-4 text-sm text-foreground-muted text-center font-sans">
+              <p className="mt-tight text-body-sm text-foreground-muted text-center font-sans">
                 Shayad yeh wahi answer hai jiska tum wait kar rahe the…
               </p>
             </motion.div>

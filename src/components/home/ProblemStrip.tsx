@@ -27,37 +27,34 @@ const itemVariants = {
 
 export default function ProblemStrip() {
   return (
-    <section className="py-16 md:py-20 bg-[rgb(var(--background))]">
+    <section className="py-section bg-background">
       <div className="mx-auto max-w-6xl px-6">
         <motion.div
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: '-100px' }}
-          className="grid gap-6 md:grid-cols-3"
+          className="grid gap-block md:grid-cols-3"
         >
           {problems.map((problem, index) => (
             <motion.div
               key={problem.title}
               variants={itemVariants}
               whileHover={{ y: -8, transition: { duration: 0.3 } }}
-              className="group cursor-pointer rounded-2xl bg-[rgb(var(--surface))/60] p-8 backdrop-blur-sm border border-[rgb(var(--gold))/10 hover:border-[rgb(var(--gold))/30] hover:shadow-[0_0_30px_rgba(244,197,66,0.1)] transition-all duration-300"
+              className="group cursor-pointer rounded-2xl bg-surface-60 p-8 backdrop-blur-sm border border-gold-10 hover:border-gold-30 hover-glow-gold transition-all duration-300"
             >
               <motion.div
-                className="mx-auto mb-6 flex h-14 w-14 items-center justify-center rounded-full relative"
+                className="mx-auto mb-element flex h-14 w-14 items-center justify-center rounded-full relative gradient-gold-red"
                 whileHover={{ scale: 1.1, transition: { duration: 0.3 } }}
-                style={{
-                  background: 'linear-gradient(135deg, rgba(244,197,66,0.2), rgba(193,18,31,0.2))',
-                }}
               >
-                <problem.icon className="h-7 w-7 text-[rgb(var(--gold))]" />
+                <problem.icon className="h-7 w-7 text-gold" />
                 <motion.div
                   className="absolute inset-0 rounded-full"
                   animate={{
                     boxShadow: [
-                      '0 0 10px rgba(244,197,66,0.2)',
-                      '0 0 20px rgba(244,197,66,0.4)',
-                      '0 0 10px rgba(244,197,66,0.2)',
+                      '0 0 10px rgba(var(--gold),0.2)',
+                      '0 0 20px rgba(var(--gold),0.4)',
+                      '0 0 10px rgba(var(--gold),0.2)',
                     ],
                   }}
                   transition={{
@@ -67,10 +64,10 @@ export default function ProblemStrip() {
                   }}
                 />
               </motion.div>
-              <h3 className="font-heading text-xl font-semibold text-[rgb(var(--foreground))] mb-2 text-center">
+              <h3 className="font-heading text-heading text-foreground mb-element text-center">
                 {problem.title}
               </h3>
-              <p className="text-[rgb(var(--foreground-muted))] text-sm text-center leading-relaxed">
+              <p className="text-body-sm text-foreground-muted text-center leading-relaxed">
                 {problem.description}
               </p>
             </motion.div>

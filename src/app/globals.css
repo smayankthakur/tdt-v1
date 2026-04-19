@@ -8,39 +8,47 @@
 
 @layer base {
   :root {
-    /* Primary Dark Background - #0e0e0e */
-    --background: 14 14 14;
-    /* Surface Layers - #1a1a1a */
+    /* === DESIGN TOKENS (from spec) === */
+    /* bgPrimary: #0B0B0F */
+    --bg-primary: 11 11 15;
+    /* textPrimary: #EAEAF0 */
+    --text-primary: 234 234 240;
+    /* textSecondary: #A1A1AA */
+    --text-secondary: 161 161 170;
+    /* accentStart: #FF4D4D */
+    --accent-start: 255 77 77;
+    /* accentEnd: #FFD700 */
+    --accent-end: 255 215 0;
+
+    /* Legacy tokens (mapped to new tokens) */
+    --background: var(--bg-primary);
     --surface: 26 26 26;
     --surface-elevated: 32 32 32;
-    /* Text Colors - Exact from design spec */
-    --foreground: 234 234 234;
-    --foreground-secondary: 176 176 176;
+    --foreground: var(--text-primary);
+    --foreground-secondary: var(--text-secondary);
     --foreground-muted: 122 122 122;
-    /* Card */
     --card: 26 26 26;
-    --card-foreground: 234 234 234;
-    /* Logo Accents - Gold gradient */
+    --card-foreground: var(--text-primary);
+    /* Gold accent (original) */
     --gold: 244 197 66;
     --gold-light: 255 228 168;
     --gold-start: 255 228 168;
     --gold-end: 244 197 66;
     --accent-gold: 244 197 66;
     /* Primary (gold-based) */
-    --primary: 244 197 66;
+    --primary: var(--gold);
     --primary-foreground: 0 0 0;
     /* Secondary (deep red) */
     --secondary: 193 18 31;
     --secondary-foreground: 255 255 255;
     /* Muted */
     --muted: 42 13 13;
-    --muted-foreground: 176 176 176;
-    /* Border */
+    --muted-foreground: var(--text-secondary);
     --border: 60 40 30;
     --input: 60 40 30;
-    --ring: 244 197 66;
+    --ring: var(--gold);
     --radius: 1rem;
-    
+
     --font-heading: 'Cinzel', serif;
     --font-serif: 'Playfair Display', serif;
     --font-sans: 'Inter', sans-serif;
@@ -228,10 +236,126 @@
     box-shadow: 0 0 20px rgba(244, 197, 66, 0.15);
   }
 
-  /* Text glow */
-  .text-glow-gold {
-    text-shadow: 0 0 20px rgba(244, 197, 66, 0.5);
-  }
+   /* Text colors */
+   .text-secondary { color: rgb(var(--secondary)); }
+
+   /* Surface opacity variants */
+   .bg-surface-10 { background-color: rgba(var(--surface), 0.1); }
+   .bg-surface-20 { background-color: rgba(var(--surface), 0.2); }
+   .bg-surface-30 { background-color: rgba(var(--surface), 0.3); }
+   .bg-surface-40 { background-color: rgba(var(--surface), 0.4); }
+   .bg-surface-50 { background-color: rgba(var(--surface), 0.5); }
+   .bg-surface-60 { background-color: rgba(var(--surface), 0.6); }
+   .bg-surface-70 { background-color: rgba(var(--surface), 0.7); }
+   .bg-surface-80 { background-color: rgba(var(--surface), 0.8); }
+
+   /* Text colors */
+   .text-secondary { color: rgb(var(--secondary)); }
+
+   /* === OPACITY UTILITIES === */
+   .bg-surface-10 { background-color: rgba(var(--surface), 0.1); }
+   .bg-surface-50 { background-color: rgba(var(--surface), 0.5); }
+   .bg-surface-60 { background-color: rgba(var(--surface), 0.6); }
+   .bg-surface-70 { background-color: rgba(var(--surface), 0.7); }
+   .bg-surface-80 { background-color: rgba(var(--surface), 0.8); }
+
+   .bg-gold-5  { background-color: rgba(var(--gold), 0.05); }
+   .bg-gold-10 { background-color: rgba(var(--gold), 0.1); }
+   .bg-gold-20 { background-color: rgba(var(--gold), 0.2); }
+   .bg-gold-30 { background-color: rgba(var(--gold), 0.3); }
+   .bg-gold-40 { background-color: rgba(var(--gold), 0.4); }
+   .bg-gold-50 { background-color: rgba(var(--gold), 0.5); }
+   .bg-gold-60 { background-color: rgba(var(--gold), 0.6); }
+
+   .border-gold-10 { border-color: rgba(var(--gold), 0.1); }
+   .border-gold-20 { border-color: rgba(var(--gold), 0.2); }
+   .border-gold-30 { border-color: rgba(var(--gold), 0.3); }
+   .border-gold-40 { border-color: rgba(var(--gold), 0.4); }
+   .border-gold-60 { border-color: rgba(var(--gold), 0.6); }
+
+   .bg-secondary-5  { background-color: rgba(var(--secondary), 0.05); }
+   .bg-secondary-10 { background-color: rgba(var(--secondary), 0.1); }
+   .bg-secondary-20 { background-color: rgba(var(--secondary), 0.2); }
+   .bg-secondary-30 { background-color: rgba(var(--secondary), 0.3); }
+
+   .border-secondary-10 { border-color: rgba(var(--secondary), 0.1); }
+   .border-secondary-20 { border-color: rgba(var(--secondary), 0.2); }
+
+   .bg-background-60 { background-color: rgba(var(--background), 0.6); }
+   .bg-background-80 { background-color: rgba(var(--background), 0.8); }
+   .bg-background-90 { background-color: rgba(var(--background), 0.9); }
+
+   .text-gold { color: rgb(var(--gold)); }
+   .text-secondary { color: rgb(var(--secondary)); }
+
+   /* === GRADIENT UTILITIES === */
+   .gradient-mixed {
+     background: linear-gradient(135deg, rgba(var(--gold), 0.2), rgba(var(--secondary), 0.2));
+   }
+
+   .gradient-gold-subtle {
+     background: linear-gradient(135deg, rgba(var(--gold), 0.05), transparent);
+   }
+
+   .gradient-surface-bg {
+     background: linear-gradient(135deg, rgb(var(--surface)) 0%, rgb(var(--background)) 100%);
+   }
+
+   .gradient-preview-card {
+     background: linear-gradient(135deg, rgba(var(--gold), 0.05) 0%, rgb(var(--surface)) 50%, rgba(var(--secondary), 0.05) 100%);
+   }
+
+   /* Hover glow effects */
+   .hover-glow-gold:hover {
+     box-shadow: 0 0 30px rgba(var(--gold), 0.1);
+   }
+
+   .hover-glow-gold-md:hover {
+     box-shadow: 0 0 40px rgba(var(--gold), 0.15);
+   }
+
+   .hover-glow-accent:hover {
+     box-shadow: 0 0 40px rgba(var(--accent-end), 0.4), 0 4px 25px rgba(var(--accent-start), 0.3);
+   }
+
+   /* Shadow utilities */
+   .shadow-glow-black-lg {
+     box-shadow: 0 0 40px rgba(0, 0, 0, 0.4);
+   }
+
+   .shadow-glow-gold-sm {
+     box-shadow: 0 0 30px rgba(var(--gold), 0.1);
+   }
+
+   .shadow-gold {
+     box-shadow: 0 0 25px rgba(var(--gold), 0.4);
+   }
+
+   .glow-orb-secondary {
+     background: radial-gradient(circle, rgba(var(--secondary), 0.1) 0%, transparent 70%);
+   }
+
+   .glow-orb-center {
+     background: radial-gradient(circle, rgba(var(--accent-end), 0.05) 0%, transparent 50%);
+   }
+
+   /* Glow overlay for buttons */
+   .btn-glow {
+     box-shadow: 0 0 30px rgba(var(--accent-end), 0.5), 0 4px 20px rgba(var(--accent-start), 0.3);
+   }
+
+   .btn-glow-hover:hover {
+     box-shadow: 0 0 40px rgba(var(--accent-end), 0.6), 0 4px 25px rgba(var(--accent-start), 0.4);
+   }
+
+   /* Text glow */
+   .text-glow {
+     text-shadow: 0 0 30px rgba(var(--accent-end), 0.5), 0 0 60px rgba(var(--accent-end), 0.15);
+   }
+
+   .text-glow-sm {
+     text-shadow: 0 0 15px rgba(var(--accent-end), 0.4);
+   }
 
    /* === TYPOGRAPHY SCALE === */
    /* H1 - Hero */

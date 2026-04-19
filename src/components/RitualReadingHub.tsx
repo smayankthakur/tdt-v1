@@ -270,6 +270,7 @@ export default function RitualReadingHub() {
 
 // ========== STEP 1: TOPIC SELECTION ==========
 function TopicSelection({ onSelect }: { onSelect: (topic: ReadingType) => void }) {
+  const { t } = useLanguage();
   return (
     <div className="space-y-8">
       <motion.div
@@ -380,7 +381,6 @@ function QuestionInput({
   onSubmit: () => void;
 }) {
   const { t } = useLanguage();
-  
   return (
     <div className="space-y-8">
       <motion.div

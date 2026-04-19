@@ -4,7 +4,6 @@ import { useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
-import { ArrowRight, Sparkle, Moon, Star } from 'lucide-react';
 import { useLanguage } from '@/hooks/useLanguage';
 
 const containerVariants = {
@@ -72,161 +71,85 @@ export default function Hero() {
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[rgb(var(--background))]">
-      {/* Animated Background */}
-      <div className="absolute inset-0">
-        {/* Gold gradient orb - top left */}
-        <motion.div
-          className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full"
-          style={{
-            background: 'radial-gradient(circle, rgba(244, 197, 66, 0.08) 0%, transparent 70%)',
-            filter: 'blur(60px)',
-          }}
-          animate={{
-            scale: [1, 1.2, 1],
-            opacity: [0.5, 0.8, 0.5],
-          }}
-          transition={{
-            duration: 8,
-            repeat: Infinity,
-            ease: 'easeInOut',
-          }}
-        />
-        {/* Deep red orb - bottom right */}
-        <motion.div
-          className="absolute bottom-1/4 right-1/4 w-80 h-80 rounded-full"
-          style={{
-            background: 'radial-gradient(circle, rgba(193, 18, 31, 0.1) 0%, transparent 70%)',
-            filter: 'blur(50px)',
-          }}
-          animate={{
-            scale: [1.2, 1, 1.2],
-            opacity: [0.4, 0.7, 0.4],
-          }}
-          transition={{
-            duration: 6,
-            repeat: Infinity,
-            ease: 'easeInOut',
-          }}
-        />
-        {/* Center subtle glow */}
-        <motion.div
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full"
-          style={{
-            background: 'radial-gradient(circle, rgba(244, 197, 66, 0.05) 0%, transparent 50%)',
-            filter: 'blur(80px)',
-          }}
-          animate={{
-            rotate: [0, 360],
-          }}
-          transition={{
-            duration: 30,
-            repeat: Infinity,
-            ease: 'linear',
-          }}
-        />
-      </div>
+       {/* Animated Background */}
+       <div className="absolute inset-0">
+         {/* Gold gradient orb - top left */}
+         <motion.div
+           className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full"
+           style={{
+             background: 'radial-gradient(circle, rgba(244, 197, 66, 0.08) 0%, transparent 70%)',
+             filter: 'blur(60px)',
+           }}
+           animate={{
+             scale: [1, 1.2, 1],
+             opacity: [0.5, 0.8, 0.5],
+           }}
+           transition={{
+             duration: 8,
+             repeat: Infinity,
+             ease: 'easeInOut',
+           }}
+         />
+         {/* Deep red orb - bottom right */}
+         <motion.div
+           className="absolute bottom-1/4 right-1/4 w-80 h-80 rounded-full"
+           style={{
+             background: 'radial-gradient(circle, rgba(193, 18, 31, 0.1) 0%, transparent 70%)',
+             filter: 'blur(50px)',
+           }}
+           animate={{
+             scale: [1.2, 1, 1.2],
+             opacity: [0.4, 0.7, 0.4],
+           }}
+           transition={{
+             duration: 6,
+             repeat: Infinity,
+             ease: 'easeInOut',
+           }}
+         />
+         {/* Center subtle glow */}
+         <motion.div
+           className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full"
+           style={{
+             background: 'radial-gradient(circle, rgba(244, 197, 66, 0.05) 0%, transparent 50%)',
+             filter: 'blur(80px)',
+           }}
+           animate={{
+             rotate: [0, 360],
+           }}
+           transition={{
+             duration: 30,
+             repeat: Infinity,
+             ease: 'linear',
+           }}
+         />
+         {/* Soft gradient overlay */}
+         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[rgb(var(--background))]/30 to-transparent pointer-events-none" />
+       </div>
 
       {/* Floating Stars */}
       <FloatingStars />
 
       {/* Main Content - Two Column Layout */}
       <div className="relative z-10 mx-auto max-w-7xl px-6 py-12 lg:py-20">
+        {/* Subtle glow behind text area */}
+        <motion.div
+          className="absolute left-0 top-1/2 -translate-y-1/2 w-full lg:w-1/2 h-full max-h-[600px] pointer-events-none"
+          style={{
+            background: 'radial-gradient(ellipse at center, rgba(244, 197, 66, 0.06) 0%, transparent 60%)',
+            filter: 'blur(60px)',
+          }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 2, delay: 0.5 }}
+        />
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-          {/* Left Column - Text Content */}
-          <motion.div
-            variants={containerVariants}
-            initial="hidden"
-            animate="visible"
-            className="text-center lg:text-left"
-          >
-            {/* Main Headline */}
-            <motion.h1
-              variants={itemVariants}
-              className="font-heading text-4xl md:text-5xl lg:text-6xl text-[rgb(var(--foreground))] leading-tight mb-6"
-            >
-              Your future is already written.
-              <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[rgb(var(--gold-start))] via-[rgb(var(--gold))] to-[rgb(var(--gold-start))]">
-                You just need to see it.
-              </span>
-            </motion.h1>
-
-            {/* Subtext */}
-            <motion.p
-              variants={itemVariants}
-              className="text-lg md:text-xl text-[rgb(var(--foreground-secondary))] max-w-2xl mx-auto lg:mx-0 mb-10 leading-relaxed"
-            >
-              Ask your question, pick your cards, and receive a deeply personal reading that reveals what&apos;s really going on.
-            </motion.p>
-
-            {/* CTA Button - Premium Gold Polish */}
-            <motion.div variants={itemVariants}>
-              <Link href="/reading">
-                <motion.button
-                  whileHover={{ scale: 1.05, y: -2 }}
-                  whileTap={{ scale: 0.97 }}
-                  className="group relative inline-flex items-center gap-3 rounded-full bg-gradient-to-r from-[rgb(var(--gold-start))] via-[rgb(var(--gold))] to-[rgb(var(--gold-start))] px-10 py-4 text-lg font-semibold text-black overflow-hidden"
-                  style={{
-                    boxShadow: '0 4px 30px rgba(244, 197, 66, 0.4)',
-                  }}
-                >
-                  {/* Pulsing gold glow */}
-                  <motion.div
-                    className="absolute inset-0 rounded-full"
-                    style={{
-                      boxShadow: '0 0 25px rgba(244, 197, 66, 0.5)',
-                    }}
-                    animate={{
-                      boxShadow: [
-                        '0 0 20px rgba(244, 197, 66, 0.3)',
-                        '0 0 40px rgba(244, 197, 66, 0.6)',
-                        '0 0 20px rgba(244, 197, 66, 0.3)',
-                      ],
-                    }}
-                    transition={{
-                      duration: 3,
-                      repeat: Infinity,
-                      ease: 'easeInOut',
-                    }}
-                  />
-                  {/* Shine effect */}
-                  <motion.span
-                    className="absolute inset-0 bg-gradient-to-r from-[rgb(var(--gold-start))/50] via-[rgb(var(--gold))/50] to-[rgb(var(--gold-start))/50] opacity-0 group-hover:opacity-100 transition-opacity"
-                    animate={{
-                      x: ['-100%', '100%'],
-                    }}
-                    transition={{
-                      duration: 1.5,
-                      repeat: Infinity,
-                      repeatDelay: 2,
-                    }}
-                  />
-                  <Sparkle className="h-5 w-5 text-black relative z-10" />
-                  <span className="relative z-10">Begin Your Reading</span>
-                  <ArrowRight className="h-5 w-5 relative z-10 group-hover:translate-x-1 transition-transform" />
-                </motion.button>
-              </Link>
-              {/* Micro reassurance */}
-              <p className="mt-4 text-sm text-[rgb(var(--foreground-muted))] text-center">
-                Takes 30 seconds &bull; No signup needed
-              </p>
-            </motion.div>
-
-            {/* Trust indicator */}
-            <motion.div
-              variants={itemVariants}
-              className="mt-8 flex items-center justify-center lg:justify-start gap-2 text-sm text-[rgb(var(--foreground-muted))]"
-            >
-              <Star className="h-4 w-4 text-[rgb(var(--gold))] fill-[rgb(var(--gold))]" />
-              <span>Trusted by 50,000+ seekers for love, career & life clarity</span>
-              <Moon className="h-4 w-4 ml-2 text-[rgb(var(--secondary))]" />
-            </motion.div>
-          </motion.div>
-
+          {/* Mobile: Image first, Desktop: Text first */}
+          {/* Mobile: Image column shows first, Text column shows second */}
           {/* Right Column - Stacked Image Composition */}
           <motion.div
             variants={itemVariants}
-            className="flex justify-center lg:justify-end"
+            className="flex justify-center lg:justify-end order-1 lg:order-2"
           >
             <div className="relative w-full max-w-[500px] aspect-[3/4]">
               {/* Layer 1 - Base Background (imgbg.png) */}
@@ -271,23 +194,82 @@ export default function Hero() {
               </div>
             </div>
           </motion.div>
+
+          {/* Left Column - Text Content (Mobile: order 2 after image) */}
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+            className="text-center lg:text-left order-2 lg:order-1"
+          >
+            {/* Micro Bio */}
+            <motion.p
+              variants={itemVariants}
+              className="text-body text-textSecondary max-w-2xl mx-auto lg:mx-0 mb-6 leading-relaxed"
+            >
+              Yeh sirf tarot nahi hai…
+              <br />
+              Yeh woh clarity hai jo tum already feel kar rahe ho…
+              <br />
+              Bas ab usse words milne wale hain.
+            </motion.p>
+
+            {/* Powerful Quote (Hook) */}
+            <motion.div variants={itemVariants} className="mb-8">
+              <p className="font-serif text-hero text-textPrimary leading-tight" style={{
+                textShadow: '0 0 30px rgba(244, 197, 66, 0.3), 0 0 60px rgba(244, 197, 66, 0.15)'
+              }}>
+                "Jo tum poochne wale ho… uska answer tum already feel kar rahe ho."
+              </p>
+            </motion.div>
+
+            {/* Emotional Layer - Text below quote */}
+            <motion.p
+              variants={itemVariants}
+              className="text-body-sm text-foreground-muted max-w-xl mx-auto lg:mx-0 mb-8 leading-relaxed"
+            >
+              Agar tum yahan tak aaye ho… toh kuch toh hai jo tumhe yeh jaan na hai.
+            </motion.p>
+
+            {/* CTA Button - Red to Yellow Gradient with Pulse */}
+            <motion.div variants={itemVariants}>
+              <Link href="/reading">
+                <motion.button
+                  whileHover={{ scale: 1.05, y: -2 }}
+                  whileTap={{ scale: 0.97 }}
+                  className="group relative inline-flex items-center gap-3 rounded-full bg-gradient-to-r from-red-600 via-[rgb(var(--gold))] to-yellow-400 px-10 py-4 text-lg font-medium tracking-wide text-black overflow-hidden"
+                  style={{
+                    boxShadow: '0 0 30px rgba(244, 197, 66, 0.5), 0 4px 20px rgba(255, 0, 0, 0.3)',
+                  }}
+                >
+                  {/* Pulsing glow */}
+                  <motion.div
+                    className="absolute inset-0 rounded-full"
+                    style={{
+                      background: 'radial-gradient(circle, rgba(244, 197, 66, 0.6) 0%, transparent 70%)',
+                      filter: 'blur(15px)',
+                    }}
+                    animate={{
+                      scale: [1, 1.2, 1],
+                      opacity: [0.7, 1, 0.7],
+                    }}
+                    transition={{
+                      duration: 2,
+                      repeat: Infinity,
+                      ease: 'easeInOut',
+                    }}
+                  />
+                  <span className="relative z-10">Know Your Fortune</span>
+                </motion.button>
+              </Link>
+              {/* Subtext below CTA */}
+              <p className="mt-4 text-sm text-foreground-muted text-center font-sans">
+                Shayad yeh wahi answer hai jiska tum wait kar rahe the…
+              </p>
+            </motion.div>
+          </motion.div>
         </div>
       </div>
-
-      {/* Scroll indicator */}
-      <motion.div
-        className="absolute bottom-8 left-1/2 -translate-x-1/2"
-        animate={{ y: [0, 10, 0] }}
-        transition={{ duration: 2, repeat: Infinity }}
-      >
-        <div className="h-10 w-6 rounded-full border border-[rgb(var(--gold))/30] flex justify-center pt-2">
-          <motion.div
-            className="h-2 w-1 rounded-full bg-[rgb(var(--gold))]"
-            animate={{ y: [0, 12, 0] }}
-            transition={{ duration: 1.5, repeat: Infinity }}
-          />
-        </div>
-      </motion.div>
     </section>
   );
 }

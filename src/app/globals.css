@@ -227,11 +227,16 @@
     text-shadow: 0 0 20px rgba(244, 197, 66, 0.5);
   }
 
-  /* === TYPOGRAPHY SCALE === */
-  /* H1 - Hero */
-  .text-h1 {
-    @apply font-heading text-4xl md:text-5xl lg:text-6xl font-semibold leading-tight;
-  }
+   /* === TYPOGRAPHY SCALE === */
+   /* H1 - Hero */
+   .text-h1 {
+     @apply font-heading text-4xl md:text-5xl lg:text-6xl font-semibold leading-tight;
+   }
+   
+   /* Hero Quote - Large serif for quote hook */
+   .text-hero {
+     @apply font-serif text-4xl md:text-5xl lg:text-6xl font-medium leading-tight;
+   }
   
   /* H2 - Section Titles */
   .text-h2 {

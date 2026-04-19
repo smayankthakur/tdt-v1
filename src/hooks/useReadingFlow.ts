@@ -5,6 +5,7 @@ import { useReadingLimitStore } from '@/store/reading-types';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useAutoLanguage } from '@/hooks/useAutoLanguage';
 import { type ReadingType } from '@/store/reading-types';
+import { SelectedCard } from '@/lib/tarot/logic';
 
 export interface ReadingResult {
   name: string;
@@ -20,6 +21,7 @@ interface GenerateInput {
   name: string;
   question: string;
   readingType: ReadingType;
+  selectedCards?: SelectedCard[];
 }
 
 const PERSONALITY_OPENINGS = {
@@ -122,6 +124,61 @@ function generateGuidance(readingType: string, language: string): string {
   return templates[Math.floor(Math.random() * templates.length)];
 }
 
+// Generate reading based on actual selected cards
+function generateReadingFromCards(
+  selectedCards: SelectedCard[],
+  question: string,
+  readingType: string,
+  language: string
+): { reading: string; guidance: string } {
+  const cardInterpretations = selectedCards.map((sc, idx) => {
+    const card = sc.card;
+    const orientation = sc.isReversed ? ' (Reversed)' : '';
+    const meaning = sc.isReversed ? card.reversed : card.upright;
+    const position = ['Past', 'Present', 'Future'][idx] || `Position ${idx + 1}`;
+    
+    return `CARD ${idx + 1} — ${card.name} (${position})${orientation}:
+Keywords: ${card.keywords.join(', ').toLowerCase()}
+Message: ${meaning}`;
+  }).join('\n\n');
+
+  const readingContent = `Jo tum pooch rahe ho… usme confusion hai, par direction clear ho rahi hai.
+
+Yeh cards tumhare liye signal bhej rahe hain:
+
+${cardInterpretations}
+
+Yeh keh rahe hain ki tum already feel kar rahe ho kya right hai. Tumhara focus wahi hai jo matter karta hai. Ab tumhe clarity milni shuru ho rahi hai – par ready raho, kuch truths uncomfortable bhi ho sakte hain.
+
+Sitaare sirf show nahi kar rahe, woh actually tumhare liye message bhej rahe hain.`;
+
+  const guidanceTemplates = {
+    hinglish: [
+      "Toh ab kya karein? Patience rakhho aur apni instinct pe trust karo. Jo chahte ho woh apne aap milega.",
+      "Direction clear hai. Bas thoda time lagega, par progress zaroor hogi.",
+      "Situation thoda complex hai, par solution simple hai. Soch kar samajh ao.",
+      "Energy abhi shifting hai. Thoda wait karo, results aayenge.",
+    ],
+    english: [
+      "Trust your instincts here. The universe is guiding you, even if the path isn't clear yet.",
+      "What you're seeking is already on its way. Just stay open.",
+      "There's more to this than meets the eye. Take your time processing.",
+      "The timing isn't right yet, but it will be. Stay patient.",
+    ],
+    hindi: [
+      "Abhi wait karna pad sakta hai. Par jo chahte ho woh zaroor milega.",
+      "Situation clear ho raha hai. Thoda time do.",
+      "Apni instinct pe bharosa rakho. Answers aayenge.",
+    ],
+  };
+
+  const templates = guidanceTemplates[language as keyof typeof guidanceTemplates] || guidanceTemplates.english;
+  const guidance = templates[Math.floor(Math.random() * templates.length)];
+
+  return { reading: readingContent, guidance };
+}
+
+// Fallback reading when no cards
 function generateReadingContent(question: string, readingType: string, language: string): string {
   const patterns = READING_PATTERNS[readingType as keyof typeof READING_PATTERNS] || READING_PATTERNS.default;
   
@@ -177,18 +234,36 @@ export function useReadingFlow() {
     }
     
     try {
+      // Ritual pacing delay
       await new Promise(resolve => setTimeout(resolve, 2000));
       
       const detectedLang = region === 'india' ? 'hinglish' : 'english';
-      const reading = generateReadingContent(input.question, input.readingType, detectedLang);
+      
+      // Generate reading based on actual cards if provided
+      let readingContent: string;
+      let guidance: string;
+      
+      if (input.selectedCards && input.selectedCards.length > 0) {
+        const generated = generateReadingFromCards(
+          input.selectedCards,
+          input.question,
+          input.readingType,
+          detectedLang
+        );
+        readingContent = generated.reading;
+        guidance = generated.guidance;
+      } else {
+        readingContent = generateReadingContent(input.question, input.readingType, detectedLang);
+        guidance = generateGuidance(input.readingType, detectedLang);
+      }
+      
       const greeting = generateOpening(input.name, detectedLang);
-      const guidance = generateGuidance(input.readingType, detectedLang);
       
       const readingResult: ReadingResult = {
         name: input.name,
         question: input.question,
         greeting,
-        reading,
+        reading: readingContent,
         guidance,
         language: detectedLang,
         timestamp: new Date().toISOString(),

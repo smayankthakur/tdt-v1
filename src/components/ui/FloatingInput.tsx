@@ -139,6 +139,7 @@ export interface FloatingTextareaProps {
   rows?: number;
   maxLength?: number;
   showCount?: boolean;
+  autoFocus?: boolean;
 }
 
 export function FloatingTextarea({
@@ -150,6 +151,7 @@ export function FloatingTextarea({
   rows = 4,
   maxLength,
   showCount,
+  autoFocus,
 }: FloatingTextareaProps) {
   const [focused, setFocused] = useState(false);
   const isActive = focused || value.length > 0;
@@ -164,6 +166,7 @@ export function FloatingTextarea({
           onBlur={() => setFocused(false)}
           rows={rows}
           maxLength={maxLength}
+          autoFocus={autoFocus}
           placeholder={isActive ? placeholder : ''}
           className={cn(
             'w-full bg-transparent border-b-2 font-sans text-base py-4 pr-4 resize-none transition-all duration-300',

@@ -4,7 +4,6 @@ import { useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
-import { useLanguage } from '@/hooks/useLanguage';
 import { shouldBlockContextMenu, shouldBlockDevTools, shouldBlockScreenshots } from '@/lib/securityConfig';
 import Button from '@/components/ui/button';
 
@@ -41,8 +40,6 @@ const floatAnimation = {
 };
 
 export default function Hero() {
-  const { t, isHydrated } = useLanguage();
-
   useEffect(() => {
     const shouldProtect = shouldBlockContextMenu() || shouldBlockDevTools() || shouldBlockScreenshots();
     if (!shouldProtect) return;
@@ -198,8 +195,6 @@ export default function Hero() {
               Yeh sirf tarot nahi hai…
               <br />
               Yeh woh clarity hai jo tum already feel kar rahe ho…
-              <br />
-              Bas ab usse words milne wale hain.
             </motion.p>
 
             {/* Powerful Quote (Hook) */}
@@ -209,24 +204,16 @@ export default function Hero() {
               </p>
             </motion.div>
 
-            {/* Emotional Layer - Text below quote */}
-            <motion.p
-              variants={itemVariants}
-              className="text-body-sm text-foreground-muted max-w-xl mx-auto lg:mx-0 mb-block leading-relaxed"
-            >
-              Agar tum yahan tak aaye ho… toh kuch toh hai jo tumhe yeh jaan na hai.
-            </motion.p>
-
-            {/* CTA Button - Primary gradient with hover effects */}
+            {/* CTA Button - Red to Yellow gradient, highest visual dominance, pulse animation */}
             <motion.div variants={itemVariants}>
               <Link href="/reading">
-                <Button size="xl" className="btn-glow btn-glow-hover">
-                  {t('hero.cta')}
+                <Button size="xl" className="btn-cta-pulse">
+                  Know Your Fortune
                 </Button>
               </Link>
               {/* Subtext below CTA */}
               <p className="mt-tight text-body-sm text-foreground-muted text-center font-sans">
-                {t('hero.ctaSubtext')}
+                Shayad yeh wahi answer hai jiska tum wait kar rahe the…
               </p>
             </motion.div>
           </motion.div>

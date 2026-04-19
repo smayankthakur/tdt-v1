@@ -61,11 +61,11 @@ export default function FinalCTA() {
           </motion.div>
 
           <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl text-[rgb(var(--foreground))] mb-6">
-            Your answers are waiting...
+            Tumhare answers wait kar rahe hain...
           </h2>
           <p className="text-lg md:text-xl text-[rgb(var(--foreground-muted))] mb-10 leading-relaxed">
-            The cards have been laid out. Your guidance is ready. 
-            Take the first step toward clarity today.
+            Cards fail jaane hain. Tumhara guidance ready hai. 
+            Clarity ke liye pehla step lo.
           </p>
           
           <Link href="/reading">
@@ -85,7 +85,7 @@ export default function FinalCTA() {
                   ease: 'easeInOut',
                 }}
               />
-              <span className="relative z-10 text-lg">Begin Your Reading</span>
+              <span className="relative z-10 text-lg">Apna Reading Shuru Karein</span>
               <ArrowRight className="relative z-10 h-6 w-6 transition-transform group-hover:translate-x-1" />
               
               {/* Glow Effect */}
@@ -100,7 +100,7 @@ export default function FinalCTA() {
           </Link>
           
           <p className="mt-6 text-sm text-[rgb(var(--foreground-muted))]">
-            Takes less than 60 seconds &bull; Free to try
+            60 seconds se kam lagega &bull; Free try karo
           </p>
         </motion.div>
       </div>

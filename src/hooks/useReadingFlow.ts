@@ -137,12 +137,7 @@ function generateReadingContent(question: string, readingType: string, language:
     const randomItem = patterns[Math.floor(Math.random() * patterns.length)];
     return randomItem.content;
   }
-  
-  // Handle object case
-  if (patterns && 'content' in patterns) {
-    return patterns.content;
-  }
-  
+
   return "The cards are listening to your question...";
 }
 

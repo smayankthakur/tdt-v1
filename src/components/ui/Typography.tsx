@@ -2,25 +2,29 @@
 
 import { cn } from '@/lib/utils';
 
+type TypographyVariant = 'hero' | 'h1' | 'h2' | 'h3' | 'h4' | 'body' | 'body-sm' | 'caption' | 'label';
+type TypographyColor = 'primary' | 'secondary' | 'muted' | 'gold';
+
 interface TypographyProps {
-  variant?: 'h1' | 'h2' | 'h3' | 'h4' | 'body' | 'body-sm' | 'caption' | 'label';
-  color?: 'primary' | 'secondary' | 'muted' | 'gold';
+  variant?: TypographyVariant;
+  color?: TypographyColor;
   className?: string;
   children: React.ReactNode;
 }
 
-const variantStyles: Record<string, string> = {
-  h1: 'font-heading text-4xl md:text-5xl lg:text-6xl font-semibold leading-tight',
-  h2: 'font-heading text-2xl md:text-3xl lg:text-4xl font-semibold leading-tight',
-  h3: 'font-heading text-xl md:text-2xl font-medium',
-  h4: 'font-heading text-lg md:text-xl font-medium',
-  body: 'text-body',
-  'body-sm': 'text-body-sm',
-  caption: 'text-xs text-foreground-muted',
-  label: 'text-sm font-medium tracking-wide uppercase text-foreground-secondary',
+const variantStyles: Record<TypographyVariant, string> = {
+  hero: 'font-serif text-hero text-foreground tracking-wide',
+  h1: 'font-serif text-h1 text-foreground',
+  h2: 'font-serif text-h2 text-foreground',
+  h3: 'font-serif text-h3 text-foreground',
+  h4: 'font-serif text-h4 text-foreground',
+  body: 'font-sans text-body text-foreground-secondary leading-relaxed',
+  'body-sm': 'font-sans text-small text-foreground-secondary',
+  caption: 'font-sans text-xs text-foreground-muted',
+  label: 'font-sans text-sm font-medium tracking-wide uppercase text-foreground-secondary',
 };
 
-const colorStyles: Record<string, string> = {
+const colorStyles: Record<TypographyColor, string> = {
   primary: 'text-foreground',
   secondary: 'text-foreground-secondary',
   muted: 'text-foreground-muted',
@@ -33,13 +37,20 @@ export default function Typography({
   className,
   children,
 }: TypographyProps) {
-  const Component = variant.startsWith('h') ? (variant as any) : 'p';
+  const Tag = variant.startsWith('h') || variant === 'hero' 
+    ? (variant === 'hero' ? 'h1' : variant) 
+    : 'p';
   
   return (
-    <Component className={cn(variantStyles[variant], colorStyles[color], className)}>
+    <Tag className={cn(variantStyles[variant], colorStyles[color], className)}>
       {children}
-    </Component>
+    </Tag>
   );
+}
+
+// Convenience components for common use cases
+export function Hero({ className, children }: { className?: string; children: React.ReactNode }) {
+  return <Typography variant="hero" className={className}>{children}</Typography>;
 }
 
 export function H1({ className, children }: { className?: string; children: React.ReactNode }) {
@@ -54,8 +65,16 @@ export function H3({ className, children }: { className?: string; children: Reac
   return <Typography variant="h3" className={className}>{children}</Typography>;
 }
 
+export function H4({ className, children }: { className?: string; children: React.ReactNode }) {
+  return <Typography variant="h4" className={className}>{children}</Typography>;
+}
+
 export function Body({ className, children }: { className?: string; children: React.ReactNode }) {
   return <Typography variant="body" className={className}>{children}</Typography>;
+}
+
+export function BodySmall({ className, children }: { className?: string; children: React.ReactNode }) {
+  return <Typography variant="body-sm" className={className}>{children}</Typography>;
 }
 
 export function Caption({ className, children }: { className?: string; children: React.ReactNode }) {
@@ -64,4 +83,8 @@ export function Caption({ className, children }: { className?: string; children:
 
 export function Label({ className, children }: { className?: string; children: React.ReactNode }) {
   return <Typography variant="label" className={className}>{children}</Typography>;
+}
+
+export function Gold({ className, children }: { className?: string; children: React.ReactNode }) {
+  return <Typography variant="body" color="gold" className={className}>{children}</Typography>;
 }

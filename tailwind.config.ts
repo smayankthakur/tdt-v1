@@ -40,6 +40,15 @@ const config: Config = {
         'maroon-gradient': 'linear-gradient(180deg, #1A0F2E 0%, #2A0D0D 100%)',
         'mystical-gradient': 'radial-gradient(ellipse at top, rgba(244, 197, 66, 0.1) 0%, #0A0A0A 50%)',
       },
+      fontSize: {
+        'hero': ['3rem', { lineHeight: '1.1', fontWeight: '600', letterSpacing: '-0.02em' }],
+        'h1': ['2rem', { lineHeight: '1.2', fontWeight: '600' }],
+        'h2': ['1.5rem', { lineHeight: '1.3', fontWeight: '500' }],
+        'h3': ['1.25rem', { lineHeight: '1.4', fontWeight: '500' }],
+        'body': ['1rem', { lineHeight: '1.6' }],
+        'small': ['0.875rem', { lineHeight: '1.5' }],
+        'xs': ['0.75rem', { lineHeight: '1.4' }],
+      },
       boxShadow: {
         'glow-gold': '0 0 30px rgba(244, 197, 66, 0.3)',
         'glow-gold-sm': '0 0 15px rgba(244, 197, 66, 0.2)',

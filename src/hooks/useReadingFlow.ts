@@ -138,7 +138,12 @@ function generateReadingContent(question: string, readingType: string, language:
     return randomItem.content;
   }
   
-  return patterns.content;
+  // Handle object case
+  if (patterns && 'content' in patterns) {
+    return patterns.content;
+  }
+  
+  return "The cards are listening to your question...";
 }
 
 function analyzeEmotion(question: string): string {

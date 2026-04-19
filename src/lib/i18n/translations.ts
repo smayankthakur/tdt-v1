@@ -431,10 +431,6 @@ readingHub: {
       startOver: "Phir se shuru karein",
       unlockAccess: "Full Access 🔓",
     },
-    hero: {
-      cta: "Know Your Fortune",
-      ctaSubtext: "Shayad yeh wahi answer hai jiska tum wait kar rahe the…",
-    },
     chat: {
       button: 'Ginni se baat karo',
       tooltip: 'Guidance chahiye? Ginni se chat karo',

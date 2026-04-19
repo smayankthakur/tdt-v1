@@ -50,11 +50,11 @@ const config: Config = {
       },
       fontSize: {
         // === TYPOGRAPHY SCALE ===
-        hero: ["42px", { lineHeight: "1.2", fontWeight: "500", letterSpacing: "-0.02em", fontFamily: "var(--font-serif)" }],
-        heading: ["28px", { lineHeight: "1.3", fontWeight: "600", letterSpacing: "-0.01em", fontFamily: "var(--font-heading)" }],
-        subheading: ["20px", { lineHeight: "1.4", fontWeight: "500", fontFamily: "var(--font-sans)" }],
-        body: ["16px", { lineHeight: "1.6", fontWeight: "400", fontFamily: "var(--font-sans)" }],
-        caption: ["13px", { lineHeight: "1.5", fontWeight: "400", fontFamily: "var(--font-sans)" }],
+        hero: ["42px", { lineHeight: "1.2", fontWeight: "500", letterSpacing: "-0.02em" }],
+        heading: ["28px", { lineHeight: "1.3", fontWeight: "600", letterSpacing: "-0.01em" }],
+        subheading: ["20px", { lineHeight: "1.4", fontWeight: "500" }],
+        body: ["16px", { lineHeight: "1.6", fontWeight: "400" }],
+        caption: ["13px", { lineHeight: "1.5", fontWeight: "400" }],
 
         // Existing scales (preserved for compatibility)
         'hero-legacy': ['3rem', { lineHeight: '1.1', fontWeight: '600', letterSpacing: '-0.02em' }],

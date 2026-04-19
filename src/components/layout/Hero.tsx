@@ -221,12 +221,12 @@ export default function Hero() {
             <motion.div variants={itemVariants}>
               <Link href="/reading">
                 <Button size="xl" className="btn-glow btn-glow-hover">
-                  Know Your Fortune
+                  {t('hero.cta')}
                 </Button>
               </Link>
               {/* Subtext below CTA */}
               <p className="mt-tight text-body-sm text-foreground-muted text-center font-sans">
-                Shayad yeh wahi answer hai jiska tum wait kar rahe the…
+                {t('hero.ctaSubtext')}
               </p>
             </motion.div>
           </motion.div>

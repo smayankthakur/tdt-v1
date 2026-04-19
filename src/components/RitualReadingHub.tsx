@@ -197,14 +197,14 @@ export default function RitualReadingHub() {
       case 'intention-lock':
         return <IntentionLock topic={selectedTopic} />;
 
-        case 'question-input':
-          return (
-            <QuestionInput
-              question={question}
-              onQuestionChange={setQuestion}
-              onSubmit={handleQuestionSubmit}
-            />
-          );
+      case 'question-input':
+        return (
+          <QuestionInput
+            question={question}
+            onQuestionChange={setQuestion}
+            onSubmit={handleQuestionSubmit}
+          />
+        );
 
       case 'shuffle':
         return (
@@ -433,9 +433,7 @@ function QuestionInput({
       </button>
     </div>
   );
-});
-
-QuestionInput.displayName = 'QuestionInput';
+}
 
 // ========== STEP 4: SHUFFLE ANIMATION ==========
 function ShuffleAnimation({ message, messages }: { message: string; messages: string[] }) {
@@ -674,9 +672,11 @@ function ShuffleAnimation({ message, messages }: { message: string; messages: st
 
 // ========== STEP 6: SUSPENSE PAUSE ==========
 function SuspensePause({ domain }: { domain?: DomainAnalysis }) {
+  const { t } = useLanguage();
+  
   // Intent-aware suspense messages
   const getSuspenseMessage = () => {
-    if (!domain) return "Jo tumne choose kiya hai… woh random nahi hota";
+    if (!domain) return t('ritualHub.suspense.default');
 
     const messages: Record<string, string> = {
       love: "Jo tumne select kiye… woh tumhare pyaar ke signals hain. Ab dekhte hain kya keh rahe hai.",

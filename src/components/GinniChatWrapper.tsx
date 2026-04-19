@@ -12,20 +12,20 @@ import {
   saveGinniMemory,
   buildGinniContext 
 } from '@/lib/ginniTriggers';
-import { MessageCircle, X } from 'lucide-react';
+import { MessageCircle } from 'lucide-react';
 
 export default function GinniChatWrapper() {
   const { context, triggerOpen, isOpen, setIsOpen, setTriggerOpen, setContext, clearContext } = useGinniStore();
-  const { currentStage } = useFunnelStore();
+  const { currentStage, readingCount } = useFunnelStore();
   
   const hesitationTimerRef = useRef<NodeJS.Timeout | null>(null);
   const autoHideTimerRef = useRef<NodeJS.Timeout | null>(null);
-  const mountedRef = useRef(false);
+  const previousStageRef = useRef<FunnelStage>('');
   
   const [showGinniBubble, setShowGinniBubble] = useState(false);
-  const [currentTrigger, setCurrentTrigger] = useState(getTriggerForStage(currentStage));
+  const [currentTrigger, setCurrentTrigger] = useState(getTriggerForStage('homepage'));
   const [lastActivityTime, setLastActivityTime] = useState(Date.now());
-  const [hasTriggeredOnce, setHasTriggeredOnce] = useState(false);
+  const [hasTriggeredForStage, setHasTriggeredForStage] = useState<Record<string, boolean>>({});
 
   const triggerGinni = useCallback((stage: FunnelStage) => {
     const trigger = getTriggerForStage(stage);
@@ -48,32 +48,35 @@ export default function GinniChatWrapper() {
     }
   }, [setContext, setTriggerOpen, clearContext]);
 
-  useEffect(() => {
-    if (mountedRef.current) return;
-    mountedRef.current = true;
-    
-    if (currentStage === 'homepage') {
-      const timer = setTimeout(() => {
-        triggerGinni('homepage');
-        setHasTriggeredOnce(true);
-      }, 4000);
-      return () => clearTimeout(timer);
-    }
-  }, []);
+  const triggerHesitation = useCallback((stage: FunnelStage) => {
+    const hesitation = getHesitationTrigger(stage);
+    setCurrentTrigger(hesitation);
+    setShowGinniBubble(true);
+    setTriggerOpen(true);
+  }, [setTriggerOpen]);
 
   useEffect(() => {
-    if (currentStage === 'homepage' && !hasTriggeredOnce) {
-      return;
-    }
+    if (!currentStage || currentStage === previousStageRef.current) return;
     
-    if (currentStage !== 'homepage') {
+    const stageKey = `${currentStage}-${readingCount}`;
+    
+    if (!hasTriggeredForStage[stageKey]) {
+      previousStageRef.current = currentStage;
+      
+      const delay = currentStage === 'homepage' ? 3500 : 1500;
+      
       const timer = setTimeout(() => {
-        triggerGinni(currentStage);
-        setHasTriggeredOnce(true);
-      }, 2000);
+        if (currentStage === 'reading' && readingCount >= 1) {
+          triggerGinni('upsell');
+        } else {
+          triggerGinni(currentStage);
+        }
+        setHasTriggeredForStage(prev => ({ ...prev, [stageKey]: true }));
+      }, delay);
+      
       return () => clearTimeout(timer);
     }
-  }, [currentStage, hasTriggeredOnce, triggerGinni]);
+  }, [currentStage, readingCount, hasTriggeredForStage, triggerGinni]);
 
   useEffect(() => {
     if (currentStage !== 'input') return;
@@ -87,13 +90,10 @@ export default function GinniChatWrapper() {
       
       hesitationTimerRef.current = setTimeout(() => {
         const timeSinceLastActivity = Date.now() - lastActivityTime;
-        if (timeSinceLastActivity > 5000) {
-          const hesitation = getHesitationTrigger('input');
-          setCurrentTrigger(hesitation);
-          setShowGinniBubble(true);
-          setTriggerOpen(true);
+        if (timeSinceLastActivity > 6000) {
+          triggerHesitation('input');
         }
-      }, 6000);
+      }, 7000);
     };
 
     window.addEventListener('keydown', handleActivity);
@@ -106,7 +106,7 @@ export default function GinniChatWrapper() {
         clearTimeout(hesitationTimerRef.current);
       }
     };
-  }, [currentStage, lastActivityTime, setTriggerOpen]);
+  }, [currentStage, lastActivityTime, triggerHesitation]);
 
   useEffect(() => {
     return () => {

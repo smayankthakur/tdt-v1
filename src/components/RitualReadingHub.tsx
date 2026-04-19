@@ -122,6 +122,8 @@ export default function RitualReadingHub() {
     // 3. Store analysis - use the engine's analysis for consistency
     setDomainAnalysis(cardAnalysis);
 
+    setFunnelQuestion(question);
+
     // 4. Set the deck for this reading
     const { setDeck } = useReadingStore.getState();
     setDeck(cards);
@@ -169,6 +171,7 @@ export default function RitualReadingHub() {
       selectedCards: selectedCardsWithDetails,
       domainAnalysis: domainAnalysis!,
     }).then(() => {
+      incrementReadingCount();
       setTimeout(() => {
         setStep('reading-delivery');
       }, 2000);
@@ -557,7 +560,7 @@ function ShuffleAnimation({ message, messages }: { message: string; messages: st
     if (displayCards.length === 0) {
       return (
         <div className="text-center py-10">
-          <p className="text-foreground-secondary">Cards laade ja rahe hain…</p>
+          <p className="text-foreground-secondary">{t('common.loading')}</p>
         </div>
       );
     }

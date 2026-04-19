@@ -395,7 +395,7 @@ export function createFullReadingOutput(
   question: string,
   selectedCards: SelectedCard[]
 ): string {
-  const context = analyzeQuestion(question);
+  const context = analyzeQuestion(question) as ReadingContext;
   context.name = name;
   
   const humanized = generateHumanizedReading(context, selectedCards);

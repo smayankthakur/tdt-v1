@@ -97,20 +97,12 @@ export function analyzeIntent(question: string, readingType?: string): DomainAna
   // Also consider reading type as strong signal
   if (readingType) {
     const typeToDomain: Record<string, IntentDomain> = {
-      'detailed': 'general',
-      'yesno': 'general',
-      'daily': 'general',
-      'union': 'love',
-      'thirdparty': 'conflict',
-      'shaadi': 'love',
-      'soulmate': 'love',
-      'baby': 'general',
-      'partner': 'love',
-      'spiritual': 'spiritual',
-      'month': 'general',
-      'universe': 'spiritual',
-      'action': 'action',
-      'relationship': 'love',
+      'love': 'love',
+      'career': 'career',
+      'finance': 'finance',
+      'marriage': 'love',
+      'no_contact': 'conflict',
+      'general': 'general',
     };
 
     const topicDomain = typeToDomain[readingType];

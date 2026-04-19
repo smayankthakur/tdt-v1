@@ -8,7 +8,6 @@ import { type ReadingType } from '@/store/reading-types';
 import { SelectedCard } from '@/lib/tarot/logic';
 import { generateHumanizedReading, createContextFromAnalysis } from '@/lib/humanizeReading';
 import type { DomainAnalysis } from '@/lib/cardEngine';
-import { DomainAnalysis } from '@/lib/cardEngine';
 
 export interface ReadingResult {
   name: string;

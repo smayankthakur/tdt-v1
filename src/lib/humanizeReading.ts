@@ -1,5 +1,5 @@
 import { TarotCard, SelectedCard } from './logic';
-import { DomainAnalysis } from './cardEngine';
+import { DomainAnalysis, getCardInterpretation } from './cardEngine';
 
 // ========== CONTEXT ANALYSIS ==========
 

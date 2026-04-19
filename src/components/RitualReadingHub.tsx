@@ -7,7 +7,7 @@ import { useLanguage } from '@/hooks/useLanguage';
 import { useReadingFlow } from '@/hooks/useReadingFlow';
 import { useReadingStore } from '@/store/reading-store';
 import { READING_TYPES, type ReadingType } from '@/store/reading-types';
-import { pickCards, SelectedCard } from '@/lib/tarot/logic';
+import { SelectedCard } from '@/lib/tarot/logic';
 import { generateCardSet, analyzeIntent, recordReadingSelection, finalizeReadingCards, type DomainAnalysis } from '@/lib/cardEngine';
 import TarotCardComponent from '@/components/TarotCard';
 import { FloatingTextarea } from '@/components/ui/FloatingInput';
@@ -440,7 +440,7 @@ function QuestionInput({
         whileHover={{ scale: 1.02 }}
         whileTap={{ scale: 0.98 }}
       >
-        <span>Continue</span>
+        <span>Aage badhte hain</span>
         <ArrowRight className="h-5 w-5" />
       </motion.button>
 
@@ -802,7 +802,7 @@ function CardReveal({
               exit={{ opacity: 0, y: -10 }}
               className="font-serif text-xl md:text-2xl text-gold mb-6 italic"
             >
-              {getRevealMessage()}
+              {getRevealMessage(currentCardIndex, selectedCards[currentCardIndex])}
             </motion.p>
           )}
         </AnimatePresence>

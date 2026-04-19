@@ -41,8 +41,11 @@ export default function Typography({
     ? (variant === 'hero' ? 'h1' : variant) 
     : 'p';
   
+  const variantClass = variantStyles[variant];
+  const colorClass = colorStyles[color];
+  
   return (
-    <Tag className={cn(variantStyles[variant], colorStyles[color], className)}>
+    <Tag className={cn(variantClass, colorClass, className)}>
       {children}
     </Tag>
   );

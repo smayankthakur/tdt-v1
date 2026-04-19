@@ -122,7 +122,7 @@ export function analyzeIntent(question: string, readingType?: string): DomainAna
 
   // Detect emotional tone
   let emotionalTone: DomainAnalysis['emotionalTone'] = 'neutral';
-  const emotionMap: Record<string, DomainAnalysis['emotionalTone']> = {
+  const emotionMap: Record<string, string[]> = {
     anxious: ['worried', 'stress', 'nervous', 'uncertain', 'afraid', 'fear', 'scared', 'anxious', 'darr', 'ghabrat', 'tension'],
     hopeful: ['hope', 'wish', 'positive', 'good', 'better', 'dream', 'want', 'ishq', 'pyar', 'believe'],
     confused: ['confused', 'lost', 'direction', "don't know", 'what should', 'samajh', 'kya', 'paresh', ' unclear'],

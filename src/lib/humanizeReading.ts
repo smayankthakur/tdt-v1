@@ -30,7 +30,7 @@ export function createContextFromAnalysis(
 
   // Generate hidden insight based on domain and emotion
   let hiddenInsight = '';
-  if (analysis.primaryDomain === 'no_contact') {
+  if (analysis.primaryDomain === 'conflict') {
     hiddenInsight = 'The person you\'re thinking about is also holding something in—they want to reach out but fear is stopping them.';
   } else if (analysis.primaryDomain === 'love') {
     hiddenInsight = 'There\'s emotional vulnerability beneath the surface that neither of you is naming yet.';

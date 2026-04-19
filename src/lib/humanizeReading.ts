@@ -94,13 +94,13 @@ function analyzeQuestion(question: string): Omit<ReadingContext, 'name'> {
   // Hidden insight based on topic
   let hiddenInsight = '';
   if (topic === 'no_contact') {
-    hiddenInsight = 'The person you're thinking about is also holding something in—they want to reach out but fear is stopping them.';
-  } else if (topic === 'love') {
-    hiddenInsight = 'There’s emotional vulnerability beneath the surface that neither of you is naming yet.';
-  } else if (emotion === 'anxious') {
-    hiddenInsight = 'Your anxiety comes from a deep need for control—but the real answer lies in surrender.';
-  } else if (emotion === 'confused') {
-    hiddenInsight = 'You already know the answer, you’re just waiting for permission to act on it.';
+    hiddenInsight = "The person you're thinking about is also holding something in—they want to reach out but fear is stopping them.";
+} else if (topic === 'love') {
+    hiddenInsight = "There's emotional vulnerability beneath the surface that neither of you is naming yet.";
+} else if (emotion === 'anxious') {
+    hiddenInsight = "Your anxiety comes from a deep need for control—but the real answer lies in surrender.";
+} else if (emotion === 'confused') {
+    hiddenInsight = "You already know the answer, you're just waiting for permission to act on it.";
   }
   
   return { emotion, topic, urgency, hiddenInsight };

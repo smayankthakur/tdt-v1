@@ -1,4 +1,4 @@
-import { TarotCard, getAllCards } from './deck';
+import { TarotCard, getAllCards } from './tarot/deck';
 import { CardHistory, SelectedCard, PickCardsOptions } from './logic';
 
 // ========== SEEDED RANDOM GENERATOR ==========

@@ -108,7 +108,7 @@ function analyzeQuestion(question: string): Omit<ReadingContext, 'name'> {
 
 // ========== VARIATION ENGINE ==========
 
-const OPENINGS = {
+const OPENINGS: Record<string, ((name: string) => string)[]> = {
   anxious: [
     (name: string) => `${name}, main dekhta hoon ki tumhare andar ek tension hai… jo baar-baar tumhe sochne par majboor kar rahi hai.`,
     (name: string) => `${name}, jo confusion tum feel kar rahe ho… woh bilkul valid hai.`,
@@ -136,7 +136,7 @@ const OPENINGS = {
   ],
 };
 
-const PRESENT_STATES = {
+const PRESENT_STATES: Record<string, string[]> = {
   anxious: [
     "Tumhare liye abhi ek transition phase chal raha hai… jismein uncertainty high hai, lekin control tumhare paas nahi hai.",
     "Energy dikh rahi hai ki tum stress kar rahe ho future ke liye… lekin present mein kuch change nahi ho raha.",
@@ -164,7 +164,7 @@ const PRESENT_STATES = {
   ],
 };
 
-const PATTERN_INSIGHTS = {
+const PATTERN_INSIGHTS: Record<string, string[]> = {
   love: [
     "Yeh pattern isiliye hai kyunki dono ke beech emotional investment unequal hai… ek wait kar raha hai, doosra soch raha hai.",
     "Connection strong hai… lekin communication wahan breakdown ho raha hai jahan dono expect karte hain.",
@@ -192,7 +192,7 @@ const PATTERN_INSIGHTS = {
   ],
 };
 
-const FUTURE_FLOW = {
+const FUTURE_FLOW: Record<string, string[]> = {
   love: [
     "Aane wale mahine mein clarity aayegi… kyunki planetary position favorable ho rahi hai.",
     "Communication improve hone wala hai… lekin tumhe pehle step lena hoga.",

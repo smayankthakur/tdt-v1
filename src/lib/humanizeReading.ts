@@ -103,7 +103,7 @@ function analyzeQuestion(question: string): Omit<ReadingContext, 'name'> {
     hiddenInsight = "You already know the answer, you're just waiting for permission to act on it.";
   }
   
-  return { emotion, topic, urgency, hiddenInsight };
+  return { emotion, topic, urgency, hiddenInsight, question };
 }
 
 // ========== VARIATION ENGINE ==========

@@ -93,7 +93,7 @@ export default function StreamingOutput({
         return (
           <motion.p
             key={idx}
-            ref={el => lineRefs.current[idx] = el}
+            ref={(el) => { lineRefs.current[idx] = el; }}
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, ease: 'easeOut' }}

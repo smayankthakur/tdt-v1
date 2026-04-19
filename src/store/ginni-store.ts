@@ -4,17 +4,17 @@ import { create } from 'zustand';
 import { GinniContext } from '@/components/GinniChat';
 
 interface GinniState {
-  context: GinniContext | null;
+  context: GinniContext | undefined;
   triggerOpen: boolean;
   isOpen: boolean;
-  setContext: (context: GinniContext | null) => void;
+  setContext: (context: GinniContext | undefined) => void;
   setTriggerOpen: (trigger: boolean) => void;
   setIsOpen: (open: boolean) => void;
   clearContext: () => void;
 }
 
 export const useGinniStore = create<GinniState>((set) => ({
-  context: null,
+  context: undefined,
   triggerOpen: false,
   isOpen: false,
   
@@ -24,5 +24,5 @@ export const useGinniStore = create<GinniState>((set) => ({
   
   setIsOpen: (isOpen) => set({ isOpen }),
   
-  clearContext: () => set({ context: null, triggerOpen: false })
+  clearContext: () => set({ context: undefined, triggerOpen: false })
 }));

@@ -20,7 +20,7 @@ export default function GinniChatWrapper() {
   
   const hesitationTimerRef = useRef<NodeJS.Timeout | null>(null);
   const autoHideTimerRef = useRef<NodeJS.Timeout | null>(null);
-  const previousStageRef = useRef<FunnelStage>('');
+  const previousStageRef = useRef<FunnelStage | null>(null);
   
   const [showGinniBubble, setShowGinniBubble] = useState(false);
   const [currentTrigger, setCurrentTrigger] = useState(getTriggerForStage('homepage'));

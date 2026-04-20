@@ -238,45 +238,6 @@ finalCta: {
         },
       },
     },
-    about: {
-      hero: {
-        title: 'About The Journey',
-        subtitle: 'Yeh platform sirf readings ke liye nahi bana… Yeh clarity dene ke liye bana hai jab life confusing lagti hai.',
-      },
-      founder: {
-        role: 'Founder & Lead Tarot Reader',
-        bio: "Over 10 years of experience guiding seekers through life's most confusing moments. What started as a personal journey into tarot evolved into a mission — making spiritual guidance accessible to everyone, anytime.",
-        philosophy: "This platform isn't about predictions. It's about helping you see what you already feel deep inside. The cards don't tell you what to do — they help you understand what you already know.",
-      },
-      stats: {
-        readings: '10,000+ Readings',
-        since: 'Since 2014',
-      },
-      philosophy: {
-        title: 'The Philosophy',
-        clarity: {
-          title: 'Clarity Over Prediction',
-          desc: "We don't tell your future. We help you see your present more clearly.",
-        },
-        personal: {
-          title: 'Personal Over Generic',
-          desc: 'Every reading is unique. No templates, no copy-paste responses.',
-        },
-        guidance: {
-          title: 'Guidance Over Advice',
-          desc: 'We guide you to your own answers. The power was always within you.',
-        },
-      },
-      why: {
-        title: 'Why This Platform?',
-        p1: "Traditional tarot readings require appointments, waiting, and often come with a premium price tag. But clarity shouldn't wait — and it shouldn't cost a fortune.",
-        p2: 'This platform combines ancient tarot wisdom with modern AI technology to create something truly unique: readings that feel personal, that understand your emotional context, and that give you insight when you need it most.',
-        p3: "Whether you're at 2 AM with a racing mind or need a quick perspective before a big decision — the answers are here, waiting for you.",
-      },
-      cta: {
-        text: 'Ready to find your clarity?',
-      },
-    },
   hi: {
     common: {
       loading: 'लोड हो रहा है...',

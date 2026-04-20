@@ -42,7 +42,7 @@ function createSeed(options: {
 
 // ========== INTENT MAPPING ==========
 
-export type IntentDomain = 'love' | 'career' | 'finance' | 'conflict' | 'action' | 'spiritual' | 'general';
+export type IntentDomain = 'love' | 'career' | 'finance' | 'conflict' | 'no_contact' | 'action' | 'spiritual' | 'general';
 
 export interface DomainAnalysis {
   primaryDomain: IntentDomain;
@@ -57,6 +57,7 @@ const DOMAIN_SUIT_PRIORITY: Record<IntentDomain, string[]> = {
   career: ['wands', 'pentacles', 'major'],
   finance: ['pentacles', 'major'],
   conflict: ['swords', 'major'],
+  no_contact: ['swords', 'major'],
   action: ['wands', 'major'],
   spiritual: ['major', 'cups'],
   general: ['major', 'cups', 'wands', 'swords', 'pentacles'],

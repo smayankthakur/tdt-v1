@@ -364,7 +364,7 @@ export function createContextFromAnalysis(
   let hiddenInsight = '';
   if (analysis.primaryDomain === 'conflict' || analysis.primaryDomain === 'no_contact') {
     hiddenInsight = "woh insaan bhi internally confuse hai—unhe tumse baat karni hai, lekin koi element unhe rok raha hai.";
-  } else if (analysis.primaryDomain === 'love') {
+  } else if (analysis.primaryDomain === 'love' || analysis.primaryDomain === 'no_contact') {
     hiddenInsight = "Dekho, ek emotional vulnerability hai jo surface par naam nahi ho raha.";
   } else if (analysis.emotionalTone === 'anxious') {
     hiddenInsight = "Tumhara tension actually control ki khoj se aata hai—par asli answer surrender mein hai.";

@@ -135,6 +135,12 @@ interface QuestionInputProps {
   maxLength?: number;
 }
 
+interface TopicSelectorProps {
+  selectedTopic: string | null;
+  onSelectTopic: (topic: string) => void;
+  recommendedTopic?: string;
+}
+
 interface TopicQuestionProps {
   topic: string;
   questions: string[];

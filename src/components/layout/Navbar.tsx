@@ -37,7 +37,7 @@ export default function Navbar() {
 
   const isHome = pathname === '/';
   const isReading = pathname === '/reading';
-  const isFunnelPage = isReading;
+  const isFunnelPage = false; // Always show navbar - user requirement
 
   const getNavLabel = (key: string): string => {
     if (!isHydrated) return key;
@@ -56,10 +56,8 @@ export default function Navbar() {
     <>
       <motion.header
         className={cn(
-          'fixed top-0 left-0 right-0 z-50 transition-all duration-300',
-          isScrolled || !isHome
-            ? 'bg-[rgb(var(--background))/90] backdrop-blur-md shadow-lg shadow-[rgb(var(--gold))/10]'
-            : 'bg-transparent'
+          'sticky top-0 left-0 right-0 z-50 transition-all duration-300',
+          'backdrop-blur-md bg-black/40 border-b border-white/10'
         )}
         initial={{ y: -100 }}
         animate={{ y: 0 }}

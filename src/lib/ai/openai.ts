@@ -20,10 +20,10 @@ export interface ReadingResult {
   interpretation: string;
 }
 
-const LANGUAGE_SYSTEM_PROMPTS: Record<string, string> = {
-  en: 'You are a mystical, emotionally intelligent tarot reader. Speak like a wise guide, not an AI. Write in elegant English.',
-  hi: 'आप एक रहस्यमय, भावनात्मक रूप से बुद्धिमान टैरो रीडर हैं। एक बुद्धिमान मार्गदर्शक की तरह बोलें, AI की तरह नहीं। हिंदी में लिखें जो प्राकृतिक और सुंदर हो।',
-  hinglish: 'You are a mystical tarot reader. Speak like a friend who really cares. Write in Hinglish - conversational mix of Hindi and English with WhatsApp style. Keep it real, keep it personal.',
+const LANGUAGE_TONE_PROMPTS: Record<string, string> = {
+  en: 'You speak like a wise, caring friend who deeply understands. Write warm, personal English with a soft touch.',
+  hi: 'Tum ek dost jaise baat karo jo dil se samajhta hai. Hindi mein likho jismein warmth ho.',
+  hinglish: 'Tum ek dost jaise baat karo jo dil se samajhta hai. Hinglish mein likho—natural, personal, WhatsApp style. Keep it real.',
 };
 
 export async function generateReading(
@@ -35,7 +35,7 @@ export async function generateReading(
 ): Promise<ReadingResult> {
   const cardsFormatted = formatCardsForAI(selectedCards);
   const prompt = buildPrompt(question, cardsFormatted, memoryContext, undefined, name);
-  const systemPrompt = LANGUAGE_SYSTEM_PROMPTS[language] || LANGUAGE_SYSTEM_PROMPTS.en;
+  const toneInstruction = LANGUAGE_TONE_PROMPTS[language] || LANGUAGE_TONE_PROMPTS.en;
 
   try {
     const response = await getOpenAI().chat.completions.create({
@@ -43,19 +43,19 @@ export async function generateReading(
       messages: [
         {
           role: 'system',
-          content: systemPrompt
+          content: toneInstruction
         },
         {
           role: 'user',
           content: prompt
         }
       ],
-      temperature: 0.8,
-      max_tokens: 500,
+      temperature: 0.85,
+      max_tokens: 400,
     });
 
     const interpretation = response.choices[0]?.message?.content || 
-      'The cards have spoken, but the message is still forming. Please ask again.';
+      'Jo dikh raha hai woh important hai… thoda wait karo, clarity aayegi.';
 
     return {
       cards: selectedCards,
@@ -64,24 +64,9 @@ export async function generateReading(
   } catch (error) {
     console.error('OpenAI API error:', error);
     
-    // Fallback reading if API fails
     return {
       cards: selectedCards,
-      interpretation: generateFallbackReading(question, selectedCards)
+      interpretation: 'Jo dikh raha hai woh important hai… thoda wait karo, clarity aayegi.'
     };
   }
-}
-
-function generateFallbackReading(question: string, cards: SelectedCard[]): string {
-  // Simple fallback for when OpenAI is unavailable
-  const cardMeanings = cards.map(c => c.card.upright).join(', ');
-  const firstCard = cards[0]?.card.name || 'The cards';
-  
-  return `I sense that your question about "${question.slice(0, 50)}..." weighs heavily on your mind. 
-
-The ${firstCard} has appeared prominently, suggesting that ${cardMeanings}.
-
-Trust your intuition in this matter. The universe is guiding you toward what you need to see. Be open to the messages coming through.
-
-There's more depth here that deserves exploration...`;
 }

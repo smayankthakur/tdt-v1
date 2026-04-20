@@ -124,7 +124,7 @@ export default function Header() {
                       <button
                         key={lang.code}
                         onClick={() => {
-                          setLanguage(lang.code as 'en' | 'hinglish');
+                          setLanguage(lang.code as 'en' | 'hi' | 'hinglish');
                           setIsLangOpen(false);
                         }}
                         className={cn(

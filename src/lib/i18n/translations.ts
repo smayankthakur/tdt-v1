@@ -431,12 +431,12 @@ readingHub: {
     },
     home: {
       hero: {
-        sloganLine1: 'Yeh sirf tarot nahi hai…',
-        sloganLine2: 'Yeh woh clarity hai jo tum already feel kar rahe ho…',
-        quote: 'Jo tum poochne wale ho… uska answer tum already feel kar rahe ho.',
-        ctaButton: 'Know Your Fortune',
-        ctaSubtext: 'Shayad yeh wahi answer hai jiska tum wait kar rahe the…',
-      },
+        sloganLine1: 'यह सिर्फ टैरो नहीं है...',
+        sloganLine2: 'यह वो स्पष्टता है जब जिंदगी भ्रमित हो जाए...',
+        quote: 'जो आप पूछना चाहते हैं... उसका उत्तर आप पहले से महसूस कर रहे हैं',
+        ctaButton: 'अपना भविष्य जानें',
+        ctaSubtext: 'शायद यही उत्तर है जिसका आप इंतज़ार कर रहे थे...'
+      }
     },
     about: {
       hero: {

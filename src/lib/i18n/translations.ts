@@ -135,6 +135,47 @@ readingHub: {
       placeholder: 'Type your message...',
       send: 'Send',
     },
+    ritualHub: {
+      topicSelect: {
+        title: "What area do you need clarity in?",
+        subtitle: "Choose the topic that resonates with your heart...",
+      },
+      question: {
+        title: "What's been on your mind...",
+        subtitle: "Write it. From your heart.",
+        placeholder: "What do you want to know?",
+        submit: "Continue",
+        hint: "Clear question leads to clear direction",
+        back: "← Back",
+      },
+      shuffle: [
+        "Just a moment...",
+        "Aligning energy...",
+        "What's meant to come...",
+        "The cards are speaking...",
+        "Catching signals...",
+      ],
+      cardSelect: {
+        title: "Choose the cards that call to you...",
+        selectionMessage: "{count} selected — choose {remaining} more",
+        complete: "Perfect! Your selection is complete...",
+      },
+      suspense: {
+        default: "What you chose wasn't random",
+      },
+      reveal: [
+        "This is the first sign...",
+        "What's coming is important...",
+        "Look at what's hidden...",
+        "Energy is clearing...",
+        "This is what you've been seeking...",
+      ],
+      loading: "Just a moment... catching signals",
+      preStream: "Look carefully... what comes is important.",
+      closing: "The next step... you already feel it.",
+      startOver: "Start over",
+      unlockAccess: "Full Access",
+    },
     testimonials: {
       title: 'What Seekers Say',
       seeMore: 'See more reviews',

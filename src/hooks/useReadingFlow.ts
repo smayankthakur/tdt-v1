@@ -231,10 +231,51 @@ function analyzeEmotion(question: string): string {
   return 'curious';
 }
 
+// Storage key for persisting readings
+const READINGS_STORAGE_KEY = 'tdt_persisted_readings';
+
+interface StoredReading extends ReadingResult {
+  storedAt: number;
+  sessionKey: string;
+}
+
+function getStoredReadings(): StoredReading[] {
+  if (typeof window === 'undefined') return [];
+  try {
+    const stored = localStorage.getItem(READINGS_STORAGE_KEY);
+    return stored ? JSON.parse(stored) : [];
+  } catch {
+    return [];
+  }
+}
+
+function saveReadingToStorage(reading: ReadingResult, sessionKey: string): void {
+  if (typeof window === 'undefined') return;
+  try {
+    const stored = getStoredReadings();
+    const newStored: StoredReading = {
+      ...reading,
+      storedAt: Date.now(),
+      sessionKey,
+    };
+    const updated = [newStored, ...stored.slice(0, 9)]; // Keep last 10
+    localStorage.setItem(READINGS_STORAGE_KEY, JSON.stringify(updated));
+  } catch {
+    // Ignore storage errors
+  }
+}
+
+function getStoredReading(sessionKey: string): ReadingResult | null {
+  const stored = getStoredReadings();
+  const found = stored.find(r => r.sessionKey === sessionKey);
+  return found || null;
+}
+
 export function useReadingFlow() {
   const [result, setResult] = useState<ReadingResult | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [sessionKey] = useState(() => `session_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`);
   
   const { canRead, incrementReading } = useReadingLimitStore();
   const { language } = useLanguage();
@@ -246,6 +287,14 @@ export function useReadingFlow() {
     
     if (!canRead()) {
       setError('Limit reached');
+      setIsLoading(false);
+      return;
+    }
+    
+    // Check if we already have a reading stored for this session (prevent regeneration)
+    const existingReading = getStoredReading(sessionKey);
+    if (existingReading) {
+      setResult(existingReading);
       setIsLoading(false);
       return;
     }
@@ -295,6 +344,9 @@ export function useReadingFlow() {
         timestamp: new Date().toISOString(),
       };
       
+      // Persist reading to localStorage - makes it immune to language changes
+      saveReadingToStorage(readingResult, sessionKey);
+      
       setResult(readingResult);
       incrementReading(input.readingType as any);
       
@@ -303,7 +355,7 @@ export function useReadingFlow() {
     } finally {
       setIsLoading(false);
     }
-  }, [canRead, incrementReading, region]);
+  }, [canRead, incrementReading, region, sessionKey]);
   
   return {
     result,

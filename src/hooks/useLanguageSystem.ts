@@ -1,7 +1,6 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import type { Language } from '@/lib/i18n/config';
-import { useLanguageStore } from '@/store/languageStore';
-import { useAutoLanguage } from '@/hooks/useAutoLanguage';
+import { useLanguage } from '@/hooks/useLanguage';
 
 export interface UseLanguageOptions {
   autoDetect?: boolean;
@@ -9,15 +8,14 @@ export interface UseLanguageOptions {
 }
 
 export function useLanguageSystem(options: UseLanguageOptions = {}) {
-  const { autoDetect = true, persistKey = 'divine_tarot_language' } = options;
+  const { persistKey = 'divine_tarot_language' } = options;
   
   const { 
     language: lang, 
     setLanguage: storeSetLanguage,
     isHydrated 
-  } = useLanguageStore();
+  } = useLanguage();
   
-  const { detectedLanguage, detectFromText } = useAutoLanguage();
   const [manualOverride, setManualOverride] = useState(false);
   
   // Set language with persistence
@@ -28,19 +26,6 @@ export function useLanguageSystem(options: UseLanguageOptions = {}) {
       localStorage.setItem(persistKey, newLang);
     }
   }, [storeSetLanguage, persistKey]);
-  
-  // Auto-detect from text input when enabled and no manual override
-  const detectLanguageFromText = useCallback((text: string) => {
-    if (autoDetect && !manualOverride) {
-      const detected = detectFromText(text);
-      if (detected && detected !== lang) {
-        storeSetLanguage(detected);
-        if (typeof window !== 'undefined') {
-          localStorage.setItem(persistKey, detected);
-        }
-      }
-    }
-  }, [autoDetect, manualOverride, detectFromText, lang, storeSetLanguage, persistKey]);
   
   // Reset manual override - allows auto-detection again
   const allowAutoDetect = useCallback(() => {
@@ -63,7 +48,6 @@ export function useLanguageSystem(options: UseLanguageOptions = {}) {
     isHydrated,
     manualOverride,
     setManualOverride,
-    detectLanguageFromText,
     allowAutoDetect,
     currentLang,
     languageName,

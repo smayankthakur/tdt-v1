@@ -13,7 +13,7 @@ const navLinks = [
   { href: '/', labelKey: 'nav.home' },
   { href: '/about', labelKey: 'nav.about' },
   { href: '/reading', labelKey: 'nav.reading' },
-  { href: '/subscription', labelKey: 'nav.subscription', isExternal: false },
+  { href: '/premium', labelKey: 'nav.subscription', isExternal: false },
   { href: 'https://thedivinetarotonline.co.in/', labelKey: 'nav.booking', isExternal: true },
 ];
 

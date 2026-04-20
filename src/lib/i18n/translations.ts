@@ -163,6 +163,15 @@ readingHub: {
       active: 'Premium Access Active',
       enjoy: 'Enjoy unlimited readings',
     },
+    home: {
+      hero: {
+        sloganLine1: "Yeh sirf tarot nahi hai...",
+        sloganLine2: "Yeh clarity hai jab life confusing ho jati hai...",
+        quote: "Jo tum poochne wale ho... uska answer tum already feel kar rahe ho",
+        ctaButton: "Know Your Fortune",
+        ctaSubtext: "Shayad yeh wahi answer hai jiska tum wait kar rahe the..."
+      }
+    },
     landing: {
       urgency: {
         timeSensitive: 'Time-sensitive',

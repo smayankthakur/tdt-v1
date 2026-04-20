@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Heart, Briefcase, HelpCircle, Lightbulb } from 'lucide-react';
 import Button from '@/components/ui/button';
 import { FloatingTextarea } from '@/components/ui/FloatingInput';
 import { fadeInUp, staggerContainer, staggerItem } from '@/lib/motion';

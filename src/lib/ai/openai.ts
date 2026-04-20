@@ -30,10 +30,11 @@ export async function generateReading(
   question: string, 
   selectedCards: SelectedCard[],
   memoryContext?: string,
-  language: string = 'en'
+  language: string = 'en',
+  name?: string
 ): Promise<ReadingResult> {
   const cardsFormatted = formatCardsForAI(selectedCards);
-  const prompt = buildPrompt(question, cardsFormatted, memoryContext);
+  const prompt = buildPrompt(question, cardsFormatted, memoryContext, undefined, name);
   const systemPrompt = LANGUAGE_SYSTEM_PROMPTS[language] || LANGUAGE_SYSTEM_PROMPTS.en;
 
   try {

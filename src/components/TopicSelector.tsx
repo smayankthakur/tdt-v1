@@ -5,6 +5,7 @@ import { ArrowRight, Heart, Briefcase, HelpCircle, Lightbulb } from 'lucide-reac
 import Button from '@/components/ui/button';
 import { FloatingTextarea } from '@/components/ui/FloatingInput';
 import { fadeInUp, staggerContainer, staggerItem } from '@/lib/motion';
+import { cn } from '@/lib/utils';
 
 export function QuestionInput({
   value,

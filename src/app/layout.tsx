@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import ClientProviders from "@/components/ClientProviders";
-import Navbar from "@/components/layout/Navbar";
+import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import AnalyticsProvider from "@/components/AnalyticsProvider";
 import Watermark from "@/components/security/Watermark";
@@ -97,7 +97,7 @@ export default function RootLayout({
         <Watermark />
         <ClientProviders>
           <AnalyticsProvider />
-          <Navbar />
+          <Header />
           <main className="min-h-screen">{children}</main>
           <Footer />
           <GinniChatWrapper />

@@ -27,7 +27,9 @@ export const TRANSLATIONS: Record<Language, TranslationSet> = {
       bookReading: 'Book Reading',
       blog: 'Blog',
       contact: 'Contact',
+      about: 'About',
       talkToGinni: 'Talk to Ginni',
+      yesno: 'Yes/No',
     },
     hero: {
       headline: {
@@ -149,9 +151,10 @@ readingHub: {
       },
     },
     footer: {
-      tagline: 'Guiding you through clarity and insight. Your journey to understanding begins here.',
-      copyright: 'All rights reserved.',
+      tagline: 'Clarity begins within',
+      copyright: `© Sitelytc Digital Media. All rights reserved.`,
       madeWith: 'Made with cosmic energy',
+      privacy: 'Privacy',
     },
     premium: {
       badge: 'Premium Member',
@@ -227,14 +230,54 @@ readingHub: {
          rating: "4.9 rating",
          speed: "Under 60 seconds",
        },
-       finalCta: {
-         title: "Your answers have been waiting...",
-         description: "The cards are revealing themselves. Your guidance is ready. Take the first step towards clarity.",
-         button: "Move Forward",
-         subtext: "Takes less than 60 seconds • Free to try",
-       },
-     },
-   },
+finalCta: {
+          title: "Your answers have been waiting...",
+          description: "The cards are revealing themselves. Your guidance is ready. Take the first step towards clarity.",
+          button: "Move Forward",
+          subtext: "Takes less than 60 seconds • Free to try",
+        },
+      },
+    },
+    about: {
+      hero: {
+        title: 'About The Journey',
+        subtitle: 'Yeh platform sirf readings ke liye nahi bana… Yeh clarity dene ke liye bana hai jab life confusing lagti hai.',
+      },
+      founder: {
+        role: 'Founder & Lead Tarot Reader',
+        bio: "Over 10 years of experience guiding seekers through life's most confusing moments. What started as a personal journey into tarot evolved into a mission — making spiritual guidance accessible to everyone, anytime.",
+        philosophy: "This platform isn't about predictions. It's about helping you see what you already feel deep inside. The cards don't tell you what to do — they help you understand what you already know.",
+      },
+      stats: {
+        readings: '10,000+ Readings',
+        since: 'Since 2014',
+      },
+      philosophy: {
+        title: 'The Philosophy',
+        clarity: {
+          title: 'Clarity Over Prediction',
+          desc: "We don't tell your future. We help you see your present more clearly.",
+        },
+        personal: {
+          title: 'Personal Over Generic',
+          desc: 'Every reading is unique. No templates, no copy-paste responses.',
+        },
+        guidance: {
+          title: 'Guidance Over Advice',
+          desc: 'We guide you to your own answers. The power was always within you.',
+        },
+      },
+      why: {
+        title: 'Why This Platform?',
+        p1: "Traditional tarot readings require appointments, waiting, and often come with a premium price tag. But clarity shouldn't wait — and it shouldn't cost a fortune.",
+        p2: 'This platform combines ancient tarot wisdom with modern AI technology to create something truly unique: readings that feel personal, that understand your emotional context, and that give you insight when you need it most.',
+        p3: "Whether you're at 2 AM with a racing mind or need a quick perspective before a big decision — the answers are here, waiting for you.",
+      },
+      cta: {
+        text: 'Ready to find your clarity?',
+      },
+    },
+    hi: {
   hi: {
     common: {
       loading: 'लोड हो रहा है...',
@@ -362,13 +405,14 @@ readingHub: {
       },
     },
     footer: {
-      tagline: 'स्पष्टता और अंतर्दृष्टि के माध्यम से आपका मार्गदर्शन। आपकी समझ की यात्रा यहां से शुरू होती है।',
-      copyright: 'सर्वाधिकार सुरक्षित।',
+      tagline: 'Clarity begins within',
+      copyright: `© Sitelytc Digital Media। सर्वाधिकार सुरक्षित।`,
       madeWith: 'ब्रह्मांडीय ऊर्जा के साथ बनाया गया',
+      privacy: 'गोपनीयता',
     },
     premium: {
       badge: 'प्रीमियम सदस्य',
-      active: 'प्रीमियम एक्से��� सक्रिय',
+      active: 'प्रीमियम एक्सेस सक्रिय',
       enjoy: 'असीमित रीडिंग का आनंद लें',
     },
     urgency: {
@@ -376,6 +420,45 @@ readingHub: {
       limitedSpots: 'केवल 2 स्थान शेष',
       endsTonight: 'आज रात समाप्त होगा',
       lastChance: 'आखिरी मौका',
+    },
+    about: {
+      hero: {
+        title: 'यात्रा के बारे में',
+        subtitle: 'यह प्लेटफॉर्म सिर्फ रीडिंग्स के लिए नहीं बना… यह तब बना जब लाइफ कन्फ्यूजिंग लगती है।',
+      },
+      founder: {
+        role: 'संस्थापक और प्रमुख टैरो रीडर',
+        bio: 'जीवन के सबसे कन्फ्यूजिंग पलों में सीकर्स का मार्गदर्शन करने का 10 से अधिक वर्षों का अनुभव। टैरो में व्यक्तिगत यात्रा से शुरू हुआ यह मिशन — आध्यात्मिक मार्गदर्शन सभी के लिए सुलभ बनाना।',
+        philosophy: 'यह प्लेटफॉर्म भविष्यवाणी के बारे में नहीं है। यह आपको वह देखने में मदद करना है जो आप पहले से महसूस करते हैं। कार्ड्स आपको क्या करना है यह नहीं बताते — वे आपको समझने में मदद करते हैं कि आप पहले से क्या जानते हैं।',
+      },
+      stats: {
+        readings: '10,000+ रीडिंग्स',
+        since: '2014 से',
+      },
+      philosophy: {
+        title: 'दर्शन',
+        clarity: {
+          title: 'भविष्यवाणी से पहले स्पष्टता',
+          desc: 'हम आपका भविष्य नहीं बताते। हम आपको अपना वर्तमान स्पष्ट रूप से देखने में मदद करते हैं।',
+        },
+        personal: {
+          title: 'जेनरिक से व्यक्तिगत',
+          desc: 'हर रीडिंग अलग है। कोई टेम्पलेट नहीं, कोई कॉपी-पेस्ट जवाब नहीं।',
+        },
+        guidance: {
+          title: 'सलाह से मार्गदर्शन',
+          desc: 'हम आपको अपने जवाबों तक पहुंचाते हैं। शक्ति हमेशा आपके अंदर थी।',
+        },
+      },
+      why: {
+        title: 'यह प्लेटफॉर्म क्यों?',
+        p1: 'पारंपरिक टैरो रीडिंग्स के लिए अपॉइंटमेंट, इंतज़ार, और अक्सर प्रीमियम कीमत चुकानी पड़ती है। लेकिन स्पष्टता को इंतज़ार नहीं करना चाहिए — और इसकी बड़ी कीमत नहीं होनी चाहिए।',
+        p2: 'यह प्लेटफॉर्म प्राचीन टैरो ज्ञान को आधुनिक AI तकनीक के साथ जोड़ता है — ऐसी रीडिंग्स जो व्यक्तिगत, भावनात्मक संदर्भ को समझने वाली, और जब आपको सबसे ज्यादा जरूरत हो तब अंतर्दृष्टि देने वाली।',
+        p3: 'चाहे आप रात 2 बजे दिमाग घूम रहा हो या बड़े फैसले से पहले त्वरित दृष्टिकोण चाहते हों — जवाब यहां हैं, आपका इंतज़ार कर रहे हैं।',
+      },
+      cta: {
+        text: 'अपनी स्पष्टता पाने के लिए तैयार?',
+      },
     },
   },
   hinglish: {
@@ -527,9 +610,10 @@ readingHub: {
       },
     },
     footer: {
-      tagline: 'Clarity aur insight ke through tumhara guide. Tumhari understanding ki journey yahan se shuru hoti hai.',
-      copyright: 'All rights reserved.',
+      tagline: 'Clarity begins within',
+      copyright: `© Sitelytc Digital Media. All rights reserved.`,
       madeWith: 'Cosmic energy se bana',
+      privacy: 'Privacy',
     },
     premium: {
       badge: 'Premium Member',
@@ -541,6 +625,45 @@ readingHub: {
       limitedSpots: 'Sirf 2 spots bache hain',
       endsTonight: 'Aaj raat end hoga',
       lastChance: 'Last chance',
+    },
+    about: {
+      hero: {
+        title: 'About The Journey',
+        subtitle: 'Yeh platform sirf readings ke liye nahi bana… Yeh clarity dene ke liye bana hai jab life confusing lagti hai.',
+      },
+      founder: {
+        role: 'Founder & Lead Tarot Reader',
+        bio: "Over 10 years of experience guiding seekers through life's most confusing moments. What started as a personal journey into tarot evolved into a mission — making spiritual guidance accessible to everyone, anytime.",
+        philosophy: "This platform isn't about predictions. It's about helping you see what you already feel deep inside. The cards don't tell you what to do — they help you understand what you already know.",
+      },
+      stats: {
+        readings: '10,000+ Readings',
+        since: 'Since 2014',
+      },
+      philosophy: {
+        title: 'The Philosophy',
+        clarity: {
+          title: 'Clarity Over Prediction',
+          desc: "We don't tell your future. We help you see your present more clearly.",
+        },
+        personal: {
+          title: 'Personal Over Generic',
+          desc: 'Every reading is unique. No templates, no copy-paste responses.',
+        },
+        guidance: {
+          title: 'Guidance Over Advice',
+          desc: 'We guide you to your own answers. The power was always within you.',
+        },
+      },
+      why: {
+        title: 'Why This Platform?',
+        p1: "Traditional tarot readings require appointments, waiting, and often come with a premium price tag. But clarity shouldn't wait — and it shouldn't cost a fortune.",
+        p2: 'This platform combines ancient tarot wisdom with modern AI technology to create something truly unique: readings that feel personal, that understand your emotional context, and that give you insight when you need it most.',
+        p3: "Whether you're at 2 AM with a racing mind or need a quick perspective before a big decision — the answers are here, waiting for you.",
+      },
+      cta: {
+        text: 'Ready to find your clarity?',
+      },
     },
   },
   ar: {
@@ -609,9 +732,10 @@ readingHub: {
       instant: 'إجابات فورية، في أي وقت',
     },
     footer: {
-      tagline: 'دليلك للوضوح والرؤية. تبدأ رحلة الفهم هنا.',
-      copyright: 'جميع الحقوق محفوظة.',
+      tagline: 'الوضوح يبدأ من الداخل',
+      copyright: '© Sitelytc Digital Media. جميع الحقوق محفوظة.',
       madeWith: 'مصنوع بطاقة نجمية',
+      privacy: 'الخصوصية',
     },
     premium: {
       badge: 'عضو مميز',
@@ -623,6 +747,45 @@ readingHub: {
       limitedSpots: 'بقية مكانان فقط',
       endsTonight: 'ينتهي الليلة',
       lastChance: 'الفرصة الأخيرة',
+    },
+    about: {
+      hero: {
+        title: 'عن الرحلة',
+        subtitle: 'هذه المنصة ليست فقط للقراءات... صُنعت لتقدم الوضوح عندما تبدو الحياة مربكة.',
+      },
+      founder: {
+        role: 'المؤسسة وقائدة قراءة Tarot',
+        bio: 'أكثر من 10 سنوات من الخبرة في إرشاد الباحثين خلال أكثر لحظات الحياة إرباكًا. ما بدأ كرحالة شخصية في Tarot تطور إلى مهمة — جعل التوجيه الروحي متاحًا للجميع، في أي وقت.',
+        philosophy: 'هذه المنصة ليست عن التنبؤات. إنها عن مساعدتك على رؤية ما تشعر به بالفعل في أعماقك. البطاقات لا تخبرك ماذا تفعل — بل تساعدك على فهم ما تعرفه بالفعل.',
+      },
+      stats: {
+        readings: '10,000+ قراءة',
+        since: 'منذ 2014',
+      },
+      philosophy: {
+        title: 'الفلسفة',
+        clarity: {
+          title: 'الوضوح قبل التنبؤ',
+          desc: 'نحن لا نخبرك مستقبلك. نساعدك على رؤية حاضرك بوضوح أكبر.',
+        },
+        personal: {
+          title: 'شخصي قبل عام',
+          desc: 'كل قراءة فريدة. لا قوالب، لا نسخ ولصق.',
+        },
+        guidance: {
+          title: 'توجيه قبل نصيحة',
+          desc: 'نوجهك إلى إجاباتك الخاصة. القوة كانت دائمًا في داخلك.',
+        },
+      },
+      why: {
+        title: 'لماذا هذه المنصة؟',
+        p1: 'قراءات Tarot التقليدية تتطلب مواعيد وانتظار وغالبًا ما تأتي بسعر متميز. لكن الوضوح لا يجب أن ينتظر — ولا يجب أن يكلف ثروة.',
+        p2: 'تجمع هذه المنصة بين حكمة Tarot القديمة وتقنية الذكاء الاصطناعي الحديثة لإنشاء شيء فريد حقًا: قراءات شخصية، تفهم سياقك العاطفي، وتعطيك نظرة ثاقبة عندما تحتاجها أكثر.',
+        p3: 'سواء كنت في الساعة 2 صباحًا بعقل متسارع أو تحتاج إلى منظور سريع قبل قرار كبير — الإجابات هنا، في انتظارك.',
+      },
+      cta: {
+        text: 'هل أنت مستعد لإيجاد وضوحك؟',
+      },
     },
   },
   he: {
@@ -691,9 +854,10 @@ readingHub: {
       instant: 'תשובות מיידיות, בכל זמן',
     },
     footer: {
-      tagline: 'המדריך שלך לבהירות ולתובנה. מסע ההבנה שלך מתחיל כאן.',
-      copyright: 'כל הזכויות שמורות.',
+      tagline: 'הבהירות מתחילה מבפנים',
+      copyright: '© Sitelytc Digital Media. כל הזכויות שמורות.',
       madeWith: 'נעשה עם אנרגיה קוסמית',
+      privacy: 'פרטיות',
     },
     premium: {
       badge: 'חבר פרימיום',
@@ -705,6 +869,45 @@ readingHub: {
       limitedSpots: 'נותרו רק 2 מקומות',
       endsTonight: 'מסתיים הלילה',
       lastChance: 'ההזדמנות האחרונה',
+    },
+    about: {
+      hero: {
+        title: 'על המסע',
+        subtitle: 'הפלטפורמה הזו לא נוצרה רק לקריאות... היא נוצרה לתת בהירות כשהחיים נראים מבלבלים.',
+      },
+      founder: {
+        role: 'מייסדת ומנהלת קריאות טארוט',
+        bio: 'יותר מ-10 שנות ניסיון בהנחיית מחפשים דרך הרגעים המבלבלים ביותר בחיים. מה שהתחיל כמסע אישי לטארום התפתח למשימה — להנגיש הכוונה רוחנית לכל אחד, בכל עת.',
+        philosophy: 'הפלטפורמה הזו לא עוסקת בנבואות. היא עוסקת בלעזור לך לראות את מה שאתה כבר מרגיש עמוק בפנים. הקלפים לא אומרים לך מה לעשות — הם עוזרים לך להבין את מה שאתה כבר יודע.',
+      },
+      stats: {
+        readings: '10,000+ קריאות',
+        since: 'מאז 2014',
+      },
+      philosophy: {
+        title: 'הפילוסופיה',
+        clarity: {
+          title: 'בהירות לפני נבואה',
+          desc: 'אנחנו לא אומרים לך את העתיד שלך. אנחנו עוזרים לך לראות את ההווה שלך בבהירות רבה יותר.',
+        },
+        personal: {
+          title: 'אישי לפני כללי',
+          desc: 'כל קריאה ייחודית. אין תבניות, אין העתקה-הדבקה.',
+        },
+        guidance: {
+          title: 'הכוונה לפני עצה',
+          desc: 'אנחנו מכוונים אותך לתשובות שלך. הכוח תמיד היה בתוכך.',
+        },
+      },
+      why: {
+        title: 'למה הפלטפורמה הזו?',
+        p1: 'קריאות טארוט מסורתיות דורשות תורים, המתנה, ולעתים קרובות מגיעות עם תג מחיר יקר. אבל בהירות לא צריכה לחכות — והיא לא צריכה לעלות הון.',
+        p2: 'הפלטפורמה הזו משלבת חוכמת טארוט עתיקה עם טכנולוגיית בינה מלאכותית מודרנית ליצור משהו באמת ייחודי: קריאות אישיות, שמבינות את ההקשר הרגשי שלך, ונותנות לך תובנה כשאתה הכי צריך.',
+        p3: 'בין אם אתה ב-2 בלילה עם מחשבות מתרוצצות או צריך נקודת מבט מהירה לפני החלטה גדולה — התשובות כאן, מחכות לך.',
+      },
+      cta: {
+        text: 'מוכן למצוא את הבהירות שלך?',
+      },
     },
   },
 };

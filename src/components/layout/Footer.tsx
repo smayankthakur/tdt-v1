@@ -2,16 +2,16 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
+import { useLanguage } from '@/hooks/useLanguage';
 
 export default function Footer() {
-  const currentYear = new Date().getFullYear();
+  const { t, isHydrated } = useLanguage();
 
   return (
-    <footer className="relative bg-background border-t border-white/5">
-      <div className="mx-auto max-w-7xl px-6 py-12">
-        <div className="flex flex-col items-center gap-8">
-          {/* Logo & Tagline */}
-          <div className="flex flex-col items-center gap-4">
+    <footer className="relative bg-background/80 border-t border-white/5 backdrop-blur-sm">
+      <div className="mx-auto max-w-7xl px-6 py-10">
+        <div className="flex flex-col items-center gap-6">
+          <div className="flex flex-col items-center gap-3">
             <Link href="/" className="flex items-center gap-3 group">
               <div className="relative w-10 h-10">
                 <Image
@@ -26,37 +26,35 @@ export default function Footer() {
                 The Devine Tarot
               </span>
             </Link>
-            <p className="text-foreground-secondary/60 text-sm italic">
-              Clarity begins within
+            <p className="text-white/50 text-sm italic">
+              {isHydrated ? t('footer.tagline') : 'Clarity begins within'}
             </p>
           </div>
 
-          {/* Subtle Links */}
           <nav className="flex items-center gap-8">
             <Link
               href="/about"
               className="text-sm text-white/40 hover:text-white/70 transition-colors"
             >
-              About
+              {isHydrated ? t('nav.about') : 'About'}
             </Link>
             <Link
               href="/contact"
               className="text-sm text-white/40 hover:text-white/70 transition-colors"
             >
-              Contact
+              {isHydrated ? t('nav.contact') : 'Contact'}
             </Link>
             <Link
               href="/privacy"
               className="text-sm text-white/40 hover:text-white/70 transition-colors"
             >
-              Privacy
+              {isHydrated ? t('footer.privacy') : 'Privacy'}
             </Link>
           </nav>
 
-          {/* Credit */}
           <div className="text-center">
             <p className="text-xs text-white/30">
-              © {currentYear} Sitelytc Digital Media. All rights reserved.
+              {isHydrated ? t('footer.copyright') : `© Sitelytc Digital Media. All rights reserved.`}
             </p>
           </div>
         </div>

@@ -169,24 +169,7 @@ urgency: {
         endsTonight: 'Ends tonight',
         lastChance: 'Last chance',
       },
-      home: {
-        hero: {
-          sloganLine1: "This isn't just tarot…",
-          sloganLine2: "This is the clarity you already feel within…",
-          quote: "The answer you're looking for… you already feel it.",
-          ctaButton: "Know Your Fortune",
-          ctaSubtext: "Maybe this is the answer you've been waiting for…",
-        },
-      },
-     home: {
-       hero: {
-         sloganLine1: "This isn't just tarot…",
-         sloganLine2: "This is the clarity you already feel within…",
-         quote: "The answer you're looking for… you already feel it.",
-         ctaButton: "Know Your Fortune",
-         ctaSubtext: "Maybe this is the answer you've been waiting for…",
-       },
-       about: {
+      about: {
          title: "About The Journey",
          description: "This platform was not created just for readings. It was created to provide clarity when life feels confusing.",
          bio: "Bharti Singh is a seasoned tarot reader with over 10 years of experience guiding individuals through life's uncertainties. Her approach blends ancient wisdom with intuitive insight, offering clarity and direction when you need it most.",

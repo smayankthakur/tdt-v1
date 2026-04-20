@@ -8,45 +8,45 @@ import { motion } from "framer-motion"
  * Uses design tokens from globals.css
  */
 
-const buttonVariants = cva(
-  "inline-flex items-center justify-center font-medium transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accentEnd/50 disabled:pointer-events-none disabled:opacity-50",
+export const buttonVariants = cva(
+  "group relative inline-flex items-center justify-center gap-2 overflow-hidden font-medium transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgb(var(--gold))/45] disabled:pointer-events-none disabled:opacity-50",
   {
     variants: {
       variant: {
         // PRIMARY: Red to Gold gradient - Main CTA
         primary: `
-          bg-gradient-to-r from-[#FF4D4D] to-[#FFD700]
+          bg-gradient-to-r from-[rgb(var(--accent-start))] via-[rgb(var(--gold))] to-[rgb(var(--gold-light))]
           text-black
-          shadow-lg shadow-[#FFD700]/20
-          hover:scale-105 hover:shadow-xl hover:shadow-[#FFD700]/30
+          shadow-lg shadow-[rgba(244,197,66,0.22)]
+          hover:-translate-y-0.5 hover:shadow-xl hover:shadow-[rgba(244,197,66,0.34)]
           active:scale-95
         `,
         // SECONDARY: Outline / subtle
         secondary: `
-          border-2 border-accentEnd/60
-          text-accentEnd
-          bg-transparent
-          hover:bg-gradient-to-r hover:from-accentStart hover:to-accentEnd hover:text-black hover:shadow-lg
+          border-2 border-[rgb(var(--gold))/45]
+          text-[rgb(var(--gold))]
+          bg-[rgb(var(--surface))/35]
+          hover:border-[rgb(var(--gold))/70] hover:bg-[rgb(var(--gold))/10] hover:text-[rgb(var(--gold-light))] hover:shadow-lg hover:shadow-[rgba(244,197,66,0.15)]
           active:scale-95
         `,
         // GHOST: Minimal, transparent
         ghost: `
-          text-foreground
+          text-[rgb(var(--foreground))]
           hover:bg-white/5
           active:bg-white/10
         `,
         // GHOST GOLD: Gold text, transparent bg
         ghostGold: `
-          text-gold
-          hover:bg-gold/10
-          active:bg-gold/20
+          text-[rgb(var(--gold))]
+          hover:bg-[rgb(var(--gold))/10]
+          active:bg-[rgb(var(--gold))/20]
         `,
         // DESTRUCTIVE: Red warning
         destructive: `
-          bg-red-600
+          bg-[rgb(var(--secondary))]
           text-white
-          hover:bg-red-700
-          shadow-md
+          hover:bg-[rgb(var(--secondary))/90]
+          shadow-md shadow-[rgba(193,18,31,0.28)]
         `,
       },
       size: {
@@ -100,8 +100,13 @@ export default function Button({
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.95 }}
     >
+      {variant === "primary" && (
+        <span
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 translate-x-[-130%] bg-gradient-to-r from-transparent via-white/25 to-transparent transition-transform duration-700 group-hover:translate-x-[130%]"
+        />
+      )}
       {children}
     </motion.button>
   )
 }
-

@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import { Sparkles, Mail, Phone, MapPin, Clock, User, MessageSquare } from 'lucide-react';
 import { useLanguage } from '@/hooks/useLanguage';
 import Button from '@/components/ui/button';
-import { FloatingInput, FloatingTextarea } from '@/components/ui/FloatingInput';
+import FloatingInput, { FloatingTextarea } from '@/components/ui/FloatingInput';
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -69,7 +69,7 @@ export default function ContactPage() {
                 label="Tumhara naam"
                 value={formData.name}
                 onChange={(v) => setFormData({ ...formData, name: v })}
-                placeholder="Tumhara naam..."
+                placeholder="Apna naam yahan likho"
                 icon={<User className="h-5 w-5" />}
                 helperText="Kyun? Taaki tumhe personal tarah se address kar saken"
                 required
@@ -78,7 +78,7 @@ export default function ContactPage() {
                 label="Tumhara email"
                 value={formData.email}
                 onChange={(v) => setFormData({ ...formData, email: v })}
-                placeholder="Tumhara email..."
+                placeholder="name@example.com"
                 type="email"
                 icon={<Mail className="h-5 w-5" />}
                 helperText="Results email par bhejege"

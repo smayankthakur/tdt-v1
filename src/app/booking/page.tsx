@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Sparkles, Calendar, Clock, Heart, Briefcase, Wallet, Star, 
-  HelpCircle, ChevronLeft, ChevronRight, Check, Phone, Mail, User 
+  HelpCircle, ChevronLeft, ChevronRight, Check, Phone, Mail, User, MessageSquare 
 } from 'lucide-react';
 import Link from 'next/link';
 import { 
@@ -17,7 +17,7 @@ import {
   type BookingDuration 
 } from '@/lib/bookings';
 import Button from '@/components/ui/button';
-import { FloatingInput, FloatingTextarea } from '@/components/ui/FloatingInput';
+import FloatingInput, { FloatingTextarea } from '@/components/ui/FloatingInput';
 
 const TOPIC_ICONS: Record<string, typeof Heart> = {
   love: Heart,
@@ -292,7 +292,7 @@ return (
                     label="Tumhara naam"
                     value={details.name}
                     onChange={(v) => setDetails({ ...details, name: v })}
-                    placeholder="Tumhara naam..."
+                    placeholder="Apna naam yahan likho"
                     icon={<User className="h-5 w-5" />}
                     helperText="Tumhare naam se connection banayein"
                   />
@@ -302,7 +302,7 @@ return (
                     type="email"
                     value={details.email}
                     onChange={(v) => setDetails({ ...details, email: v })}
-                    placeholder="Tumhara email..."
+                    placeholder="name@example.com"
                     icon={<Mail className="h-5 w-5" />}
                     helperText="Results email par bhejege"
                   />
@@ -312,7 +312,7 @@ return (
                     type="tel"
                     value={details.phone}
                     onChange={(v) => setDetails({ ...details, phone: v })}
-                    placeholder="WhatsApp number..."
+                    placeholder="+91 98765 43210"
                     icon={<Phone className="h-5 w-5" />}
                     helperText="WhatsApp par result bhejein"
                   />

@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
-import Button from '@/components/ui/button';
+import { buttonVariants } from '@/components/ui/button';
 
 interface HeaderProps {
   variant?: 'full' | 'minimal';
@@ -68,9 +68,9 @@ export default function Header({ variant = 'full', showNav = true }: HeaderProps
 
         {/* CTA */}
         <div>
-          <Button size="sm">
-            <Link href="/reading">Continue</Link>
-          </Button>
+          <Link href="/reading" className={buttonVariants({ size: 'sm' })}>
+            Continue
+          </Link>
         </div>
       </div>
 

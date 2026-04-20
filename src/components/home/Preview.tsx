@@ -4,7 +4,8 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { Sparkles, ArrowRight } from 'lucide-react';
-import Button from '@/components/ui/button';
+import { buttonVariants } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 
 export default function Preview() {
   return (
@@ -101,11 +102,9 @@ export default function Preview() {
           transition={{ duration: 0.6, delay: 0.4 }}
           className="mt-block text-center"
         >
-          <Link href="/reading">
-            <Button size="lg">
-              Dekhte hain kya aa raha hai
-              <ArrowRight className="ml-2 h-5 w-5" />
-            </Button>
+          <Link href="/reading" className={cn(buttonVariants({ size: 'lg' }), 'btn-cta-pulse')}>
+            <span>Dekhte hain kya aa raha hai</span>
+            <ArrowRight className="h-5 w-5" />
           </Link>
           <p className="mt-element text-body-sm text-foreground-muted">
             Takes less than 60 seconds

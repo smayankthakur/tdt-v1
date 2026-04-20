@@ -76,23 +76,24 @@ const CARD_NAME_MAPPING: Record<string, string> = {
   'king of swords': 'King of Swords',
   
   // Pentacles
-  'ace of pentacles': 'Ace of Pentacles',
-  'two of pentacles': 'Two of Pentacles',
-  'three of pentacles': 'Three of Pentacles',
-  'four of pentacles': 'Four of Pentacles',
-  'five of pentacles': 'Five of Pentacles',
-  'six of pentacles': 'Six of Pentacles',
-  'seven of pentacles': 'Seven of Pentacles',
-  'eight of pentacles': 'Eight of Pentacles',
-  'nine of pentacles': 'Nine of Pentacles',
-  'ten of pentacles': 'Ten of Pentacles',
-  'page of pentacles': 'Page of Pentacles',
-  'knight of pentacles': 'Knight of Pentacles',
-  'queen of pentacles': 'Queen of Pentacles',
-  'king of pentacles': 'King of Pentacles',
+  'ace of pentacles': 'Ace of Pentacle',
+  'two of pentacles': 'Two of Pentacle',
+  'three of pentacles': 'Three of Pentacle',
+  'four of pentacles': 'Four of Pentacle',
+  'five of pentacles': 'Five of Pentacle',
+  'six of pentacles': 'Six of Pentacle',
+  'seven of pentacles': 'Seven of Pentacle',
+  'eight of pentacles': 'Eight of Pentacle',
+  'nine of pentacles': 'Nine of Pentacle',
+  'ten of pentacles': 'Ten of Pentacle',
+  'page of pentacles': 'Page of Pentacle',
+  'knight of pentacles': 'Knight of Pentacle',
+  'queen of pentacles': 'Queen of Pentacle',
+  'king of pentacles': 'King of Pentacle',
 };
 
 const CARD_IMAGE_CACHE = new Map<string, string>();
+const FALLBACK_CARD_IMAGE = '/card_img/The Fool.png';
 
 function normalizeCardName(cardName: string): string {
   if (!cardName) return '';
@@ -108,7 +109,7 @@ function normalizeCardName(cardName: string): string {
 
 export function getCardImage(cardName: string): string {
   if (!cardName) {
-    return '/card_img/back.png';
+    return FALLBACK_CARD_IMAGE;
   }
   
   if (CARD_IMAGE_CACHE.has(cardName)) {
@@ -134,7 +135,7 @@ export function getCardImageUrl(cardName: string): string {
       img.src = path;
       if (!img.complete) {
         console.warn('Missing card image:', cardName);
-        return '/card_img/back.png';
+        return FALLBACK_CARD_IMAGE;
       }
     } catch (e) {
       return path;

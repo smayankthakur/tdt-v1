@@ -15,6 +15,7 @@ export interface FloatingInputProps {
   autoFocus?: boolean;
   onEnter?: () => void;
   helperText?: string;
+  required?: boolean;
 }
 
 export default function FloatingInput({
@@ -28,6 +29,7 @@ export default function FloatingInput({
   autoFocus,
   onEnter,
   helperText,
+  required = false,
 }: FloatingInputProps) {
   const [focused, setFocused] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -63,6 +65,7 @@ export default function FloatingInput({
           onFocus={() => setFocused(true)}
           onBlur={() => setFocused(false)}
           onKeyDown={handleKeyDown}
+          required={required}
           placeholder={isActive ? placeholder : ''}
           className={cn(
             'w-full bg-transparent border rounded-xl font-sans text-base py-3 px-4 transition-all duration-300',
@@ -96,14 +99,12 @@ export default function FloatingInput({
         </motion.label>
         
         {/* Focus indicator line (optional) */}
-        {false && (
-          <motion.div
-            className="absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-gold/50 to-gold"
-            initial={{ width: '0%' }}
-            animate={{ width: focused || value ? '100%' : '0%' }}
-            transition={{ duration: 0.3 }}
-          />
-        )}
+        <motion.div
+          className="absolute bottom-0 left-0 h-0.5 rounded-full bg-gradient-to-r from-[rgb(var(--accent-start))] via-[rgb(var(--gold))] to-[rgb(var(--gold-light))]"
+          initial={{ width: '0%' }}
+          animate={{ width: focused || value ? '100%' : '0%' }}
+          transition={{ duration: 0.3 }}
+        />
       </div>
       
       {/* Helper text / error */}
@@ -131,10 +132,13 @@ export interface FloatingTextareaProps {
   onChange: (value: string) => void;
   placeholder?: string;
   error?: string;
+  icon?: React.ReactNode;
+  helperText?: string;
   rows?: number;
   maxLength?: number;
   showCount?: boolean;
   autoFocus?: boolean;
+  required?: boolean;
 }
 
 export function FloatingTextarea({
@@ -149,6 +153,7 @@ export function FloatingTextarea({
   maxLength,
   showCount,
   autoFocus,
+  required = false,
 }: FloatingTextareaProps) {
   const [focused, setFocused] = useState(false);
   const isActive = focused || value.length > 0;
@@ -170,6 +175,7 @@ export function FloatingTextarea({
           rows={rows}
           maxLength={maxLength}
           autoFocus={autoFocus}
+          required={required}
           placeholder={isActive ? placeholder : ''}
           className={cn(
             'w-full bg-transparent border rounded-xl font-sans text-base py-3 transition-all duration-300',
@@ -201,6 +207,12 @@ export function FloatingTextarea({
         >
           {label}
         </motion.label>
+        <motion.div
+          className="absolute bottom-0 left-0 h-0.5 rounded-full bg-gradient-to-r from-[rgb(var(--accent-start))] via-[rgb(var(--gold))] to-[rgb(var(--gold-light))]"
+          initial={{ width: '0%' }}
+          animate={{ width: focused || value ? '100%' : '0%' }}
+          transition={{ duration: 0.3 }}
+        />
       </div>
       
       {/* Helper text / char count */}

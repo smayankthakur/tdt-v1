@@ -5,7 +5,8 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { shouldBlockContextMenu, shouldBlockDevTools, shouldBlockScreenshots } from '@/lib/securityConfig';
-import Button from '@/components/ui/button';
+import { buttonVariants } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -206,10 +207,11 @@ export default function Hero() {
 
             {/* CTA Button - Red to Yellow gradient, highest visual dominance, pulse animation */}
             <motion.div variants={itemVariants}>
-              <Link href="/reading">
-                <Button size="xl" className="btn-cta-pulse">
-                  Know Your Fortune
-                </Button>
+              <Link
+                href="/reading"
+                className={cn(buttonVariants({ size: 'xl' }), 'btn-cta-pulse')}
+              >
+                <span className="relative z-10">Know Your Fortune</span>
               </Link>
               {/* Subtext below CTA */}
               <p className="mt-4 text-body-sm text-foreground-muted text-center font-sans">

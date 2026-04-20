@@ -3,7 +3,8 @@
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Sparkles, ArrowRight } from 'lucide-react';
-import Button from '@/components/ui/button';
+import { buttonVariants } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 
 export default function FinalCTA() {
   return (
@@ -69,11 +70,9 @@ export default function FinalCTA() {
             Clarity ke liye pehla step lo.
           </p>
           
-          <Link href="/reading">
-            <Button size="xl">
-              Aage Badhte Hain
-              <ArrowRight className="ml-2 h-6 w-6" />
-            </Button>
+          <Link href="/reading" className={cn(buttonVariants({ size: 'xl' }), 'btn-cta-pulse')}>
+            <span>Aage Badhte Hain</span>
+            <ArrowRight className="h-6 w-6" />
           </Link>
           
           <p className="mt-6 text-sm text-[rgb(var(--foreground-muted))]">

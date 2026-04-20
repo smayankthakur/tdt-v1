@@ -9,7 +9,7 @@ import { Menu, X, Globe, ChevronDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useLanguage } from '@/hooks/useLanguage';
 import { LANGUAGES, type Language } from '@/lib/i18n/config';
-import Button from '@/components/ui/button';
+import { buttonVariants } from '@/components/ui/button';
 
 const navLinks = [
   { href: '/', label: 'Home' },
@@ -155,10 +155,8 @@ export default function Navbar() {
 
             {/* CTA Button */}
             <div className="hidden md:block">
-              <Link href="/reading">
-                <Button size="md">
-                  {isHydrated ? t('cta.startReading') : 'Continue'}
-                </Button>
+              <Link href="/reading" className={buttonVariants({ size: 'md' })}>
+                {isHydrated ? t('cta.startReading') : 'Continue'}
               </Link>
             </div>
 
@@ -239,9 +237,13 @@ export default function Navbar() {
                     </Link>
                   ))}
                   <div className="pt-2">
-                    <Button size="lg" className="w-full">
+                    <Link
+                      href="/reading"
+                      onClick={() => setIsMobileOpen(false)}
+                      className={cn(buttonVariants({ size: 'lg' }), 'w-full')}
+                    >
                       {isHydrated ? t('cta.startReading') : 'Continue'}
-                    </Button>
+                    </Link>
                   </div>
                 </nav>
             </motion.div>

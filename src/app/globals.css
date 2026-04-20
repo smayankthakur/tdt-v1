@@ -367,15 +367,16 @@
 
     /* CTA Button - Red to Yellow gradient with pulse/glow animation */
     .btn-cta-pulse {
-      background: linear-gradient(135deg, var(--accent-start) 0%, var(--accent-end) 100%);
+      background: linear-gradient(135deg, rgb(var(--accent-start)) 0%, rgb(var(--gold)) 55%, rgb(var(--gold-light)) 100%);
       color: rgb(0 0 0);
       font-weight: 600;
       box-shadow: 0 0 30px rgba(255, 77, 77, 0.4), 0 0 60px rgba(255, 215, 0, 0.3), 0 4px 20px rgba(0, 0, 0, 0.3);
       animation: ctaPulse 2s ease-in-out infinite;
+      background-size: 200% 200%;
     }
 
     .btn-cta-pulse:hover {
-      transform: scale(1.05);
+      transform: translateY(-2px) scale(1.05);
       box-shadow: 0 0 50px rgba(255, 77, 77, 0.5), 0 0 80px rgba(255, 215, 0, 0.4), 0 8px 30px rgba(0, 0, 0, 0.4);
     }
 
@@ -386,9 +387,11 @@
     @keyframes ctaPulse {
       0%, 100% {
         box-shadow: 0 0 30px rgba(255, 77, 77, 0.4), 0 0 60px rgba(255, 215, 0, 0.3), 0 4px 20px rgba(0, 0, 0, 0.3);
+        background-position: 0% 50%;
       }
       50% {
         box-shadow: 0 0 40px rgba(255, 77, 77, 0.6), 0 0 80px rgba(255, 215, 0, 0.5), 0 6px 25px rgba(0, 0, 0, 0.35);
+        background-position: 100% 50%;
       }
     }
 

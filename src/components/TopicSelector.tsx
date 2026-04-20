@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
 import Button from '@/components/ui/button';
 import { FloatingTextarea } from '@/components/ui/FloatingInput';
-import { fadeInUp } from '@/lib/motion';
+import { fadeInUp, staggerContainer, staggerItem } from '@/lib/motion';
 
 export function QuestionInput({
   value,
@@ -132,67 +132,6 @@ interface QuestionInputProps {
   onSubmit: () => void;
   placeholder?: string;
   maxLength?: number;
-}
-
-export function QuestionInput({
-  value,
-  onChange,
-  onSubmit,
-  placeholder = "What do you want to ask the universe?",
-  maxLength = 500,
-}: QuestionInputProps) {
-  const charCount = value.length;
-  const isOverLimit = charCount > maxLength;
-  const canSubmit = value.trim().length >= 10 && !isOverLimit;
-
-  return (
-    <motion.div
-      className="space-y-4"
-      variants={fadeInUp}
-      initial="hidden"
-      animate="visible"
-    >
-      <textarea
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        placeholder={placeholder}
-        maxLength={maxLength}
-        className={cn(
-          'w-full h-32 p-4 rounded-xl border resize-none',
-          'bg-[#1A1A2E] text-purple-100 placeholder:text-purple-400/40',
-          'focus:outline-none focus:ring-2 transition-all',
-          isOverLimit 
-            ? 'border-red-500/50 focus:border-red-500 focus:ring-red-500/20' 
-            : 'border-purple-800/50 focus:border-purple-500 focus:ring-purple-500/20'
-        )}
-      />
-      
-      <div className="flex items-center justify-between">
-        <span className={cn(
-          'text-sm',
-          isOverLimit ? 'text-red-400' : 'text-purple-400/50'
-        )}>
-          {charCount}/{maxLength}
-        </span>
-        
-        <motion.button
-          onClick={onSubmit}
-          disabled={!canSubmit}
-          whileHover={{ scale: canSubmit ? 1.02 : 1 }}
-          whileTap={{ scale: canSubmit ? 0.98 : 1 }}
-          className={cn(
-            'inline-flex items-center gap-2 px-6 py-3 rounded-full font-semibold transition-all',
-            canSubmit
-              ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-lg shadow-purple-900/40'
-              : 'bg-purple-900/30 text-purple-500/50 cursor-not-allowed'
-          )}
-        >
-          Reveal Your Answer
-          <ArrowRight className="h-5 w-5" />
-        </motion.button>
-      </div>
-    </motion.div>
-  );
 }
 
 interface TopicQuestionProps {

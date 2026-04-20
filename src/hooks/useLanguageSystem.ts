@@ -36,11 +36,15 @@ export function useLanguageSystem(options: UseLanguageOptions = {}) {
   const currentLang = lang;
   
   // Get display name for current language
-  const languageName = {
+  const languageName: Record<string, string> = {
     en: 'English',
     hi: 'हिंदी',
     hinglish: 'Hinglish',
-  }[lang] || 'English';
+    ar: 'العربية',
+    he: 'עברית',
+  };
+  
+  const displayName = languageName[lang] || 'English';
   
   return {
     lang,
@@ -50,7 +54,7 @@ export function useLanguageSystem(options: UseLanguageOptions = {}) {
     setManualOverride,
     allowAutoDetect,
     currentLang,
-    languageName,
+    languageName: displayName,
     languageOptions: [
       { code: 'en', name: 'English', label: 'English' },
       { code: 'hi', name: 'हिंदी', label: 'हिंदी' },

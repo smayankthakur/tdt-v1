@@ -11,7 +11,6 @@ import { useAutoLanguage } from '@/hooks/useAutoLanguage';
 import { getCardImage } from '@/lib/cardImageMap';
 import { FloatingTextarea } from '@/components/ui/FloatingInput';
 import Button from '@/components/ui/button';
-import { getCardImage } from '@/lib/cardImageMap';
 
 const SHARE_TEXT_TEMPLATES = [
   "Maine apna question pucha aur yeh answer mila… 😳\nTum bhi try karo:",

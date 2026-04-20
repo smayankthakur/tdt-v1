@@ -277,7 +277,6 @@ finalCta: {
         text: 'Ready to find your clarity?',
       },
     },
-    hi: {
   hi: {
     common: {
       loading: 'लोड हो रहा है...',
@@ -420,14 +419,6 @@ finalCta: {
       limitedSpots: 'केवल 2 स्थान शेष',
       endsTonight: 'आज रात समाप्त होगा',
       lastChance: 'आखिरी मौका',
-    },
-    home: {
-      about: {
-        title: 'यात्रा के बारे में',
-        description: 'यह प्लेटफॉर्म सिर्फ रीडिंग्स के लिए नहीं बना। यह स्पष्टता प्रदान करने के लिए बनाया गया था जब जीवन कन्फ्यूजिंग लगता है।',
-        bio: 'भारती सिंह एक अनुभवी टैरो रीडर हैं जो जीवन की अनिश्चितताओं में व्यक्तियों का मार्गदर्शन करने के 10 से अधिक वर्षों के अनुभव के साथ। उनका दृष्टिकोण प्राचीन ज्ञान को सहज जानकारी के साथ मिलाता है।',
-        linkText: 'हमारे बारे में और जानें',
-      },
     },
     about: {
       hero: {
@@ -634,14 +625,6 @@ finalCta: {
       endsTonight: 'Aaj raat end hoga',
       lastChance: 'Last chance',
     },
-    home: {
-      about: {
-        title: 'About The Journey',
-        description: 'Yeh platform sirf readings ke liye nahi bana. Yeh clarity dene ke liye bana hai jab life confusing lagti hai.',
-        bio: 'Bharti Singh ek seasoned tarot reader hai 10+ saal ka experience ke saath. Unka approach ancient wisdom ko intuitive insight ke saath blend karta hai.',
-        linkText: 'Humare baare mein aur jaano',
-      },
-    },
     about: {
       hero: {
         title: 'About The Journey',
@@ -801,14 +784,6 @@ finalCta: {
       },
       cta: {
         text: 'هل أنت مستعد لإيجاد وضوحك؟',
-      },
-    },
-    home: {
-      about: {
-        title: 'عن الرحلة',
-        description: 'هذه المنصة لم تُصنع للقراءات فقط. صُنعت لتقدم الوضوح عندما تبدو الحياة مربكة.',
-        bio: 'بهاراتي سينغ قارئة تورت متمرسة مع أكثر من 10 سنوات من الخبرة في إرشاد الأفراد.',
-        linkText: 'تعرف علينا أكثر',
       },
     },
   },

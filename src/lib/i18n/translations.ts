@@ -22,12 +22,14 @@ export const TRANSLATIONS: Record<Language, TranslationSet> = {
     },
     nav: {
       home: 'Home',
+      about: 'About',
       reading: 'Reading',
+      subscription: 'Subscription',
       premium: 'Premium',
       bookReading: 'Book Reading',
+      booking: 'Booking',
       blog: 'Blog',
       contact: 'Contact',
-      about: 'About',
       talkToGinni: 'Talk to Ginni',
       yesno: 'Yes/No',
     },
@@ -161,12 +163,21 @@ readingHub: {
       active: 'Premium Access Active',
       enjoy: 'Enjoy unlimited readings',
     },
-     urgency: {
-       timeSensitive: 'Time-sensitive',
-       limitedSpots: 'Only 2 slots left',
-       endsTonight: 'Ends tonight',
-       lastChance: 'Last chance',
-     },
+urgency: {
+        timeSensitive: 'Time-sensitive',
+        limitedSpots: 'Only 2 spots left',
+        endsTonight: 'Ends tonight',
+        lastChance: 'Last chance',
+      },
+      home: {
+        hero: {
+          sloganLine1: "This isn't just tarot…",
+          sloganLine2: "This is the clarity you already feel within…",
+          quote: "The answer you're looking for… you already feel it.",
+          ctaButton: "Know Your Fortune",
+          ctaSubtext: "Maybe this is the answer you've been waiting for…",
+        },
+      },
      home: {
        hero: {
          sloganLine1: "This isn't just tarot…",
@@ -255,7 +266,10 @@ finalCta: {
     },
     nav: {
       home: 'होम',
+      about: 'के बारे में',
       reading: 'रीडिंग',
+      subscription: 'सब्सक्रिप्शन',
+      booking: 'बुकिंग',
       blog: 'ब्लॉग',
       contact: 'संपर्क',
       talkToGinni: 'गिनी से बात करें',
@@ -381,6 +395,15 @@ finalCta: {
       endsTonight: 'आज रात समाप्त होगा',
       lastChance: 'आखिरी मौका',
     },
+    home: {
+      hero: {
+        sloganLine1: 'Yeh sirf tarot nahi hai…',
+        sloganLine2: 'Yeh woh clarity hai jo tum already feel kar rahe ho…',
+        quote: 'Jo tum poochne wale ho… uska answer tum already feel kar rahe ho.',
+        ctaButton: 'Know Your Fortune',
+        ctaSubtext: 'Shayad yeh wahi answer hai jiska tum wait kar rahe the…',
+      },
+    },
     about: {
       hero: {
         title: 'यात्रा के बारे में',
@@ -438,7 +461,10 @@ finalCta: {
     },
     nav: {
       home: 'Home',
+      about: 'About',
       reading: 'Reading',
+      subscription: 'Subscription',
+      booking: 'Booking',
       blog: 'Blog',
       contact: 'Contact',
       talkToGinni: 'Ginni se baat karo',
@@ -586,6 +612,15 @@ finalCta: {
       endsTonight: 'Aaj raat end hoga',
       lastChance: 'Last chance',
     },
+    home: {
+      hero: {
+        sloganLine1: "This isn't just tarot…",
+        sloganLine2: "This is the clarity you already feel within…",
+        quote: "The answer you're looking for… you already feel it.",
+        ctaButton: "Know Your Fortune",
+        ctaSubtext: "Maybe this is the answer you've been waiting for…",
+      },
+    },
     about: {
       hero: {
         title: 'About The Journey',
@@ -643,7 +678,10 @@ finalCta: {
     },
     nav: {
       home: 'الرئيسية',
+      about: 'حول',
       reading: 'القراءة',
+      subscription: 'الاشتراك',
+      booking: 'الحجز',
       blog: 'المدونة',
       contact: 'اتصل بنا',
       talkToGinni: 'تحدث مع جيني',
@@ -708,6 +746,15 @@ finalCta: {
       endsTonight: 'ينتهي الليلة',
       lastChance: 'الفرصة الأخيرة',
     },
+    home: {
+      hero: {
+        sloganLine1: 'هذا ليس مجرد التاروت…',
+        sloganLine2: 'هذا هو الوضوح الذي تشعر به بالفعل…',
+        quote: 'الإجابة التي تبحث عنها… أنت تشعر بها بالفعل.',
+        ctaButton: 'اعرف مستقبلك',
+        ctaSubtext: 'ربما هذه هي الإجابة التي كنت تنتظرها…',
+      },
+    },
     about: {
       hero: {
         title: 'عن الرحلة',
@@ -765,7 +812,10 @@ finalCta: {
     },
     nav: {
       home: 'בית',
+      about: 'על אודות',
       reading: 'קריאה',
+      subscription: 'מנוי',
+      booking: 'הזמנה',
       blog: 'בלוג',
       contact: 'צור קשר',
       talkToGinni: 'דבר עם ג\'יני',
@@ -829,6 +879,15 @@ finalCta: {
       limitedSpots: 'נותרו רק 2 מקומות',
       endsTonight: 'מסתיים הלילה',
       lastChance: 'ההזדמנות האחרונה',
+    },
+    home: {
+      hero: {
+        sloganLine1: 'זה לא רק טארוט…',
+        sloganLine2: 'זה הבהירות שאתה כבר מרגיש בתוכך…',
+        quote: 'התשובה שאתה מחפש… אתה כבר מרגיש אותה.',
+        ctaButton: 'דע את העתיד שלך',
+        ctaSubtext: 'אולי זו התשובה שחיכית לה…',
+      },
     },
     about: {
       hero: {

@@ -7,6 +7,7 @@ import { motion } from 'framer-motion';
 import { shouldBlockContextMenu, shouldBlockDevTools, shouldBlockScreenshots } from '@/lib/securityConfig';
 import { buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { useLanguage } from '@/hooks/useLanguage';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -41,6 +42,8 @@ const floatAnimation = {
 };
 
 export default function Hero() {
+  const { t, isHydrated } = useLanguage();
+
   useEffect(() => {
     const shouldProtect = shouldBlockContextMenu() || shouldBlockDevTools() || shouldBlockScreenshots();
     if (!shouldProtect) return;
@@ -193,15 +196,15 @@ export default function Hero() {
               variants={itemVariants}
               className="text-body text-text-secondary max-w-2xl mx-auto lg:mx-0 mb-element leading-relaxed"
             >
-              Yeh sirf tarot nahi hai…
+              {isHydrated ? t('home.hero.sloganLine1') : "This isn't just tarot…"}
               <br />
-              Yeh woh clarity hai jo tum already feel kar rahe ho…
+              {isHydrated ? t('home.hero.sloganLine2') : "This is the clarity you already feel within…"}
             </motion.p>
 
             {/* Powerful Quote (Hook) */}
             <motion.div variants={itemVariants} className="mb-block">
               <p className="font-serif text-hero text-text-primary leading-tight text-glow">
-                &quot;Jo tum poochne wale ho… uska answer tum already feel kar rahe ho.&quot;
+                &quot;{isHydrated ? t('home.hero.quote') : "The answer you're looking for… you already feel it."}&quot;
               </p>
             </motion.div>
 
@@ -211,11 +214,11 @@ export default function Hero() {
                 href="/reading"
                 className={cn(buttonVariants({ size: 'xl' }), 'btn-cta-pulse')}
               >
-                <span className="relative z-10">Know Your Fortune</span>
+                <span className="relative z-10">{isHydrated ? t('home.hero.ctaButton') : 'Know Your Fortune'}</span>
               </Link>
               {/* Subtext below CTA */}
               <p className="mt-4 text-body-sm text-foreground-muted text-center font-sans">
-                Shayad yeh wahi answer hai jiska tum wait kar rahe the…
+                {isHydrated ? t('home.hero.ctaSubtext') : 'Maybe this is the answer you have been waiting for…'}
               </p>
             </motion.div>
           </motion.div>

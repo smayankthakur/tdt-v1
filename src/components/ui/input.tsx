@@ -8,11 +8,12 @@ export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> 
   label?: string;
   error?: string;
   icon?: React.ReactNode;
-  variant?: 'underline' | 'filled' | 'minimal';
+  variant?: 'underline' | 'filled' | 'minimal' | 'premium';
+  helperText?: string;
 }
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({ label, error, icon, className, variant = 'underline', ...props }, ref) => {
+  ({ label, error, icon, helperText, className, variant = 'premium', ...props }, ref) => {
   
   const baseStyles = cn(
     'w-full font-sans text-base tracking-wide',
@@ -42,6 +43,14 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       'hover:bg-surface/30',
       'focus:bg-surface/50 focus:border-gold/30',
     ],
+
+    variant === 'premium' && [
+      'bg-transparent border border-white/20 rounded-xl',
+      'py-3 px-4',
+      'text-foreground placeholder:text-foreground-muted',
+      'hover:border-white/40',
+      'focus:border-[#FFD700] focus:shadow-[0_0_10px_rgba(255,215,0,0.3)]',
+    ],
     
     error && [
       'border-red-400/50 text-red-400',
@@ -61,7 +70,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       )}
       <div className="relative">
         {icon && (
-          <div className="absolute left-3 top-1/2 -translate-y-1/2 text-foreground-muted">
+          <div className="absolute left-3 top-1/2 -translate-y-1/2 text-foreground-muted pointer-events-none z-10">
             {icon}
           </div>
         )}
@@ -82,6 +91,9 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       {error && (
         <p className="mt-1 text-xs text-red-400">{error}</p>
       )}
+      {helperText && !error && (
+        <p className="mt-1 text-xs text-foreground-muted italic">{helperText}</p>
+      )}
     </div>
   );
 });
@@ -93,12 +105,13 @@ export interface TextareaProps extends React.TextareaHTMLAttributes<HTMLTextArea
   label?: string;
   error?: string;
   icon?: React.ReactNode;
-  variant?: 'underline' | 'filled' | 'glass';
+  variant?: 'underline' | 'filled' | 'minimal' | 'premium';
+  helperText?: string;
 }
 
 export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
-  ({ label, error, icon, className, variant = 'underline', ...props }, ref) => {
-  
+  ({ label, error, icon, helperText, className, variant = 'premium', ...props }, ref) => {
+   
   const baseStyles = cn(
     'w-full font-sans text-base tracking-wide',
     'transition-all duration-300',
@@ -118,6 +131,20 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
       'hover:bg-surface/70 hover:border-gold/30',
       'focus:border-gold/50 focus:ring-1 focus:ring-gold/20',
     ],
+
+    variant === 'minimal' && [
+      'bg-transparent border border-transparent py-2 px-3 rounded-lg',
+      'text-foreground placeholder:text-foreground-muted',
+      'hover:bg-surface/30',
+      'focus:bg-surface/50 focus:border-gold/30',
+    ],
+
+    variant === 'premium' && [
+      'bg-transparent border border-white/20 rounded-xl py-3 px-4',
+      'text-foreground placeholder:text-foreground-muted',
+      'hover:border-white/40',
+      'focus:border-[#FFD700] focus:shadow-[0_0_10px_rgba(255,215,0,0.3)]',
+    ],
     
     error && [
       'border-red-400/50 text-red-400',
@@ -127,7 +154,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
     icon && 'pl-10',
     className
   );
-  
+   
   return (
     <div className="relative w-full">
       {label && (
@@ -157,6 +184,9 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
       </div>
       {error && (
         <p className="mt-1 text-xs text-red-400">{error}</p>
+      )}
+      {helperText && !error && (
+        <p className="mt-1 text-xs text-foreground-muted italic">{helperText}</p>
       )}
     </div>
   );

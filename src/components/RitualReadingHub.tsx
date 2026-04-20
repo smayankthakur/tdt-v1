@@ -412,25 +412,23 @@ function QuestionInput({
         {t('ritualHub.question.hint')}
       </p>
 
-      <motion.button
-        onClick={onSubmit}
-        disabled={!question.trim() || question.length < 5}
-        className="w-full py-4"
-        whileHover={{ scale: 1.02 }}
-        whileTap={{ scale: 0.98 }}
-      >
-        <Button size="lg" className="w-full" disabled={!question.trim() || question.length < 5}>
+      <div className="pt-4">
+        <Button 
+          size="lg" 
+          className="w-full"
+          onClick={onSubmit}
+          disabled={!question.trim() || question.length < 5}
+        >
           <span>{t('ritualHub.question.submit')}</span>
           <ArrowRight className="h-5 w-5" />
         </Button>
-      </motion.button>
+      </div>
 
-      <button
-        onClick={() => window.history.back()}
-        className="w-full py-3 text-foreground-secondary hover:text-foreground transition-colors text-center text-sm"
-      >
-        {t('ritualHub.question.back')}
-      </button>
+      <div className="pt-2">
+        <Button variant="ghost" size="sm" onClick={() => window.history.back()} className="w-full">
+          {t('ritualHub.question.back')}
+        </Button>
+      </div>
     </div>
   );
 }

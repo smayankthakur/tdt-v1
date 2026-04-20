@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Sparkles, ArrowRight } from 'lucide-react';
+import Button from '@/components/ui/button';
 
 export default function FinalCTA() {
   return (
@@ -69,34 +70,10 @@ export default function FinalCTA() {
           </p>
           
           <Link href="/reading">
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.98 }}
-              className="group relative inline-flex items-center gap-3 rounded-full bg-gradient-to-r from-[rgb(var(--gold-start))] via-[rgb(var(--gold))] to-[rgb(var(--gold-start))] px-10 py-5 font-semibold text-black shadow-xl shadow-[rgb(var(--gold))/20] transition-all hover:shadow-[0_0_40px_rgba(244,197,66,0.4)]"
-            >
-              <motion.div
-                className="absolute inset-0 rounded-full bg-gradient-to-r from-[rgb(var(--gold-start))] via-[rgb(var(--gold))] to-[rgb(var(--gold-start))] opacity-0 group-hover:opacity-100 transition-opacity"
-                animate={{ 
-                  x: ['-100%', '100%'],
-                }}
-                transition={{ 
-                  duration: 1.5, 
-                  repeat: Infinity,
-                  ease: 'easeInOut',
-                }}
-              />
-              <span className="relative z-10 text-lg">Apna Reading Shuru Karein</span>
-              <ArrowRight className="relative z-10 h-6 w-6 transition-transform group-hover:translate-x-1" />
-              
-              {/* Glow Effect */}
-              <motion.div
-                className="absolute inset-0 rounded-full blur-md bg-[rgb(var(--gold))]/50"
-                animate={{ 
-                  opacity: [0.3, 0.5, 0.3],
-                }}
-                transition={{ duration: 2, repeat: Infinity }}
-              />
-            </motion.div>
+            <Button size="xl">
+              Aage Badhte Hain
+              <ArrowRight className="ml-2 h-6 w-6" />
+            </Button>
           </Link>
           
           <p className="mt-6 text-sm text-[rgb(var(--foreground-muted))]">

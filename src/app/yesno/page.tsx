@@ -2,11 +2,16 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import Image from 'next/image';
 import { Sparkles, Zap, MessageCircle, Copy, RefreshCw, Lock } from 'lucide-react';
 import { useYesNoStore, YesNoResult } from '@/store/yesno-store';
 import { selectYesNoCard, generateYesNoResponse, yesNoSuspenseMessages, yesNoEmptyQuestionMessage, YesNoTarotCard } from '@/lib/yesNoTarot';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useAutoLanguage } from '@/hooks/useAutoLanguage';
+import { getCardImage } from '@/lib/cardImageMap';
+import { FloatingTextarea } from '@/components/ui/FloatingInput';
+import Button from '@/components/ui/button';
+import { getCardImage } from '@/lib/cardImageMap';
 
 const SHARE_TEXT_TEMPLATES = [
   "Maine apna question pucha aur yeh answer mila… 😳\nTum bhi try karo:",
@@ -176,34 +181,27 @@ export default function YesNoPage() {
               )}
 
               <div className="space-y-4">
-                <textarea
+                <FloatingTextarea
+                  label="Tumhara sawal"
                   value={question}
-                  onChange={(e) => handleQuestionChange(e.target.value)}
-                  placeholder={t('yesno.questionPlaceholder') || "Apna question socho… kya yes ya no jaan na chahte ho?"}
-                  className="w-full min-h-[120px] p-5 rounded-2xl border border-gold/20 bg-surface/50 text-foreground placeholder:text-foreground-muted focus:border-gold/50 focus:outline-none resize-none text-lg"
+                  onChange={handleQuestionChange}
+                  placeholder="Jo tumhare mind mein baar baar aa raha hai… usse yahan likho"
                   maxLength={200}
+                  rows={4}
+                  error={error || undefined}
+                  helperText="Jitna clear sawal… utni clear direction"
+                  showCount
                 />
-                {error && (
-                  <motion.p
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    className="text-sm text-red-400 text-center"
-                  >
-                    {error}
-                  </motion.p>
-                )}
-                <p className="text-sm text-gold/40 text-right">
-                  {question.length}/200
-                </p>
                 
-                <button
+                <Button
+                  size="lg"
+                  className="w-full"
                   onClick={handleSubmit}
                   disabled={question.length < 3}
-                  className="w-full py-4 rounded-xl bg-gold-gradient font-semibold text-black hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2"
                 >
-                  <Sparkles className="h-5 w-5" />
-                  Decode My Answer
-                </button>
+                  <Sparkles className="h-5 w-5 mr-2" />
+                  Continue
+                </Button>
               </div>
 
               {/* Hint after 1st reading */}
@@ -255,17 +253,25 @@ export default function YesNoPage() {
               animate={{ opacity: 1 }}
               className="flex flex-col items-center"
             >
-              {/* Card Display */}
-              <motion.div
-                initial={{ rotateY: -90 }}
-                animate={{ rotateY: showFlip ? 0 : -90 }}
-                transition={{ duration: 0.6 }}
-                className="w-40 h-56 mx-auto rounded-2xl bg-gradient-to-br from-surface to-[#0A0A0A] border-2 border-gold/50 flex flex-col items-center justify-center shadow-2xl shadow-gold/30 mb-8"
-              >
-                <div className="w-16 h-24 rounded-lg bg-gradient-to-br from-gold/20 to-red-900/20 border border-gold/30 flex items-center justify-center mb-3">
-                  <span className="text-gold text-3xl">✦</span>
-                </div>
-              </motion.div>
+               {/* Card Display */}
+               <motion.div
+                 initial={{ rotateY: -90 }}
+                 animate={{ rotateY: showFlip ? 0 : -90 }}
+                 transition={{ duration: 0.6 }}
+                 className="w-40 h-56 mx-auto rounded-2xl bg-gradient-to-br from-surface to-[#0A0A0A] border-2 border-gold/50 flex flex-col items-center justify-center shadow-2xl shadow-gold/30 mb-8"
+               >
+                 {ynCard && (
+                   <div className="relative w-full h-full flex items-center justify-center">
+                     <Image
+                       src={getCardImage(ynCard.name)}
+                       alt={ynCard.name}
+                       fill
+                       className="object-contain p-2"
+                       priority
+                     />
+                   </div>
+                 )}
+               </motion.div>
 
               {/* Result after flip */}
               {showFlip && (
@@ -275,19 +281,7 @@ export default function YesNoPage() {
                   transition={{ delay: 0.3 }}
                   className="space-y-6 w-full"
                 >
-                  {/* Card Name */}
-                  <motion.div
-                    initial={{ y: 20 }}
-                    animate={{ y: 0 }}
-                    className="text-center"
-                  >
-                    <Sparkles className="h-6 w-6 text-gold mx-auto mb-2" />
-                    <h3 className="font-heading text-2xl text-foreground">
-                      {ynResponse.cardName}
-                    </h3>
-                  </motion.div>
-
-                  {/* Result Text */}
+                   {/* Result Text */}
                   <motion.div
                     initial={{ scale: 0.8 }}
                     animate={{ scale: 1 }}
@@ -345,26 +339,29 @@ export default function YesNoPage() {
                         </p>
                         
                         <div className="grid grid-cols-2 gap-3">
-                          <button
+                          <Button
+                            variant="secondary"
+                            size="md"
                             onClick={() => handleShare('whatsapp')}
-                            className="py-3 rounded-full bg-green-500/20 text-green-400 hover:bg-green-500/30 transition-all flex items-center justify-center gap-2"
+                            className="gap-2"
                           >
                             <MessageCircle className="h-4 w-4" />
                             WhatsApp
-                          </button>
-                          <button
+                          </Button>
+                          <Button
+                            variant="secondary"
+                            size="md"
                             onClick={() => handleShare('copy')}
-                            className="py-3 rounded-full bg-gold/10 text-gold hover:bg-gold/20 transition-all flex items-center justify-center gap-2"
+                            className="gap-2"
                           >
                             <Copy className="h-4 w-4" />
                             Copy
-                          </button>
+                          </Button>
                         </div>
                       </div>
                     </motion.div>
                   )}
 
-                  {/* CTAs - Switch to detailed */}
                   <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
@@ -375,24 +372,20 @@ export default function YesNoPage() {
                       Want to understand this deeper?
                     </p>
                     <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                      <button
-                        onClick={handleSwitchToDetailed}
-                        className="px-6 py-3 rounded-xl bg-gold-gradient font-semibold text-black hover:opacity-90 transition-all flex items-center gap-2"
-                      >
-                        <Sparkles className="h-5 w-5" />
-                        Get Full Reading
-                      </button>
+                      <Button size="lg" onClick={handleSwitchToDetailed}>
+                        <Sparkles className="h-5 w-5 mr-2" />
+                        Continue
+                      </Button>
                     </div>
                   </motion.div>
 
                   {/* New reading button */}
-                  <button
-                    onClick={handleNewReading}
-                    className="mt-4 py-3 rounded-full border border-gold/30 text-foreground-secondary hover:text-foreground hover:border-gold/50 transition-all flex items-center gap-2"
-                  >
-                    <RefreshCw className="h-4 w-4" />
-                    Dobara try karo
-                  </button>
+                  <div className="mt-4 flex justify-center">
+                    <Button variant="secondary" size="md" onClick={handleNewReading}>
+                      <RefreshCw className="h-4 w-4 mr-2" />
+                      Dobara try karo
+                    </Button>
+                  </div>
                 </motion.div>
               )}
             </motion.div>
@@ -429,31 +422,24 @@ export default function YesNoPage() {
                 </p>
 
                 <div className="space-y-3">
-                  <button
-                    onClick={handleUnlock}
-                    className="w-full py-4 rounded-xl bg-gold-gradient font-semibold text-black hover:opacity-90 transition-all flex items-center justify-center gap-2"
-                  >
-                    <Sparkles className="h-5 w-5" />
+                  <Button size="lg" className="w-full" onClick={handleUnlock}>
+                    <Sparkles className="h-5 w-5 mr-2" />
                     Unlock – ₹49 sirf
-                  </button>
+                  </Button>
                   
-                  <button
-                    onClick={handleUnlock}
-                    className="w-full py-4 rounded-xl border border-gold/30 text-foreground-secondary hover:text-foreground transition-all"
-                  >
+                  <Button variant="secondary" size="lg" className="w-full" onClick={handleUnlock}>
                     Unlimited monthly – ₹199/mo
-                  </button>
+                  </Button>
                 </div>
 
-                <button
-                  onClick={() => {
+                <div className="mt-4 flex justify-center">
+                  <Button variant="ghost" size="sm" onClick={() => {
                     dismissPaywall();
                     setPaywallShown(true);
-                  }}
-                  className="mt-4 text-sm text-foreground-muted hover:text-foreground-secondary"
-                >
-                  Baad mein dekhounga
-                </button>
+                  }}>
+                    Baad mein dekhounga
+                  </Button>
+                </div>
               </motion.div>
             </motion.div>
           )}

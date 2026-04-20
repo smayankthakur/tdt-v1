@@ -128,7 +128,7 @@ function generateGuidance(readingType: string, language: string): string {
   return templates[Math.floor(Math.random() * templates.length)];
 }
 
-// Generate reading based on actual selected cards using humanization engine
+// Generate reading based on actual selected cards using humanization engine - UNIFIED FLOW
 function generateReadingFromCards(
   selectedCards: SelectedCard[],
   question: string,
@@ -156,86 +156,43 @@ function generateReadingFromCards(
   // Generate full reading using humanization engine
   const reading = generateHumanizedReading(context, selectedCards);
   
-  // Create array of lines for streaming
-  const lines: string[] = [];
+  // Create unified single-flow reading without sections or headers
+  const greeting = reading.opening;
+  const fullReading = `${reading.opening} ${reading.presentEnergy} ${reading.underlyingPattern} ${reading.direction} ${reading.guidance} ${reading.closing}`;
   
-  // Opening hook
-  lines.push(reading.opening);
-  lines.push('');
-  
-  // Present Energy
-  lines.push('• Jo tumhare liye abhi chal raha hai:');
-  lines.push(reading.presentEnergy);
-  lines.push('');
-  
-  // Card interpretations (numbered)
-  reading.cardInterpretations.forEach((interp, idx) => {
-    lines.push(`Card ${idx + 1}:`);
-    lines.push(interp);
-    lines.push('');
-  });
-  
-  // Pattern (underlying)
-  lines.push('• Iske pichhe jo pattern hai:');
-  lines.push(reading.underlyingPattern);
-  lines.push('');
-  
-  // Direction
-  lines.push('• Aage kya aa raha hai:');
-  lines.push(reading.direction);
-  lines.push('');
-  
-  // Guidance
-  lines.push('• Ab tum kya karte ho:');
-  lines.push(reading.guidance);
-  lines.push('');
-  
-  // Closing (emotional lock)
-  lines.push(reading.closing);
-  
-  // Full text for backward compatibility
-  const fullText = lines.join('\n\n');
+  // Split into natural flow for streaming - single unified paragraph with natural pauses
+  const lines = fullReading
+    .split('. ')
+    .map(s => s.trim())
+    .filter(s => s.length > 0)
+    .flatMap((sentence, idx, arr) => {
+      // Add subtle breaks at transition points but keep flow natural
+      if (idx === 0 || idx === arr.length - 1) {
+        return [sentence];
+      }
+      // Every few sentences, add a small pause for effect but no headers
+      if (idx % 3 === 0 && idx < arr.length - 2) {
+        return [sentence, ''];
+      }
+      return [sentence];
+    });
   
   return {
-    reading: fullText,
+    reading: fullReading,
     guidance: reading.guidance,
     streamingLines: lines,
-    greeting: reading.opening,
+    greeting,
   };
 }
 
-// Helper to convert humanized reading to streaming lines
+// Helper to convert humanized reading to streaming lines - UNIFIED FLOW WITHOUT HEADERS
 function formatReadingSections(reading: ReturnType<typeof generateHumanizedReading>): string[] {
-  const sections: string[] = [];
+  const fullReading = `${reading.opening} ${reading.presentEnergy} ${reading.underlyingPattern} ${reading.direction} ${reading.guidance} ${reading.closing}`;
   
-  sections.push(reading.opening);
-  sections.push('');
-  
-  sections.push('• Jo tumhare liye abhi chal raha hai:');
-  sections.push(reading.presentEnergy);
-  sections.push('');
-  
-  reading.cardInterpretations.forEach((interp, idx) => {
-    sections.push(`Card ${idx + 1}:`);
-    sections.push(interp);
-    sections.push('');
-  });
-  
-  sections.push('• Iske pichhe jo pattern hai:');
-  sections.push(reading.underlyingPattern);
-  sections.push('');
-  
-  sections.push('• Aage kya aa raha hai:');
-  sections.push(reading.direction);
-  sections.push('');
-  
-  sections.push('• Ab tum kya karte ho:');
-  sections.push(reading.guidance);
-  sections.push('');
-  
-  sections.push(reading.closing);
-  
-  return sections;
+  return fullReading
+    .split('. ')
+    .map(s => s.trim())
+    .filter(s => s.length > 0);
 }
 
 // Fallback reading when no cards
@@ -321,16 +278,9 @@ export function useReadingFlow() {
         greeting = generateOpening(input.name, detectedLang);
         readingContent = generateReadingContent(input.question, input.readingType, detectedLang);
         guidance = generateGuidance(input.readingType, detectedLang);
-        // Fallback streaming lines
+        // Fallback streaming lines - unify the flow without headers
         streamingLines = [
-          `${greeting}`,
-          '',
-          readingContent,
-          '',
-          '• Ab tum kya karte ho:',
-          guidance,
-          '',
-          "Tum already feel kar rahe ho kya sahi hai… bas ab usse ignore mat karo.",
+          `${greeting} ${readingContent} ${guidance} Tum already jaante ho kya sahi hai… bas ab usse ignore mat karo.`,
         ];
       }
       

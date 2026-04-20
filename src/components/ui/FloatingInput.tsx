@@ -14,6 +14,7 @@ export interface FloatingInputProps {
   icon?: React.ReactNode;
   autoFocus?: boolean;
   onEnter?: () => void;
+  helperText?: string;
 }
 
 export default function FloatingInput({
@@ -26,6 +27,7 @@ export default function FloatingInput({
   icon,
   autoFocus,
   onEnter,
+  helperText,
 }: FloatingInputProps) {
   const [focused, setFocused] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -48,7 +50,7 @@ export default function FloatingInput({
     <div className="relative w-full mt-6">
       <div className="relative">
         {icon && (
-          <div className="absolute left-0 top-1/2 -translate-y-1/2 text-foreground-muted pointer-events-none z-10">
+          <div className="absolute left-3 top-1/2 -translate-y-1/2 text-foreground-muted pointer-events-none z-10">
             {icon}
           </div>
         )}
@@ -63,18 +65,11 @@ export default function FloatingInput({
           onKeyDown={handleKeyDown}
           placeholder={isActive ? placeholder : ''}
           className={cn(
-            'w-full bg-transparent border-b-2 font-sans text-base py-4 pr-4 transition-all duration-300',
-            'text-foreground placeholder:text-transparent',
+            'w-full bg-transparent border rounded-xl font-sans text-base py-3 px-4 transition-all duration-300',
+            'text-foreground placeholder:text-foreground-muted',
             'focus:outline-none',
-            
-            error
-              ? 'border-red-400/50 focus:border-red-400'
-              : isActive
-                ? 'border-gold focus:border-gold'
-                : 'border-gold/20 hover:border-gold/40',
-            
-            isActive && !error && 'focus:shadow-[0_0_12px_rgba(244,197,66,0.3)]',
-            
+            'border-white/20',
+            'focus:border-[#FFD700] focus:shadow-[0_0_10px_rgba(255,215,0,0.3)]',
             icon && 'pl-10'
           )}
         />
@@ -83,7 +78,7 @@ export default function FloatingInput({
         <motion.label
           initial={false}
           animate={{
-            top: isActive ? -8 : 4,
+            top: isActive ? -10 : 6,
             fontSize: isActive ? '0.75rem' : '1rem',
             color: error
               ? '#ef4444'
@@ -93,38 +88,38 @@ export default function FloatingInput({
           }}
           transition={{ duration: 0.2 }}
           className={cn(
-            'absolute left-0 font-medium pointer-events-none',
+            'absolute left-4 font-medium pointer-events-none bg-background px-1',
             icon && 'left-10'
           )}
         >
           {label}
         </motion.label>
         
-        {/* Focus indicator line */}
-        <motion.div
-          className={cn(
-            'absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-gold/50 to-gold',
-            error && 'from-red-400/50 to-red-400'
-          )}
-          initial={{ width: '0%' }}
-          animate={{ width: focused || value ? '100%' : '0%' }}
-          transition={{ duration: 0.3 }}
-        />
+        {/* Focus indicator line (optional) */}
+        {false && (
+          <motion.div
+            className="absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-gold/50 to-gold"
+            initial={{ width: '0%' }}
+            animate={{ width: focused || value ? '100%' : '0%' }}
+            transition={{ duration: 0.3 }}
+          />
+        )}
       </div>
       
-      {/* Error message */}
-      <AnimatePresence>
-        {error && (
+      {/* Helper text / error */}
+      <div className="mt-1">
+        {error ? (
           <motion.p
-            initial={{ opacity: 0, y: -5 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0 }}
-            className="text-red-400 text-xs mt-1"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="text-xs text-red-400"
           >
             {error}
           </motion.p>
-        )}
-      </AnimatePresence>
+        ) : helperText ? (
+          <p className="text-xs text-foreground-muted italic">{helperText}</p>
+        ) : null}
+      </div>
     </div>
   );
 }
@@ -148,6 +143,8 @@ export function FloatingTextarea({
   onChange,
   placeholder,
   error,
+  icon,
+  helperText,
   rows = 4,
   maxLength,
   showCount,
@@ -155,10 +152,16 @@ export function FloatingTextarea({
 }: FloatingTextareaProps) {
   const [focused, setFocused] = useState(false);
   const isActive = focused || value.length > 0;
+  const isOverLimit = maxLength ? value.length > maxLength : false;
 
   return (
     <div className="relative w-full mt-6">
       <div className="relative">
+        {icon && (
+          <div className="absolute left-3 top-3 text-foreground-muted pointer-events-none z-10">
+            {icon}
+          </div>
+        )}
         <textarea
           value={value}
           onChange={(e) => onChange(e.target.value)}
@@ -169,17 +172,12 @@ export function FloatingTextarea({
           autoFocus={autoFocus}
           placeholder={isActive ? placeholder : ''}
           className={cn(
-            'w-full bg-transparent border-b-2 font-sans text-base py-4 pr-4 resize-none transition-all duration-300',
-            'text-foreground placeholder:text-transparent',
+            'w-full bg-transparent border rounded-xl font-sans text-base py-3 transition-all duration-300',
+            'text-foreground placeholder:text-foreground-muted',
             'focus:outline-none',
-            
-            error
-              ? 'border-red-400/50 focus:border-red-400'
-              : isActive
-                ? 'border-gold focus:border-gold'
-                : 'border-gold/20 hover:border-gold/40',
-            
-            isActive && !error && 'focus:shadow-[0_0_12px_rgba(244,197,66,0.3)]'
+            'border-white/20',
+            'focus:border-[#FFD700] focus:shadow-[0_0_10px_rgba(255,215,0,0.3)]',
+            icon ? 'pl-10 pr-4' : 'px-4'
           )}
         />
         
@@ -187,7 +185,7 @@ export function FloatingTextarea({
         <motion.label
           initial={false}
           animate={{
-            top: isActive ? -8 : 4,
+            top: isActive ? -10 : 6,
             fontSize: isActive ? '0.75rem' : '1rem',
             color: error
               ? '#ef4444'
@@ -196,50 +194,34 @@ export function FloatingTextarea({
                 : 'rgb(var(--foreground-muted))',
           }}
           transition={{ duration: 0.2 }}
-          className="absolute left-0 font-medium pointer-events-none"
+          className={cn(
+            'absolute left-4 font-medium pointer-events-none bg-background px-1',
+            icon && 'left-10'
+          )}
         >
           {label}
         </motion.label>
-        
-        {/* Focus indicator */}
-        <motion.div
-          className={cn(
-            'absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-gold/50 to-gold',
-            error && 'from-red-400/50 to-red-400'
-          )}
-          initial={{ width: '0%' }}
-          animate={{ width: focused || value ? '100%' : '0%' }}
-          transition={{ duration: 0.3 }}
-        />
       </div>
       
-      {/* Character count */}
-      <AnimatePresence>
-        {showCount && maxLength && (
-          <motion.div
+      {/* Helper text / char count */}
+      <div className="mt-1 flex items-center justify-between">
+        {error ? (
+          <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="text-foreground-muted text-xs mt-1 text-right"
-          >
-            {value.length}/{maxLength}
-          </motion.div>
-        )}
-      </AnimatePresence>
-      
-      {/* Error message */}
-      <AnimatePresence>
-        {error && (
-          <motion.p
-            initial={{ opacity: 0, y: -5 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0 }}
-            className="text-red-400 text-xs mt-1"
+            className="text-xs text-red-400"
           >
             {error}
           </motion.p>
+        ) : helperText ? (
+          <p className="text-xs text-foreground-muted italic">{helperText}</p>
+        ) : <span className="flex-1" />}
+        {showCount && maxLength && (
+          <span className={`text-xs ${isOverLimit ? 'text-red-400' : 'text-foreground-muted'}`}>
+            {value.length}/{maxLength}
+          </span>
         )}
-      </AnimatePresence>
+      </div>
     </div>
   );
 }

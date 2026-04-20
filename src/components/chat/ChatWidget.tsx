@@ -115,26 +115,26 @@ export default function ChatWidget({ position = 'bottom-right' }: ChatWidgetProp
               )}
             </div>
             
-            {/* Input */}
-            <div className="p-4 border-t border-[#F4C542]/10">
-              <div className="flex items-center gap-2 bg-[#0A0A0A]/50 rounded-full px-4 py-2 border border-[#ffffff]/10 focus-within:border-[#F4C542]/50 focus-within:shadow-[0_0_15px_rgba(244,197,66,0.1)] transition-all">
-                <input
-                  type="text"
-                  value={input}
-                  onChange={(e) => setInput(e.target.value)}
-                  onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-                  placeholder="Ask Ginni anything..."
-                  className="flex-1 bg-transparent text-[#EAEAEA] placeholder:text-[#7A7A7A] outline-none text-sm"
-                />
-                <button
-                  onClick={handleSend}
-                  disabled={!input.trim() || isLoading}
-                  className="p-2 rounded-full bg-[#F4C542]/20 text-[#F4C542] hover:bg-[#F4C542]/30 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                >
-                  <Send className="w-4 h-4" />
-                </button>
-              </div>
-            </div>
+               {/* Input */}
+             <div className="p-4 border-t border-[#F4C542]/10">
+               <div className="flex items-center gap-2 bg-transparent rounded-xl px-4 py-2 border border-white/20 focus-within:border-[#FFD700] focus-within:shadow-[0_0_10px_rgba(255,215,0,0.3)] transition-all">
+                 <input
+                   type="text"
+                   value={input}
+                   onChange={(e) => setInput(e.target.value)}
+                   onKeyDown={(e) => e.key === 'Enter' && handleSend()}
+                   placeholder="Jo mind mein baar baar aa raha hai…"
+                   className="flex-1 bg-transparent text-[#EAEAEA] placeholder:text-[#7A7A7A] outline-none text-sm"
+                 />
+                 <button
+                   onClick={handleSend}
+                   disabled={!input.trim() || isLoading}
+                   className="p-2 rounded-full bg-gold/10 text-gold hover:bg-gold/20 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                 >
+                   <Send className="w-4 h-4" />
+                 </button>
+               </div>
+             </div>
           </motion.div>
         )}
       </AnimatePresence>

@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { Check, Sparkles, Zap, Crown } from 'lucide-react';
 import Link from 'next/link';
 import { SUBSCRIPTION_PLANS, type PlanType } from '@/lib/payments/plans';
+import Button from '@/components/ui/button';
 
 const PLAN_ICONS: Record<PlanType, typeof Sparkles> = {
   free: Sparkles,
@@ -91,20 +92,14 @@ export default function PremiumPage() {
                     ))}
                   </ul>
 
-                  <Link href={planType === 'free' ? '/reading' : '/booking'}>
-                    <motion.button
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                      className={`w-full rounded-full py-3 font-semibold transition-all ${
-                        planType === 'free'
-                          ? 'border border-[rgb(var(--gold))/50] text-[rgb(var(--gold))] hover:bg-[rgb(var(--gold))/10]'
-                          : planType === 'pro'
-                          ? 'bg-gradient-to-r from-[rgb(var(--gold-start))] to-[rgb(var(--gold))] text-black shadow-lg shadow-[rgb(var(--gold))/30]'
-                          : 'bg-gradient-to-r from-[rgb(var(--gold-start))] to-[rgb(var(--gold))] text-black shadow-lg shadow-[rgb(var(--gold))/30]'
-                      }`}
+                  <Link href={planType === 'free' ? '/reading' : '/booking'} className="block">
+                    <Button 
+                      size="lg" 
+                      variant={planType === 'free' ? 'secondary' : 'primary'}
+                      className="w-full"
                     >
                       {planType === 'free' ? 'Get Started Free' : 'Subscribe Now'}
-                    </motion.button>
+                    </Button>
                   </Link>
                 </div>
               </motion.div>

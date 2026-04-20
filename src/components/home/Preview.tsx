@@ -2,8 +2,9 @@
 
 import Link from 'next/link';
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 import { Sparkles, ArrowRight } from 'lucide-react';
-import MysticalButton from '../CTAButton';
+import Button from '@/components/ui/button';
 
 export default function Preview() {
   return (
@@ -44,15 +45,31 @@ export default function Preview() {
             </div>
 
             <div className="space-y-element">
-              <div className="flex gap-element">
-                <div className="flex-shrink-0 w-16 h-24 rounded-lg bg-gradient-to-br from-surface to-[#2a1a1a] flex items-center justify-center border border-gold-30">
-                  <span className="font-heading text-xs text-foreground">The Fool</span>
+              {/* Preview cards using real images */}
+              <div className="flex gap-element justify-center">
+                <div className="relative w-16 h-24 flex-shrink-0 rounded-lg overflow-hidden border border-gold/30">
+                  <Image
+                    src="/card_img/The Fool.png"
+                    alt="The Fool"
+                    fill
+                    className="object-cover"
+                  />
                 </div>
-                <div className="flex-shrink-0 w-16 h-24 rounded-lg bg-gradient-to-br from-surface to-[#2a1a1a] flex items-center justify-center border border-gold-30">
-                  <span className="font-heading text-xs text-foreground">The Lovers</span>
+                <div className="relative w-16 h-24 flex-shrink-0 rounded-lg overflow-hidden border border-gold/30">
+                  <Image
+                    src="/card_img/The Lovers.png"
+                    alt="The Lovers"
+                    fill
+                    className="object-cover"
+                  />
                 </div>
-                <div className="flex-shrink-0 w-16 h-24 rounded-lg bg-gradient-to-br from-surface to-[#2a1a1a] flex items-center justify-center border border-gold-30">
-                  <span className="font-heading text-xs text-foreground">The Star</span>
+                <div className="relative w-16 h-24 flex-shrink-0 rounded-lg overflow-hidden border border-gold/30">
+                  <Image
+                    src="/card_img/The Star.png"
+                    alt="The Star"
+                    fill
+                    className="object-cover"
+                  />
                 </div>
               </div>
 
@@ -85,10 +102,10 @@ export default function Preview() {
           className="mt-block text-center"
         >
           <Link href="/reading">
-            <MysticalButton size="lg" glow>
-              Begin Your Reading
-              <ArrowRight className="h-5 w-5" />
-            </MysticalButton>
+            <Button size="lg">
+              Dekhte hain kya aa raha hai
+              <ArrowRight className="ml-2 h-5 w-5" />
+            </Button>
           </Link>
           <p className="mt-element text-body-sm text-foreground-muted">
             Takes less than 60 seconds

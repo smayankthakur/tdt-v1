@@ -16,6 +16,8 @@ import {
   generateBookingId,
   type BookingDuration 
 } from '@/lib/bookings';
+import Button from '@/components/ui/button';
+import { FloatingInput, FloatingTextarea } from '@/components/ui/FloatingInput';
 
 const TOPIC_ICONS: Record<string, typeof Heart> = {
   love: Heart,
@@ -280,61 +282,60 @@ return (
             <motion.div
               key="details"
               variants={containerVariants}
-              initial="hidden"
-              animate="visible"
-              exit="exit"
-              className="max-w-md mx-auto space-y-6"
-            >
-              <div className="space-y-4">
-                <div className="relative">
-                  <User className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 [rgb(var(--foreground-muted))]" />
-                  <input
-                    type="text"
-                    placeholder="Your Name"
+               initial="hidden"
+               animate="visible"
+               exit="exit"
+               className="max-w-md mx-auto space-y-6"
+             >
+                <div className="space-y-4">
+                  <FloatingInput
+                    label="Tumhara naam"
                     value={details.name}
-                    onChange={(e) => setDetails({ ...details, name: e.target.value })}
-                    className="w-full pl-12 pr-4 py-4 rounded-xl border border-[rgb(var(--surface))]/30 bg-[rgb(var(--surface))]/20 text-purple-100 placeholder:text-purple-600 focus:border-purple-500 focus:outline-none transition-all"
+                    onChange={(v) => setDetails({ ...details, name: v })}
+                    placeholder="Tumhara naam..."
+                    icon={<User className="h-5 w-5" />}
+                    helperText="Tumhare naam se connection banayein"
                   />
-                </div>
-                
-                <div className="relative">
-                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 [rgb(var(--foreground-muted))]" />
-                  <input
+                  
+                  <FloatingInput
+                    label="Tumhara email"
                     type="email"
-                    placeholder="Your Email"
                     value={details.email}
-                    onChange={(e) => setDetails({ ...details, email: e.target.value })}
-                    className="w-full pl-12 pr-4 py-4 rounded-xl border border-[rgb(var(--surface))]/30 bg-[rgb(var(--surface))]/20 text-purple-100 placeholder:text-purple-600 focus:border-purple-500 focus:outline-none transition-all"
+                    onChange={(v) => setDetails({ ...details, email: v })}
+                    placeholder="Tumhara email..."
+                    icon={<Mail className="h-5 w-5" />}
+                    helperText="Results email par bhejege"
                   />
-                </div>
-                
-                <div className="relative">
-                  <Phone className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 [rgb(var(--foreground-muted))]" />
-                  <input
+                  
+                  <FloatingInput
+                    label="WhatsApp number"
                     type="tel"
-                    placeholder="WhatsApp Number"
                     value={details.phone}
-                    onChange={(e) => setDetails({ ...details, phone: e.target.value })}
-                    className="w-full pl-12 pr-4 py-4 rounded-xl border border-[rgb(var(--surface))]/30 bg-[rgb(var(--surface))]/20 text-purple-100 placeholder:text-purple-600 focus:border-purple-500 focus:outline-none transition-all"
+                    onChange={(v) => setDetails({ ...details, phone: v })}
+                    placeholder="WhatsApp number..."
+                    icon={<Phone className="h-5 w-5" />}
+                    helperText="WhatsApp par result bhejein"
+                  />
+                  
+                  <FloatingTextarea
+                    label="Tumhara sawal"
+                    value={details.question}
+                    onChange={(v) => setDetails({ ...details, question: v })}
+                    placeholder="Jo tumhare mind mein baar baar aa raha hai…"
+                    rows={3}
+                    icon={<MessageSquare className="h-5 w-5" />}
+                    helperText="Jitna clear sawal… utni clear direction"
                   />
                 </div>
                 
-                <textarea
-                  placeholder="What's been weighing on your mind? (optional)"
-                  value={details.question}
-                  onChange={(e) => setDetails({ ...details, question: e.target.value })}
-                  rows={3}
-                  className="w-full p-4 rounded-xl border border-[rgb(var(--surface))]/30 bg-[rgb(var(--surface))]/20 text-purple-100 placeholder:text-purple-600 focus:border-purple-500 focus:outline-none transition-all resize-none"
-                />
-              </div>
-              
-              <button
-                onClick={handleDetailsSubmit}
-                disabled={!canProceed()}
-                className="w-full py-4 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 font-semibold text-white hover:from-purple-500 hover:to-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-              >
-                Continue to Payment
-              </button>
+                <Button 
+                  size="lg" 
+                  className="w-full"
+                  onClick={handleDetailsSubmit}
+                  disabled={!canProceed()}
+                >
+                  Continue
+                </Button>
             </motion.div>
           )}
 
@@ -363,23 +364,24 @@ return (
                 </div>
               </div>
               
-              <button
-                onClick={handleBooking}
-                disabled={isProcessing}
-                className="w-full py-4 rounded-xl bg-gradient-to-r from-gold-start to-gold-end font-semibold text-black hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2"
-              >
-                {isProcessing ? (
-                  <>
-                    <Sparkles className="h-5 w-5 animate-spin" />
-                    Securing your path...
-                  </>
-                ) : (
-                  <>
-                  <Sparkles className="h-5 w-5" />
-                  Complete Booking
-                </>
-                )}
-              </button>
+               <Button
+                 size="lg"
+                 className="w-full"
+                 onClick={handleBooking}
+                 disabled={isProcessing}
+               >
+                 {isProcessing ? (
+                   <>
+                     <Sparkles className="h-5 w-5 animate-spin" />
+                     Securing your path...
+                   </>
+                 ) : (
+                   <>
+                     <Sparkles className="h-5 w-5" />
+                     Continue
+                   </>
+                 )}
+               </Button>
             </motion.div>
           )}
 

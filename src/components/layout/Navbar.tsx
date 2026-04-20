@@ -9,6 +9,7 @@ import { Menu, X, Globe, ChevronDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useLanguage } from '@/hooks/useLanguage';
 import { LANGUAGES, type Language } from '@/lib/i18n/config';
+import Button from '@/components/ui/button';
 
 const navLinks = [
   { href: '/', label: 'Home' },
@@ -155,21 +156,9 @@ export default function Navbar() {
             {/* CTA Button */}
             <div className="hidden md:block">
               <Link href="/reading">
-                <motion.button
-                  className="relative overflow-hidden rounded-full bg-gradient-to-r from-[rgb(var(--gold-start))] via-[rgb(var(--gold))] to-[rgb(var(--gold-start))] px-6 py-2.5 text-sm font-semibold text-black shadow-lg shadow-[rgb(var(--gold))/30]"
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.98 }}
-                >
-                  <span className="relative z-10">
-                    {isHydrated ? t('cta.startReading') : 'Begin Your Reading'}
-                  </span>
-                  <motion.div
-                    className="absolute inset-0 bg-gradient-to-r from-[rgb(var(--gold-start))/80] via-[rgb(var(--gold))/80] to-[rgb(var(--gold-start))/80]"
-                    initial={{ x: '-100%' }}
-                    whileHover={{ x: 0 }}
-                    transition={{ duration: 0.3 }}
-                  />
-                </motion.button>
+                <Button size="md">
+                  {isHydrated ? t('cta.startReading') : 'Continue'}
+                </Button>
               </Link>
             </div>
 
@@ -238,30 +227,23 @@ export default function Navbar() {
                 </div>
               </div>
 
-              <nav className="flex flex-col gap-2 px-6 py-4">
-                {navLinks.map((link) => (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    onClick={() => setIsMobileOpen(false)}
-                    className={cn(
-                      'rounded-lg px-4 py-3 font-medium transition-colors',
-                      pathname === link.href
-                        ? 'bg-[rgb(var(--gold))/20] text-[rgb(var(--gold))]'
-                        : 'text-[rgb(var(--foreground-secondary))] hover:bg-[rgb(var(--gold))/10]'
-                    )}
-                  >
-                    {getNavLabel(link.label)}
-                  </Link>
-                ))}
-                <Link
-                  href="/reading"
-                  onClick={() => setIsMobileOpen(false)}
-                  className="mt-4 rounded-full bg-gradient-to-r from-[rgb(var(--gold-start))] via-[rgb(var(--gold))] to-[rgb(var(--gold-start))] px-6 py-3 text-center font-semibold text-black"
-                >
-                  {isHydrated ? t('cta.startReading') : 'Begin Your Reading'}
-                </Link>
-              </nav>
+                <nav className="flex flex-col gap-2 px-6 py-4">
+                  {navLinks.map((link) => (
+                    <Link
+                      key={link.href}
+                      href={link.href}
+                      onClick={() => setIsMobileOpen(false)}
+                      className="py-2 text-foreground-secondary hover:text-foreground transition-colors"
+                    >
+                      {getNavLabel(link.label)}
+                    </Link>
+                  ))}
+                  <div className="pt-2">
+                    <Button size="lg" className="w-full">
+                      {isHydrated ? t('cta.startReading') : 'Continue'}
+                    </Button>
+                  </div>
+                </nav>
             </motion.div>
           </>
         )}

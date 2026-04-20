@@ -17,25 +17,10 @@ interface TarotCardProps {
   showMeaning?: boolean;
 }
 
-const CARD_EMOJIS: Record<string, string> = {
-  fool: '🌟',
-  magician: '✨',
-  'high-priestess': '🌙',
-  empress: '👑',
-  emperor: '🏛️',
-  lovers: '💕',
-  chariot: '⚔️',
-  strength: '🦁',
-  hermit: '🕯️',
-  wheel: '🎡',
-  justice: '⚖️',
-  'hanged-man': '🌀',
-};
-
 const sizeConfig = {
-  sm: { width: 'w-28', height: 'h-40', emoji: 'text-2xl', title: 'text-xs' },
-  md: { width: 'w-36', height: 'h-52', emoji: 'text-3xl', title: 'text-sm' },
-  lg: { width: 'w-44', height: 'h-64', emoji: 'text-4xl', title: 'text-base' },
+  sm: { width: 112, height: 160, title: 'text-xs' },
+  md: { width: 144, height: 208, title: 'text-sm' },
+  lg: { width: 176, height: 256, title: 'text-base' },
 };
 
 export default function TarotCard({
@@ -47,16 +32,16 @@ export default function TarotCard({
   showMeaning = true,
 }: TarotCardProps) {
   const sizeStyle = sizeConfig[size];
-  const emoji = CARD_EMOJIS[card.id] || '🃏';
 
   return (
     <motion.div
       className={cn(
         'relative cursor-pointer',
-        sizeStyle.width,
-        sizeStyle.height,
+        sizeStyle.width ? `w-[${sizeStyle.width}px]` : 'w-36',
+        sizeStyle.height ? `h-[${sizeStyle.height}px]` : 'h-52',
         isSelected && 'z-10'
       )}
+      style={{ width: sizeStyle.width, height: sizeStyle.height }}
       onClick={onClick}
       variants={cardHover}
       initial="rest"
@@ -77,7 +62,6 @@ export default function TarotCard({
         {/* Card Front */}
         <CardFront 
           card={card} 
-          emoji={emoji} 
           isSelected={isSelected} 
           showMeaning={showMeaning}
           sizeStyle={sizeStyle}
@@ -128,17 +112,17 @@ function CardBack({ isSelected, sizeStyle }: { isSelected: boolean; sizeStyle: t
 
 function CardFront({ 
   card, 
-  emoji, 
   isSelected, 
   showMeaning,
   sizeStyle 
 }: { 
   card: TarotCardType; 
-  emoji: string; 
   isSelected: boolean;
   showMeaning: boolean;
   sizeStyle: typeof sizeConfig.md;
 }) {
+  const imageSrc = getCardImage(card.name);
+
   return (
     <motion.div
       className={cn(
@@ -165,29 +149,44 @@ function CardFront({
       transition={{ duration: 0.3 }}
     >
       <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 to-indigo-900/20" />
-      <div className="relative z-10 flex flex-col items-center justify-between h-full p-3 sm:p-4">
-        <div className="w-full text-center">
-          <motion.span 
-            className={cn('mb-1 sm:mb-2 block', sizeStyle.emoji)}
-            animate={{ scale: [1, 1.1, 1] }}
-            transition={{ duration: 2, repeat: Infinity }}
-          >
-            {emoji}
-          </motion.span>
-          <h4 className={cn('font-heading font-semibold text-purple-200 leading-tight', sizeStyle.title)}>
-            {card.name}
-          </h4>
-        </div>
-        {showMeaning && (
-          <p className="text-xs text-purple-300/60 leading-relaxed">
+      
+      {/* Card Image - fills the front */}
+      <div className="relative flex-1 w-full h-full">
+        <Image
+          src={imageSrc}
+          alt={card.name}
+          fill
+          className="object-contain p-1"
+          sizes={`${sizeStyle.width}px`}
+        />
+      </div>
+      
+      {/* Meaning text at bottom (optional) */}
+      {showMeaning && (
+        <div className="relative z-10 px-2 pb-2">
+          <p className="text-[10px] text-purple-300/60 leading-tight text-center line-clamp-2">
             {card.upright.split(',')[0]}
           </p>
-        )}
-      </div>
+        </div>
+      )}
     </motion.div>
   );
 }
 
 export function getCardEmoji(cardId: string): string {
+  const CARD_EMOJIS: Record<string, string> = {
+    fool: '🌟',
+    magician: '✨',
+    'high-priestess': '🌙',
+    empress: '👑',
+    emperor: '🏛️',
+    lovers: '💕',
+    chariot: '⚔️',
+    strength: '🦁',
+    hermit: '🕯️',
+    wheel: '🎡',
+    justice: '⚖️',
+    'hanged-man': '🌀',
+  };
   return CARD_EMOJIS[cardId] || '🃏';
 }

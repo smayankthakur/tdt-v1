@@ -1,14 +1,51 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { cn } from '@/lib/utils';
-import { Heart, Briefcase, HelpCircle, Lightbulb, Sparkles, ArrowRight } from 'lucide-react';
-import { staggerContainer, staggerItem, fadeInUp } from '@/lib/motion';
+import { ArrowRight } from 'lucide-react';
+import Button from '@/components/ui/button';
+import { FloatingTextarea } from '@/components/ui/FloatingInput';
+import { fadeInUp } from '@/lib/motion';
 
-interface TopicSelectorProps {
-  selectedTopic: string | null;
-  onSelectTopic: (topic: string) => void;
-  recommendedTopic?: string;
+export function QuestionInput({
+  value,
+  onChange,
+  onSubmit,
+  placeholder = "Jo tumhare mind mein baar baar aa raha hai… usse yahan likho",
+  maxLength = 500,
+}: QuestionInputProps) {
+  const charCount = value.length;
+  const isOverLimit = charCount > maxLength;
+  const canSubmit = value.trim().length >= 10 && !isOverLimit;
+
+  return (
+    <motion.div
+      className="space-y-4"
+      variants={fadeInUp}
+      initial="hidden"
+      animate="visible"
+    >
+      <FloatingTextarea
+        label="Tumhara sawal"
+        value={value}
+        onChange={onChange}
+        placeholder={placeholder}
+        maxLength={maxLength}
+        rows={4}
+        helperText="Jitna clear sawal… utni clear direction"
+        showCount
+      />
+      
+      <div className="flex justify-end">
+        <Button 
+          onClick={onSubmit}
+          disabled={!canSubmit}
+        >
+          Continue
+          <ArrowRight className="h-5 w-5 ml-2" />
+        </Button>
+      </div>
+    </motion.div>
+  );
 }
 
 const TOPICS = [

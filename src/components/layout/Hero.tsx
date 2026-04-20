@@ -212,7 +212,7 @@ export default function Hero() {
                 </Button>
               </Link>
               {/* Subtext below CTA */}
-              <p className="mt-tight text-body-sm text-foreground-muted text-center font-sans">
+              <p className="mt-4 text-body-sm text-foreground-muted text-center font-sans">
                 Shayad yeh wahi answer hai jiska tum wait kar rahe the…
               </p>
             </motion.div>

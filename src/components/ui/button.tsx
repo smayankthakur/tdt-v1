@@ -1,5 +1,6 @@
 import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
+import { motion } from "framer-motion"
 
 /**
  * === DESIGN SYSTEM BUTTON ===
@@ -8,16 +9,16 @@ import { cn } from "@/lib/utils"
  */
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center rounded-xl font-medium transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accentEnd/50 disabled:pointer-events-none disabled:opacity-50",
+  "inline-flex items-center justify-center font-medium transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accentEnd/50 disabled:pointer-events-none disabled:opacity-50",
   {
     variants: {
       variant: {
-        // PRIMARY: Gold gradient - Main CTA
+        // PRIMARY: Red to Gold gradient - Main CTA
         primary: `
-          bg-gradient-to-r from-accentStart to-accentEnd
+          bg-gradient-to-r from-[#FF4D4D] to-[#FFD700]
           text-black
-          shadow-lg
-          hover:scale-105 hover:shadow-xl
+          shadow-lg shadow-[#FFD700]/20
+          hover:scale-105 hover:shadow-xl hover:shadow-[#FFD700]/30
           active:scale-95
         `,
         // SECONDARY: Outline / subtle
@@ -49,10 +50,10 @@ const buttonVariants = cva(
         `,
       },
       size: {
-        sm: "px-4 py-2 text-sm",
-        md: "px-6 py-3 text-base",
-        lg: "px-8 py-4 text-lg",
-        xl: "px-10 py-5 text-xl",
+        sm: "px-4 py-2 text-sm rounded-full",
+        md: "px-6 py-3 text-base rounded-full",
+        lg: "px-8 py-4 text-lg rounded-full",
+        xl: "px-10 py-5 text-xl rounded-full",
       },
     },
     defaultVariants: {
@@ -73,7 +74,7 @@ interface ButtonProps extends VariantProps<typeof buttonVariants> {
 /**
  * DESIGN SYSTEM BUTTON
  * Use this component for ALL buttons throughout the app
- * 
+ *
  * Usage:
  * - Primary: Main CTA (get started, submit, etc.)
  * - Secondary: Alternative actions (back, cancel)
@@ -91,14 +92,16 @@ export default function Button({
   type = "button",
 }: ButtonProps) {
   return (
-    <button
+    <motion.button
       type={type}
       onClick={onClick}
       className={cn(buttonVariants({ variant, size }), className)}
       disabled={disabled}
+      whileHover={{ scale: 1.05 }}
+      whileTap={{ scale: 0.95 }}
     >
       {children}
-    </button>
+    </motion.button>
   )
 }
 

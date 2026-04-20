@@ -2,9 +2,10 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import CTAButton from '@/components/CTAButton';
+import { Sparkles, Mail, Phone, MapPin, Clock, User, MessageSquare } from 'lucide-react';
+import { useLanguage } from '@/hooks/useLanguage';
+import Button from '@/components/ui/button';
+import { FloatingInput, FloatingTextarea } from '@/components/ui/FloatingInput';
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -64,38 +65,39 @@ export default function ContactPage() {
             </motion.div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-6">
-              <div>
-                <Input
-                  type="text"
-                  name="name"
-                  placeholder="Your Name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-              <div>
-                <Input
-                  type="email"
-                  name="email"
-                  placeholder="Your Email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-              <div>
-                <Textarea
-                  name="message"
-                  placeholder="Your Message"
-                  value={formData.message}
-                  onChange={handleChange}
-                  required
-                  className="min-h-[150px] resize-none"
-                />
-              </div>
+              <FloatingInput
+                label="Tumhara naam"
+                value={formData.name}
+                onChange={(v) => setFormData({ ...formData, name: v })}
+                placeholder="Tumhara naam..."
+                icon={<User className="h-5 w-5" />}
+                helperText="Kyun? Taaki tumhe personal tarah se address kar saken"
+                required
+              />
+              <FloatingInput
+                label="Tumhara email"
+                value={formData.email}
+                onChange={(v) => setFormData({ ...formData, email: v })}
+                placeholder="Tumhara email..."
+                type="email"
+                icon={<Mail className="h-5 w-5" />}
+                helperText="Results email par bhejege"
+                required
+              />
+              <FloatingTextarea
+                label="Jo mann mein baar baar aa raha hai"
+                value={formData.message}
+                onChange={(v) => setFormData({ ...formData, message: v })}
+                placeholder="Jo mann mein baar baar aa raha hai…"
+                rows={5}
+                icon={<MessageSquare className="h-5 w-5" />}
+                helperText="Jitna clear sawal… utni clear direction"
+                required
+              />
               <div className="text-center">
-                <CTAButton type="submit">Send Message</CTAButton>
+                <Button type="submit" size="lg">
+                  Continue
+                </Button>
               </div>
             </form>
           )}

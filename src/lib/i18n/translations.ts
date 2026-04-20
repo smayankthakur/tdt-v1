@@ -232,7 +232,8 @@ readingHub: {
         subtext: "Takes less than 60 seconds • Free to try",
       },
     },
-    hi: {
+  },
+  hi: {
     common: {
       loading: 'लोड हो रहा है...',
       error: 'कुछ गलत हो गया',

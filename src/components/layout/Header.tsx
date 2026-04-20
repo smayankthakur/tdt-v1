@@ -28,6 +28,7 @@ const NAV_LABEL_KEYS: Record<string, string> = {
 const LANGUAGES = [
   { code: 'hinglish', name: 'Hinglish', flag: '💬' },
   { code: 'en', name: 'English', flag: '🇺🇸' },
+  { code: 'hi', name: 'हिंदी', flag: '🇮🇳' },
 ];
 
 export default function Header() {

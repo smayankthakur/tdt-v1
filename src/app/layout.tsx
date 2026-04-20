@@ -18,6 +18,8 @@ export const viewport: Viewport = {
   maximumScale: 5,
 };
 
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://thedivinetarot.com';
+
 export const metadata: Metadata = {
   title: "The Devine Tarot | Premium AI-Powered Tarot Readings",
   description: "Get answers from the universe in seconds. Experience mystical, emotionally intelligent tarot readings.",
@@ -25,6 +27,20 @@ export const metadata: Metadata = {
   icons: {
     icon: "/tdt-v3/favicon.ico",
     apple: "/tdt-v3/favicon.ico",
+  },
+  alternates: {
+    languages: {
+      en: '/',
+      hi: '/',
+      'x-default': '/',
+    },
+  },
+  openGraph: {
+    url: BASE_URL,
+    alternateLocale: 'hi',
+  },
+  twitter: {
+    card: 'summary_large_image',
   },
 };
 
@@ -39,6 +55,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
+        {/* SEO: hreflang for multilingual support */}
+        <link rel="alternate" hrefLang="en" href="/" />
+        <link rel="alternate" hrefLang="hi" href="/" />
+        <link rel="alternate" hrefLang="x-default" href="/" />
+        
         {process.env.NODE_ENV === 'production' && (
           <script
             dangerouslySetInnerHTML={{

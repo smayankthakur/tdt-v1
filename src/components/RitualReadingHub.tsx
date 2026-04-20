@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Sparkles, ArrowRight, Loader2, Heart, Briefcase, TrendingUp, Users, Home, Compass } from 'lucide-react';
 import { useLanguage } from '@/hooks/useLanguage';
+import { useAutoLanguage } from '@/hooks/useAutoLanguage';
 import { useReadingFlow } from '@/hooks/useReadingFlow';
 import { useReadingStore } from '@/store/reading-store';
 import { useFunnelStore } from '@/store/funnel-store';
@@ -102,10 +103,14 @@ export default function RitualReadingHub() {
     }, 1500);
    };
 
-  // Question submission
+  // Question submission - with auto language detection
   const handleQuestionSubmit = async () => {
     if (!question.trim() || question.length < 5) return;
     vibrate();
+
+    // Auto-detect language from user's question
+    const { handleUserInput } = useAutoLanguage();
+    handleUserInput(question);
 
     // 1. Analyze intent of the question
     const analysis = analyzeIntent(question, selectedTopic || undefined);

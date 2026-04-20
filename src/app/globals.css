@@ -55,7 +55,7 @@
   }
 
   * {
-    border-color: rgb(var(--border)) / 0.3);
+    border-color: rgb(var(--border)) / 0.3;
   }
 
   html {

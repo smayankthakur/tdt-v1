@@ -206,11 +206,11 @@ readingHub: {
     },
     home: {
       hero: {
-        sloganLine1: "Yeh sirf tarot nahi hai...",
-        sloganLine2: "Yeh clarity hai jab life confusing ho jati hai...",
-        quote: "Jo tum poochne wale ho... uska answer tum already feel kar rahe ho",
+        sloganLine1: "This isn't just tarot...",
+        sloganLine2: "This is clarity when life gets confusing...",
+        quote: "The answer you're looking for... you already feel it",
         ctaButton: "Know Your Fortune",
-        ctaSubtext: "Shayad yeh wahi answer hai jiska tum wait kar rahe the..."
+        ctaSubtext: "Maybe this is the answer you've been waiting for..."
       }
     },
     landing: {
@@ -648,11 +648,11 @@ readingHub: {
     },
     home: {
       hero: {
-        sloganLine1: "This isn't just tarot…",
-        sloganLine2: "This is the clarity you already feel within…",
-        quote: "The answer you're looking for… you already feel it.",
-        ctaButton: "Know Your Fortune",
-        ctaSubtext: "Maybe this is the answer you've been waiting for…",
+        sloganLine1: "यह सिर्फ टैरो नहीं है...",
+        sloganLine2: "यह वो clarity है जब life confusing हो जाती है...",
+        quote: "जो आप पूछना चाहते हैं... उसका जवाब आप पहले से feel कर रहे हैं",
+        ctaButton: "अपना भविष्य जानें",
+        ctaSubtext: "शायद यही जवाब है जका आप wait कर रहे थे..."
       },
     },
     about: {

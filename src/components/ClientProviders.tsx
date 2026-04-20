@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { PersonalizationProvider } from '@/components/personalization/PersonalizationProvider';
 import { getUserId, ensureUser } from '@/lib/utils/user';
+import { useLanguage } from '@/hooks/useLanguage';
 
 interface ClientProvidersProps {
   children: React.ReactNode;
@@ -11,6 +12,7 @@ interface ClientProvidersProps {
 export default function ClientProviders({ children }: ClientProvidersProps) {
   const [userId, setUserId] = useState<string | null>(null);
   const [isReady, setIsReady] = useState(false);
+  const { language } = useLanguage();
 
   useEffect(() => {
     const initUser = async () => {
@@ -35,7 +37,10 @@ export default function ClientProviders({ children }: ClientProvidersProps) {
 
   return (
     <PersonalizationProvider userId={userId}>
-      {children}
+      {/* Force re-render when language changes - wraps entire app */}
+      <div key={language}>
+        {children}
+      </div>
     </PersonalizationProvider>
   );
 }

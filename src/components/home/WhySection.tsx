@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { Brain, Sparkles, Zap, Heart } from 'lucide-react';
+import { useLanguage } from '@/hooks/useLanguage';
 
 const features = [
   { 
@@ -27,6 +28,7 @@ const features = [
 ];
 
 export default function WhySection() {
+  const { t, isHydrated } = useLanguage();
   return (
     <section className="py-section bg-background">
       <div className="mx-auto max-w-6xl px-6">
@@ -59,11 +61,11 @@ export default function WhySection() {
               </div>
               <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-secondary-10 text-secondary text-sm font-medium border border-secondary-20">
                 <Heart className="h-4 w-4" />
-                <span>4.9 rating</span>
+                <span>{isHydrated ? t('whySection.rating') : '4.9 rating'}</span>
               </div>
               <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-gold-10 text-gold text-sm font-medium border border-gold-20">
                 <Zap className="h-4 w-4" />
-                <span>Under 60 seconds</span>
+                <span>{isHydrated ? t('common.under60seconds') : 'Under 60 seconds'}</span>
               </div>
             </div>
           </motion.div>

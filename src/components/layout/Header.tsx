@@ -192,7 +192,7 @@ export default function Header() {
               <div className="px-6 py-2">
                 <div className="flex items-center gap-2 text-sm text-white/50 mb-3">
                   <Globe className="h-4 w-4" />
-                  <span>Language</span>
+                  <span>{t('common.language')}</span>
                 </div>
                 <div className="flex gap-2">
                   {LANGUAGES.map((lang) => (

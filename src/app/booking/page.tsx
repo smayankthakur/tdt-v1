@@ -18,6 +18,7 @@ import {
 } from '@/lib/bookings';
 import Button from '@/components/ui/button';
 import FloatingInput, { FloatingTextarea } from '@/components/ui/FloatingInput';
+import { useLanguage } from '@/hooks/useLanguage';
 
 const TOPIC_ICONS: Record<string, typeof Heart> = {
   love: Heart,
@@ -31,6 +32,7 @@ const TOPIC_ICONS: Record<string, typeof Heart> = {
 type BookingStep = 'select-topic' | 'select-date' | 'select-time' | 'select-duration' | 'details' | 'payment' | 'confirmation';
 
 export default function BookingPage() {
+  const { t, isHydrated } = useLanguage();
   const [step, setStep] = useState<BookingStep>('select-topic');
   const [selectedTopic, setSelectedTopic] = useState<string>('');
   const [selectedDate, setSelectedDate] = useState<string>('');
@@ -182,7 +184,7 @@ return (
                 </button>
                 <div className="flex items-center gap-2 [rgb(var(--foreground))]">
                   <Calendar className="h-5 w-5" />
-                  <span>Select a Date</span>
+                  <span>{t('booking.selectDate')}</span>
                 </div>
                 <button 
                   onClick={() => setCurrentMonthStart(currentMonthStart + 7)}
@@ -227,7 +229,7 @@ return (
             >
               <div className="flex items-center justify-center gap-2 [rgb(var(--foreground))]">
                 <Clock className="h-5 w-5" />
-                <span>Available Times for {selectedDate}</span>
+                <span>{t('booking.availableTimes')} {selectedDate}</span>
               </div>
               
               <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
@@ -257,7 +259,7 @@ return (
               exit="exit"
               className="space-y-6"
             >
-              <div className="text-center [rgb(var(--foreground))] mb-4">Choose Session Length</div>
+              <div className="text-center [rgb(var(--foreground))] mb-4">{t('booking.chooseSessionLength')}</div>
               
               <div className="grid md:grid-cols-3 gap-4">
                 {DURATION_OPTIONS.map((option, index) => (
@@ -349,16 +351,16 @@ return (
               className="max-w-md mx-auto space-y-6"
             >
               <div className="p-6 rounded-2xl border border-[rgb(var(--surface))]/30 bg-[rgb(var(--surface))]/20">
-                <h3 className="text-xl font-heading [rgb(var(--foreground))] mb-4">Booking Summary</h3>
+                <h3 className="text-xl font-heading [rgb(var(--foreground))] mb-4">{t('booking.bookingSummary')}</h3>
                 <div className="space-y-2 [rgb(var(--foreground-secondary))]/70">
-                  <p><span className="[rgb(var(--foreground-muted))]">Topic:</span> {TOPICS.find(t => t.id === selectedTopic)?.label}</p>
-                  <p><span className="[rgb(var(--foreground-muted))]">Date:</span> {formatBookingDate(selectedDate, selectedTime)}</p>
-                  <p><span className="[rgb(var(--foreground-muted))]">Duration:</span> {selectedDuration} minutes</p>
-                  <p><span className="[rgb(var(--foreground-muted))]">Name:</span> {details.name}</p>
+                  <p><span className="[rgb(var(--foreground-muted))]">{t('booking.topic')}:</span> {TOPICS.find(t => t.id === selectedTopic)?.label}</p>
+                  <p><span className="[rgb(var(--foreground-muted))]">{t('booking.date')}:</span> {formatBookingDate(selectedDate, selectedTime)}</p>
+                  <p><span className="[rgb(var(--foreground-muted))]">{t('booking.duration')}:</span> {selectedDuration} minutes</p>
+                  <p><span className="[rgb(var(--foreground-muted))]">{t('booking.name')}:</span> {details.name}</p>
                 </div>
                 <div className="mt-4 pt-4 border-t border-[rgb(var(--surface))]/30">
                   <p className="flex justify-between text-lg">
-                    <span className="[rgb(var(--foreground-secondary))]">Total</span>
+                    <span className="[rgb(var(--foreground-secondary))]">{t('booking.total')}</span>
                     <span className="[rgb(var(--gold))] font-bold">₹{calculateBookingAmount(selectedDuration!)}</span>
                   </p>
                 </div>
@@ -370,17 +372,17 @@ return (
                  onClick={handleBooking}
                  disabled={isProcessing}
                >
-                 {isProcessing ? (
-                   <>
-                     <Sparkles className="h-5 w-5 animate-spin" />
-                     Securing your path...
-                   </>
-                 ) : (
-                   <>
-                     <Sparkles className="h-5 w-5" />
-                     Continue
-                   </>
-                 )}
+{isProcessing ? (
+                    <>
+                      <Sparkles className="h-5 w-5 animate-spin" />
+                      {t('common.loading')}
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles className="h-5 w-5" />
+                      {t('common.continue')}
+                    </>
+                  )}
                </Button>
             </motion.div>
           )}
@@ -402,13 +404,13 @@ return (
                 <Check className="h-12 w-12 [rgb(var(--gold))]" />
               </motion.div>
               
-              <h2 className="font-heading text-3xl [rgb(var(--foreground))] mb-4">Your Reading is Booked</h2>
+              <h2 className="font-heading text-3xl [rgb(var(--foreground))] mb-4">{t('booking.readingBooked')}</h2>
               <p className="[rgb(var(--foreground-secondary))]/60 mb-6">
                 The cards are ready to speak with you. Check your WhatsApp for confirmation details.
               </p>
               
               <div className="p-4 rounded-xl border border-[rgb(var(--surface))]/30 bg-[rgb(var(--surface))]/20 inline-block text-left">
-                <p className="text-sm [rgb(var(--foreground-muted))]">Booking ID</p>
+                <p className="text-sm [rgb(var(--foreground-muted))]">{t('booking.bookingId')}</p>
                 <p className="[rgb(var(--foreground))] font-mono">{bookingId}</p>
               </div>
               
@@ -416,7 +418,7 @@ return (
                 href="/"
                 className="block mt-8 [rgb(var(--foreground-muted))] hover:[rgb(var(--foreground))]"
               >
-                Return Home
+                {t('nav.home')}
               </Link>
             </motion.div>
           )}

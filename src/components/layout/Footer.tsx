@@ -33,7 +33,7 @@ export default function Footer() {
           </div>
 
           <div>
-            <h4 className="text-white font-medium mb-4">Navigation</h4>
+            <h4 className="text-white font-medium mb-4">{isHydrated ? t('footer.navigation') : 'Navigation'}</h4>
             <ul className="space-y-2">
               <li>
                 <Link href="/" className="text-white/50 hover:text-white/70 text-sm transition-colors">
@@ -59,7 +59,7 @@ export default function Footer() {
           </div>
 
           <div>
-            <h4 className="text-white font-medium mb-4">Support</h4>
+            <h4 className="text-white font-medium mb-4">{isHydrated ? t('footer.support') : 'Support'}</h4>
             <ul className="space-y-2">
               <li>
                 <Link href="/contact" className="text-white/50 hover:text-white/70 text-sm transition-colors">
@@ -80,7 +80,7 @@ export default function Footer() {
           </div>
 
           <div>
-            <h4 className="text-white font-medium mb-4">Connect</h4>
+            <h4 className="text-white font-medium mb-4">{isHydrated ? t('footer.connect') : 'Connect'}</h4>
             <div className="flex gap-4">
               <a 
                 href="https://instagram.com" 
@@ -128,11 +128,11 @@ export default function Footer() {
 
         <div className="border-t border-white/10 pt-6">
           <p className="text-white/30 text-xs text-center mb-2">
-            Not a replacement for professional advice. For guidance purposes only.
+            {isHydrated ? t('footer.disclaimer') : 'Not a replacement for professional advice. For guidance purposes only.'}
           </p>
           <div className="flex flex-col md:flex-row justify-between items-center text-sm text-white/40">
-            <p>© {currentYear} Divine Tarot. All rights reserved.</p>
-            <p>Powered by Sitelytc Digital Media (sitelytc.com)</p>
+            <p>© {currentYear} Divine Tarot. {isHydrated ? t('footer.copyright').replace('© Sitelytc Digital Media', '') : 'All rights reserved.'}</p>
+            <p>{isHydrated ? t('common.poweredBy') : 'Powered by Sitelytc Digital Media'}</p>
           </div>
         </div>
       </div>

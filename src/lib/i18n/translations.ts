@@ -230,7 +230,6 @@ finalCta: {
           button: "Move Forward",
           subtext: "Takes less than 60 seconds • Free to try",
         },
-      },
     },
   hi: {
     common: {

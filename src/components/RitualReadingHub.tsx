@@ -80,6 +80,7 @@ export default function RitualReadingHub() {
   const [domainAnalysis, setDomainAnalysis] = useState<DomainAnalysis | null>(null);
 
   const { t } = useLanguage();
+  const { handleUserInput } = useAutoLanguage();
   const { generateReading, result, isLoading, error } = useReadingFlow();
   const { reset: resetReadingStore, setDeck, setSelectedCardsWithDetails, selectedCardsWithDetails } = useReadingStore();
   const { setCurrentStage, setQuestion: setFunnelQuestion, incrementReadingCount } = useFunnelStore();
@@ -109,8 +110,9 @@ export default function RitualReadingHub() {
     vibrate();
 
     // Auto-detect language from user's question
-    const { handleUserInput } = useAutoLanguage();
-    handleUserInput(question);
+    if (question.length > 10) {
+      handleUserInput(question);
+    }
 
     // 1. Analyze intent of the question
     const analysis = analyzeIntent(question, selectedTopic || undefined);

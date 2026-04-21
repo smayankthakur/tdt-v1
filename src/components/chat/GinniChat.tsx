@@ -279,7 +279,7 @@ export default function GinniChat({
         {/* Footer */}
         <div className="px-4 py-2 bg-gray-50 border-t border-gray-100">
           <p className="text-xs text-center text-gray-400">
-            Powered by Divine Tarot • AI-powered guidance
+            Powered by Divine Tarot • Spiritual guidance
           </p>
         </div>
       </div>

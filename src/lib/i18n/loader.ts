@@ -22,7 +22,7 @@ const FALLBACK: Record<string, Record<string, string>> = {
     'nav.booking': 'Booking',
     'nav.contact': 'Contact',
     // Footer
-    'footer.tagline': 'Clarity begins within',
+    'footer.tagline': 'Clarity starts from within. Sometimes, you just need a moment to pause, reflect, and understand what your heart already knows.',
     'footer.navigation': 'Navigation',
     'footer.support': 'Support',
     'footer.connect': 'Connect',
@@ -109,6 +109,10 @@ const FALLBACK: Record<string, Record<string, string>> = {
     'about.why.p3': "Whether you're at 2 AM with a racing mind or need a quick perspective before a big decision — the answers are here, waiting for you.",
     'about.cta.text': 'Ready to find your clarity?',
     'cta.startReading': 'Start Reading',
+    // About features (no AI language)
+    'home.about.feature1': 'Deep insights',
+    'home.about.feature2': 'Spiritual guidance',
+    'home.about.feature3': 'Personalized clarity',
   },
   hi: {
     // Nav
@@ -119,7 +123,7 @@ const FALLBACK: Record<string, Record<string, string>> = {
     'nav.booking': 'बुकिंग',
     'nav.contact': 'संपर्क',
     // Footer
-    'footer.tagline': 'स्पष्टता अंदर से शुरू होती है',
+    'footer.tagline': 'स्पष्टता अंदर से शुरू होती है। कभी-कभी, आपको बस रुकने, सोचने और समझने की जरूरत है कि आपका दिल क्या जानता है।',
     'footer.navigation': 'नेविगेशन',
     'footer.support': 'सहायता',
     'footer.connect': 'जुड़ें',
@@ -200,6 +204,10 @@ const FALLBACK: Record<string, Record<string, string>> = {
     'about.why.p3': 'चाहे आप रात 2 बजे दिमाग घूम रहा हो या बड़े फैसले से ��हले त्वरित दृष्टिकोण चाहते हों — जवाब यहाँ हैं, आपका इंतज़ार कर रहे हैं।',
     'about.cta.text': 'अपनी स्पष्टता पाने के लिए तैयार?',
     'cta.startReading': 'रीडिंग शुरू करें',
+    // About features
+    'home.about.feature1': 'गहरी अंतर्दृष्टि',
+    'home.about.feature2': 'आध्यात्मिक मार्गदर्शन',
+    'home.about.feature3': 'व्यक्तिगत स्पष्टता',
   },
   hinglish: {
     // Nav
@@ -210,7 +218,7 @@ const FALLBACK: Record<string, Record<string, string>> = {
     'nav.booking': 'Booking',
     'nav.contact': 'Contact',
     // Footer
-    'footer.tagline': 'Clarity starts from within',
+    'footer.tagline': 'Clarity starts from within. Kabhi-kabhi, tumhe bas ruki, socha aur samajhna padta hai ki tumhara dil kya jaanta hai.',
     'footer.navigation': 'Navigation',
     'footer.support': 'Support',
     'footer.connect': 'Connect',
@@ -291,6 +299,10 @@ const FALLBACK: Record<string, Record<string, string>> = {
     'about.why.p3': 'Chahe tum 2 AM par confused ho ya big decision se pehle quick perspective chahiye — answers yahan hain, tumhare liye wait kar rahe hain.',
     'about.cta.text': 'Ready to find your clarity?',
     'cta.startReading': 'Start Reading',
+    // About features
+    'home.about.feature1': 'Deep insights',
+    'home.about.feature2': 'Spiritual guidance',
+    'home.about.feature3': 'Personalized clarity',
   },
 }
 

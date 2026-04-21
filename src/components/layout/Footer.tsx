@@ -9,133 +9,103 @@ export default function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-black border-t border-white/10 py-12 px-6">
-      <div className="mx-auto max-w-7xl">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-10">
-          <div className="flex flex-col gap-4">
-            <Link href="/" className="flex items-center gap-3 group">
-              <div className="relative w-10 h-10">
-                <Image
-                  src="/tdt-v3/logo.png"
-                  alt="Divine Tarot Logo"
-                  width={40}
-                  height={40}
-                  className="object-contain"
-                />
-              </div>
-              <span className="font-heading text-xl font-semibold text-white">
-                The Devine Tarot
-              </span>
-            </Link>
-            <p className="text-white/50 text-sm italic">
-              {isHydrated ? t('footer.tagline') : 'Clarity begins within.'}
-            </p>
-          </div>
-
-          <div>
-            <h4 className="text-white font-medium mb-4">{isHydrated ? t('footer.navigation') : 'Navigation'}</h4>
-            <ul className="space-y-2">
-              <li>
-                <Link href="/" className="text-white/50 hover:text-white/70 text-sm transition-colors">
-                  {isHydrated ? t('nav.home') : 'Home'}
-                </Link>
-              </li>
-              <li>
-                <Link href="/about" className="text-white/50 hover:text-white/70 text-sm transition-colors">
-                  {isHydrated ? t('nav.about') : 'About'}
-                </Link>
-              </li>
-              <li>
-                <Link href="/reading" className="text-white/50 hover:text-white/70 text-sm transition-colors">
-                  {isHydrated ? t('nav.reading') : 'Reading'}
-                </Link>
-              </li>
-              <li>
-                <Link href="/subscription" className="text-white/50 hover:text-white/70 text-sm transition-colors">
-                  {isHydrated ? t('nav.subscription') : 'Subscription'}
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          <div>
-            <h4 className="text-white font-medium mb-4">{isHydrated ? t('footer.support') : 'Support'}</h4>
-            <ul className="space-y-2">
-              <li>
-                <Link href="/contact" className="text-white/50 hover:text-white/70 text-sm transition-colors">
-                  {isHydrated ? t('nav.contact') : 'Contact'}
-                </Link>
-              </li>
-              <li>
-                <Link href="/privacy" className="text-white/50 hover:text-white/70 text-sm transition-colors">
-                  Privacy Policy
-                </Link>
-              </li>
-              <li>
-                <Link href="/terms" className="text-white/50 hover:text-white/70 text-sm transition-colors">
-                  Terms & Conditions
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          <div>
-            <h4 className="text-white font-medium mb-4">{isHydrated ? t('footer.connect') : 'Connect'}</h4>
-            <div className="flex gap-4">
-              <a 
-                href="https://instagram.com" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="text-white/40 hover:text-white/70 transition-colors"
-              >
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
-                </svg>
-              </a>
-              <a 
-                href="https://youtube.com" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="text-white/40 hover:text-white/70 transition-colors"
-              >
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/>
-                </svg>
-              </a>
-              <a 
-                href="https://facebook.com" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="text-white/40 hover:text-white/70 transition-colors"
-              >
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z"/>
-                </svg>
-              </a>
-              <a 
-                href="https://threads.net" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="text-white/40 hover:text-white/70 transition-colors"
-              >
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12.186 6.562c-2.047 0-3.713 1.666-3.713 3.713 0 2.046 1.666 3.713 3.713 3.713 2.047 0 3.713-1.667 3.713-3.713 0-2.047-1.666-3.713-3.713-3.713zm4.786 6.932c-.537 0-.971.434-.971.971 0 .537.434.971.971.971.537 0 .971-.434.971-.971 0-.537-.434-.971-.971-.971zm-8.572 0c-.537 0-.971.434-.971.971 0 .537.434.971.971.971.537 0 .971-.434.971-.971 0-.537-.434-.971-.971-.971zm5.786-2.896c-2.047 0-3.713 1.666-3.713 3.713 0 2.046 1.666 3.713 3.713 3.713 2.047 0 3.713-1.667 3.713-3.713 0-2.047-1.666-3.713-3.713-3.713zm0 5.792c-2.047 0-3.713 1.666-3.713 3.713 0 2.046 1.666 3.713 3.713 3.713 2.047 0 3.713-1.667 3.713-3.713 0-2.047-1.666-3.713-3.713-3.713z"/>
-                </svg>
-              </a>
+    <footer className="w-full border-t border-white/10 bg-black text-white">
+      <div className="max-w-7xl mx-auto px-6 py-16 grid md:grid-cols-4 gap-12">
+        
+        {/* BRAND */}
+        <div className="space-y-4">
+          <Link href="/" className="flex items-center gap-3 group">
+            <div className="relative w-10 h-10">
+              <Image
+                src="/tdt-v3/logo.png"
+                alt="Divine Tarot Logo"
+                width={40}
+                height={40}
+                className="object-contain"
+              />
             </div>
-          </div>
+            <span className="font-heading text-xl font-semibold tracking-wide">
+              The Devine Tarot
+            </span>
+          </Link>
+          <p className="text-sm opacity-70 leading-relaxed">
+            {isHydrated ? t('footer.tagline') : 'Clarity starts from within. Sometimes, you just need a moment to pause, reflect, and understand what your heart already knows.'}
+          </p>
         </div>
 
-        <div className="border-t border-white/10 pt-6">
-          <p className="text-white/30 text-xs text-center mb-2">
-            {isHydrated ? t('footer.disclaimer') : 'Not a replacement for professional advice. For guidance purposes only.'}
+        {/* NAVIGATION */}
+        <div>
+          <h3 className="text-sm uppercase tracking-wider opacity-50 mb-4">
+            {isHydrated ? t('footer.navigation') : 'Navigation'}
+          </h3>
+          <ul className="space-y-2 text-sm">
+            <li>
+              <Link href="/" className="text-white/60 hover:text-white transition-colors">
+                {isHydrated ? t('nav.home') : 'Home'}
+              </Link>
+            </li>
+            <li>
+              <Link href="/about" className="text-white/60 hover:text-white transition-colors">
+                {isHydrated ? t('nav.about') : 'About'}
+              </Link>
+            </li>
+            <li>
+              <Link href="/reading" className="text-white/60 hover:text-white transition-colors">
+                {isHydrated ? t('nav.reading') : 'Reading'}
+              </Link>
+            </li>
+            <li>
+              <Link href="/subscription" className="text-white/60 hover:text-white transition-colors">
+                {isHydrated ? t('nav.subscription') : 'Subscription'}
+              </Link>
+            </li>
+          </ul>
+        </div>
+
+        {/* SUPPORT */}
+        <div>
+          <h3 className="text-sm uppercase tracking-wider opacity-50 mb-4">
+            {isHydrated ? t('footer.support') : 'Support'}
+          </h3>
+          <ul className="space-y-2 text-sm">
+            <li>
+              <Link href="/contact" className="text-white/60 hover:text-white transition-colors">
+                {isHydrated ? t('nav.contact') : 'Contact'}
+              </Link>
+            </li>
+            <li>
+              <Link href="/privacy" className="text-white/60 hover:text-white transition-colors">
+                {isHydrated ? t('footer.privacy') : 'Privacy Policy'}
+              </Link>
+            </li>
+            <li>
+              <Link href="/terms" className="text-white/60 hover:text-white transition-colors">
+                Terms & Conditions
+              </Link>
+            </li>
+          </ul>
+        </div>
+
+        {/* CONNECT */}
+        <div>
+          <h3 className="text-sm uppercase tracking-wider opacity-50 mb-4">
+            {isHydrated ? t('footer.connect') : 'Connect'}
+          </h3>
+          <p className="text-sm opacity-70 leading-relaxed">
+            {isHydrated ? t('footer.disclaimer') : 'This is not a replacement for professional advice. It is here to provide you clarity and direction.'}
           </p>
-          <div className="flex flex-col md:flex-row justify-between items-center text-sm text-white/40">
-            <p>© {currentYear} Divine Tarot. {isHydrated ? t('footer.copyright').replace('© Sitelytc Digital Media', '') : 'All rights reserved.'}</p>
-            <p>{isHydrated ? t('common.poweredBy') : 'Powered by Sitelytc Digital Media'}</p>
-          </div>
+        </div>
+
+      </div>
+
+      {/* BOTTOM STRIP */}
+      <div className="border-t border-white/10 py-6">
+        <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center text-center md:text-left text-xs opacity-60">
+          <p>© {currentYear} Divine Tarot. All rights reserved.</p>
+          <p className="md:mt-0 mt-1">Powered by Sitelytc Digital Media Pvt. Ltd. (sitelytc.com)</p>
         </div>
       </div>
+
     </footer>
   );
 }

@@ -764,74 +764,64 @@ interface BaseContent {
   closing: string;
 }
 
-function getBaseContent(emotion: string, topic: string, name: string): BaseContent {
+export function transformReading(
+  emotion: string, 
+  topic: string, 
+  name: string, 
+  lang: Language
+): BaseContent {
   const emotionKey = emotion || 'default';
   const topicKey = topic || 'default';
   
-  const greeting = pickRandom(ENGLISH_GREETINGS[emotionKey] || ENGLISH_GREETINGS.default);
-  const situations = ENGLISH_SITUATIONS[emotionKey]?.[topicKey] || ENGLISH_SITUATIONS[emotionKey]?.default || ENGLISH_SITUATIONS.default.default;
-  const situation = pickRandom(situations);
-  const pattern = pickRandom(ENGLISH_PATTERNS[topicKey] || ENGLISH_PATTERNS.default);
-  const direction = pickRandom(ENGLISH_DIRECTIONS[topicKey] || ENGLISH_DIRECTIONS.default);
-  const guidance = pickRandom(ENGLISH_GUIDANCE[emotionKey] || ENGLISH_GUIDANCE.default);
-  const closing = pickRandom(ENGLISH_CLOSINGS[emotionKey] || ENGLISH_CLOSINGS.default);
-  
-  return {
-    greeting: replaceName(greeting, name),
-    situation,
-    pattern,
-    direction,
-    guidance,
-    closing,
-  };
-}
-
-function toHinglish(content: BaseContent): BaseContent {
-  const emotionKey = Object.entries(HINGLISH_GREETINGS).find(([_, arr]) => 
-    arr.some(g => g.includes(content.greeting.split(' ')[0]))
-  )?.[0] || 'default';
-  const topicKey = Object.entries(HINGLISH_PATTERNS).find(([_, arr]) => 
-    arr.some(p => p.includes(content.pattern.substring(0, 20)))
-  )?.[0] || 'default';
-  
-  return {
-    greeting: pickRandom(HINGLISH_GREETINGS[emotionKey] || HINGLISH_GREETINGS.default).replace('{name}', content.greeting.split('…')[0].split(',')[1]?.trim() || 'Tum'),
-    situation: pickRandom(HINGLISH_SITUATIONS[emotionKey]?.[topicKey] || HINGLISH_SITUATIONS[emotionKey]?.default || HINGLISH_SITUATIONS.default.default),
-    pattern: pickRandom(HINGLISH_PATTERNS[topicKey] || HINGLISH_PATTERNS.default),
-    direction: pickRandom(HINGLISH_DIRECTIONS[topicKey] || HINGLISH_DIRECTIONS.default),
-    guidance: pickRandom(HINGLISH_GUIDANCE[emotionKey] || HINGLISH_GUIDANCE.default),
-    closing: pickRandom(HINGLISH_CLOSINGS[emotionKey] || HINGLISH_CLOSINGS.default),
-  };
-}
-
-function toHindi(content: BaseContent): BaseContent {
-  const emotionKey = Object.entries(HINDI_GREETINGS).find(([_, arr]) => 
-    arr.some(g => g.includes(content.greeting.split(' ')[0]))
-  )?.[0] || 'default';
-  const topicKey = Object.entries(HINDI_PATTERNS).find(([_, arr]) => 
-    arr.some(p => p.includes(content.pattern.substring(0, 20)))
-  )?.[0] || 'default';
-  
-  return {
-    greeting: pickRandom(HINDI_GREETINGS[emotionKey] || HINDI_GREETINGS.default).replace('{name}', content.greeting.split('…')[0].split(',')[1]?.trim() || 'आप'),
-    situation: pickRandom(HINDI_SITUATIONS[emotionKey]?.[topicKey] || HINDI_SITUATIONS[emotionKey]?.default || HINDI_SITUATIONS.default.default),
-    pattern: pickRandom(HINDI_PATTERNS[topicKey] || HINDI_PATTERNS.default),
-    direction: pickRandom(HINDI_DIRECTIONS[topicKey] || HINDI_DIRECTIONS.default),
-    guidance: pickRandom(HINDI_GUIDANCE[emotionKey] || HINDI_GUIDANCE.default),
-    closing: pickRandom(HINDI_CLOSINGS[emotionKey] || HINDI_CLOSINGS.default),
-  };
-}
-
-export function transformReading(content: BaseContent, lang: Language): BaseContent {
   switch (lang) {
-    case 'en':
-      return content;
-    case 'hinglish':
-      return toHinglish(content);
-    case 'hi':
-      return toHindi(content);
-    default:
-      return content;
+    case 'en': {
+      const greeting = pickRandom(ENGLISH_GREETINGS[emotionKey] || ENGLISH_GREETINGS.default);
+      const situations = ENGLISH_SITUATIONS[emotionKey]?.[topicKey] || ENGLISH_SITUATIONS[emotionKey]?.default || ENGLISH_SITUATIONS.default.default;
+      return {
+        greeting: replaceName(greeting, name),
+        situation: pickRandom(situations),
+        pattern: pickRandom(ENGLISH_PATTERNS[topicKey] || ENGLISH_PATTERNS.default),
+        direction: pickRandom(ENGLISH_DIRECTIONS[topicKey] || ENGLISH_DIRECTIONS.default),
+        guidance: pickRandom(ENGLISH_GUIDANCE[emotionKey] || ENGLISH_GUIDANCE.default),
+        closing: pickRandom(ENGLISH_CLOSINGS[emotionKey] || ENGLISH_CLOSINGS.default),
+      };
+    }
+    case 'hinglish': {
+      const greeting = pickRandom(HINGLISH_GREETINGS[emotionKey] || HINGLISH_GREETINGS.default);
+      const situations = HINGLISH_SITUATIONS[emotionKey]?.[topicKey] || HINGLISH_SITUATIONS[emotionKey]?.default || HINGLISH_SITUATIONS.default.default;
+      return {
+        greeting: replaceName(greeting, name),
+        situation: pickRandom(situations),
+        pattern: pickRandom(HINGLISH_PATTERNS[topicKey] || HINGLISH_PATTERNS.default),
+        direction: pickRandom(HINGLISH_DIRECTIONS[topicKey] || HINGLISH_DIRECTIONS.default),
+        guidance: pickRandom(HINGLISH_GUIDANCE[emotionKey] || HINGLISH_GUIDANCE.default),
+        closing: pickRandom(HINGLISH_CLOSINGS[emotionKey] || HINGLISH_CLOSINGS.default),
+      };
+    }
+    case 'hi': {
+      const greeting = pickRandom(HINDI_GREETINGS[emotionKey] || HINDI_GREETINGS.default);
+      const situations = HINDI_SITUATIONS[emotionKey]?.[topicKey] || HINDI_SITUATIONS[emotionKey]?.default || HINDI_SITUATIONS.default.default;
+      return {
+        greeting: replaceName(greeting, name),
+        situation: pickRandom(situations),
+        pattern: pickRandom(HINDI_PATTERNS[topicKey] || HINDI_PATTERNS.default),
+        direction: pickRandom(HINDI_DIRECTIONS[topicKey] || HINDI_DIRECTIONS.default),
+        guidance: pickRandom(HINDI_GUIDANCE[emotionKey] || HINDI_GUIDANCE.default),
+        closing: pickRandom(HINDI_CLOSINGS[emotionKey] || HINDI_CLOSINGS.default),
+      };
+    }
+    default: {
+      const greeting = pickRandom(ENGLISH_GREETINGS.default);
+      const situations = ENGLISH_SITUATIONS.default.default;
+      return {
+        greeting: replaceName(greeting, name),
+        situation: pickRandom(situations),
+        pattern: pickRandom(ENGLISH_PATTERNS.default),
+        direction: pickRandom(ENGLISH_DIRECTIONS.default),
+        guidance: pickRandom(ENGLISH_GUIDANCE.default),
+        closing: pickRandom(ENGLISH_CLOSINGS.default),
+      };
+    }
   }
 }
 
@@ -844,17 +834,16 @@ export function createUnifiedReading(
   const emotion = analyzeEmotion(question);
   const topic = analyzeTopic(question);
   
-  const baseContent = getBaseContent(emotion, topic, name);
-  const transformed = transformReading(baseContent, language);
+  const content = transformReading(emotion, topic, name, language);
   
   return {
     name,
-    opening: transformed.greeting,
-    presentEnergy: transformed.situation,
-    underlyingPattern: `Aur dekho—${transformed.pattern}`,
-    direction: capitalize(transformed.direction),
-    guidance: transformed.guidance,
-    closing: `Aur haan—${transformed.closing}`,
+    opening: content.greeting,
+    presentEnergy: content.situation,
+    underlyingPattern: `Aur dekho—${content.pattern}`,
+    direction: capitalize(content.direction),
+    guidance: content.guidance,
+    closing: `Aur haan—${content.closing}`,
     cardInterpretations: [],
   };
 }
@@ -867,17 +856,16 @@ export function generateHumanizedReading(
   const emotion = context.emotion || 'default';
   const topic = context.topic || 'default';
   
-  const baseContent = getBaseContent(emotion, topic, context.name);
-  const transformed = transformReading(baseContent, language);
+  const content = transformReading(emotion, topic, context.name, language);
   
   return {
     name: context.name,
-    opening: transformed.greeting,
-    presentEnergy: transformed.situation,
-    underlyingPattern: `Aur dekho—${transformed.pattern}`,
-    direction: capitalize(transformed.direction),
-    guidance: transformed.guidance,
-    closing: `Aur haan—${transformed.closing}`,
+    opening: content.greeting,
+    presentEnergy: content.situation,
+    underlyingPattern: `Aur dekho—${content.pattern}`,
+    direction: capitalize(content.direction),
+    guidance: content.guidance,
+    closing: `Aur haan—${content.closing}`,
     cardInterpretations: [],
   };
 }

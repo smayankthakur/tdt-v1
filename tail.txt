@@ -1,0 +1,141 @@
+27:21  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+28:16  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+29:14  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+42:50  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+95:29  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+157:29  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+204:62  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+213:71  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+System.Management.Automation.RemoteException
+./src/lib/analytics/hooks.ts
+74:95  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+78:85  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+82:112  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+96:112  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+System.Management.Automation.RemoteException
+./src/lib/analytics/tracking.ts
+14:29  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+116:38  Warning: 'index' is defined but never used.  @typescript-eslint/no-unused-vars
+System.Management.Automation.RemoteException
+./src/lib/automation/engine.ts
+45:50  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+133:41  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+155:48  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+176:44  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+407:35  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+System.Management.Automation.RemoteException
+./src/lib/automation-engine.ts
+1:10  Warning: 'trackUserActivity' is defined but never used.  @typescript-eslint/no-unused-vars
+1:29  Warning: 'getUserProfile' is defined but never used.  @typescript-eslint/no-unused-vars
+2:10  Warning: 'getMessagesForDay' is defined but never used.  @typescript-eslint/no-unused-vars
+9:11  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+21:11  Warning: 'userId' is assigned a value but never used.  @typescript-eslint/no-unused-vars
+124:54  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+146:25  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+151:25  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+156:25  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+166:25  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+177:65  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+180:15  Warning: 'name' is assigned a value but never used.  @typescript-eslint/no-unused-vars
+System.Management.Automation.RemoteException
+./src/lib/blog/content-generator.ts
+199:9  Warning: 'today' is assigned a value but never used.  @typescript-eslint/no-unused-vars
+System.Management.Automation.RemoteException
+./src/lib/cardEngine.ts
+2:10  Warning: 'CardHistory' is defined but never used.  @typescript-eslint/no-unused-vars
+2:37  Warning: 'PickCardsOptions' is defined but never used.  @typescript-eslint/no-unused-vars
+420:3  Warning: 'emotion' is defined but never used.  @typescript-eslint/no-unused-vars
+422:9  Warning: 'upright' is assigned a value but never used.  @typescript-eslint/no-unused-vars
+423:9  Warning: 'reversed' is assigned a value but never used.  @typescript-eslint/no-unused-vars
+424:9  Warning: 'positionLabel' is assigned a value but never used.  @typescript-eslint/no-unused-vars
+441:65  Warning: 'position' is defined but never used.  @typescript-eslint/no-unused-vars
+System.Management.Automation.RemoteException
+./src/lib/cardImageMap.ts
+140:14  Warning: 'e' is defined but never used.  @typescript-eslint/no-unused-vars
+System.Management.Automation.RemoteException
+./src/lib/funnel-tracking.ts
+39:29  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+System.Management.Automation.RemoteException
+./src/lib/ginniTriggers.ts
+110:12  Warning: 'e' is defined but never used.  @typescript-eslint/no-unused-vars
+System.Management.Automation.RemoteException
+./src/lib/horoscope/engine.ts
+57:14  Warning: 'e' is defined but never used.  @typescript-eslint/no-unused-vars
+73:9  Warning: 'typeLabel' is assigned a value but never used.  @typescript-eslint/no-unused-vars
+System.Management.Automation.RemoteException
+./src/lib/humanizeReading.ts
+790:64  Warning: '_' is defined but never used.  @typescript-eslint/no-unused-vars
+793:61  Warning: '_' is defined but never used.  @typescript-eslint/no-unused-vars
+808:61  Warning: '_' is defined but never used.  @typescript-eslint/no-unused-vars
+811:58  Warning: '_' is defined but never used.  @typescript-eslint/no-unused-vars
+System.Management.Automation.RemoteException
+./src/lib/i18n/loader.ts
+123:34  Error: A `require()` style import is forbidden.  @typescript-eslint/no-require-imports
+System.Management.Automation.RemoteException
+./src/lib/languageDetector.ts
+24:7  Warning: 'ENGLISH_ONLY_PATTERN' is assigned a value but never used.  @typescript-eslint/no-unused-vars
+System.Management.Automation.RemoteException
+./src/lib/payments/access-control.ts
+3:47  Warning: 'createSubscription' is defined but never used.  @typescript-eslint/no-unused-vars
+System.Management.Automation.RemoteException
+./src/lib/payments/plans.ts
+87:9  Warning: 'plan' is assigned a value but never used.  @typescript-eslint/no-unused-vars
+System.Management.Automation.RemoteException
+./src/lib/payments/razorpay.ts
+92:3  Warning: 'email' is defined but never used.  @typescript-eslint/no-unused-vars
+93:3  Warning: 'contact' is defined but never used.  @typescript-eslint/no-unused-vars
+System.Management.Automation.RemoteException
+./src/lib/personalization/aiEngine.ts
+274:5  Warning: 'readingsCount' is assigned a value but never used.  @typescript-eslint/no-unused-vars
+275:5  Warning: 'daysSinceLastActive' is assigned a value but never used.  @typescript-eslint/no-unused-vars
+416:9  Warning: 'tonePrompt' is assigned a value but never used.  @typescript-eslint/no-unused-vars
+System.Management.Automation.RemoteException
+./src/lib/personalization/profile.ts
+218:3  Warning: 'daysSinceLastActive' is defined but never used.  @typescript-eslint/no-unused-vars
+System.Management.Automation.RemoteException
+./src/lib/personalization/rules.ts
+4:3  Warning: 'EngagementLevel' is defined but never used.  @typescript-eslint/no-unused-vars
+System.Management.Automation.RemoteException
+./src/lib/regionDetector.ts
+9:7  Warning: 'INDIAN_CURRENCIES' is assigned a value but never used.  @typescript-eslint/no-unused-vars
+System.Management.Automation.RemoteException
+./src/lib/seo/programmatic.ts
+1:10  Warning: 'keywordStrategy' is defined but never used.  @typescript-eslint/no-unused-vars
+2:10  Warning: 'HoroscopeContent' is defined but never used.  @typescript-eslint/no-unused-vars
+269:47  Warning: 'type' is defined but never used.  @typescript-eslint/no-unused-vars
+System.Management.Automation.RemoteException
+./src/lib/social/video-generator.ts
+38:14  Warning: 'e' is defined but never used.  @typescript-eslint/no-unused-vars
+221:9  Warning: 'metadata' is assigned a value but never used.  @typescript-eslint/no-unused-vars
+System.Management.Automation.RemoteException
+./src/lib/tarot-agent.ts
+1:10  Warning: 'determineSegment' is defined but never used.  @typescript-eslint/no-unused-vars
+3:3  Warning: 'calculateFunnelStage' is defined but never used.  @typescript-eslint/no-unused-vars
+4:3  Warning: 'isHighIntentUser' is defined but never used.  @typescript-eslint/no-unused-vars
+5:3  Warning: 'shouldSendReactivation' is defined but never used.  @typescript-eslint/no-unused-vars
+7:3  Warning: 'EventName' is defined but never used.  @typescript-eslint/no-unused-vars
+8:3  Warning: 'FunnelStage' is defined but never used.  @typescript-eslint/no-unused-vars
+10:10  Warning: 'trackUserActivity' is defined but never used.  @typescript-eslint/no-unused-vars
+10:29  Warning: 'getUserProfile' is defined but never used.  @typescript-eslint/no-unused-vars
+27:94  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+202:10  Warning: 'determinePriority' is defined but never used.  @typescript-eslint/no-unused-vars
+249:53  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+System.Management.Automation.RemoteException
+./src/lib/user-tracking.ts
+1:10  Warning: 'NextResponse' is defined but never used.  @typescript-eslint/no-unused-vars
+System.Management.Automation.RemoteException
+./src/lib/utils/protection.tsx
+16:13  Warning: 'blockedKeys' is assigned a value but never used.  @typescript-eslint/no-unused-vars
+System.Management.Automation.RemoteException
+./src/lib/whatsapp/sendMessage.ts
+140:13  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+180:13  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+187:38  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+System.Management.Automation.RemoteException
+./src/lib/whatsapp-integration.ts
+10:17  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+System.Management.Automation.RemoteException
+./src/store/languageStore.ts
+4:28  Warning: 'langMap' is defined but never used.  @typescript-eslint/no-unused-vars
+System.Management.Automation.RemoteException
+info  - Need to disable some ESLint rules? Learn more here: https://nextjs.org/docs/basic-features/eslint#disabling-rules

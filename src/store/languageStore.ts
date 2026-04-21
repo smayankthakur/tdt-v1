@@ -2,28 +2,14 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { Language } from '@/lib/i18n/config';
 import { DEFAULT_LANGUAGE, langMap } from '@/lib/i18n/config';
-import { TRANSLATIONS } from '@/lib/i18n/translations';
+// Import the unified translation system
+import { getTranslationSync, refreshTranslations } from '@/lib/i18n/loader';
 
 interface LanguageState {
   language: Language;
   setLanguage: (lang: Language) => void;
   t: (key: string) => string;
-}
-
-function getTranslation(key: string, lang: Language): string {
-  const mappedLang = langMap[lang] || lang;
-  const keys = key.split('.');
-  let value: unknown = TRANSLATIONS[mappedLang];
-  
-  for (const k of keys) {
-    if (value && typeof value === 'object' && k in value) {
-      value = (value as Record<string, unknown>)[k];
-    } else {
-      return key;
-    }
-  }
-  
-  return typeof value === 'string' ? value : key;
+  refresh: () => void;
 }
 
 export const useLanguageStore = create<LanguageState>()(
@@ -33,11 +19,18 @@ export const useLanguageStore = create<LanguageState>()(
       
       setLanguage: (lang: Language) => {
         set({ language: lang });
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('divine_tarot_language', lang);
+        }
       },
       
       t: (key: string) => {
         const lang = get().language;
-        return getTranslation(key, lang);
+        return getTranslationSync(key, lang);
+      },
+      
+      refresh: () => {
+        refreshTranslations();
       },
     }),
     {

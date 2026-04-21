@@ -114,7 +114,7 @@ export default function RootLayout({
           />
         )}
       </head>
-      <body className="antialiased bg-[rgb(var(--background))] text-[rgb(var(--foreground))]">
+      <body className="antialiased bg-[rgb(var(--background))] text-[rgb(var(--foreground))]" suppressHydrationWarning>
         <Watermark />
         <ClientProviders>
           <AnalyticsProvider />

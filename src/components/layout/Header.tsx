@@ -147,7 +147,7 @@ export default function Header() {
               href="/contact"
               className="hidden md:block bg-gradient-to-r from-[#FF4D4D] to-[#FFD700] text-black font-medium rounded-xl px-5 py-2 hover:scale-105 transition-transform"
             >
-              Contact
+              {isHydrated ? t('nav.contact') : 'Contact'}
             </Link>
 
             <button
@@ -247,7 +247,7 @@ export default function Header() {
                     onClick={() => setIsMobileOpen(false)}
                     className="block w-full text-center bg-gradient-to-r from-[#FF4D4D] to-[#FFD700] text-black font-medium rounded-xl px-5 py-3"
                   >
-                    Contact
+                    {isHydrated ? t('nav.contact') : 'Contact'}
                   </Link>
                 </div>
               </nav>

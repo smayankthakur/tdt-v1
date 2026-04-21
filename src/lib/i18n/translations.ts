@@ -75,11 +75,18 @@ export const TRANSLATIONS: Record<string, TranslationSet> = {
         default: "Get answers from the universe in seconds. Experience mystical readings that feel made just for you.",
         love: "The cards see what your heart has been wondering about.",
         career: "Let the universe guide your path forward.",
-        confusion: "The tarot sees the way forward.",
-      },
-    },
-    cta: {
-      startReading: "Continue",
+       confusion: "The tarot sees the way forward.",
+     },
+     about: {
+       title: "About the Reader",
+       paragraph1: "Your intuition already knows the truth. This space helps you hear it more clearly.",
+       paragraph2: "Each reading is designed to feel personal, calm, and deeply connected to your situation.",
+       feature1: "AI-powered insights",
+       feature2: "Spiritual guidance",
+       feature3: "Personalized clarity",
+     },
+     cta: {
+       startReading: "Continue",
       continueJourney: "Aage badhte hain",
       unlockClarity: "Dekhte hain kya aa raha hai",
       continueReading: "Continue",
@@ -398,6 +405,14 @@ readingHub: {
         confusion: 'तरबूत आगे का रास्ता देखता है।',
       },
     },
+    about: {
+      title: "Reader के बारे में",
+      paragraph1: "आपका इंट्यूइशन पहले से ही सच्चाई जानता है। यह space आपको वो सुनने में मदद करता है।",
+      paragraph2: "हर reading को design किया गया है personal, calm, और आपके situation से deep connect रहने के लिए।",
+      feature1: "AI-powered insights",
+      feature2: "Spiritual guidance",
+      feature3: "Personalized clarity",
+    },
     cta: {
       startReading: 'आगे बढ़ें',
       continueJourney: 'आगे बढ़ें',
@@ -628,6 +643,14 @@ readingHub: {
         career: 'Universe tumhe guide karega.',
         confusion: 'Tarot aage ka raasta dekhta hai.',
       },
+    },
+    about: {
+      title: "Reader ke baare mein",
+      paragraph1: "Tumhara intuition already truth jaanta hai. Yeh space tumhe use sunne mein help karta hai.",
+      paragraph2: "Har reading designed hota hai personal, calm, aur tumhare situation se deeply connected.",
+      feature1: "AI-powered insights",
+      feature2: "Spiritual guidance",
+      feature3: "Personalized clarity",
     },
     cta: {
       startReading: 'Aage badhte hain',
@@ -1064,6 +1087,7 @@ readingHub: {
           desc: 'אנחנו מכוונים אותך לתשובות שלך. הכוח תמיד היה בתוכך.',
         },
       },
+      },
       why: {
         title: 'למה הפלטפורמה הזו?',
         p1: 'קריאות טארוט מסורתיות דורשות תורים, המתנה, ולעתים קרובות מגיעות עם תג מחיר יקר. אבל בהירות לא צריכה לחכות — והיא לא צריכה לעלות הון.',
@@ -1074,7 +1098,7 @@ readingHub: {
         text: 'מוכן למצוא את הבהירות שלך?',
       },
     },
-  },
+  }
 };
 
 export function getTranslation(key: string, lang: Language): string {

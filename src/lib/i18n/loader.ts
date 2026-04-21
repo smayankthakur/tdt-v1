@@ -11,6 +11,226 @@ let translationCache: {
 
 const CACHE_DURATION = 5 * 60 * 1000 // 5 minutes
 
+// Emergency fallback translations - comprehensive
+const FALLBACK: Record<string, Record<string, string>> = {
+  en: {
+    // Nav
+    'nav.home': 'Home',
+    'nav.about': 'About',
+    'nav.reading': 'Reading',
+    'nav.subscription': 'Subscription',
+    'nav.booking': 'Booking',
+    'nav.contact': 'Contact',
+    // Footer
+    'footer.tagline': 'Clarity begins within',
+    'footer.navigation': 'Navigation',
+    'footer.support': 'Support',
+    'footer.connect': 'Connect',
+    'footer.disclaimer': 'Not a replacement for professional advice. For guidance purposes only.',
+    'footer.copyright': 'All rights reserved.',
+    'footer.privacy': 'Privacy',
+    // Home Hero
+    'home.hero.sloganLine1': "This isn't just tarot...",
+    'home.hero.sloganLine2': "This is clarity when life gets confusing...",
+    'home.hero.quote': "The answer you're looking for... you already feel it",
+    'home.hero.ctaButton': 'Know Your Fortune',
+    'home.hero.ctaSubtext': "Maybe this is the answer you've been waiting for...",
+    // Landing sections
+    'landing.preview.title': 'A Glimpse Into Your Journey',
+    'landing.preview.subtitle': 'What the cards might reveal for you',
+    'landing.preview.cardTitle': 'Your Reading Preview',
+    'landing.preview.pastLabel': 'The Past:',
+    'landing.preview.presentLabel': 'The Present:',
+    'landing.preview.guidanceLabel': 'The Guidance:',
+    'landing.preview.pastText': "You've been at a crossroads...",
+    'landing.preview.presentText': "There's a new opportunity approaching...",
+    'landing.preview.guidanceText': 'The cards speak of hope and new beginnings...',
+    'landing.preview.ctaText': 'This is just a glimpse. Your full reading awaits...',
+    'landing.preview.ctaButton': "See What's Coming",
+    'landing.preview.ctaSubtext': 'Takes less than 60 seconds',
+    // How It Works
+    'landing.howItWorks.title': 'How It Works',
+    'landing.howItWorks.subtitle': 'Three simple steps to unlock your clarity',
+    'landing.howItWorks.ask.title': 'Ask Your Question',
+    'landing.howItWorks.ask.description': 'Focus on what truly troubles your heart',
+    'landing.howItWorks.pick.title': 'Pick Your Cards',
+    'landing.howItWorks.pick.description': 'Select three cards from the mystical deck',
+    'landing.howItWorks.reveal.title': 'Reveal Your Answers',
+    'landing.howItWorks.reveal.description': 'Receive personalized insights instantly',
+    // Problems
+    'landing.problems.stuck.title': 'Feeling stuck in your life?',
+    'landing.problems.stuck.description': 'When everything feels motionless',
+    'landing.problems.love.title': 'Confused in love or relationships?',
+    'landing.problems.love.description': 'Your heart deserves honest answers',
+    'landing.problems.direction.title': 'Unsure about your next move?',
+    'landing.problems.direction.description': 'The universe has guidance for you',
+    // About
+    'landing.about.title': 'About The Journey',
+    'landing.about.description': 'This platform was not created just for readings. It was created to provide clarity when life feels confusing.',
+    'landing.about.bio': 'Bharti Singh is a seasoned tarot reader with over 10 years of experience guiding individuals.',
+    'landing.about.linkText': 'Learn more about us',
+    // Testimonials
+    'testimonials.title': 'What Seekers Say',
+    'testimonials.seeMore': 'See more reviews',
+    // Why Section
+    'whySection.title': 'Why The Devine Tarot?',
+    'whySection.description': 'We combine ancient tarot wisdom with cutting-edge AI technology.',
+    'whySection.features.personalized': 'Personalized readings based on your energy',
+    'whySection.features.ai': 'AI-powered insights with human warmth',
+    'whySection.features.privacy': '100% private and secure',
+    'whySection.features.instant': 'Instant answers, anytime',
+    // Common
+    'common.loading': 'Loading...',
+    'common.error': 'Something went wrong',
+    'common.submit': 'Submit',
+    'common.cancel': 'Cancel',
+    'common.confirm': 'Confirm',
+    'common.continue': 'Continue',
+    'common.back': 'Back',
+    'common.next': 'Next',
+  },
+  hi: {
+    // Nav
+    'nav.home': 'होम',
+    'nav.about': 'के बारे में',
+    'nav.reading': 'रीडिंग',
+    'nav.subscription': 'सब्सक्रिप्शन',
+    'nav.booking': 'बुकिंग',
+    'nav.contact': 'संपर्क',
+    // Footer
+    'footer.tagline': 'स्पष्टता अंदर से शुरू होती है',
+    'footer.navigation': 'नेविगेशन',
+    'footer.support': 'सहायता',
+    'footer.connect': 'जुड़ें',
+    'footer.disclaimer': 'यह पेशेवर सलाह का विकल्प नहीं है। केवल मार्गदर्शन के उद्देश्यों के लिए है।',
+    'footer.copyright': 'सर्वाधिकार सुरक्षित।',
+    'footer.privacy': 'गोपनीयता',
+    // Home Hero
+    'home.hero.sloganLine1': 'यह सिर्फ टैरो नहीं है...',
+    'home.hero.sloganLine2': 'यह वो स्पष्टता है जब जिंदगी भ्रमित हो जाए...',
+    'home.hero.quote': 'जो आप पूछना चाहते हैं... उसका उत्तर आप पहले से महसूस कर रहे हैं',
+    'home.hero.ctaButton': 'अपना भविष्य जानें',
+    'home.hero.ctaSubtext': 'शायद यही उत्तर है जिसका आप इंतज़ार कर रहे थे...',
+    // Landing
+    'landing.preview.title': 'आपकी यात्रा की एक झलक',
+    'landing.preview.subtitle': 'पत्ते आपके लिए क्या प्रकट कर सकते हैं',
+    'landing.preview.cardTitle': 'आपकी रीडिंग पूर्वावलोकन',
+    'landing.preview.pastLabel': 'अतीत:',
+    'landing.preview.presentLabel': 'वर्तमान:',
+    'landing.preview.guidanceLabel': 'मार्गदर्शन:',
+    'landing.preview.pastText': 'आप एक चौराहे पर थे...',
+    'landing.preview.presentText': 'एक नया अवसर आ रहा है...',
+    'landing.preview.guidanceText': 'पत्ते आशा और नई शुरुआत की बात करते हैं...',
+    'landing.preview.ctaText': 'यह बस एक झलक है। आपकी पूरी रीडिंग इंतज़ार कर रही है...',
+    'landing.preview.ctaButton': 'देखें क्या आ रहा है',
+    'landing.preview.ctaSubtext': '60 सेकंड से कम समय लेता है',
+    'landing.howItWorks.title': 'यह कैसे काम करता है',
+    'landing.howItWorks.subtitle': 'अपनी स्पष्टता पाने के तीन आसान कदम',
+    'landing.howItWorks.ask.title': 'अपना सवाल पूछें',
+    'landing.howItWorks.ask.description': 'जो वाकई आपके दिल को परेशान करता है उस पर ध्यान दें',
+    'landing.howItWorks.pick.title': 'अपने पत्ते चुनें',
+    'landing.howItWorks.pick.description': 'रहस्यमय डेक से तीन पत्ते चुनें',
+    'landing.howItWorks.reveal.title': 'अपने उत्तर जानें',
+    'landing.howItWorks.reveal.description': 'तुरंत व्यक्तिगत अंतर्दृष्टि प्राप्त करें',
+    'landing.problems.stuck.title': 'जीवन में अटके हुए महसूस करते हैं?',
+    'landing.problems.stuck.description': 'जब सब कुछ स्थिर लगे',
+    'landing.problems.love.title': 'प्यार या रिश्तों में कंफ्यूज़?',
+    'landing.problems.love.description': 'आपके दिल को ईमानदार जवाब मिलने चाहिए',
+    'landing.problems.direction.title': 'अपने अगले कदम के बारे में अनिश्चित?',
+    'landing.problems.direction.description': 'ब्रह्मांड के पास आपके लिए मार्गदर्शन है',
+    'landing.about.title': 'यात्रा के बारे में',
+    'landing.about.description': 'यह प्लेटफॉर्म सिर्फ रीडिंग्स के लिए नहीं बना। जब जिंदगी कन्फ्यूजिंग लगती है तब स्पष्टता देने के लिए बना।',
+    'landing.about.bio': 'भारती सिंह 10 से अधिक वर्षों के अनुभव वाली एक अनुभवी टैरो रीडर हैं।',
+    'landing.about.linkText': 'हमारे बारे में और जानें',
+    'testimonials.title': 'शिकारी क्या कहते हैं',
+    'testimonials.seeMore': 'और समीक्षाएं देखें',
+    'whySection.title': 'क्यों द डिवाइन टैरो?',
+    'whySection.description': 'हम प्राचीन टैरो ज्ञान को अत्याध���न���क AI तकनीक के साथ जोड़ते हैं।',
+    'whySection.features.personalized': 'आपकी ऊर्जा के आधार पर व्यक्तिगत रीडिंग',
+    'whySection.features.ai': 'मानवीय गर्माहट के साथ AI-संचालित अंतर्दृष्टि',
+    'whySection.features.privacy': '100% निजी और सुरक्षित',
+    'whySection.features.instant': 'तुरंत जवाब, कभी भी',
+    'common.loading': 'लोड हो रहा है...',
+    'common.error': 'कुछ गलत हो गया',
+    'common.submit': 'जमा करें',
+    'common.cancel': 'रद्द करें',
+    'common.confirm': 'पुष्टि करें',
+    'common.continue': 'जारी रखें',
+    'common.back': 'वापस',
+    'common.next': 'अगला',
+  },
+  hinglish: {
+    // Nav
+    'nav.home': 'Home',
+    'nav.about': 'About',
+    'nav.reading': 'Reading',
+    'nav.subscription': 'Subscription',
+    'nav.booking': 'Booking',
+    'nav.contact': 'Contact',
+    // Footer
+    'footer.tagline': 'Clarity starts from within',
+    'footer.navigation': 'Navigation',
+    'footer.support': 'Support',
+    'footer.connect': 'Connect',
+    'footer.disclaimer': 'Yeh professional advice ka replace nahi hai. Sirf guidance ke liye hai.',
+    'footer.copyright': 'All rights reserved.',
+    'footer.privacy': 'Privacy',
+    // Home Hero
+    'home.hero.sloganLine1': "This sirf tarot nahi hai...",
+    'home.hero.sloganLine2': "Yeh woh clarity hai jab life confusing ho jaati hai...",
+    'home.hero.quote': "Jo aap poochhna chahte hain... uska jawaab aap pehle se feel kar rahe hain",
+    'home.hero.ctaButton': "Apna bhavishya jaanein",
+    'home.hero.ctaSubtext': "Shayad yehi jawaab hai jiska aap intezaar kar rahe the...",
+    // Landing
+    'landing.preview.title': 'Tumhare journey ki ek glimpse',
+    'landing.preview.subtitle': 'Kya cards tumhare liye reveal kar sakte hain',
+    'landing.preview.cardTitle': 'Tumhari Reading Preview',
+    'landing.preview.pastLabel': 'Past:',
+    'landing.preview.presentLabel': 'Present:',
+    'landing.preview.guidanceLabel': 'Guidance:',
+    'landing.preview.pastText': 'Tum ek crossroads par ho...',
+    'landing.preview.presentText': 'Ek naya opportunity approaching hai...',
+    'landing.preview.guidanceText': 'Cards hope aur new beginnings ki baat karte hain...',
+    'landing.preview.ctaText': 'Yeh sirf glimpse hai. Full reading await kar rahi hai...',
+    'landing.preview.ctaButton': 'Dekho kya aa raha hai',
+    'landing.preview.ctaSubtext': '60 seconds se kam time lega',
+    'landing.howItWorks.title': 'Yeh kaise kaam karta hai',
+    'landing.howItWorks.subtitle': 'Clarity pane ke liye teen simple steps',
+    'landing.howItWorks.ask.title': 'Apna sawaal poochho',
+    'landing.howItWorks.ask.description': 'Jo sach mein tumhare dil ko trouble kar raha hai us par focus karo',
+    'landing.howItWorks.pick.title': 'Apne cards choose karo',
+    'landing.howItWorks.pick.description': 'Mystical deck se teen cards choose karo',
+    'landing.howItWorks.reveal.title': 'Apne answers reveal karo',
+    'landing.howItWorks.reveal.description': 'Instant personalized insights pao',
+    'landing.problems.stuck.title': 'Life mein stuck feel kar rahe ho?',
+    'landing.problems.stuck.description': 'Jab sab kuch stagnant lagta hai',
+    'landing.problems.love.title': 'Love ya relationships mein confused?',
+    'landing.problems.love.description': 'Tumhara dil honest answers deserve karta hai',
+    'landing.problems.direction.title': 'Apni next move ke baare mein unsure?',
+    'landing.problems.direction.description': 'Universe ke paas tumhare liye guidance hai',
+    'landing.about.title': 'Journey ke baare mein',
+    'landing.about.description': 'Yeh platform sirf readings ke liye nahi bana. Clarity dene ke liye bana hai jab life confusing lagti hai.',
+    'landing.about.bio': 'Bharti Singh ek experienced tarot reader hain 10+ saal ke experience ke saath.',
+    'landing.about.linkText': 'Humare baare mein aur jaano',
+    'testimonials.title': 'Seekers kya kehte hain',
+    'testimonials.seeMore': 'Aur reviews dekho',
+    'whySection.title': 'Kyun The Devine Tarot?',
+    'whySection.description': 'Hum ancient tarot wisdom ko AI tech ke saath mix karte hain.',
+    'whySection.features.personalized': 'Tumhari energy ke according personalized readings',
+    'whySection.features.ai': 'AI-powered insights with human touch',
+    'whySection.features.privacy': '100% private aur secure',
+    'whySection.features.instant': 'Instant answers, kabhi bhi',
+    'common.loading': 'Loading...',
+    'common.error': 'Kuch galat ho gaya',
+    'common.submit': 'Submit',
+    'common.cancel': 'Cancel',
+    'common.confirm': 'Confirm',
+    'common.continue': 'Continue',
+    'common.back': 'Back',
+    'common.next': 'Next',
+  },
+}
+
 /**
  * Get translation from nested structure (existing system)
  */
@@ -18,6 +238,10 @@ function getNestedTranslation(key: string, lang: Language): string {
   const mappedLang = langMap[lang] || lang
   const keys = key.split('.')
   let value: unknown = TRANSLATIONS[mappedLang]
+
+  if (!value) {
+    return key
+  }
 
   for (const k of keys) {
     if (value && typeof value === 'object' && k in value) {
@@ -48,13 +272,25 @@ function getFlatTranslation(key: string, lang: Language): string | undefined {
 export function getTranslationSync(key: string, lang: Language): string {
   // 1. Try nested structure first (existing translations)
   const nested = getNestedTranslation(key, lang)
+  // If nested returned something different from key, it's a valid translation
   if (nested !== key) return nested
 
   // 2. Try flat store (CMS-managed)
   const flat = getFlatTranslation(key, lang)
   if (flat) return flat
 
-  // 3. Return key as fallback
+  // 3. Try emergency fallback
+  const fallbackValue = FALLBACK[lang]?.[key]
+  if (fallbackValue) {
+    return fallbackValue
+  }
+
+  // 4. Return human-readable fallback - extract last part of key
+  const parts = key.split('.')
+  const readable = parts[parts.length - 1]
+  if (readable && readable.length > 0) {
+    return readable.charAt(0).toUpperCase() + readable.slice(1)
+  }
   return key
 }
 

@@ -4,27 +4,11 @@ import { motion } from 'framer-motion';
 import { Brain, Sparkles, Zap, Heart } from 'lucide-react';
 import { useLanguage } from '@/hooks/useLanguage';
 
-const features = [
-  { 
-    icon: Brain, 
-    title: 'Reading That Feels You', 
-    description: 'Not robotic responses - emotionally intelligent guidance that connects with you personally.' 
-  },
-  { 
-    icon: Sparkles, 
-    title: 'Personalized Insights', 
-    description: 'Every reading is unique. The cards speak to your specific situation, not generic answers.' 
-  },
-  { 
-    icon: Zap, 
-    title: 'Instant Clarity', 
-    description: 'Get answers in seconds. No waiting, no appointments - just immediate spiritual guidance.' 
-  },
-  { 
-    icon: Heart, 
-    title: 'Deep Emotional Connection', 
-    description: 'Feel understood. The AI recognizes your emotional state and responds with empathy.' 
-  },
+const featuresData = [
+  { key: 'personalized', icon: Brain },
+  { key: 'ai', icon: Sparkles },
+  { key: 'privacy', icon: Zap },
+  { key: 'instant', icon: Heart },
 ];
 
 export default function WhySection() {
@@ -41,12 +25,10 @@ export default function WhySection() {
             transition={{ duration: 0.6 }}
           >
             <h2 className="font-heading text-heading text-foreground mb-element">
-              Why The Devine Tarot?
+              {isHydrated ? t('whySection.title') : 'Why The Devine Tarot?'}
             </h2>
             <p className="text-subheading text-foreground-secondary leading-relaxed mb-block">
-              We combine ancient tarot wisdom with cutting-edge AI technology to
-              create something truly unique — readings that feel personal, profound,
-              and precisely tailored to you.
+              {isHydrated ? t('whySection.description') : 'We combine ancient tarot wisdom with cutting-edge AI technology to create something truly unique.'}
             </p>
             <p className="text-body text-foreground-secondary leading-relaxed mb-block">
               Unlike generic fortune tellers, our AI understands context, recognizes
@@ -78,9 +60,11 @@ export default function WhySection() {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="grid gap-element"
           >
-            {features.map((feature, index) => (
+            {featuresData.map((feature, index) => {
+              const FeatureIcon = feature.icon;
+              return (
               <motion.div
-                key={feature.title}
+                key={feature.key}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
@@ -92,18 +76,21 @@ export default function WhySection() {
                   className="flex-shrink-0 flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-gold-10 to-secondary-10 border border-gold-20"
                   whileHover={{ scale: 1.1, transition: { duration: 0.3 } }}
                 >
-                  <feature.icon className="h-6 w-6 text-gold" />
+                  <FeatureIcon className="h-6 w-6 text-gold" />
                 </motion.div>
                 <div>
                   <h3 className="font-heading text-lg font-semibold text-foreground mb-element">
-                    {feature.title}
+                    {isHydrated ? t(`whySection.features.${feature.key}`) : 
+                      feature.key === 'personalized' ? 'Reading That Feels You' :
+                      feature.key === 'ai' ? 'Personalized Insights' :
+                      feature.key === 'privacy' ? 'Instant Clarity' : 'Deep Emotional Connection'}
                   </h3>
                   <p className="text-body-sm text-foreground-muted leading-relaxed">
-                    {feature.description}
+                    {isHydrated ? t(`whySection.features.${feature.key}`) : ''}
                   </p>
                 </div>
               </motion.div>
-            ))}
+            )})}
           </motion.div>
         </div>
       </div>

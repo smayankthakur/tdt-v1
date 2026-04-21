@@ -24,7 +24,7 @@ export default function Footer() {
                 />
               </div>
               <span className="font-heading text-xl font-semibold text-white">
-                Divine Tarot
+                The Devine Tarot
               </span>
             </Link>
             <p className="text-white/50 text-sm italic">

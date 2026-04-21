@@ -6,8 +6,11 @@ import Image from 'next/image';
 import { Sparkles, ArrowRight } from 'lucide-react';
 import { buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { useLanguage } from '@/hooks/useLanguage';
 
 export default function Preview() {
+  const { t, isHydrated } = useLanguage();
+
   return (
     <section className="py-section bg-background">
       <div className="mx-auto max-w-4xl px-6">
@@ -19,10 +22,10 @@ export default function Preview() {
           className="text-center mb-block"
         >
           <h2 className="font-heading text-heading text-foreground">
-            A Glimpse Into Your Journey
+            {isHydrated ? t('landing.preview.title') : 'A Glimpse Into Your Journey'}
           </h2>
           <p className="mt-element text-foreground-muted">
-            What the cards might reveal for you
+            {isHydrated ? t('landing.preview.subtitle') : 'What the cards might reveal for you'}
           </p>
         </motion.div>
 
@@ -41,7 +44,7 @@ export default function Preview() {
                 <Sparkles className="h-5 w-5 text-black" />
               </div>
               <span className="font-heading text-subheading text-foreground">
-                Your Reading Preview
+                {isHydrated ? t('landing.preview.cardTitle') : 'Your Reading Preview'}
               </span>
             </div>
 
@@ -76,19 +79,28 @@ export default function Preview() {
 
               <div className="prose prose-sm max-w-none">
                 <p className="text-foreground-secondary leading-relaxed italic">
-                  <span className="text-gold font-semibold not-italic">The Past:</span> You&apos;ve been at a crossroads, feeling uncertain about which path to take. The decisions you&apos;ve made have led you here, but something still feels unresolved...
+                  <span className="text-gold font-semibold not-italic">
+                    {isHydrated ? t('landing.preview.pastLabel') : 'The Past:'}
+                  </span>{' '}
+                  {isHydrated ? t('landing.preview.pastText') : "You've been at a crossroads, feeling uncertain about which path to take. The decisions you've made have led you here, but something still feels unresolved..."}
                 </p>
                 <p className="text-foreground-secondary leading-relaxed mt-element italic">
-                  <span className="text-gold font-semibold not-italic">The Present:</span> There&apos;s a new opportunity approaching. The universe is aligning to bring clarity to your situation, but you need to trust your intuition...
+                  <span className="text-gold font-semibold not-italic">
+                    {isHydrated ? t('landing.preview.presentLabel') : 'The Present:'}
+                  </span>{' '}
+                  {isHydrated ? t('landing.preview.presentText') : "There's a new opportunity approaching. The universe is aligning to bring clarity to your situation, but you need to trust your intuition..."}
                 </p>
                 <p className="text-foreground-secondary leading-relaxed mt-element italic">
-                  <span className="text-gold font-semibold not-italic">The Guidance:</span> The cards speak of hope and new beginnings. Whatever you&apos;ve been worrying about, there&apos;s light at the end. Trust the process...
+                  <span className="text-gold font-semibold not-italic">
+                    {isHydrated ? t('landing.preview.guidanceLabel') : 'The Guidance:'}
+                  </span>{' '}
+                  {isHydrated ? t('landing.preview.guidanceText') : 'The cards speak of hope and new beginnings. Whatever you\'ve been worrying about, there\'s light at the end. Trust the process...'}
                 </p>
               </div>
 
               <div className="mt-block pt-block border-t border-gold-10">
                 <p className="text-body-sm text-foreground-muted text-center italic">
-                  This is just a glimpse. Your full reading awaits...
+                  {isHydrated ? t('landing.preview.ctaText') : 'This is just a glimpse. Your full reading awaits...'}
                 </p>
               </div>
             </div>
@@ -103,11 +115,11 @@ export default function Preview() {
           className="mt-block text-center"
         >
           <Link href="/reading" className={cn(buttonVariants({ size: 'lg' }), 'btn-cta-pulse')}>
-            <span>Dekhte hain kya aa raha hai</span>
+            <span>{isHydrated ? t('landing.preview.ctaButton') : "See What's Coming"}</span>
             <ArrowRight className="h-5 w-5" />
           </Link>
           <p className="mt-element text-body-sm text-foreground-muted">
-            Takes less than 60 seconds
+            {isHydrated ? t('landing.preview.ctaSubtext') : 'Takes less than 60 seconds'}
           </p>
         </motion.div>
       </div>

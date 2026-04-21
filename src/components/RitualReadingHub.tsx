@@ -79,7 +79,7 @@ export default function RitualReadingHub() {
   const [sessionId] = useState(() => generateSessionId());
   const [domainAnalysis, setDomainAnalysis] = useState<DomainAnalysis | null>(null);
 
-  const { t, lang, isHydrated } = useLanguage();
+   const { t, language, isHydrated } = useLanguage();
   const { handleUserInput } = useAutoLanguage();
   const { generateReading, result, isLoading, error } = useReadingFlow();
   const { reset: resetReadingStore, setDeck, setSelectedCardsWithDetails, selectedCardsWithDetails } = useReadingStore();
@@ -98,8 +98,8 @@ export default function RitualReadingHub() {
       hi: "चलो देखते हैं क्या आता है…",
       hinglish: "Bas dekhte hain kya aa raha hai…"
     };
-    setLoadingText(texts[lang] || texts.hinglish);
-  }, [lang]);
+    setLoadingText(texts[language] || texts.hinglish);
+  }, [language]);
 
   // Topic selection handler
   const handleTopicSelect = (topic: ReadingType) => {
@@ -521,7 +521,7 @@ function ShuffleAnimation({ message, messages }: { message: string; messages: st
     analysis: DomainAnalysis | null;
     sessionId: string;
   }) {
-const { t, lang } = useLanguage();
+const { t, language } = useLanguage();
     const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
     const allCards = useReadingStore(state => state.deck);
     const setSelectedCardsWithDetails = useReadingStore(state => state.setSelectedCardsWithDetails);
@@ -599,7 +599,7 @@ const { t, lang } = useLanguage();
     };
 
 return (
-    <div key={lang} className="space-y-8">
+    <div key={language} className="space-y-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

@@ -229,84 +229,7 @@ readingHub: {
         ai: 'AI-powered insights with human warmth',
         privacy: '100% private and secure',
         instant: 'Instant answers, anytime',
-      },
-    },
-    footer: {
-      tagline: 'Clarity begins within',
-      copyright: `© Sitelytc Digital Media. All rights reserved.`,
-      madeWith: 'Made with cosmic energy',
-      privacy: 'Privacy',
-      navigation: 'Navigation',
-      support: 'Support',
-      connect: 'Connect',
-      disclaimer: 'Not a replacement for professional advice. For guidance purposes only.',
-    },
-    premium: {
-      badge: 'Premium Member',
-      active: 'Premium Access Active',
-      enjoy: 'Enjoy unlimited readings',
-    },
-    preview: {
-      thePast: 'The Past:',
-      thePresent: 'The Present:',
-      theGuidance: 'The Guidance:',
-    },
-    home: {
-      hero: {
-        sloganLine1: "This isn't just tarot...",
-        sloganLine2: "This is clarity when life gets confusing...",
-        quote: "The answer you're looking for... you already feel it",
-        ctaButton: "Know Your Fortune",
-        ctaSubtext: "Maybe this is the answer you've been waiting for..."
-      }
-    },
-    landing: {
-      urgency: {
-        timeSensitive: 'Time-sensitive',
-        limitedSpots: 'Only 2 spots left',
-        endsTonight: 'Ends tonight',
-        lastChance: 'Last chance',
-      },
-      about: {
-        title: "About The Journey",
-        description: "This platform was not created just for readings. It was created to provide clarity when life feels confusing.",
-        bio: "Bharti Singh is a seasoned tarot reader with over 10 years of experience guiding individuals through life's uncertainties. Her approach blends ancient wisdom with intuitive insight, offering clarity and direction when you need it most.",
-        linkText: "Learn more about us",
-      },
-      problems: {
-        stuck: { title: "Feeling stuck in your life?", description: "When everything feels motionless" },
-        love: { title: "Confused in love or relationships?", description: "Your heart deserves honest answers" },
-        direction: { title: "Unsure about your next move?", description: "The universe has guidance for you" },
-      },
-      howItWorks: {
-        title: "How It Works",
-        subtitle: "Three simple steps to unlock your clarity",
-        ask: { title: "Ask Your Question", description: "Focus on what truly troubles your heart" },
-        pick: { title: "Pick Your Cards", description: "Select three cards from the mystical deck" },
-        reveal: { title: "Reveal Your Answers", description: "Receive personalized insights instantly" },
-      },
-      preview: {
-        title: "A Glimpse Into Your Journey",
-        subtitle: "What the cards might reveal for you",
-        cardTitle: "Your Reading Preview",
-        pastLabel: "The Past:",
-        presentLabel: "The Present:",
-        guidanceLabel: "The Guidance:",
-        pastText: "You've been at a crossroads, feeling uncertain about which path to take. The decisions you've made have led you here, but something still feels unresolved...",
-        presentText: "There's a new opportunity approaching. The universe is aligning to bring clarity to your situation, but you need to trust your intuition...",
-        guidanceText: "The cards speak of hope and new beginnings. Whatever you've been worrying about, there's light at the end. Trust the process...",
-        ctaText: "This is just a glimpse. Your full reading awaits...",
-        ctaButton: "See What's Coming",
-        ctaSubtext: "Takes less than 60 seconds",
-      },
-      testimonials: {
-        title: "Voices of the Illuminated",
-        subtitle: "What seekers are saying about their journey",
-        s1: { name: "Sarah M.", text: "The reading was eerily accurate. It helped me see my situation clearly and make peace with what I couldn't change.", role: "Verified Reader" },
-        s2: { name: "James L.", text: "I was skeptical at first, but the insights were profound. This isn't just random cards - there's real depth here.", role: "Verified Reader" },
-        s3: { name: "Emily R.", text: "Beautiful experience. The cards revealed what I needed to hear, not what I wanted to hear. That's the real gift.", role: "Verified Reader" },
-        s4: { name: "Michael K.", text: "Got clarity on a career decision that had me stuck for months. The guidance was specific and actionable.", role: "Verified Reader" },
-        s5: { name: "Priya S.", text: "This felt too accurate... I didn't expect this level of insight from an AI. Still gives me chills thinking about it.", role: "Verified Reader" },
+        },
       },
       why: {
         title: "Why The Devine Tarot?",
@@ -1055,8 +978,8 @@ readingHub: {
       stats: {
         readings: '10,000+ קריאות',
         since: 'מאז 2014',
-      },
-      philosophy: {
+       },
+     philosophy: {
         title: 'הפילוסופיה',
         clarity: {
           title: 'בהירות לפני נבואה',
@@ -1070,7 +993,6 @@ readingHub: {
           title: 'הכוונה לפני עצה',
           desc: 'אנחנו מכוונים אותך לתשובות שלך. הכוח תמיד היה בתוכך.',
         },
-      },
       },
       why: {
         title: 'למה הפלטפורמה הזו?',

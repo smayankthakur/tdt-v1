@@ -635,16 +635,8 @@ readingHub: {
         career: 'Universe tumhe guide karega.',
         confusion: 'Tarot aage ka raasta dekhta hai.',
       },
-    },
-    about: {
-      title: "Reader ke baare mein",
-      paragraph1: "Tumhara intuition already truth jaanta hai. Yeh space tumhe use sunne mein help karta hai.",
-      paragraph2: "Har reading designed hota hai personal, calm, aur tumhare situation se deeply connected.",
-      feature1: "AI-powered insights",
-      feature2: "Spiritual guidance",
-      feature3: "Personalized clarity",
-    },
-    cta: {
+       },
+      cta: {
       startReading: 'Aage badhte hain',
       continueJourney: 'Aage badhte hain',
       unlockClarity: 'Dekhte hain kya aa raha hai',

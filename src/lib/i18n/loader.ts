@@ -113,6 +113,13 @@ const FALLBACK: Record<string, Record<string, string>> = {
     'home.about.feature1': 'Deep insights',
     'home.about.feature2': 'Spiritual guidance',
     'home.about.feature3': 'Personalized clarity',
+    // Reading page
+    'reading.selectTopic': 'What area of your life needs clarity?',
+    'reading.enterQuestion': 'What would you like to know?',
+    'reading.inputPlaceholder': 'Ask your question…',
+    'reading.selectCards': 'Select 3 cards',
+    'reading.loading': "Let's see what comes through…",
+    'reading.cardsSaying': "Your cards are saying:",
   },
   hi: {
     // Nav
@@ -208,6 +215,13 @@ const FALLBACK: Record<string, Record<string, string>> = {
     'home.about.feature1': 'गहरी अंतर्दृष्टि',
     'home.about.feature2': 'आध्यात्मिक मार्गदर्शन',
     'home.about.feature3': 'व्यक्तिगत स्पष्टता',
+    // Reading page
+    'reading.selectTopic': 'आपके जीवन में किस क्षेत्र को स्पष्टता चाहिए?',
+    'reading.enterQuestion': 'आप क्या जानना चाहते हैं?',
+    'reading.inputPlaceholder': 'अपना सवाल लिखें…',
+    'reading.selectCards': '3 पत्ते चुनें',
+    'reading.loading': 'चलो देखते हैं क्या आता है…',
+    'reading.cardsSaying': 'आपके पत्ते कह रहे हैं:',
   },
   hinglish: {
     // Nav
@@ -303,6 +317,13 @@ const FALLBACK: Record<string, Record<string, string>> = {
     'home.about.feature1': 'Deep insights',
     'home.about.feature2': 'Spiritual guidance',
     'home.about.feature3': 'Personalized clarity',
+    // Reading page
+    'reading.selectTopic': 'Kis area mein tumhe clarity chahiye?',
+    'reading.enterQuestion': 'Tum kya jaanna chahte ho?',
+    'reading.inputPlaceholder': 'Apna sawaal likho…',
+    'reading.selectCards': '3 cards choose karo',
+    'reading.loading': "Bas dekhte hain kya aa raha hai…",
+    'reading.cardsSaying': "Tumhare cards keh rahe hain:",
   },
 }
 

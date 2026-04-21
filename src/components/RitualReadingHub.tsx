@@ -75,11 +75,11 @@ export default function RitualReadingHub() {
   const [selectedTopic, setSelectedTopic] = useState<ReadingType | null>(null);
   const [question, setQuestion] = useState('');
   const [shuffleMessage, setShuffleMessage] = useState('');
-  const [loadingText, setLoadingText] = useState('Bas dekhte hain kya aa raha hai…');
+  const [loadingText, setLoadingText] = useState('');
   const [sessionId] = useState(() => generateSessionId());
   const [domainAnalysis, setDomainAnalysis] = useState<DomainAnalysis | null>(null);
 
-  const { t } = useLanguage();
+  const { t, lang, isHydrated } = useLanguage();
   const { handleUserInput } = useAutoLanguage();
   const { generateReading, result, isLoading, error } = useReadingFlow();
   const { reset: resetReadingStore, setDeck, setSelectedCardsWithDetails, selectedCardsWithDetails } = useReadingStore();
@@ -90,6 +90,16 @@ export default function RitualReadingHub() {
     else if (step === 'card-select') setCurrentStage('selection');
     else if (step === 'reading-delivery') setCurrentStage('reading');
   }, [step, setCurrentStage]);
+
+  // Update loading text when language changes
+  useEffect(() => {
+    const texts = {
+      en: "Let's see what comes through…",
+      hi: "चलो देखते हैं क्या आता है…",
+      hinglish: "Bas dekhte hain kya aa raha hai…"
+    };
+    setLoadingText(texts[lang] || texts.hinglish);
+  }, [lang]);
 
   // Topic selection handler
   const handleTopicSelect = (topic: ReadingType) => {
@@ -511,7 +521,7 @@ function ShuffleAnimation({ message, messages }: { message: string; messages: st
     analysis: DomainAnalysis | null;
     sessionId: string;
   }) {
-    const { t } = useLanguage();
+const { t, lang } = useLanguage();
     const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
     const allCards = useReadingStore(state => state.deck);
     const setSelectedCardsWithDetails = useReadingStore(state => state.setSelectedCardsWithDetails);
@@ -588,8 +598,8 @@ function ShuffleAnimation({ message, messages }: { message: string; messages: st
       return messages[domain] || messages.general;
     };
 
-    return (
-      <div className="space-y-8">
+return (
+    <div key={lang} className="space-y-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

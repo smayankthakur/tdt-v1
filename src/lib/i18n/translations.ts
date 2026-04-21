@@ -405,15 +405,7 @@ readingHub: {
         confusion: 'तरबूत आगे का रास्ता देखता है।',
       },
     },
-    about: {
-      title: "Reader के बारे में",
-      paragraph1: "आपका इंट्यूइशन पहले से ही सच्चाई जानता है। यह space आपको वो सुनने में मदद करता है।",
-      paragraph2: "हर reading को design किया गया है personal, calm, और आपके situation से deep connect रहने के लिए।",
-      feature1: "AI-powered insights",
-      feature2: "Spiritual guidance",
-      feature3: "Personalized clarity",
-    },
-    cta: {
+     cta: {
       startReading: 'आगे बढ़ें',
       continueJourney: 'आगे बढ़ें',
       unlockClarity: 'देखते हैं क्या आ रहा है',

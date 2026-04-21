@@ -46,10 +46,10 @@ export default function AboutPage() {
           <div className="flex justify-center">
             <div className="relative w-64 h-64 md:w-80 md:h-80">
               <Image
-                src="/tdt-v3/bharti.jpg"
+                src="/tdt-v3/bharti.png"
                 alt="Bharti Singh - Founder & Tarot Reader"
                 fill
-                className="object-cover rounded-full"
+                className="object-contain rounded-full"
               />
               <div className="absolute inset-0 rounded-full border-2 border-gold/30" />
               <div className="absolute -bottom-4 -right-4 bg-gold/20 backdrop-blur-md rounded-full p-4 border border-gold/30">

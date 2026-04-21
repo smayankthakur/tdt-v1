@@ -18,8 +18,8 @@ import {
 import { Language } from '@/lib/i18n/config';
 
 const DETECTED_TO_LANGUAGE: Record<DetectedLanguage, Language> = {
-  hindi: 'hi',
-  english: 'en',
+  hi: 'hi',
+  en: 'en',
   hinglish: 'hinglish',
 };
 

@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useLanguageStore } from '@/store/languageStore';
 import type { Language } from '@/lib/i18n/config';
+import { LANGUAGE_STORAGE_KEY } from '@/lib/i18n/config';
 import { getTranslation } from '@/lib/i18n/translations';
 
 export function useLanguage() {
@@ -21,7 +22,7 @@ export function useLanguage() {
   const setLanguage = useCallback((lang: Language) => {
     storeSetLanguage(lang);
     if (typeof window !== 'undefined') {
-      localStorage.setItem('divine_tarot_language', lang);
+      localStorage.setItem(LANGUAGE_STORAGE_KEY, lang);
     }
   }, [storeSetLanguage]);
 

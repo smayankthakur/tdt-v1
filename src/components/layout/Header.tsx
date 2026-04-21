@@ -198,7 +198,7 @@ export default function Header() {
                   {LANGUAGES.map((lang) => (
                     <button
                       key={lang.code}
-                      onClick={() => setLanguage(lang.code as 'en' | 'hinglish')}
+                      onClick={() => setLanguage(lang.code as 'en' | 'hi' | 'hinglish')}
                       className={cn(
                         'flex-1 rounded-lg py-2 text-sm font-medium transition-colors',
                         language === lang.code

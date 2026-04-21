@@ -134,7 +134,8 @@ function generateReadingFromCards(
   question: string,
   readingType: string,
   name: string = 'Seeker',
-  domainAnalysis?: DomainAnalysis
+  domainAnalysis?: DomainAnalysis,
+  language: string = 'en'
 ): { reading: string; guidance: string; streamingLines: string[]; greeting?: string } {
   // Build context using precomputed domain analysis if available
   let context;
@@ -153,8 +154,8 @@ function generateReadingFromCards(
     );
   }
   
-  // Generate full reading using humanization engine
-  const reading = generateHumanizedReading(context, selectedCards);
+  // Generate full reading using humanization engine with language transformation
+  const reading = generateHumanizedReading(context, selectedCards, language as 'en' | 'hi' | 'hinglish');
   
   // Create unified single-flow reading without sections or headers
   const greeting = reading.opening;
@@ -303,7 +304,7 @@ export function useReadingFlow() {
       // Ritual pacing delay
       await new Promise(resolve => setTimeout(resolve, 2000));
       
-      const detectedLang = region === 'india' ? 'hinglish' : 'english';
+      const detectedLang = region === 'india' ? 'hinglish' : 'en';
       
       // Generate reading based on actual cards if provided
       let readingContent: string;
@@ -317,7 +318,8 @@ export function useReadingFlow() {
           input.question,
           input.readingType,
           input.name,
-          input.domainAnalysis
+          input.domainAnalysis,
+          language
         );
         readingContent = generated.reading;
         guidance = generated.guidance;

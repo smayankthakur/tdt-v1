@@ -1,4 +1,4 @@
-export type DetectedLanguage = 'hinglish' | 'hindi' | 'english';
+export type DetectedLanguage = 'hinglish' | 'hi' | 'en';
 
 const HINDI_WORDS_IN_ROMAN = [
   'kya', 'kaise', 'kab', 'kyu', 'kyun', 'mujhe', 'tumhe', 'humhe',
@@ -25,13 +25,13 @@ const ENGLISH_ONLY_PATTERN = /^[a-zA-Z\s\.,!?\'\-]+$/;
 
 export function detectLanguageFromText(text: string): DetectedLanguage {
   if (!text || text.trim().length < 2) {
-    return 'english';
+    return 'en';
   }
   
   const lowerText = text.toLowerCase().trim();
   
   if (HINDI_DEVANAGARI_PATTERN.test(text)) {
-    return 'hindi';
+    return 'hi';
   }
   
   const hindiWordCount = HINDI_WORDS_IN_ROMAN.filter(word => 
@@ -46,7 +46,7 @@ export function detectLanguageFromText(text: string): DetectedLanguage {
   }
   
   if (!HINDI_WORDS_IN_ROMAN.some(word => lowerText.includes(word))) {
-    return 'english';
+    return 'en';
   }
   
   return 'hinglish';
@@ -57,13 +57,13 @@ export function detectLanguageWithConfidence(text: string): {
   confidence: number;
 } {
   if (!text || text.trim().length < 2) {
-    return { language: 'english', confidence: 0 };
+    return { language: 'en', confidence: 0 };
   }
   
   const lowerText = text.toLowerCase().trim();
   
   if (HINDI_DEVANAGARI_PATTERN.test(text)) {
-    return { language: 'hindi', confidence: 0.95 };
+    return { language: 'hi', confidence: 0.95 };
   }
   
   const hindiWordCount = HINDI_WORDS_IN_ROMAN.filter(word => 
@@ -87,7 +87,7 @@ export function detectLanguageWithConfidence(text: string): {
   }
   
   if (hindiWordCount === 0 && totalWords > 5) {
-    return { language: 'english', confidence: 0.8 };
+    return { language: 'en', confidence: 0.8 };
   }
   
   return { language: 'hinglish', confidence: 0.5 };

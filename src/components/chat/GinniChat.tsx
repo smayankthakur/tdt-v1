@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Minimize2, Maximize2, Send } from 'lucide-react';
 import { useLanguage } from '@/hooks/useLanguage';
+import { langMap } from '@/lib/i18n/config';
 
 export interface GinniContext {
   question?: string;
@@ -46,11 +47,6 @@ export default function GinniChat({
 
   useEffect(() => {
     if (isHydrated) {
-      const langMap: Record<string, string> = {
-        'en': 'en',
-        'hi': 'hi',
-        'hinglish': 'hinglish'
-      };
       setLanguage(langMap[lang] || 'en');
     }
   }, [isHydrated, lang]);

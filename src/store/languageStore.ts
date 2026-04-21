@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { Language } from '@/lib/i18n/config';
-import { DEFAULT_LANGUAGE } from '@/lib/i18n/config';
+import { DEFAULT_LANGUAGE, langMap } from '@/lib/i18n/config';
 import { TRANSLATIONS } from '@/lib/i18n/translations';
 
 interface LanguageState {
@@ -11,8 +11,9 @@ interface LanguageState {
 }
 
 function getTranslation(key: string, lang: Language): string {
+  const mappedLang = langMap[lang] || lang;
   const keys = key.split('.');
-  let value: unknown = TRANSLATIONS[lang];
+  let value: unknown = TRANSLATIONS[mappedLang];
   
   for (const k of keys) {
     if (value && typeof value === 'object' && k in value) {
@@ -40,7 +41,7 @@ export const useLanguageStore = create<LanguageState>()(
       },
     }),
     {
-      name: 'divine-tarot-language',
+      name: 'divine_tarot_language',
       skipHydration: true,
     }
   )

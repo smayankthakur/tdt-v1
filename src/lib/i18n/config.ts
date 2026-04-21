@@ -1,5 +1,13 @@
 export type Language = 'en' | 'hi' | 'hinglish' | 'ar' | 'he';
 
+export const langMap: Record<Language, string> = {
+  en: 'english',
+  hi: 'hindi',
+  hinglish: 'hinglish',
+  ar: 'ar',
+  he: 'he',
+};
+
 export interface LanguageConfig {
   code: Language;
   name: string;

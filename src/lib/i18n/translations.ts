@@ -1,11 +1,12 @@
 import type { Language } from './config';
+import { langMap } from './config';
 
 export interface TranslationSet {
   [key: string]: string | TranslationSet | string[];
 }
 
-export const TRANSLATIONS: Record<Language, TranslationSet> = {
-  en: {
+export const TRANSLATIONS: Record<string, TranslationSet> = {
+  english: {
     common: {
       loading: 'Loading...',
       error: 'Something went wrong',
@@ -322,7 +323,7 @@ readingHub: {
       },
     },
   },
-hi: {
+  hindi: {
     common: {
       loading: 'लोड हो रहा है...',
       error: 'कुछ गलत हो गया',
@@ -759,11 +760,11 @@ hi: {
     },
     home: {
       hero: {
-        sloganLine1: "यह सिर्फ टैरो नहीं है...",
-        sloganLine2: "यह वो clarity है जब life confusing हो जाती है...",
-        quote: "जो आप पूछना चाहते हैं... उसका जवाब आप पहले से feel कर रहे हैं",
-        ctaButton: "अपना भविष्य जानें",
-        ctaSubtext: "शायद यही जवाब है जका आप wait कर रहे थे..."
+        sloganLine1: "This sirf tarot nahi hai...",
+        sloganLine2: "Yeh woh clarity hai jab life confusing ho jaati hai...",
+        quote: "Jo aap poochhna chahte hain... uska jawaab aap pehle se feel kar rahe hain",
+        ctaButton: "Apna bhavishya jaanein",
+        ctaSubtext: "Shayad yehi jawaab hai jiska aap intezaar kar rahe the..."
       },
     },
     about: {
@@ -1077,8 +1078,9 @@ hi: {
 };
 
 export function getTranslation(key: string, lang: Language): string {
+  const mappedLang = langMap[lang] || lang;
   const keys = key.split('.');
-  let value: unknown = TRANSLATIONS[lang];
+  let value: unknown = TRANSLATIONS[mappedLang];
   
   for (const k of keys) {
     if (value && typeof value === 'object' && k in value) {

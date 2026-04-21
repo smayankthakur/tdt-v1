@@ -96,7 +96,9 @@ export default function RitualReadingHub() {
     const texts = {
       en: "Let's see what comes through…",
       hi: "चलो देखते हैं क्या आता है…",
-      hinglish: "Bas dekhte hain kya aa raha hai…"
+      hinglish: "Bas dekhte hain kya aa raha hai…",
+      ar: "Let's see what comes through…",
+      he: "Let's see what comes through…"
     };
     setLoadingText(texts[language] || texts.hinglish);
   }, [language]);

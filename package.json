@@ -9,6 +9,7 @@
     "lint": "next lint",
     "lint:fix": "next lint --fix",
     "typecheck": "tsc --noEmit",
+    "check:imports": "eslint src --max-warnings=0",
     "prepare": "husky install",
     "design-audit": "node scripts/design-audit.js",
     "i18n:gen": "ts-node scripts/gen-i18n-types.ts",

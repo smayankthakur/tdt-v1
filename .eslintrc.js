@@ -5,5 +5,8 @@ module.exports = {
     '@typescript-eslint/no-explicit-any': 'off',
     'react-hooks/exhaustive-deps': 'off',
     'prefer-const': 'error',
+    'no-restricted-imports': ['error', {
+      patterns: ['../*', '../../*', '../../../*', '../../../../*']
+    }]
   },
 }

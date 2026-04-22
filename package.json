@@ -10,6 +10,8 @@
     "lint:fix": "next lint --fix",
     "typecheck": "tsc --noEmit",
     "check:imports": "eslint src --max-warnings=0",
+    "graph": "madge --ts-config tsconfig.json --image graph.png src",
+    "graph:check": "madge --circular --ts-config tsconfig.json src",
     "prepare": "husky install",
     "design-audit": "node scripts/design-audit.js",
     "i18n:gen": "ts-node scripts/gen-i18n-types.ts",

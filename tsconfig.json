@@ -17,6 +17,17 @@
         "name": "next"
       }
     ],
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+    ],
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+    ],
+    "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
     }

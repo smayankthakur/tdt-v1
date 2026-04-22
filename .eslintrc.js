@@ -6,7 +6,7 @@ module.exports = {
     'react-hooks/exhaustive-deps': 'off',
     'prefer-const': 'error',
     'no-restricted-imports': ['error', {
-      patterns: ['../*', '../../*', '../../../*', '../../../../*', '@/components/*/*', '@/lib/*/*']
+      patterns: ['../*', '../../*', '../../../*', '../../../../*']
     }]
   },
 }

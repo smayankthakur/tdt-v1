@@ -232,42 +232,42 @@ function analyzeEmotion(question: string): string {
   return 'curious';
 }
 
-// Storage key for persisting readings
-const READINGS_STORAGE_KEY = 'tdt_persisted_readings';
+// Storage key for persisting readings - include language to prevent stale reads
+const READINGS_STORAGE_KEY = (sessionKey: string, lang: string) => `tdt_persisted_readings_${sessionKey}_${lang}`;
 
 interface StoredReading extends ReadingResult {
   storedAt: number;
   sessionKey: string;
 }
 
-function getStoredReadings(): StoredReading[] {
+function getStoredReadings(sessionKey: string, lang: string): StoredReading[] {
   if (typeof window === 'undefined') return [];
   try {
-    const stored = localStorage.getItem(READINGS_STORAGE_KEY);
+    const stored = localStorage.getItem(READINGS_STORAGE_KEY(sessionKey, lang));
     return stored ? JSON.parse(stored) : [];
   } catch {
     return [];
   }
 }
 
-function saveReadingToStorage(reading: ReadingResult, sessionKey: string): void {
+function saveReadingToStorage(reading: ReadingResult, sessionKey: string, lang: string): void {
   if (typeof window === 'undefined') return;
   try {
-    const stored = getStoredReadings();
+    const stored = getStoredReadings(sessionKey, lang);
     const newStored: StoredReading = {
       ...reading,
       storedAt: Date.now(),
       sessionKey,
     };
     const updated = [newStored, ...stored.slice(0, 9)]; // Keep last 10
-    localStorage.setItem(READINGS_STORAGE_KEY, JSON.stringify(updated));
+    localStorage.setItem(READINGS_STORAGE_KEY(sessionKey, lang), JSON.stringify(updated));
   } catch {
     // Ignore storage errors
   }
 }
 
-function getStoredReading(sessionKey: string): ReadingResult | null {
-  const stored = getStoredReadings();
+function getStoredReading(sessionKey: string, lang: string): ReadingResult | null {
+  const stored = getStoredReadings(sessionKey, lang);
   const found = stored.find(r => r.sessionKey === sessionKey);
   return found || null;
 }
@@ -292,8 +292,8 @@ export function useReadingFlow() {
       return;
     }
     
-    // Check if we already have a reading stored for this session (prevent regeneration)
-    const existingReading = getStoredReading(sessionKey);
+    // Check if we already have a reading stored for this session AND language (prevent regeneration)
+    const existingReading = getStoredReading(sessionKey, language);
     if (existingReading) {
       setResult(existingReading);
       setIsLoading(false);
@@ -304,7 +304,8 @@ export function useReadingFlow() {
       // Ritual pacing delay
       await new Promise(resolve => setTimeout(resolve, 2000));
       
-      const detectedLang = region === 'india' ? 'hinglish' : 'en';
+      // Use the user-selected language consistently throughout
+      const targetLanguage = language;
       
       // Generate reading based on actual cards if provided
       let readingContent: string;
@@ -319,19 +320,20 @@ export function useReadingFlow() {
           input.readingType,
           input.name,
           input.domainAnalysis,
-          language
+          targetLanguage
         );
         readingContent = generated.reading;
         guidance = generated.guidance;
         streamingLines = generated.streamingLines;
-        greeting = generated.greeting || generateOpening(input.name, detectedLang);
+        greeting = generated.greeting || generateOpening(input.name, targetLanguage);
       } else {
-        greeting = generateOpening(input.name, detectedLang);
-        readingContent = generateReadingContent(input.question, input.readingType, detectedLang);
-        guidance = generateGuidance(input.readingType, detectedLang);
-        // Fallback streaming lines - unify the flow without headers
+        greeting = generateOpening(input.name, targetLanguage);
+        readingContent = generateReadingContent(input.question, input.readingType, targetLanguage);
+        guidance = generateGuidance(input.readingType, targetLanguage);
+        // Fallback streaming lines - use translations
+        const fallbackClosing = getTranslationSync ? getTranslationSync('ritualHub.fallbackClosing', targetLanguage) : '';
         streamingLines = [
-          `${greeting} ${readingContent} ${guidance} Tum already jaante ho kya sahi hai… bas ab usse ignore mat karo.`,
+          `${greeting} ${readingContent} ${guidance} ${fallbackClosing}`,
         ];
       }
       
@@ -342,12 +344,12 @@ export function useReadingFlow() {
         reading: readingContent,
         guidance,
         streamingLines,
-        language: detectedLang,
+        language: targetLanguage,
         timestamp: new Date().toISOString(),
       };
       
-      // Persist reading to localStorage - makes it immune to language changes
-      saveReadingToStorage(readingResult, sessionKey);
+      // Persist reading to localStorage with language key - regenerate on language change
+      saveReadingToStorage(readingResult, sessionKey, language);
       
       setResult(readingResult);
       incrementReading(input.readingType as any);
@@ -357,7 +359,7 @@ export function useReadingFlow() {
     } finally {
       setIsLoading(false);
     }
-  }, [canRead, incrementReading, region, sessionKey]);
+  }, [canRead, incrementReading, region, sessionKey, language]);
   
   return {
     result,

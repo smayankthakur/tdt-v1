@@ -47,21 +47,15 @@ const TOPIC_CARDS: TopicCard[] = [
   { id: 'general', label: 'General', emoji: '🔮', icon: Sparkles, color: 'from-blue-500/20 to-cyan-500/20' },
 ];
 
-const SHUFFLE_MESSAGES = [
-  "Thoda ruk jao…",
-  "Energy align ho rahi hai…",
-  "Jo aana hai… woh aa raha hai…",
-  "Cards bat rahe hain tumhare liye…",
-  "Signal pakad rahe hain…",
-];
+const getShuffleMessages = (t: (key: string) => string) => {
+  const msgs = t('ritualHub.shuffle');
+  return Array.isArray(msgs) ? msgs : [];
+};
 
-const REVEAL_MESSAGES = [
-  "Yeh pehla signal hai…",
-  "Ab jo aa raha hai woh important hai…",
-  "Dekho kya hidden hai…",
-  "Energy clear ho rahi hai…",
-  "Jo tum dhundh rahe the woh yahi hai…",
-];
+const getRevealMessages = (t: (key: string) => string) => {
+  const msgs = t('ritualHub.reveal');
+  return Array.isArray(msgs) ? msgs : [];
+};
 
 // Micro-interaction: vibration effect
 const vibrate = () => {
@@ -80,6 +74,8 @@ export default function RitualReadingHub() {
   const [domainAnalysis, setDomainAnalysis] = useState<DomainAnalysis | null>(null);
 
    const { t, language, isHydrated } = useLanguage();
+  const shuffleMessages = getShuffleMessages(t);
+  const revealMessages = getRevealMessages(t);
   const { handleUserInput } = useAutoLanguage();
   const { generateReading, result, isLoading, error } = useReadingFlow();
   const { reset: resetReadingStore, setDeck, setSelectedCardsWithDetails, selectedCardsWithDetails } = useReadingStore();
@@ -93,15 +89,8 @@ export default function RitualReadingHub() {
 
   // Update loading text when language changes
   useEffect(() => {
-    const texts = {
-      en: "Let's see what comes through…",
-      hi: "चलो देखते हैं क्या आता है…",
-      hinglish: "Bas dekhte hain kya aa raha hai…",
-      ar: "Let's see what comes through…",
-      he: "Let's see what comes through…"
-    };
-    setLoadingText(texts[language] || texts.hinglish);
-  }, [language]);
+    setLoadingText(t('reading.loading'));
+  }, [language, t]);
 
   // Topic selection handler
   const handleTopicSelect = (topic: ReadingType) => {
@@ -152,8 +141,8 @@ export default function RitualReadingHub() {
     // Shuffle messages rotation
     let msgIndex = 0;
     const shuffleInterval = setInterval(() => {
-      msgIndex = (msgIndex + 1) % SHUFFLE_MESSAGES.length;
-      setShuffleMessage(SHUFFLE_MESSAGES[msgIndex]);
+      msgIndex = (msgIndex + 1) % shuffleMessages.length;
+      setShuffleMessage(shuffleMessages[msgIndex]);
     }, 800);
 
     // After shuffle, proceed to card selection
@@ -178,7 +167,7 @@ export default function RitualReadingHub() {
   const handleCardRevealComplete = () => {
     // Generate the reading with emotional pacing
     setStep('loading-result');
-    setLoadingText('Jo tum pooch rahe ho… uski clarity aa rahi hai…');
+    setLoadingText(t('ritualHub.loadingMessage'));
 
     // Use the selected cards from store
     const { selectedCardsWithDetails } = useReadingStore.getState();
@@ -229,7 +218,7 @@ export default function RitualReadingHub() {
         return (
           <ShuffleAnimation
             message={shuffleMessage}
-            messages={SHUFFLE_MESSAGES}
+            messages={shuffleMessages}
           />
         );
 
@@ -357,6 +346,7 @@ function TopicSelection({ onSelect }: { onSelect: (topic: ReadingType) => void }
 
 // ========== STEP 2: INTENTION LOCK ==========
 function IntentionLock({ topic }: { topic: ReadingType | null }) {
+  const { t } = useLanguage();
   const topicLabel = topic ? TOPIC_CARDS.find(t => t.id === topic)?.label : '';
 
   return (
@@ -374,7 +364,7 @@ function IntentionLock({ topic }: { topic: ReadingType | null }) {
         animate={{ opacity: 1, y: 0 }}
         className="font-serif text-2xl md:text-3xl text-foreground leading-relaxed max-w-xl mx-auto"
       >
-        Theek hai… focus wahi ja raha hai
+        {t('ritualHub.intentionLock.message')}
       </motion.p>
 
       <motion.p
@@ -383,7 +373,7 @@ function IntentionLock({ topic }: { topic: ReadingType | null }) {
         transition={{ delay: 0.5 }}
         className="text-foreground-secondary mt-6"
       >
-        Topic: <span className="text-gold font-medium">{topicLabel}</span>
+        {t('ritualHub.intentionLock.topicLabel')}: <span className="text-gold font-medium">{topicLabel}</span>
       </motion.p>
     </div>
   );
@@ -418,14 +408,14 @@ function QuestionInput({
         </p>
       </motion.div>
 
-       <FloatingTextarea
-         label="Tumhara sawal"
-         value={question}
-         onChange={onQuestionChange}
-         placeholder={t('ritualHub.question.placeholder')}
-         maxLength={500}
-         autoFocus
-       />
+<FloatingTextarea
+          label={t('ritualHub.question.label')}
+          value={question}
+          onChange={onQuestionChange}
+          placeholder={t('ritualHub.question.placeholder')}
+          maxLength={500}
+          autoFocus
+        />
 
       <p className="text-center text-foreground-muted text-sm">
         {t('ritualHub.question.hint')}
@@ -585,19 +575,18 @@ const { t, language } = useLanguage();
       if (!analysis) return t('ritualHub.cardSelect.title');
 
       const domain = analysis.primaryDomain;
-      const emotion = analysis.emotionalTone;
-
-      const messages: Record<string, string> = {
-        love: "Tumhare dil ke baare mein jo baar baar soch rahe ho… woh energy inme hai. Jo cards tumhe attract kar rahe hain, woh tumhare pyaar ki energy se connected hain.",
-        career: "Tumhare professional life ka sawal tumhare mann mein chal raha hai. Jo cards tum feel kar rahe ho, woh tumhari career ki energy reflect kar rahe hain.",
-        finance: "Tum financial clarity chahte ho. Jo cards attract kar rahe hain, woh tumhare money matters ke signals lae rahe hain.",
-        conflict: "Tension ya conflict jo tum feel kar rahe ho… uski energy cards mein dikh rahi hai. Jo chuno, woh meaningful hai.",
-        action: "Kya karna chahiye? Tumhara internal signal har card mein hai. Jo attract kar raha hai, woh tumhara next step indication kar raha hai.",
-        spiritual: "Tum spiritual clarity dhundh rahe ho. Jo cards tumhe pull kar rahe hain, woh universe ke messages lae rahe hain.",
-        general: "Tumhare question ki energy tumhare saath hai. Jo cards chuno, woh tumhare liye meaningful signals hain.",
+      const keyMap: Record<string, string> = {
+        love: 'ritualHub.intent.love',
+        career: 'ritualHub.intent.career',
+        finance: 'ritualHub.intent.finance',
+        conflict: 'ritualHub.intent.conflict',
+        action: 'ritualHub.intent.action',
+        spiritual: 'ritualHub.intent.spiritual',
+        no_contact: 'ritualHub.intent.noContact',
+        general: 'ritualHub.intent.general',
       };
-
-      return messages[domain] || messages.general;
+      const tKey = keyMap[domain] || 'ritualHub.intent.general';
+      return t(tKey);
     };
 
 return (
@@ -695,17 +684,17 @@ function SuspensePause({ domain }: { domain?: DomainAnalysis }) {
   const getSuspenseMessage = () => {
     if (!domain) return t('ritualHub.suspense.default');
 
-    const messages: Record<string, string> = {
-      love: "Jo tumne select kiye… woh tumhare pyaar ke signals hain. Ab dekhte hain kya keh rahe hai.",
-      career: "Tumhare career ki energy select hui hai. Thoda or wait karo… clarity aa rahi hai.",
-      finance: "Financial signals card mein capture huye hain. Ab signal clear ho raha hai…",
-      conflict: "Conflict ki energy capture hui hai. Dekhte hain kya nature ke paas kehna hai.",
-      action: "Tumhara next step card mein chhupa hai… bas thoda or wait karo.",
-      spiritual: "Universe ke messages tumhare cards mein hai. Ab unhe decode kar rahe hain…",
-      general: "Jo tumne choose kiya… woh tumhare question ke liye meaningful hai. Ab dekhte hain kya bataya ja raha hai.",
+    const keyMap: Record<string, string> = {
+      love: 'ritualHub.suspense.love',
+      career: 'ritualHub.suspense.career',
+      finance: 'ritualHub.suspense.finance',
+      conflict: 'ritualHub.suspense.conflict',
+      action: 'ritualHub.suspense.action',
+      spiritual: 'ritualHub.suspense.spiritual',
+      general: 'ritualHub.suspense.general',
     };
-
-    return messages[domain.primaryDomain] || messages.general;
+    const tKey = keyMap[domain.primaryDomain] || 'ritualHub.suspense.general';
+    return t(tKey);
   };
 
   return (
@@ -786,7 +775,7 @@ function CardReveal({
   }, [currentCardIndex, selectedCards.length, revealState, onComplete]);
 
   const getRevealMessage = (cardIndex: number, card: any) => {
-    const messages = REVEAL_MESSAGES;
+    const messages = revealMessages;
     // Make message personal to the card if we have domain info
     if (domain && card) {
       return `Card ${cardIndex + 1}: ${card.name} — ${card.keywords?.[0] || 'energy'} ${messages[cardIndex % messages.length].replace('Yeh', 'is card mein').replace('Ab jo aa raha hai', 'energy')}`;
@@ -849,7 +838,7 @@ function CardReveal({
 
         {revealState === 'flipping' && currentCardIndex < selectedCards.length && (
           <p className="text-foreground-muted text-sm mt-6 animate-pulse">
-            Card {currentCardIndex + 1} of {selectedCards.length} — thoda or wait karo…
+            {t('ritualHub.cardReveal.progress', { current: currentCardIndex + 1, total: selectedCards.length })}
           </p>
         )}
       </motion.div>
@@ -859,6 +848,7 @@ function CardReveal({
 
 // ========== STEP 8: LOADING STATE ==========
 function LoadingState({ text }: { text: string }) {
+  const { t } = useLanguage();
   return (
     <div className="text-center py-20">
       <Loader2 className="h-12 w-12 text-gold animate-spin mx-auto mb-6" />
@@ -866,7 +856,7 @@ function LoadingState({ text }: { text: string }) {
         {text}
       </p>
       <p className="text-foreground-secondary">
-        Thoda ruk jao… signals pakad rahe hain
+        {t('ritualHub.loadingMessage')}
       </p>
     </div>
   );
@@ -882,6 +872,7 @@ function ReadingDelivery({
 }) {
   const [streamComplete, setStreamComplete] = useState(false);
   const [showPreStream, setShowPreStream] = useState(true);
+  const { t } = useLanguage();
   
   // Pre-stream message then start streaming after 2 seconds
   useEffect(() => {
@@ -904,7 +895,7 @@ function ReadingDelivery({
             className="p-6 md:p-8 rounded-2xl bg-surface/50 border border-gold/20 backdrop-blur-sm text-center"
           >
             <p className="font-serif text-xl md:text-2xl text-foreground/80 leading-relaxed">
-              Thoda dhyaan se dekhna… jo aa raha hai woh important hai.
+              {t('ritualHub.preStreamText')}
             </p>
           </motion.div>
         )}
@@ -920,7 +911,7 @@ function ReadingDelivery({
         >
           <StreamingOutput 
             lines={result.streamingLines || [
-              result.reading || "Jo tum pooch rahe ho… usme confusion hai, par direction clear ho rahi hai."
+              result.reading || t('ritualHub.readingFallback')
             ]}
             onComplete={() => setStreamComplete(true)}
             startDelay={0}
@@ -937,7 +928,7 @@ function ReadingDelivery({
         >
           <h3 className="font-heading text-lg text-gold mb-3 flex items-center gap-2">
             <Sparkles className="h-5 w-5" />
-            Tumhare cards yeh keh rahe hain:
+            {t('ritualHub.guidanceIntro')}
           </h3>
           <p className="text-foreground leading-relaxed font-serif">
             {result.guidance}
@@ -954,15 +945,15 @@ function ReadingDelivery({
           className="text-center space-y-6"
         >
           <p className="font-serif text-xl md:text-2xl text-foreground-secondary leading-relaxed">
-            &quot;Ab jo next step hai… woh tum already feel kar rahe ho.&quot;
+            &quot;{t('ritualHub.closingQuote')}&quot;
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button variant="secondary" size="md" onClick={onStartOver}>
-              Phir se shuru karein
+              {t('ritualHub.startOver')}
             </Button>
             <Button variant="primary" size="md" onClick={() => window.location.href = '/premium'}>
-              Full Access 🔓
+              {t('ritualHub.unlockAccess')}
             </Button>
           </div>
         </motion.div>

@@ -6,6 +6,8 @@ import type { Language } from '@/lib/i18n/config';
 import { LANGUAGE_STORAGE_KEY } from '@/lib/i18n/config';
 // Use unified loader that supports both nested and flat keys
 import { getTranslationSync, refreshTranslations } from '@/lib/i18n/loader';
+// Self-healing translation engine
+import { resolveTranslation, createFailsafeTranslator, detectLanguageFromText } from '@/lib/i18n/engine';
 
 export function useLanguage() {
   const { 
@@ -24,15 +26,19 @@ export function useLanguage() {
 
   const setLanguage = useCallback((lang: Language) => {
     storeSetLanguage(lang);
-    if (typeof window !== 'undefined') {
-      localStorage.setItem(LANGUAGE_STORAGE_KEY, lang);
-    }
-    // Refresh translations when language changes
     refreshTranslations();
-  }, [storeSetLanguage]);
+  }, [storeSetLanguage, refreshTranslations]);
+
+  // Self-healing translator - never shows raw keys
+  const safeT = useMemo(() => createFailsafeTranslator(language), [language]);
 
   const t = useCallback((key: string, params?: Record<string, string | number>): string => {
-    let text = getTranslationSync(key, language);
+    let text = safeT(key);
+    
+    // Also try sync as fallback
+    if (text === key) {
+      text = getTranslationSync(key, language) || key;
+    }
     
     if (params) {
       Object.entries(params).forEach(([k, v]) => {
@@ -41,7 +47,7 @@ export function useLanguage() {
     }
     
     return text;
-  }, [language]);
+  }, [language, safeT]);
 
   const getHeroHeadline = useCallback((intent: string = 'default'): string => {
     return getTranslationSync(`hero.headline.${intent}`, language);
@@ -89,6 +95,15 @@ export function useLanguage() {
     return language === 'ar' || language === 'he';
   }, [language]);
 
+  // Auto-detect language from user input text
+  const detectAndSetFromInput = useCallback((inputText: string) => {
+    if (!inputText || inputText.length < 3) return;
+    const detected = detectLanguageFromText(inputText);
+    if (detected !== language) {
+      storeSetLanguage(detected as Language);
+    }
+  }, [language, storeSetLanguage]);
+
   return {
     language,
     setLanguage,
@@ -105,14 +120,23 @@ export function useLanguage() {
     getReadingTopic,
     getUrgencyBadge,
     isRTL,
+    detectAndSetFromInput,
   };
 }
 
 export function useTranslation() {
   const { language } = useLanguageStore();
   
+  // Use failsafe translator to prevent raw keys
+  const safeT = useMemo(() => createFailsafeTranslator(language), [language]);
+  
   const t = useCallback((key: string, params?: Record<string, string | number>): string => {
-    let text = getTranslationSync(key, language);
+    let text = safeT(key);
+    
+    // Fallback to sync if failsafe returns key
+    if (text === key) {
+      text = getTranslationSync(key, language) || key;
+    }
     
     if (params) {
       Object.entries(params).forEach(([k, v]) => {
@@ -121,7 +145,7 @@ export function useTranslation() {
     }
     
     return text;
-  }, [language]);
+  }, [language, safeT]);
   
   return { t, language };
 }

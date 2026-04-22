@@ -348,7 +348,6 @@ const HINDI_WORDS: Record<string, string> = {
   'princess': 'राजकुमारी',
   'lord': 'भगवान',
   'goddess': 'देवी',
-  'lord': 'प्रभु',
 };
 
 export function detectLanguageFromText(text: string): 'en' | 'hi' | 'hinglish' {

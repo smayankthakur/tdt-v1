@@ -107,7 +107,7 @@ export function useLanguage() {
 }
 
 export function useTranslation() {
-  const { language } = useLanguageStore();
+  const { language, t: storeT } = useLanguageStore();
 
   const t = useCallback((key: string, params?: Record<string, string | number>): string => {
     return storeT(key, params);

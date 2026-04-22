@@ -96,16 +96,16 @@ export function t(
   lang: SupportedLanguage = 'en',
   params?: Record<string, string | number>
 ): string {
-  const keys = path.split('.');
+   const keys = path.split('.');
 
-  let value: unknown = languages[lang];
-  let fallback: unknown = languages.en;
+   let value: any = languages[lang];
+   let fallback: any = languages.en;
 
-  // Navigate the nested structure
-  for (const key of keys) {
-    value = value?.[key];
-    fallback = fallback?.[key];
-  }
+   // Navigate the nested structure
+   for (const key of keys) {
+     value = value?.[key];
+     fallback = fallback?.[key];
+   }
 
   // SELF-HEALING LOGIC
   if (value === undefined || value === null || value === '') {
@@ -163,7 +163,7 @@ export function clearTranslationWarnings(): void {
  */
 export function hasTranslation(path: string, lang: SupportedLanguage): boolean {
   const keys = path.split('.');
-  let value: unknown = languages[lang];
+  let value: any = languages[lang];
 
   for (const key of keys) {
     value = value?.[key];

@@ -1,7 +1,7 @@
-import type { Language } from './config'
-import { langMap } from './config'
-import { TRANSLATIONS } from './translations'
-import { translations as flatTranslations } from '@/translations'
+import type { Language } from './config';
+import { langMap } from './config';
+import { TRANSLATIONS } from './translations';
+import { translations as flatTranslations } from '@/translations';
 
 // In-memory cache for API-fetched translations
 let translationCache: {

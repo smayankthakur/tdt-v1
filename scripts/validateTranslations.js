@@ -53,9 +53,9 @@ try {
     cwd: projectRoot,
     stdio: 'pipe'
   });
-  console.log(`  ${GREEN}✓${RESET} Type structures match perfectly`);
-} catch (error: any) {
-  const output = error.stdout?.toString() + error.stderr?.toString();
+   console.log(`  ${GREEN}✓${RESET} Type structures match perfectly`);
+ } catch (error) {
+   const output = error.stdout?.toString() + error.stderr?.toString();
 
   // Check if it's a type error (not just missing config)
   if (output.includes('error') || output.includes('Type')) {
@@ -81,7 +81,7 @@ const schemaContent = fs.readFileSync(schemaPath, 'utf-8');
 
 // Count expected leaf nodes (strings) in schema
 const leafKeyRegex = /^\s*([a-zA-Z][a-zA-Z0-9_]*)\s*:\s*["']{0,2}$/gm;
-const expectedKeys: string[] = [];
+const expectedKeys = [];
 let match;
 while ((match = leafKeyRegex.exec(schemaContent)) !== null) {
   const key = match[1];

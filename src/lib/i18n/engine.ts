@@ -25,7 +25,7 @@ function setNested(obj: any, path: string, value: any): void {
 
 export async function resolveTranslation(key: string, lang: string): Promise<string> {
   const normalizedLang = lang as SupportedLang;
-  let entry = getNested(TRANSLATIONS, key);
+  const entry = getNested(TRANSLATIONS, key);
 
   if (entry && entry[normalizedLang]) {
     return entry[normalizedLang];

@@ -301,7 +301,6 @@ const HINDI_WORDS: Record<string, string> = {
   'daughter': 'बेटी',
   'wife': 'पत्नी',
   'husband': 'पति',
-  'friend': 'मित्र',
   'lover': 'प्रेमी',
   'enemy': 'शत्रु',
   'king': 'राजा',

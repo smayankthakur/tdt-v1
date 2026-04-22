@@ -176,20 +176,20 @@ export const schema = {
       spiritual: "",
       noContact: "",
       general: "",
-    },
-    // Arrays
-    shuffle: [],
-    reveal: [],
-    // Fallback/general messages
-    fallbackClosing: "",
-    loadingMessage: "",
-    preStreamText: "",
-    readingFallback: "",
-    guidanceIntro: "",
-    closingQuote: "",
-    startOver: "",
-    unlockAccess: "",
-  },
+     },
+     // Arrays
+     shuffle: [] as string[],
+     reveal: [] as string[],
+     // Fallback/general messages
+     fallbackClosing: "",
+     loadingMessage: "",
+     preStreamText: "",
+     readingFallback: "",
+     guidanceIntro: "",
+     closingQuote: "",
+     startOver: "",
+     unlockAccess: "",
+   },
 
   // =====================
   // READING PAGE (static labels)
@@ -411,8 +411,8 @@ export const schema = {
     guidance: "",
     tryAgain: "",
     unlockFull: "",
-  },
-} as const;
+   },
+ };
 
-export type TranslationSchema = typeof schema;
-export type TranslationKey = keyof TranslationSchema;
+ export type TranslationSchema = typeof schema;
+ export type TranslationKey = keyof TranslationSchema;

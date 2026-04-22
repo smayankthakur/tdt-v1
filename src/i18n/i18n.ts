@@ -201,4 +201,4 @@ export function getAllKeys(): string[] {
 
 // Export languages for validation
 export { en, hi, hinglish };
-export type { SupportedLanguage, TranslationSchema };
+export type { TranslationSchema };

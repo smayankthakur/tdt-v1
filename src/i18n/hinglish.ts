@@ -2,8 +2,10 @@
 // TypeScript will error if any key is missing
 
 import { TranslationSchema } from './schema';
+import { en } from './en';
 
 export const hinglish: TranslationSchema = {
+  ...en,
   common: {
     loading: 'Loading...',
     error: 'Kuch galat ho gaya',
@@ -51,7 +53,9 @@ export const hinglish: TranslationSchema = {
   },
 
   home: {
+    ...en.home,
     hero: {
+      ...en.home.hero,
       sloganLine1: "This sirf tarot nahi hai...",
       sloganLine2: "Yeh woh clarity hai jab life confusing ho jaati hai...",
       quote: "Jo aap poochhna chahte hain... uska jawaab aap pehle se feel kar rahe hain",
@@ -100,7 +104,7 @@ export const hinglish: TranslationSchema = {
     },
   },
 
-  readingHub: {
+  ritualHub: {
     topicSelect: {
       title: "Aaj tum kis baare mein clarity chahte ho?",
       subtitle: "Inme se woh topic choose karo jo tumhare dil ke kareeb hai…",
@@ -229,6 +233,7 @@ export const hinglish: TranslationSchema = {
   },
 
   footer: {
+    ...en.footer,
     tagline: 'Clarity begins within',
     copyright: '© Sitelytc Digital Media. All rights reserved.',
     madeWith: 'Cosmic energy se bana',
@@ -306,5 +311,5 @@ export const hinglish: TranslationSchema = {
     guidance: 'Guidance',
     tryAgain: 'Naya reading',
     unlockFull: 'Full access lo',
-  },
-} as const;
+   },
+ };

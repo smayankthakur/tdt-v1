@@ -4,4 +4,3 @@
 export * from './schema';
 export * from './i18n';
 export * from './translateDynamic';
-export { en, hi, hinglish } from './en';

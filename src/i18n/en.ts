@@ -370,5 +370,5 @@ export const en: TranslationSchema = {
     guidance: 'Guidance',
     tryAgain: 'New reading',
     unlockFull: 'Get full access',
-  },
-} as const;
+   },
+ };

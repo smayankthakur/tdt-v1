@@ -1,0 +1,310 @@
+// Hinglish translations - MUST match schema.ts structure exactly
+// TypeScript will error if any key is missing
+
+import { TranslationSchema } from './schema';
+
+export const hinglish: TranslationSchema = {
+  common: {
+    loading: 'Loading...',
+    error: 'Kuch galat ho gaya',
+    retry: 'Try again',
+    cancel: 'Cancel',
+    confirm: 'Confirm',
+    save: 'Save',
+    close: 'Close',
+    continue: 'Continue',
+    back: 'Back',
+    next: 'Next',
+    submit: 'Submit',
+    skip: 'Skip',
+    language: 'Language',
+    poweredBy: 'Powered by Sitelytc Digital Media',
+    under60seconds: '60 seconds se kam',
+    connectingToGinni: 'Ginni se connect ho raha hai...',
+    ginniIsThinking: 'Ginni soch rahi hai...',
+    yourSpiritualGuide: 'Tumhari spiritual guide',
+    ginni: 'Ginni',
+    ginniTitle: 'Ginni ✨',
+    yourPersonalTarotGuide: 'Tumhara personal tarot guide',
+    secureGuarantee: 'Secure payment • 30-day guarantee',
+    instantDelivery: 'Instant delivery',
+    unlimitedReadings: 'Unlimited readings',
+    readingYourEnergy: 'Tumhari energy read kar rha hoon...',
+    recommendedForYou: 'Tumhare liye recommended',
+    fromPreviousReading: 'Tumhari previous reading se',
+    premiumAccessActive: 'Premium Access Active',
+    enjoyUnlimited: 'Unlimited readings enjoy karo',
+  },
+
+  nav: {
+    home: 'Home',
+    about: 'About',
+    reading: 'Reading',
+    subscription: 'Subscription',
+    premium: 'Premium',
+    bookReading: 'Book Reading',
+    booking: 'Booking',
+    blog: 'Blog',
+    contact: 'Contact',
+    talkToGinni: 'Ginni se baat karo',
+    yesno: 'Yes/No',
+  },
+
+  home: {
+    hero: {
+      sloganLine1: "This sirf tarot nahi hai...",
+      sloganLine2: "Yeh woh clarity hai jab life confusing ho jaati hai...",
+      quote: "Jo aap poochhna chahte hain... uska jawaab aap pehle se feel kar rahe hain",
+      ctaButton: "Apna bhavishya jaanein",
+      ctaSubtext: "Shayad yehi jawaab hai jiska aap intezaar kar rahe the...",
+    },
+  },
+
+  about: {
+    hero: {
+      title: 'About The Journey',
+      subtitle: 'Yeh platform sirf readings ke liye nahi bana. Clarity dene ke liye bana hai jab life confusing lagti hai.',
+    },
+    founder: {
+      role: 'Founder & Lead Tarot Reader',
+      bio: "Over 10 years of experience guiding seekers through life's most confusing moments. What started as a personal journey into tarot evolved into a mission — making spiritual guidance accessible to everyone, anytime.",
+      philosophy: "Yeh platform predictions ke liye nahi hai. Yeh tumhe dikhane ke liye hai jo tum already feel kar rahe ho. Cards tumhe kya karna hai yeh nahi batate — woh samajhne mein help karte hain.",
+    },
+    stats: {
+      readings: '10,000+ Readings',
+      since: 'Since 2014',
+    },
+    philosophy: {
+      title: 'The Philosophy',
+      clarity: {
+        title: 'Clarity Over Prediction',
+        desc: "Hum tumhara future nahi batate. Hum tumhe tumhara present clearly dikhane mein help karte hain.",
+      },
+      personal: {
+        title: 'Personal Over Generic',
+        desc: 'Har reading unique hai. No templates, no copy-paste responses.',
+      },
+      guidance: {
+        title: 'Guidance Over Advice',
+        desc: 'Hum tumhe tumhare answers tak pahunchate hain. Power hamesha tumhare andar thi.',
+      },
+    },
+    why: {
+      title: 'Why This Platform?',
+      p1: 'Traditional tarot readings ke liye appointment, wait, aur premium price chahiye. But clarity wait nahi karni chahiye.',
+      p2: 'Yeh platform ancient tarot wisdom ko modern AI technology ke saath mix karta hai — readings jo personal hain, jo tumhari emotional context samajhte hain.',
+      p3: 'Chahe tum 2 AM par confused ho ya big decision se pehle quick perspective chahiye — answers yahan hain, tumhare liye wait kar rahe hain.',
+    },
+    cta: {
+      text: 'Ready to find your clarity?',
+    },
+  },
+
+  readingHub: {
+    topicSelect: {
+      title: "Aaj tum kis baare mein clarity chahte ho?",
+      subtitle: "Inme se woh topic choose karo jo tumhare dil ke kareeb hai…",
+    },
+    question: {
+      title: "Jo tumhare mind mein baar baar aa raha hai…",
+      subtitle: "Usse likho. Pure dil se likho.",
+      label: "Tumhara sawal",
+      placeholder: "Kya jaan na chahte ho?",
+      submit: "Aage badhte hain",
+      hint: "Jitna clear sawal… utni clear direction",
+      back: "← Wapas",
+    },
+    intentionLock: {
+      message: "Theek hai… focus wahi ja raha hai",
+      topicLabel: "Topic",
+    },
+    cardSelect: {
+      title: "Inme se woh cards chuno jo tumhe attract kar rahe hain…",
+      selectionMessage: "{count} cards select kiye — abhi {remaining} or chuno",
+      complete: "Perfect! Tumhara selection complete hai…",
+    },
+    suspense: {
+      default: "Jo tumne choose kiya hai… woh random nahi hota",
+    },
+    cardReveal: {
+      progress: "Card {current} of {total} — thoda aur ruko…",
+    },
+    intent: {
+      love: "Tumhare dil ke baare mein jo baar baar soch rahe ho… woh energy inme hai.",
+      career: "Tumhare professional life ka sawal tumhare mann mein chal raha hai.",
+      finance: "Tum financial clarity chahte ho. Cards tumhare money ke signals lae rahe hain.",
+      conflict: "Tension ya conflict jo tum feel kar rahe ho… uski energy cards mein dikh rahi hai.",
+      action: "Kya karna chahiye? Tumhara internal signal har card mein hai.",
+      spiritual: "Tum spiritual clarity dhundh rahe ho. Jo cards pull kar rahe hain universe ke messages lae rahe hain.",
+      noContact: "Woh person tumhare mann mein hai. Tumhare beech ki energy dikh rahi hai.",
+      general: "Tumhare question ki energy tumhare saath hai. Jo cards chuno woh meaningful signals hain.",
+    },
+    suspenseMsgs: {
+      love: "Jo tumne select kiye… woh tumhare pyaar ke signals hain. Ab dekhte hain kya keh rahe hain.",
+      career: "Tumhare career ki energy select hui hai. Thoda or wait karo… clarity aa rahi hai.",
+      finance: "Financial signals card mein capture huye hain. Ab signal clear ho raha hai…",
+      conflict: "Conflict ki energy capture hui hai. Dekhte hain kya nature ke paas kehna hai.",
+      action: "Tumhara next step card mein chhupa hai… bas thoda or wait karo.",
+      spiritual: "Universe ke messages tumhare cards mein hai. Ab unhe decode kar rahe hain…",
+      noContact: "Woh person tumhare mann mein hai. Tumhare beech ki energy dikh rahi hai.",
+      general: "Jo tumne choose kiya… woh tumhare question ke liye meaningful hai.",
+    },
+    shuffle: [
+      "Thoda ruk jao…",
+      "Energy align ho rahi hai…",
+      "Jo aana hai… woh aa raha hai…",
+      "Cards bat rahe hain tumhare liye…",
+      "Signal pakad rahe hain…",
+    ],
+    reveal: [
+      "Yeh pehla signal hai…",
+      "Ab jo aa raha hai woh important hai…",
+      "Dekho kya hidden hai…",
+      "Energy clear ho rahi hai…",
+      "Jo tum dhundh rahe the woh yahi hai…",
+    ],
+    fallbackClosing: "Tum already jaante ho kya sahi hai… bas ab usse ignore mat karo.",
+    loadingMessage: "Thoda ruk jao… signal aa rahe hain",
+    preStreamText: "Thoda dhyaan se dekhna… jo aa raha hai woh important hai.",
+    readingFallback: "Tumhara sawal clarity la raha hai… direction ban rahi hai.",
+    guidanceIntro: "Tumhare cards yeh keh rahe hain:",
+    closingQuote: "Ab jo next step hai… woh tum already feel kar rahe ho.",
+    startOver: "Phir se shuru karein",
+    unlockAccess: "Full Access 🔓",
+  },
+
+  reading: {
+    title: 'Tumhara Tarot Reading',
+    selectTopic: 'Kis area mein janna chaahoge?',
+    love: 'Pyaar aur Rishte',
+    career: 'Career aur Kaam',
+    confusion: 'Clarity Paana',
+    finance: 'Finance',
+    marriage: 'Marriage',
+    noContact: 'No Contact',
+    general: 'General Guidance',
+    selectQuestion: 'Kya jaanna chahte ho?',
+    askOwn: 'Apna sawaal poochho...',
+    reveal: 'Answer reveal karo',
+    loading: 'Tumhari energy read kar rha hoon...',
+    yourCards: 'Tumhare Cards',
+    interpretation: 'Interpretation',
+    past: 'Past',
+    present: 'Present',
+    guidance: 'Guidance',
+    inputPlaceholder: "What do you want to ask?",
+  },
+
+  yesno: {
+    title: 'Yes or No?',
+    subtitle: 'A simple question, a clear answer',
+    questionPlaceholder: 'Think of your question… What yes/no answer do you seek?',
+    decode: 'Decode My Answer',
+    result: {
+      yes: 'YES',
+      no: 'NO',
+      maybe: 'THINK AGAIN',
+    },
+    share: 'This result seems meant for others too?',
+    newReading: 'Try another',
+  },
+
+  whySection: {
+    title: 'Kyun The Devine Tarot?',
+    description: 'Hum ancient tarot wisdom ko AI tech ke saath mix karte hain - readings jo personal, profound aur bilkul tumhare liye perfect hain.',
+    readings: '10,000+ readings',
+    rating: '4.9 rating',
+    speed: '60 seconds se kam',
+    features: {
+      personalized: 'Tumhari energy ke according personalized readings',
+      ai: 'AI-powered insights with human touch',
+      privacy: '100% private aur secure',
+      instant: 'Instant answers, kabhi bhi',
+    },
+  },
+
+  testimonials: {
+    title: 'Seekers kya kehte hain',
+    seeMore: 'Aur reviews dekho',
+  },
+
+  footer: {
+    tagline: 'Clarity begins within',
+    copyright: '© Sitelytc Digital Media. All rights reserved.',
+    madeWith: 'Cosmic energy se bana',
+    privacy: 'Privacy',
+  },
+
+  chat: {
+    button: 'Ginni se baat karo',
+    tooltip: 'Guidance chahiye? Ginni se chat karo',
+    welcome: 'Namaste! Main Ginni hoon, tumhari spiritual guide',
+    afterReading: 'Isme aur hai... mujhse baat karo',
+    placeholder: 'Message likho...',
+    send: 'Send',
+  },
+
+  paywall: {
+    title: {
+      curious: 'Cards kuch powerful dikha rahe hain...',
+      urgent: 'Tumhari clarity wait kar rahi hai...',
+      soft: 'Ek deeper perspective await kar raha hai',
+    },
+    description: {
+      curious: 'Aur bhi depth hai isme. Deep jana chahte ho?',
+      urgent: 'Ye insight sab kuch change kar sakti hai. Confused mat raho.',
+      soft: 'Universe aur dikhana chahta hai. Jab ready ho, continue karo.',
+    },
+    cta: {
+      curious: 'Reading continue karo',
+      urgent: 'Abhi unlock karo',
+      soft: 'Journey continue karo',
+    },
+    timeLimited: 'Limited offer',
+    savings: 'Bundle se 40% bachaao',
+    securePayment: 'Secure payment • 30-day guarantee',
+  },
+
+  premium: {
+    badge: 'Premium Member',
+    active: 'Premium Access Active',
+    enjoy: 'Unlimited readings enjoy karo',
+  },
+
+  urgency: {
+    timeSensitive: 'Time-sensitive',
+    limitedSpots: 'Sirf 2 spots bache hain',
+    endsTonight: 'Aaj raat end hoga',
+    lastChance: 'Last chance',
+  },
+
+  booking: {
+    selectDate: 'Date choose karo',
+    availableTimes: 'Available times',
+    chooseSessionLength: 'Session length choose karo',
+    bookingSummary: 'Booking Summary',
+    topic: 'Topic',
+    date: 'Date',
+    duration: 'Duration',
+    name: 'Name',
+    total: 'Total',
+    readingBooked: 'Tumhari reading book ho gayi',
+    bookingId: 'Booking ID',
+  },
+
+  readingForm: {
+    title: 'Thoda aur batao…',
+    subtitle: 'Taaki clear dekh sakein',
+    name: 'Tumhara naam',
+    namePlaceholder: 'Tumhara naam…',
+    nameError: 'Naam bhi batao… thoda personal connect banta hai',
+    question: 'Tumhara sawal',
+    questionPlaceholder: 'Kya jaan na chahte ho?',
+    questionError: 'Sawal clear hoga tabhi answer bhi clear aayega',
+    processing: 'Reading generate ho raha hai…',
+    patience: 'Thoda patience rakhho…',
+    guidance: 'Guidance',
+    tryAgain: 'Naya reading',
+    unlockFull: 'Full access lo',
+  },
+} as const;

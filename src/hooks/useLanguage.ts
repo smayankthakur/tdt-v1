@@ -4,50 +4,32 @@ import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useLanguageStore } from '@/store/languageStore';
 import type { Language } from '@/lib/i18n/config';
 import { LANGUAGE_STORAGE_KEY } from '@/lib/i18n/config';
-// Use unified loader that supports both nested and flat keys
 import { getTranslationSync, refreshTranslations } from '@/lib/i18n/loader';
-// Self-healing translation engine
-import { resolveTranslation, createFailsafeTranslator, detectLanguageFromText } from '@/lib/i18n/engine';
+import { detectLanguageFromText } from '@/lib/languageDetector';
 
 export function useLanguage() {
-  const { 
-    language, 
+  const {
+    language,
     setLanguage: storeSetLanguage,
     t: storeT,
   } = useLanguageStore();
-  
+
   const [isHydrated, setIsHydrated] = useState(false);
 
   useEffect(() => {
     setIsHydrated(true);
-    // Preload translations after hydration
     refreshTranslations();
   }, []);
 
   const setLanguage = useCallback((lang: Language) => {
     storeSetLanguage(lang);
     refreshTranslations();
-  }, [storeSetLanguage, refreshTranslations]);
+  }, [storeSetLanguage]);
 
-  // Self-healing translator - never shows raw keys
-  const safeT = useMemo(() => createFailsafeTranslator(language), [language]);
-
+  // Direct t from store (self-healing)
   const t = useCallback((key: string, params?: Record<string, string | number>): string => {
-    let text = safeT(key);
-    
-    // Also try sync as fallback
-    if (text === key) {
-      text = getTranslationSync(key, language) || key;
-    }
-    
-    if (params) {
-      Object.entries(params).forEach(([k, v]) => {
-        text = text.replace(new RegExp(`{${k}}`, 'g'), String(v));
-      });
-    }
-    
-    return text;
-  }, [language, safeT]);
+    return storeT(key, params);
+  }, [storeT]);
 
   const getHeroHeadline = useCallback((intent: string = 'default'): string => {
     return getTranslationSync(`hero.headline.${intent}`, language);
@@ -126,26 +108,10 @@ export function useLanguage() {
 
 export function useTranslation() {
   const { language } = useLanguageStore();
-  
-  // Use failsafe translator to prevent raw keys
-  const safeT = useMemo(() => createFailsafeTranslator(language), [language]);
-  
+
   const t = useCallback((key: string, params?: Record<string, string | number>): string => {
-    let text = safeT(key);
-    
-    // Fallback to sync if failsafe returns key
-    if (text === key) {
-      text = getTranslationSync(key, language) || key;
-    }
-    
-    if (params) {
-      Object.entries(params).forEach(([k, v]) => {
-        text = text.replace(new RegExp(`{${k}}`, 'g'), String(v));
-      });
-    }
-    
-    return text;
-  }, [language, safeT]);
-  
+    return storeT(key, params);
+  }, [storeT]);
+
   return { t, language };
 }

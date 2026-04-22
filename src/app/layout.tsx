@@ -6,6 +6,7 @@ import Footer from "@/components/layout/Footer";
 import AnalyticsProvider from "@/components/AnalyticsProvider";
 import Watermark from "@/components/security/Watermark";
 import ContentGuard from "@/components/ContentGuard";
+import DebugPanel from "@/components/DebugPanel";
 import dynamic from 'next/dynamic';
 
 const GinniChatWrapper = dynamic(() => import('@/components/GinniChatWrapper'), {
@@ -116,6 +117,7 @@ export default function RootLayout({
         )}
       </head>
       <body className="antialiased bg-[rgb(var(--background))] text-[rgb(var(--foreground))]" suppressHydrationWarning>
+        <DebugPanel />
         <Watermark />
         <ContentGuard>
           <ClientProviders>

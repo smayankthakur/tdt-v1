@@ -12,29 +12,30 @@ export default function ContentGuard({ children, enabled = process.env.NODE_ENV 
     if (!enabled) return;
 
     const checkForRawKeys = () => {
-      const walker = document.createTreeWalker(
-        document.body,
-        NodeFilter.SHOW_TEXT,
-        null,
-        null,
-        false
-      );
+      try {
+        const walker = document.createTreeWalker(
+          document.body,
+          NodeFilter.SHOW_TEXT
+        );
 
-      const rawKeyPattern = /\b([a-z]+\.[a-z]+\.[a-z]+|home\.|nav\.|common\.|hero\.|reading\.|ritualHub\.|chat\.|footer\.)/g;
-      const violations: string[] = [];
+        const rawKeyPattern = /\b([a-z]+\.[a-z]+\.[a-z]+|home\.|nav\.|common\.|hero\.|reading\.|ritualHub\.|chat\.|footer\.)/g;
+        const violations: string[] = [];
 
-      let node: Text | null;
-      while ((node = walker.nextNode() as Text)) {
-        const text = node.textContent?.trim() || '';
-        const matches = text.match(rawKeyPattern);
-        if (matches) {
-          violations.push(...matches);
+        let node: Node | null;
+        while ((node = walker.nextNode())) {
+          const text = node.textContent?.trim() || '';
+          const matches = text.match(rawKeyPattern);
+          if (matches) {
+            violations.push(...matches);
+          }
         }
-      }
 
-      if (violations.length > 0) {
-        console.error('❌ [ContentGuard] Raw translation keys detected:', violations);
-        console.warn('These keys are rendering raw instead of translated. Fix the translation or use the correct key.');
+        if (violations.length > 0) {
+          console.error('❌ [ContentGuard] Raw translation keys detected:', violations);
+          console.warn('These keys are rendering raw instead of translated. Fix the translation or use the correct key.');
+        }
+      } catch (e) {
+        // TreeWalker might fail in some environments
       }
     };
 

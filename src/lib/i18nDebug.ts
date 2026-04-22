@@ -1,6 +1,6 @@
 'use client';
 
-import { TRANSLATIONS } from './translations';
+import { TRANSLATIONS } from './i18n/translations';
 
 export type DebugStatus = 'ok' | 'missing' | 'fallback';
 

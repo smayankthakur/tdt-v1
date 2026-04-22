@@ -1,5 +1,5 @@
 import OpenAI from 'openai';
-import { ZODIAC_SIGNS } from '../blog/seo-strategy';
+import { ZODIAC_SIGNS } from '@/lib/blog/seo-strategy';
 
 const openai = process.env.OPENAI_API_KEY || process.env.OPENAI_KEY
   ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY || process.env.OPENAI_KEY })

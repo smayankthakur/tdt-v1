@@ -1,6 +1,6 @@
 'use client';
 
-import { supabase, isSupabaseConfigured } from '../supabase/client';
+import { supabase, isSupabaseConfigured } from '@/lib/supabase/client';
 
 function generateAnonymousId(): string {
   const stored = typeof window !== 'undefined' 

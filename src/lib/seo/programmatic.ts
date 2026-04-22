@@ -1,5 +1,5 @@
-import { keywordStrategy } from '../blog/seo-strategy';
-import { HoroscopeContent } from '../horoscope/engine';
+import { keywordStrategy } from '@/lib/blog/seo-strategy';
+import { HoroscopeContent } from '@/lib/horoscope/engine';
 
 export interface SEOPage {
   id: string;

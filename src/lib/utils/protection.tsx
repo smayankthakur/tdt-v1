@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
-import { shouldBlockContextMenu, shouldBlockDevTools, shouldBlockScreenshots } from '../securityConfig';
+import { shouldBlockContextMenu, shouldBlockDevTools, shouldBlockScreenshots } from '@/lib/securityConfig';
 
 export function useContentProtection() {
   useEffect(() => {

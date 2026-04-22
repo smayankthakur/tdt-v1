@@ -1,4 +1,4 @@
-import { supabase, isSupabaseConfigured } from '../supabase/client';
+import { supabase, isSupabaseConfigured } from '@/lib/supabase/client';
 
 export interface UserMemory {
   id: string;

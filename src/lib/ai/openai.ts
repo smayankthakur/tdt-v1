@@ -1,6 +1,6 @@
 import OpenAI from 'openai';
 import { buildPrompt } from './prompts';
-import { SelectedCard, formatCardsForAI } from '../tarot/logic';
+import { SelectedCard, formatCardsForAI } from '@/lib/tarot/logic';
 
 let _openai: OpenAI | undefined;
 

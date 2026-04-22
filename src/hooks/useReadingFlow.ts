@@ -330,10 +330,9 @@ export function useReadingFlow() {
         greeting = generateOpening(input.name, targetLanguage);
         readingContent = generateReadingContent(input.question, input.readingType, targetLanguage);
         guidance = generateGuidance(input.readingType, targetLanguage);
-        // Fallback streaming lines - use translations
-        const fallbackClosing = getTranslationSync ? getTranslationSync('ritualHub.fallbackClosing', targetLanguage) : '';
+        // Simple streaming fallback
         streamingLines = [
-          `${greeting} ${readingContent} ${guidance} ${fallbackClosing}`,
+          `${greeting} ${readingContent} ${guidance}`,
         ];
       }
       

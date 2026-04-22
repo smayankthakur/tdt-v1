@@ -741,9 +741,11 @@ function CardReveal({
   question: string;
   domain?: DomainAnalysis | null;
 }) {
+  const { t } = useLanguage();
   const [revealState, setRevealState] = useState<'idle' | 'flipping' | 'done'>('idle');
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
   const selectedCardsDetails = useReadingStore(state => state.selectedCardsWithDetails);
+  const revealMessages = getRevealMessages(t);
 
   // Get the actual card objects from selectedCardsWithDetails
   const selectedCards = selectedCardsDetails.map(sc => sc.card);

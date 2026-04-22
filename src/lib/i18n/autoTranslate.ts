@@ -338,7 +338,6 @@ const HINDI_WORDS: Record<string, string> = {
   'president': 'राष्ट्रपति',
   'minister': 'मंत्री',
   'judge': 'न्यायाधीश',
-  'lawyer': 'वकील',
   'prime minister': 'प्रधान मंत्री',
   'chief minister': 'मुख्य मंत्री',
   'governor': 'राज्यपाल',

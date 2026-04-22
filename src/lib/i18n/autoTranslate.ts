@@ -70,7 +70,6 @@ const HINGLISH_REPLACEMENTS: Record<string, string> = {
   'work': 'kaam',
   'job': 'naukri',
   'career': 'career',
-  'love': 'pyar',
   'relationship': 'rishta',
   'family': 'parivar',
   'friend': 'dost',

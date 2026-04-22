@@ -219,7 +219,6 @@ const DEVANAGARI_MAP: Record<string, string> = {
   'v': 'व',
   'w': 'व',
   'sh': 'श',
-  'sh': 'ष',
   's': 'स',
   'h': 'ह',
   'q': 'क़',

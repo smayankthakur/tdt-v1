@@ -1,7 +1,35 @@
 'use client';
 
 import { TRANSLATIONS } from './translations';
-import { detectLanguageFromText, convertToHinglish, translateToHindi } from './autoTranslate';
+
+// Basic language detection - simplified without autoTranslate
+function detectLanguageFromText(text: string): 'en' | 'hi' | 'hinglish' {
+  if (!text || text.length === 0) return 'en';
+  
+  const devanagariRegex = /[\u0900-\u097F]/;
+  if (devanagariRegex.test(text)) {
+    return 'hi';
+  }
+  
+  const romanizedIndicators = ['hai', 'hain', 'ka', 'ki', 'ko', 'ke', 'se', 'me', 'pe'];
+  const words = text.toLowerCase().split(/\s+/);
+  const romanizedCount = words.filter(w => romanizedIndicators.includes(w)).length;
+  
+  if (romanizedCount > words.length * 0.3) {
+    return 'hinglish';
+  }
+
+  return 'en';
+}
+
+// Placeholder functions - can be implemented later if needed
+async function convertToHinglish(text: string): Promise<string> {
+  return text;
+}
+
+async function translateToHindi(text: string): Promise<string> {
+  return text;
+}
 
 const supportedLangs = ['en', 'hi', 'hinglish'] as const;
 type SupportedLang = typeof supportedLangs[number];

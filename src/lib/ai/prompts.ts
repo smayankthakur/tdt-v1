@@ -8,22 +8,25 @@ NON-NEGOTIABLE RULES:
 - Use card names or explain any symbol
 - Use bullet points, numbered lists, or headings
 - Sound robotic, analytical, or like an AI
+- Say "seeker" or use generic terms - ALWAYS use the person's name
 
 ✅ ALWAYS:
-- Write as ONE flowing paragraph
-- Use soft Hindi/Hinglish tone
+- Write as ONE flowing narrative
+- Use the tone appropriate for the language (English/Hindi/Hinglish)
 - Address emotions, not mechanics
 - End with impact
 
-WRITE AS A FRIEND WHO SAYS:
-"Hey {name}, suno jo dikh raha hai… Jo tum feel kar rahe ho na, woh valid hai… Aur dekho, iske peeche kuch aur bhi hai jo tum nahi dekh paa rahe… Ab tumhe yeh karna chahiye… Tum already jaante ho kya sahi hai, bas usse ignore mat karo."
+PERSONALIZATION:
+- User's name: {name}
+- Use their name naturally 1-2 times in the reading
+- Make it feel like you're talking directly to them
 
 Question: {question}
 Energy: {cards}
 
 Write ONE unified, emotionally rich narrative. No structure, no headers, no card mentions. Just pure understanding.
 
-150-200 words. Single paragraph. No breaks.`;
+150-200 words. Single cohesive piece.`;
 
 export function buildPrompt(
   question: string, 
@@ -32,7 +35,7 @@ export function buildPrompt(
   topic?: string,
   name?: string
 ): string {
-  const topicSection = topic ? `Topic: ${topic}` : '';
+  const topicSection = topic ? `\nTopic: ${topic}` : '';
   const contextSection = memoryContext ? `\nContext: ${memoryContext}` : '';
   
   let prompt = tarotReadingPrompt
@@ -40,12 +43,12 @@ export function buildPrompt(
     .replace('{cards}', cardsFormatted)
     .replace('{context}', topicSection + contextSection);
   
-  if (name) {
-    prompt = prompt.replace('{name}', name);
-  }
-  
-  return prompt;
-}
+   if (name) {
+     prompt = prompt.replace('{name}', name);
+   }
+   
+   return prompt;
+ }
 
 export function getLanguagePrompt(language: string): string {
   const prompts: Record<string, string> = {

@@ -202,19 +202,35 @@ export const hi: TranslationSchema = {
     },
   },
 
-  footer: {
-    ...en.footer,
-    tagline: 'Clarity begins within',
-    copyright: `© Sitelytc Digital Media। सर्वाधिकार सुरक्षित।`,
-    madeWith: 'ब्रह्मांडीय ऊर्जा के साथ बनाया गया',
-    privacy: 'गोपनीयता',
-    navigation: 'Navigation',
-    support: 'Support',
-    connect: 'Connect',
-    disclaimer: 'This is not a replacement for professional advice. It is here to provide you clarity and direction.',
-  },
+   footer: {
+     ...en.footer,
+     tagline: 'Clarity begins within',
+     copyright: `© Sitelytc Digital Media। सर्वाधिकार सुरक्षित।`,
+     madeWith: 'ब्रह्मांडीय ऊर्जा के साथ बनाया गया',
+     privacy: 'गोपनीयता',
+     navigation: 'Navigation',
+     support: 'Support',
+     connect: 'Connect',
+     disclaimer: 'This is not a replacement for professional advice. It is here to provide you clarity and direction.',
+   },
 
-  booking: {
+   readingForm: {
+     title: 'थोड़ा और बताओ…',
+     subtitle: 'ताकि साफ़ देख सकें',
+     name: 'तुम्हारा नाम',
+     namePlaceholder: 'तुम्हारा नाम…',
+     nameError: 'नाम भी बताओ… थोड़ा पर्सनल कनेक्ट बनता है',
+     question: 'तुम्हारा सवाल',
+     questionPlaceholder: 'क्या जानना चाहते हो?',
+     questionError: 'सवाल clear होगा तभी answer भी clear आएगा',
+     processing: 'रीडिंग generate हो रही है…',
+     patience: 'थोड़ा patience रखो…',
+     guidance: 'Guidance',
+     tryAgain: 'नया reading',
+     unlockFull: 'Full access लो',
+   },
+
+   booking: {
     ...en.booking,
     selectDate: 'तारीख चुनें',
     availableTimes: 'उपलब्ध समय',

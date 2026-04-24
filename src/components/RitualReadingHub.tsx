@@ -68,6 +68,7 @@ export default function RitualReadingHub() {
   const [step, setStep] = useState<RitualStep>('topic-select');
   const [selectedTopic, setSelectedTopic] = useState<ReadingType | null>(null);
   const [question, setQuestion] = useState('');
+  const [userName, setUserName] = useState('');
   const [shuffleMessage, setShuffleMessage] = useState('');
   const [loadingText, setLoadingText] = useState('');
   const [sessionId] = useState(() => generateSessionId());
@@ -77,7 +78,7 @@ export default function RitualReadingHub() {
   const shuffleMessages = getShuffleMessages(t);
   const revealMessages = getRevealMessages(t);
   const { handleUserInput } = useAutoLanguage();
-  const { generateReading, result, isLoading, error } = useReadingFlow();
+   const { generateReading, result, isLoading, error, reset: resetReadingFlow } = useReadingFlow();
   const { reset: resetReadingStore, setDeck, setSelectedCardsWithDetails, selectedCardsWithDetails } = useReadingStore();
   const { setCurrentStage, setQuestion: setFunnelQuestion, incrementReadingCount } = useFunnelStore();
 
@@ -105,15 +106,18 @@ export default function RitualReadingHub() {
     }, 1500);
    };
 
-  // Question submission - with auto language detection
-  const handleQuestionSubmit = async () => {
-    if (!question.trim() || question.length < 5) return;
-    vibrate();
+   // Question submission - with auto language detection
+   const handleQuestionSubmit = async () => {
+     if (!question.trim() || question.length < 5) return;
+     vibrate();
 
-    // Auto-detect language from user's question
-    if (question.length > 10) {
-      handleUserInput(question);
-    }
+     // Store name in reading store
+     useReadingStore.getState().setUserName(userName.trim());
+
+     // Auto-detect language from user's question
+     if (question.length > 10) {
+       handleUserInput(question);
+     }
 
     // 1. Analyze intent of the question
     const analysis = analyzeIntent(question, selectedTopic || undefined);
@@ -163,38 +167,42 @@ export default function RitualReadingHub() {
     }, 1500);
   };
 
-  // Card reveal complete - generate reading
-  const handleCardRevealComplete = () => {
-    // Generate the reading with emotional pacing
-    setStep('loading-result');
-    setLoadingText(t('ritualHub.loadingMessage'));
+   // Card reveal complete - generate reading
+   const handleCardRevealComplete = () => {
+     // Generate the reading with emotional pacing
+     setStep('loading-result');
+     setLoadingText(t('ritualHub.loadingMessage'));
 
-    // Use the selected cards from store
-    const { selectedCardsWithDetails } = useReadingStore.getState();
+     // Use the selected cards and user name from state/store
+     const { selectedCardsWithDetails } = useReadingStore.getState();
+     const finalUserName = userName.trim() || 'Seeker';
 
-    generateReading({
-      name: 'Seeker',
-      question: question,
-      readingType: selectedTopic!,
-      selectedCards: selectedCardsWithDetails,
-      domainAnalysis: domainAnalysis!,
-    }).then(() => {
-      incrementReadingCount();
-      setTimeout(() => {
-        setStep('reading-delivery');
-      }, 2000);
-    });
-  };
+     generateReading({
+       name: finalUserName,
+       question: question,
+       readingType: selectedTopic!,
+       selectedCards: selectedCardsWithDetails,
+       domainAnalysis: domainAnalysis!,
+     }).then(() => {
+       incrementReadingCount();
+       setTimeout(() => {
+         setStep('reading-delivery');
+       }, 2000);
+     });
+   };
 
-  // Reset and start over
-  const handleStartOver = () => {
-    resetReadingStore();
-    setSelectedTopic(null);
-    setQuestion('');
-    setDomainAnalysis(null);
-    setStep('topic-select');
-    // No need to manually set deck - fresh reading will generate new cards
-  };
+    // Reset and start over
+    const handleStartOver = () => {
+      resetReadingStore();
+      setSelectedTopic(null);
+      setQuestion('');
+      setUserName('');
+      setDomainAnalysis(null);
+      setStep('topic-select');
+      // Reset reading flow to allow new reading
+      resetReadingFlow();
+      // No need to manually set deck - fresh reading will generate new cards
+    };
 
   // Render individual step
   const renderStep = () => {
@@ -205,14 +213,16 @@ export default function RitualReadingHub() {
       case 'intention-lock':
         return <IntentionLock topic={selectedTopic} />;
 
-      case 'question-input':
-        return (
-          <QuestionInput
-            question={question}
-            onQuestionChange={setQuestion}
-            onSubmit={handleQuestionSubmit}
-          />
-        );
+       case 'question-input':
+         return (
+           <QuestionInput
+             question={question}
+             onQuestionChange={setQuestion}
+             onSubmit={handleQuestionSubmit}
+             userName={userName}
+             onUserNameChange={setUserName}
+           />
+         );
 
       case 'shuffle':
         return (
@@ -384,10 +394,14 @@ function QuestionInput({
   question,
   onQuestionChange,
   onSubmit,
+  userName,
+  onUserNameChange,
 }: {
   question: string;
   onQuestionChange: (q: string) => void;
   onSubmit: () => void;
+  userName: string;
+  onUserNameChange: (name: string) => void;
 }) {
   const { t } = useLanguage();
   return (
@@ -408,25 +422,48 @@ function QuestionInput({
         </p>
       </motion.div>
 
-<FloatingTextarea
+      <div className="space-y-6">
+        {/* Name Input */}
+        <div>
+          <label className="block text-sm font-medium text-foreground mb-2 text-center">
+            {t('readingForm.name')}
+          </label>
+          <input
+            type="text"
+            value={userName}
+            onChange={(e) => onUserNameChange(e.target.value)}
+            placeholder={t('readingForm.namePlaceholder')}
+            maxLength={50}
+            className="w-full px-4 py-3 rounded-xl bg-surface/50 border border-gold/20 focus:border-gold/50 focus:ring-2 focus:ring-gold/20 outline-none transition-all text-foreground placeholder:text-foreground-muted text-center"
+            autoFocus
+          />
+          {!userName.trim() && (
+            <p className="text-center text-amber-400 text-sm mt-2">
+              {t('readingForm.nameError')}
+            </p>
+          )}
+        </div>
+
+        {/* Question Input */}
+        <FloatingTextarea
           label={t('ritualHub.question.label')}
           value={question}
           onChange={onQuestionChange}
           placeholder={t('ritualHub.question.placeholder')}
           maxLength={500}
-          autoFocus
         />
+      </div>
 
       <p className="text-center text-foreground-muted text-sm">
         {t('ritualHub.question.hint')}
       </p>
 
       <div className="pt-4">
-        <Button 
-          size="lg" 
+        <Button
+          size="lg"
           className="w-full"
           onClick={onSubmit}
-          disabled={!question.trim() || question.length < 5}
+          disabled={!question.trim() || question.length < 5 || !userName.trim()}
         >
           <span>{t('ritualHub.question.submit')}</span>
           <ArrowRight className="h-5 w-5" />

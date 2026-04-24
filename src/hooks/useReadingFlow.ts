@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import { useReadingLimitStore } from '@/store/reading-types';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useAutoLanguage } from '@/hooks/useAutoLanguage';
@@ -8,6 +8,7 @@ import { type ReadingType } from '@/store/reading-types';
 import { SelectedCard } from '@/lib/tarot/logic';
 import { generateHumanizedReading, createContextFromAnalysis } from '@/lib/humanizeReading';
 import type { DomainAnalysis } from '@/lib/cardEngine';
+import { cleanupReadingOutput, extractFirstName } from '@/lib/utils/readingCleanup';
 
 export interface ReadingResult {
   name: string;
@@ -15,7 +16,7 @@ export interface ReadingResult {
   greeting: string;
   reading: string;
   guidance: string;
-  streamingLines: string[]; // For streaming output
+  streamingLines: string[];
   language: string;
   timestamp: string;
 }
@@ -120,7 +121,7 @@ const READING_PATTERNS = {
 function generateOpening(name: string, language: string): string {
   const openings = PERSONALITY_OPENINGS[language as keyof typeof PERSONALITY_OPENINGS] || PERSONALITY_OPENINGS.english;
   const opening = openings[Math.floor(Math.random() * openings.length)];
-  return opening.replace('{name}', name);
+  return opening.replace(/{name}/g, name);
 }
 
 function generateGuidance(readingType: string, language: string): string {
@@ -128,7 +129,6 @@ function generateGuidance(readingType: string, language: string): string {
   return templates[Math.floor(Math.random() * templates.length)];
 }
 
-// Generate reading based on actual selected cards using humanization engine - UNIFIED FLOW
 function generateReadingFromCards(
   selectedCards: SelectedCard[],
   question: string,
@@ -137,12 +137,10 @@ function generateReadingFromCards(
   domainAnalysis?: DomainAnalysis,
   language: string = 'en'
 ): { reading: string; guidance: string; streamingLines: string[]; greeting?: string } {
-  // Build context using precomputed domain analysis if available
   let context;
   if (domainAnalysis) {
     context = createContextFromAnalysis(domainAnalysis, question, name);
   } else {
-    // Fallback: analyze question inline
     context = createContextFromAnalysis(
       {
         primaryDomain: 'general',
@@ -153,31 +151,27 @@ function generateReadingFromCards(
       name
     );
   }
-  
-  // Generate full reading using humanization engine with language transformation
+
   const reading = generateHumanizedReading(context, selectedCards, language as 'en' | 'hi' | 'hinglish');
-  
-  // Create unified single-flow reading without sections or headers
-  const greeting = reading.opening;
-  const fullReading = `${reading.opening} ${reading.presentEnergy} ${reading.underlyingPattern} ${reading.direction} ${reading.guidance} ${reading.closing}`;
-  
-  // Split into natural flow for streaming - single unified paragraph with natural pauses
+
+   const greeting = reading.opening;
+   // Compose reading without guidance to avoid duplication (guidance shown separately)
+   const fullReading = `${reading.opening} ${reading.presentEnergy} ${reading.underlyingPattern} ${reading.direction} ${reading.closing}`;
+
   const lines = fullReading
     .split('. ')
     .map(s => s.trim())
     .filter(s => s.length > 0)
     .flatMap((sentence, idx, arr) => {
-      // Add subtle breaks at transition points but keep flow natural
       if (idx === 0 || idx === arr.length - 1) {
         return [sentence];
       }
-      // Every few sentences, add a small pause for effect but no headers
       if (idx % 3 === 0 && idx < arr.length - 2) {
         return [sentence, ''];
       }
       return [sentence];
     });
-  
+
   return {
     reading: fullReading,
     guidance: reading.guidance,
@@ -186,29 +180,18 @@ function generateReadingFromCards(
   };
 }
 
-// Helper to convert humanized reading to streaming lines - UNIFIED FLOW WITHOUT HEADERS
-function formatReadingSections(reading: ReturnType<typeof generateHumanizedReading>): string[] {
-  const fullReading = `${reading.opening} ${reading.presentEnergy} ${reading.underlyingPattern} ${reading.direction} ${reading.guidance} ${reading.closing}`;
-  
-  return fullReading
-    .split('. ')
-    .map(s => s.trim())
-    .filter(s => s.length > 0);
-}
-
-// Fallback reading when no cards
 function generateReadingContent(question: string, readingType: string, language: string): string {
   const patterns = READING_PATTERNS[readingType as keyof typeof READING_PATTERNS] || READING_PATTERNS.default;
-  
+
   if (Array.isArray(patterns)) {
     const lowerQ = question.toLowerCase();
-    
+
     for (const p of patterns) {
       if ('pattern' in p && p.pattern && lowerQ.includes(p.pattern)) {
         return p.content;
       }
     }
-    
+
     const randomItem = patterns[Math.floor(Math.random() * patterns.length)];
     return randomItem.content;
   }
@@ -218,7 +201,7 @@ function generateReadingContent(question: string, readingType: string, language:
 
 function analyzeEmotion(question: string): string {
   const lowerQ = question.toLowerCase();
-  
+
   if (lowerQ.includes('fear') || lowerQ.includes('darr') || lowerQ.includes('nervous')) {
     return 'fear';
   }
@@ -228,11 +211,10 @@ function analyzeEmotion(question: string): string {
   if (lowerQ.includes('confused') || lowerQ.includes('kya') || lowerQ.includes('samajh')) {
     return 'confusion';
   }
-  
+
   return 'curious';
 }
 
-// Storage key for persisting readings - include language to prevent stale reads
 const READINGS_STORAGE_KEY = (sessionKey: string, lang: string) => `tdt_persisted_readings_${sessionKey}_${lang}`;
 
 interface StoredReading extends ReadingResult {
@@ -259,7 +241,7 @@ function saveReadingToStorage(reading: ReadingResult, sessionKey: string, lang: 
       storedAt: Date.now(),
       sessionKey,
     };
-    const updated = [newStored, ...stored.slice(0, 9)]; // Keep last 10
+    const updated = [newStored, ...stored.slice(0, 9)];
     localStorage.setItem(READINGS_STORAGE_KEY(sessionKey, lang), JSON.stringify(updated));
   } catch {
     // Ignore storage errors
@@ -277,37 +259,47 @@ export function useReadingFlow() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [sessionKey] = useState(() => `session_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`);
-  
+  const hasRunRef = useRef(false);
+
   const { canRead, incrementReading } = useReadingLimitStore();
   const { language } = useLanguage();
   const { region } = useAutoLanguage();
-  
+
+  const reset = useCallback(() => {
+    hasRunRef.current = false;
+    setResult(null);
+    setIsLoading(false);
+    setError(null);
+  }, []);
+
   const generateReading = useCallback(async (input: GenerateInput) => {
+    if (hasRunRef.current) {
+      console.log('[ReadingFlow] Already running, skipping duplicate call');
+      return;
+    }
+    hasRunRef.current = true;
+
     setIsLoading(true);
     setError(null);
-    
+
     if (!canRead()) {
       setError('Limit reached');
       setIsLoading(false);
       return;
     }
-    
-    // Check if we already have a reading stored for this session AND language (prevent regeneration)
+
     const existingReading = getStoredReading(sessionKey, language);
     if (existingReading) {
       setResult(existingReading);
       setIsLoading(false);
       return;
     }
-    
+
     try {
-      // Ritual pacing delay
       await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      // Use the user-selected language consistently throughout
+
       const targetLanguage = language;
-      
-      // Generate reading based on actual cards if provided
+
       let readingContent: string;
       let guidance: string;
       let streamingLines: string[] = [];
@@ -330,12 +322,11 @@ export function useReadingFlow() {
         greeting = generateOpening(input.name, targetLanguage);
         readingContent = generateReadingContent(input.question, input.readingType, targetLanguage);
         guidance = generateGuidance(input.readingType, targetLanguage);
-        // Simple streaming fallback
         streamingLines = [
           `${greeting} ${readingContent} ${guidance}`,
         ];
       }
-      
+
       const readingResult: ReadingResult = {
         name: input.name,
         question: input.question,
@@ -346,25 +337,39 @@ export function useReadingFlow() {
         language: targetLanguage,
         timestamp: new Date().toISOString(),
       };
-      
-      // Persist reading to localStorage with language key - regenerate on language change
-      saveReadingToStorage(readingResult, sessionKey, language);
-      
-      setResult(readingResult);
+
+      const firstName = extractFirstName(input.name);
+      const cleanedReading = cleanupReadingOutput(readingContent, input.name, firstName);
+      const cleanedGuidance = cleanupReadingOutput(guidance, input.name, firstName);
+      const cleanedStreamingLines = streamingLines.map(line =>
+        cleanupReadingOutput(line, input.name, firstName)
+      );
+
+      const cleanedResult: ReadingResult = {
+        ...readingResult,
+        reading: cleanedReading,
+        guidance: cleanedGuidance,
+        streamingLines: cleanedStreamingLines,
+      };
+
+      saveReadingToStorage(cleanedResult, sessionKey, language);
+
+      setResult(cleanedResult);
       incrementReading(input.readingType as any);
-      
+
     } catch (e) {
       setError('Failed to generate reading');
     } finally {
       setIsLoading(false);
     }
   }, [canRead, incrementReading, region, sessionKey, language]);
-  
+
   return {
     result,
     isLoading,
     error,
     canRead,
     generateReading,
+    reset,
   };
 }

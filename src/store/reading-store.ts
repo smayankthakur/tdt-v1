@@ -12,6 +12,7 @@ interface ReadingState {
   currentStep: number;
   isLoading: boolean;
   analysis: { theme: string; emotion: string; hiddenInsight: string } | null;
+  userName: string;
   setQuestion: (question: string) => void;
   setDeck: (deck: TarotCard[]) => void;
   selectCard: (card: TarotCard) => void;
@@ -20,6 +21,7 @@ interface ReadingState {
   setIsLoading: (loading: boolean) => void;
   setAnalysis: (analysis: { theme: string; emotion: string; hiddenInsight: string }) => void;
   setSelectedCardsWithDetails: (cards: SelectedCard[]) => void;
+  setUserName: (name: string) => void;
   reset: () => void;
 }
 
@@ -38,6 +40,7 @@ export const useReadingStore = create<ReadingState>((set) => ({
   currentStep: 1,
   isLoading: false,
   analysis: null,
+  userName: '',
 
   setQuestion: (question) => set({ question }),
 
@@ -59,6 +62,8 @@ export const useReadingStore = create<ReadingState>((set) => ({
 
   setSelectedCardsWithDetails: (cards) => set({ selectedCardsWithDetails: cards }),
 
+  setUserName: (name) => set({ userName: name }),
+
   reset: () => set({
     question: '',
     deck: getRandomDeck(),
@@ -68,5 +73,6 @@ export const useReadingStore = create<ReadingState>((set) => ({
     currentStep: 1,
     isLoading: false,
     analysis: null,
+    userName: '',
   }),
 }));

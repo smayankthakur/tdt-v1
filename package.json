@@ -16,7 +16,7 @@
     "barrels": "barrelsby --directory src --delete --location all --structure filesystem",
     "barrels:watch": "chokidar 'src/**/*.{ts,tsx}' -c 'npm run barrels'",
     "validate:arch": "npm run lint && npm run graph:check",
-    "prepare": "husky install",
+    "prepare": "husky || true",
     "design-audit": "node scripts/design-audit.js",
     "i18n:gen": "ts-node scripts/gen-i18n-types.ts",
     "i18n:check": "ts-node scripts/gen-i18n-types.ts",

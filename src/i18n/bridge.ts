@@ -3,8 +3,8 @@
 
 import { t as newT, detectLanguage, SupportedLanguage, getAllKeys } from './i18n';
 import { translateDynamic } from './translateDynamic';
-import { getTranslationSync, loadTranslations } from '../lib/i18n/loader';
-import { useLanguageStore } from '../store/languageStore';
+import { getTranslationSync, loadTranslations } from '@/lib/i18n/loader';
+import { useLanguageStore } from '@/store/languageStore';
 import { useEffect } from 'react';
 
 // ============================================

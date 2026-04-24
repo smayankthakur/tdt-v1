@@ -43,7 +43,7 @@ export const hi: TranslationSchema = {
   nav: {
     ...en.nav,
     home: 'होम',
-    about: 'के बारे में',
+    about: 'मेरे बारे में',
     reading: 'रीडिंग',
     subscription: 'सब्सक्रिप्शन',
     booking: 'बुकिंग',

@@ -1,7 +1,8 @@
 // Bridge between new schema-based i18n and existing loader system
 // Centralizes all translation logic
 
-import { t as newT, detectLanguage, translateDynamic, SupportedLanguage, getAllKeys } from './i18n';
+import { t as newT, detectLanguage, SupportedLanguage, getAllKeys } from './i18n';
+import { translateDynamic } from './translateDynamic';
 import { getTranslationSync, loadTranslations } from '../lib/i18n/loader';
 import { useLanguageStore } from '../../store/languageStore';
 import { useEffect } from 'react';

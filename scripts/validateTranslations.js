@@ -48,11 +48,12 @@ if (!allExist) {
 console.log(`\n${YELLOW}🔬 Running TypeScript structural validation...${RESET}`);
 
 try {
-  // Run tsc specifically on i18n files to catch type mismatches
-  execSync('npx tsc --noEmit src/i18n/*.ts', {
-    cwd: projectRoot,
-    stdio: 'pipe'
-  });
+   // Run tsc specifically on i18n files to catch type mismatches
+   // Using project config to ensure proper path resolution
+   const result = execSync('npx tsc --noEmit', {
+     cwd: projectRoot,
+     stdio: 'pipe'
+   });
    console.log(`  ${GREEN}✓${RESET} Type structures match perfectly`);
  } catch (error) {
    const output = error.stdout?.toString() + error.stderr?.toString();

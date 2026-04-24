@@ -1,0 +1,33 @@
+src/i18n/bridge.ts(4,37): error TS2305: Module '"./i18n"' has no exported member 'translateDynamic'.
+src/i18n/bridge.ts(6,34): error TS2307: Cannot find module '../../store/languageStore' or its corresponding type declarations.
+src/lib/i18n/translations.ts(236,7): error TS1117: An object literal cannot have multiple properties with the same name.
+src/lib/i18n/translations.ts(249,7): error TS1117: An object literal cannot have multiple properties with the same name.
+src/lib/i18n/translations.ts(250,7): error TS1117: An object literal cannot have multiple properties with the same name.
+src/lib/i18n/translations.ts(251,7): error TS1117: An object literal cannot have multiple properties with the same name.
+src/lib/i18n/translations.ts(252,7): error TS1117: An object literal cannot have multiple properties with the same name.
+src/lib/i18n/translations.ts(253,7): error TS1117: An object literal cannot have multiple properties with the same name.
+src/lib/i18n/translations.ts(254,7): error TS1117: An object literal cannot have multiple properties with the same name.
+src/lib/i18n/translations.ts(255,7): error TS1117: An object literal cannot have multiple properties with the same name.
+src/lib/i18n/translations.ts(692,7): error TS1117: An object literal cannot have multiple properties with the same name.
+src/lib/i18n/translations.ts(693,7): error TS1117: An object literal cannot have multiple properties with the same name.
+src/lib/i18n/translations.ts(694,7): error TS1117: An object literal cannot have multiple properties with the same name.
+src/lib/i18n/translations.ts(695,7): error TS1117: An object literal cannot have multiple properties with the same name.
+src/lib/i18n/translations.ts(696,7): error TS1117: An object literal cannot have multiple properties with the same name.
+src/lib/i18n/translations.ts(716,7): error TS1117: An object literal cannot have multiple properties with the same name.
+src/lib/i18n/translations.ts(726,7): error TS1117: An object literal cannot have multiple properties with the same name.
+src/lib/i18n/translations.ts(727,7): error TS1117: An object literal cannot have multiple properties with the same name.
+src/lib/i18n/translations.ts(728,7): error TS1117: An object literal cannot have multiple properties with the same name.
+src/lib/i18n/translations.ts(729,7): error TS1117: An object literal cannot have multiple properties with the same name.
+src/lib/i18n/translations.ts(730,7): error TS1117: An object literal cannot have multiple properties with the same name.
+src/lib/i18n/translations.ts(731,7): error TS1117: An object literal cannot have multiple properties with the same name.
+src/lib/i18n/translations.ts(732,7): error TS1117: An object literal cannot have multiple properties with the same name.
+test-deep.ts(1,10): error TS2305: Module '"@/i18n/i18n"' has no exported member 'something'.
+test-direct-path.ts(1,64): error TS2693: 'SupportedLanguage' only refers to a type, but is being used as a value here.
+test-import.ts(1,57): error TS2693: 'SupportedLanguage' only refers to a type, but is being used as a value here.
+test-index.ts(1,10): error TS2305: Module '"@/i18n/index"' has no exported member 'something'.
+test-module-path.ts(1,62): error TS2693: 'SupportedLanguage' only refers to a type, but is being used as a value here.
+test-module.ts(1,57): error TS2693: 'SupportedLanguage' only refers to a type, but is being used as a value here.
+test-path.ts(1,10): error TS2305: Module '"@/i18n/i18n"' has no exported member 'something'.
+test-relative-direct.ts(1,10): error TS2305: Module '"./src/i18n/i18n"' has no exported member 'something'.
+test-relative-module.ts(1,66): error TS2693: 'SupportedLanguage' only refers to a type, but is being used as a value here.
+test-relative.ts(1,27): error TS2307: Cannot find module '../i18n' or its corresponding type declarations.

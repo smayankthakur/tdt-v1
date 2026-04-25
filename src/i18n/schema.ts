@@ -181,15 +181,23 @@ export const schema = {
      shuffle: [] as string[],
      reveal: [] as string[],
      // Fallback/general messages
-     fallbackClosing: "",
-     loadingMessage: "",
-     preStreamText: "",
-     readingFallback: "",
-     guidanceIntro: "",
-     closingQuote: "",
-     startOver: "",
-     unlockAccess: "",
-   },
+      fallbackClosing: "",
+      loadingMessage: "",
+      preStreamText: "",
+      readingFallback: "",
+      guidanceIntro: "",
+      closingQuote: "",
+      startOver: "",
+      unlockAccess: "",
+      reminder: {
+        optIn: "",
+        optInActive: "",
+      },
+      behavioral: {
+        dailyHook: "",
+        subHook: "",
+      },
+    },
 
   // =====================
   // READING PAGE (static labels)
@@ -356,12 +364,9 @@ export const schema = {
     timeLimited: "",
     savings: "",
     securePayment: "",
-  },
+   },
 
-  // =====================
-  // PREMIUM
-  // =====================
-  premium: {
+   premium: {
     badge: "",
     active: "",
     enjoy: "",
@@ -397,71 +402,21 @@ export const schema = {
   // =====================
   // READING FORM (personalization)
   // =====================
-   readingForm: {
-     title: "",
-     subtitle: "",
-     name: "",
-     namePlaceholder: "",
-     nameError: "",
-     question: "",
-     questionPlaceholder: "",
-     questionError: "",
-     processing: "",
-     patience: "",
-     guidance: "",
-     tryAgain: "",
-     unlockFull: "",
-    },
-    ritualHub: {
-      topicSelect: {
-        title: "",
-        subtitle: "",
-      },
-      question: {
-        title: "",
-        subtitle: "",
-        label: "",
-        placeholder: "",
-        submit: "",
-        hint: "",
-        back: "",
-      },
-      intentionLock: {
-        message: "",
-        topicLabel: "",
-      },
-      cardSelect: {
-        title: "",
-        selectionMessage: "",
-        complete: "",
-      },
-      suspense: {
-        default: "",
-      },
-      cardReveal: {
-        progress: "",
-      },
-      intent: {},
-      suspenseMsgs: {},
-      shuffle: [] as string[],
-      reveal: [] as string[],
-      fallbackClosing: "",
-      loadingMessage: "",
-      preStreamText: "",
-      readingFallback: "",
-      guidanceIntro: "",
-      closingQuote: "",
-      startOver: "",
-      unlockAccess: "",
-      reminder: {
-        optIn: "",
-        optInActive: "",
-      },
-      behavioral: {
-        dailyHook: "",
-        subHook: "",
-      },
-    },
+    readingForm: {
+      title: "",
+      subtitle: "",
+      name: "",
+      namePlaceholder: "",
+      nameError: "",
+      question: "",
+      questionPlaceholder: "",
+      questionError: "",
+      processing: "",
+      patience: "",
+      guidance: "",
+      tryAgain: "",
+      unlockFull: "",
+     },
   };
 
  export type TranslationSchema = typeof schema;

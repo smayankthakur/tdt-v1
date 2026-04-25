@@ -150,7 +150,7 @@ export default function RitualReadingHub() {
     // Store metrics in funnel store for later use
     const { setQuestionDepth, setHesitationScore } = useFunnelStore.getState();
     setQuestionDepth(questionDepth);
-    setHesitationScore?.(hesitationScore);
+    setHesitationScore(hesitationScore);
 
     // Store name in reading store
     useReadingStore.getState().setUserName(userName.trim());
@@ -219,10 +219,10 @@ export default function RitualReadingHub() {
      const questionDepth: 'surface' | 'medium' | 'deep' = question.length > 100 ? 'deep' : question.length > 50 ? 'medium' : 'surface';
      const hesitationScore = questionEdits.current > 2 ? 0.7 : timeSpent > 30000 ? 0.6 : 0.2;
 
-     // Pass engagement to funnel store
-     const { readingCount, setQuestionDepth, setHesitationScore } = useFunnelStore.getState();
-     setQuestionDepth?.(questionDepth);
-     setHesitationScore?.(hesitationScore);
+      // Pass engagement to funnel store
+      const { readingCount, setQuestionDepth, setHesitationScore } = useFunnelStore.getState();
+      setQuestionDepth(questionDepth);
+      setHesitationScore(hesitationScore);
 
      // Generate behavioral wrap based on engagement
      const emotion = domainAnalysis?.emotionalTone || 'neutral';
@@ -327,7 +327,7 @@ export default function RitualReadingHub() {
         return <LoadingState text={loadingText} />;
 
       case 'reading-delivery':
-        return <ReadingDelivery result={result!} onStartOver={handleStartOver} />;
+        return <ReadingDelivery result={result!} onStartOver={handleStartOver} reminderOptIn={reminderOptIn} setReminderOptIn={setReminderOptIn} showPremiumTrigger={showPremiumTrigger} />;
 
       default:
         return null;
@@ -471,7 +471,6 @@ function QuestionInput({
   onUserNameChange: (name: string) => void;
 }) {
   const { t } = useLanguage();
-  const { trackQuestionEdit } = useRitualReadingHub(); // Need to expose
 
   return (
     <div className="space-y-8">
@@ -765,7 +764,7 @@ return (
 
         {selectedIds.size > 0 && selectedIds.size < 3 && (
           <p className="text-center text-foreground-muted text-sm">
-            {t('ritualHub.cardSelect.selectionMessage', { count: selectedIds.size, remaining: 3 - selectedIds.size })}
+            {t('ritualHub.cardSelect.selectionMessage', { count: selectedIds.size.toString(), remaining: (3 - selectedIds.size).toString() })}
           </p>
         )}
 
@@ -946,7 +945,7 @@ function CardReveal({
 
         {revealState === 'flipping' && currentCardIndex < selectedCards.length && (
           <p className="text-foreground-muted text-sm mt-6 animate-pulse">
-            {t('ritualHub.cardReveal.progress', { current: currentCardIndex + 1, total: selectedCards.length })}
+            {t('ritualHub.cardReveal.progress', { current: (currentCardIndex + 1).toString(), total: selectedCards.length.toString() })}
           </p>
         )}
       </motion.div>
@@ -974,9 +973,15 @@ function LoadingState({ text }: { text: string }) {
 function ReadingDelivery({
   result,
   onStartOver,
+  reminderOptIn,
+  setReminderOptIn,
+  showPremiumTrigger,
 }: {
   result: any;
   onStartOver: () => void;
+  reminderOptIn: boolean;
+  setReminderOptIn: (value: boolean) => void;
+  showPremiumTrigger: boolean;
 }) {
   const [streamComplete, setStreamComplete] = useState(false);
   const [showPreStream, setShowPreStream] = useState(true);
@@ -1075,9 +1080,9 @@ function ReadingDelivery({
            transition={{ delay: 0.5 }}
            className="text-center space-y-6"
          >
-           <p className="font-serif text-xl md:text-2xl text-foreground-secondary leading-relaxed">
-             "{t('ritualHub.closingQuote')}"
-           </p>
+            <p className="font-serif text-xl md:text-2xl text-foreground-secondary leading-relaxed">
+              &ldquo;{t('ritualHub.closingQuote')}&rdquo;
+            </p>
 
            {/* Behavioral Hook: Daily Return Prompt */}
            <motion.div

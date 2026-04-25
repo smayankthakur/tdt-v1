@@ -111,9 +111,9 @@ export default function SoftPaywall({
         </div>
 
         {/* Trust indicator */}
-        <p className="text-xs text-center text-foreground-muted mt-3">
-          No pressure — this is your journey. But there's more here for you.
-        </p>
+         <p className="text-xs text-center text-foreground-muted mt-3">
+           No pressure — this is your journey. But there&apos;s more here for you.
+         </p>
       </div>
     </motion.div>
   );

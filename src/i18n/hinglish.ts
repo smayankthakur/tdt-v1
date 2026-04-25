@@ -167,15 +167,23 @@ export const hinglish: TranslationSchema = {
       "Energy clear ho rahi hai…",
       "Jo tum dhundh rahe the woh yahi hai…",
     ],
-    fallbackClosing: "Tum already jaante ho kya sahi hai… bas ab usse ignore mat karo.",
-    loadingMessage: "Thoda ruk jao… signal aa rahe hain",
-    preStreamText: "Thoda dhyaan se dekhna… jo aa raha hai woh important hai.",
-    readingFallback: "Tumhara sawal clarity la raha hai… direction ban rahi hai.",
-    guidanceIntro: "Tumhare cards yeh keh rahe hain:",
-    closingQuote: "Ab jo next step hai… woh tum already feel kar rahe ho.",
-    startOver: "Phir se shuru karein",
-    unlockAccess: "Full Access 🔓",
-  },
+     fallbackClosing: "Tum already jaante ho kya sahi hai… bas ab usse ignore mat karo.",
+     loadingMessage: "Thoda ruk jao… signal aa rahe hain",
+     preStreamText: "Thoda dhyaan se dekhna… jo aa raha hai woh important hai.",
+     readingFallback: "Tumhara sawal clarity la raha hai… direction ban rahi hai.",
+     guidanceIntro: "Tumhare cards yeh keh rahe hain:",
+     closingQuote: "Ab jo next step hai… woh tum already feel kar rahe ho.",
+     startOver: "Phir se shuru karein",
+     unlockAccess: "Full Access 🔓",
+     reminder: {
+       optIn: "🔔 Kal yaad dilao",
+       optInActive: "🔔 Kal ke liye reminder set",
+     },
+     behavioral: {
+       dailyHook: "Kal aane wala kya hai?",
+       subHook: "Tumhara next insight baan raha hai…",
+     },
+   },
 
   reading: {
     title: 'Tumhara Tarot Reading',
@@ -232,102 +240,7 @@ export const hinglish: TranslationSchema = {
       seeMore: 'Aur reviews dekho',
     },
 
-    ritualHub: {
-      topicSelect: {
-        title: "Aaj tum kis baare mein clarity chahte ho?",
-        subtitle: "Inme se woh topic choose karo jo tumhare dil ke kareeb hai…",
-      },
-      question: {
-        title: "Jo tumhare mind mein baar baar aa raha hai…",
-        subtitle: "Usse likho. Pure dil se likho.",
-        label: "Tumhara sawal",
-        placeholder: "Kya jaan na chahte ho?",
-        submit: "Aage badhte hain",
-        hint: "Jitna clear sawal… utni clear direction",
-        back: "← Wapas",
-      },
-      intentionLock: {
-        message: "Theek hai… focus wahi ja raha hai",
-        topicLabel: "Topic",
-      },
-      cardSelect: {
-        title: "Inme se woh cards chuno jo tumhe attract kar rahe hain…",
-        selectionMessage: "{count} cards select kiye — abhi {remaining} or chuno",
-        complete: "Perfect! Tumhara selection complete hai…",
-      },
-      suspense: {
-        default: "Jo tumne choose kiya hai… woh random nahi hota",
-      },
-      cardReveal: {
-        progress: "Card {current} of {total} — thoda aur ruko…",
-      },
-      intent: {
-        love: "Tumhare dil ke baare mein jo baar baar soch rahe ho… woh energy inme hai.",
-        career: "Tumhare professional life ka sawal tumhare mann mein chal raha hai.",
-        finance: "Tum financial clarity chahte ho. Cards tumhare money ke signals lae rahe hain.",
-        conflict: "Tension ya conflict jo tum feel kar rahe ho… uski energy cards mein dikh rahi hai.",
-        action: "Kya karna chahiye? Tumhara internal signal har card mein hai.",
-        spiritual: "Tum spiritual clarity dhundh rahe ho. Jo cards pull kar rahe hain universe ke messages lae rahe hain.",
-        noContact: "Woh person tumhare mann mein hai. Tumhare beech ki energy dikh rahi hai.",
-        general: "Tumhare question ki energy tumhare saath hai. Jo cards chuno woh meaningful signals hain.",
-      },
-      suspenseMsgs: {
-        love: "Jo tumne select kiye… woh tumhare pyaar ke signals hain. Ab dekhte hain kya keh rahe hain.",
-        career: "Tumhare career ki energy select hui hai. Thoda or wait karo… clarity aa rahi hai.",
-        finance: "Financial signals card mein capture huye hain. Ab signal clear ho raha hai…",
-        conflict: "Conflict resolve hone wala hai",
-        action: "Action take karne ka time aa raha hai",
-        spiritual: "Tumhari spiritual journey strengthen ho rahi hai",
-        noContact: "No contact rule tumhari shanti la raha hai",
-        general: "Tumhari energy clear ho rahi hai",
-      },
-      shuffle: [
-        "Sirf thoda ruk jao…",
-        "Energy align ho rahi hai…",
-        "Jo aana hai… woh aa raha hai…",
-        "Cards bat rahe hain tumhare liye…",
-        "Signal pakad rahe hain…",
-      ],
-      reveal: [
-        "Yeh pehla signal hai…",
-        "Ab jo aa raha hai woh important hai…",
-        "Dekho kya hidden hai…",
-        "Energy clear ho rahi hai…",
-        "Jo tum dhundh rahe the woh yahi hai…",
-      ],
-      loading: "Thoda ruk jao… signals pakad rahe hain",
-      preStream: "Thoda dhyaan se dekhna… jo aa raha hai woh important hai.",
-      closing: "Ab jo next step hai… woh tum already feel kar rahe ho.",
-      loadingMessage: "Thoda ruk jao… signal aa rahe hain",
-      preStreamText: "Thoda dhyaan se dekhna… jo aa raha hai woh important hai.",
-      readingFallback: "Tumhara sawal clarity la raha hai… direction ban rahi hai.",
-      guidanceIntro: "Tumhare cards yeh keh rahe hain:",
-      closingQuote: "Ab jo next step hai… woh tum already feel kar rahe ho.",
-      startOver: "Phir se shuru karein",
-      unlockAccess: "Full Access 🔓",
-      reminder: {
-        optIn: "🔔 Kal yaad dilao",
-        optInActive: "🔔 Kal ke liye reminder set",
-      },
-      behavioral: {
-        dailyHook: "Kal aane wala kya hai?",
-        subHook: "Tumhara next insight baan raha hai…",
-      },
-    },
-
-     ritualHub: {
-       ...en.ritualHub,
-       reminder: {
-         optIn: "🔔 Kal yaad dilao",
-         optInActive: "🔔 Kal ke liye reminder set",
-       },
-       behavioral: {
-         dailyHook: "Kal aane wala kya hai?",
-         subHook: "Tumhara next insight baan raha hai…",
-       },
-     },
-
-     readingForm: {
+    readingForm: {
       title: 'Thoda aur batao…',
       subtitle: 'Taaki clear dekh sakein',
       name: 'Tumhara naam',

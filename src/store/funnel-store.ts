@@ -10,13 +10,13 @@ interface FunnelState {
   readingCount: number;
   questionDepth?: 'surface' | 'medium' | 'deep';
   hesitationScore?: number;
-  setCurrentStage: (stage: FunnelStage) => void;
-  setQuestion: (question: string) => void;
-  setSelectedCards: (cards: string[]) => void;
-  incrementReadingCount: () => void;
-  setQuestionDepth?: (depth: 'surface' | 'medium' | 'deep') => void;
-  setHesitationScore?: (score: number) => void;
-  reset: () => void;
+   setCurrentStage: (stage: FunnelStage) => void;
+   setQuestion: (question: string) => void;
+   setSelectedCards: (cards: string[]) => void;
+   incrementReadingCount: () => void;
+   setQuestionDepth: (depth: 'surface' | 'medium' | 'deep') => void;
+   setHesitationScore: (score: number) => void;
+   reset: () => void;
 }
 
 export const useFunnelStore = create<FunnelState>((set) => ({

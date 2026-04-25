@@ -1,20 +1,23 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, ArrowRight, Loader2, Heart, Briefcase, TrendingUp, Users, Home, Compass } from 'lucide-react';
-import { useLanguage } from '@/hooks/useLanguage';
-import { useAutoLanguage } from '@/hooks/useAutoLanguage';
-import { useReadingFlow } from '@/hooks/useReadingFlow';
-import { useReadingStore } from '@/store/reading-store';
-import { useFunnelStore } from '@/store/funnel-store';
-import { READING_TYPES, type ReadingType } from '@/store/reading-types';
-import { SelectedCard } from '@/lib/tarot/logic';
-import { generateCardSet, analyzeIntent, recordReadingSelection, finalizeReadingCards, type DomainAnalysis } from '@/lib/cardEngine';
-import Button from '@/components/ui/button';
-import TarotCardComponent from '@/components/TarotCard';
-import { FloatingTextarea } from '@/components/ui/FloatingInput';
-import StreamingOutput from './StreamingOutput';
+ import { useState, useEffect, useCallback, useRef } from 'react';
+ import { motion, AnimatePresence } from 'framer-motion';
+ import { Sparkles, ArrowRight, Loader2, Heart, Briefcase, TrendingUp, Users, Home, Compass, Clock, Bell, BellOff } from 'lucide-react';
+ import { useLanguage } from '@/hooks/useLanguage';
+ import { useAutoLanguage } from '@/hooks/useAutoLanguage';
+ import { useReadingFlow } from '@/hooks/useReadingFlow';
+ import { useReadingStore } from '@/store/reading-store';
+ import { useFunnelStore } from '@/store/funnel-store';
+ import { READING_TYPES, type ReadingType } from '@/store/reading-types';
+ import { SelectedCard } from '@/lib/tarot/logic';
+ import { generateCardSet, analyzeIntent, recordReadingSelection, finalizeReadingCards, type DomainAnalysis } from '@/lib/cardEngine';
+ import { wrapReadingWithBehavior, getPremiumCTA } from '@/lib/behavioral/engine';
+ import Button from '@/components/ui/button';
+ import TarotCardComponent from '@/components/TarotCard';
+ import { FloatingTextarea } from '@/components/ui/FloatingInput';
+ import StreamingOutput from './StreamingOutput';
+ import CountdownTimer from './CountdownTimer';
+ import SoftPaywall from './SoftPaywall';
 
 // Generate simple unique session ID
 const generateSessionId = () => `session_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`;
@@ -65,7 +68,7 @@ const vibrate = () => {
 };
 
 export default function RitualReadingHub() {
-  const [step, setStep] = useState<RitualStep>('topic-select');
+   const [step, setStep] = useState<RitualStep>('topic-select');
   const [selectedTopic, setSelectedTopic] = useState<ReadingType | null>(null);
   const [question, setQuestion] = useState('');
   const [userName, setUserName] = useState('');
@@ -73,6 +76,19 @@ export default function RitualReadingHub() {
   const [loadingText, setLoadingText] = useState('');
   const [sessionId] = useState(() => generateSessionId());
   const [domainAnalysis, setDomainAnalysis] = useState<DomainAnalysis | null>(null);
+  const [behavioralWrap, setBehavioralWrap] = useState<import('@/lib/behavioral/engine').BehavioralWrap | null>(null);
+  const [showPremiumTrigger, setShowPremiumTrigger] = useState(false);
+  const [reminderOptIn, setReminderOptIn] = useState(false);
+  const questionStartTime = useRef<number>(0);
+  const questionEdits = useRef<number>(0);
+
+  // Check saved reminder preference on mount
+  useEffect(() => {
+    const saved = localStorage.getItem('tarot_daily_reminder');
+    if (saved === 'true') {
+      setReminderOptIn(true);
+    }
+  }, []);
 
    const { t, language, isHydrated } = useLanguage();
   const shuffleMessages = getShuffleMessages(t);
@@ -88,10 +104,25 @@ export default function RitualReadingHub() {
     else if (step === 'reading-delivery') setCurrentStage('reading');
   }, [step, setCurrentStage]);
 
-  // Update loading text when language changes
-  useEffect(() => {
-    setLoadingText(t('reading.loading'));
-  }, [language, t]);
+   // Update loading text when language changes
+   useEffect(() => {
+     setLoadingText(t('reading.loading'));
+   }, [language, t]);
+
+   // Track question engagement
+   useEffect(() => {
+     if (step === 'question-input') {
+       questionStartTime.current = Date.now();
+       questionEdits.current = 0;
+     }
+   }, [step]);
+
+   // Track question edits as engagement
+   useEffect(() => {
+     if (step === 'question-input') {
+       questionEdits.current += 1;
+     }
+   }, [question, step]);
 
   // Topic selection handler
   const handleTopicSelect = (topic: ReadingType) => {
@@ -104,20 +135,30 @@ export default function RitualReadingHub() {
     setTimeout(() => {
       setStep('question-input');
     }, 1500);
-   };
+  };
 
-   // Question submission - with auto language detection
-   const handleQuestionSubmit = async () => {
-     if (!question.trim() || question.length < 5) return;
-     vibrate();
+  // Question submission - with auto language detection + engagement tracking
+  const handleQuestionSubmit = async () => {
+    if (!question.trim() || question.length < 5) return;
+    vibrate();
 
-     // Store name in reading store
-     useReadingStore.getState().setUserName(userName.trim());
+    // Track engagement metrics
+    const timeSpent = Date.now() - questionStartTime.current;
+    const hesitationScore = questionEdits.current > 2 ? 0.7 : timeSpent > 30000 ? 0.6 : 0.2;
+    const questionDepth: 'surface' | 'medium' | 'deep' = question.length > 100 ? 'deep' : question.length > 50 ? 'medium' : 'surface';
 
-     // Auto-detect language from user's question
-     if (question.length > 10) {
-       handleUserInput(question);
-     }
+    // Store metrics in funnel store for later use
+    const { setQuestionDepth, setHesitationScore } = useFunnelStore.getState();
+    setQuestionDepth(questionDepth);
+    setHesitationScore?.(hesitationScore);
+
+    // Store name in reading store
+    useReadingStore.getState().setUserName(userName.trim());
+
+    // Auto-detect language from user's question
+    if (question.length > 10) {
+      handleUserInput(question);
+    }
 
     // 1. Analyze intent of the question
     const analysis = analyzeIntent(question, selectedTopic || undefined);
@@ -173,6 +214,27 @@ export default function RitualReadingHub() {
      setStep('loading-result');
      setLoadingText(t('ritualHub.loadingMessage'));
 
+     // Get tracking data
+     const timeSpent = Date.now() - questionStartTime.current;
+     const questionDepth: 'surface' | 'medium' | 'deep' = question.length > 100 ? 'deep' : question.length > 50 ? 'medium' : 'surface';
+     const hesitationScore = questionEdits.current > 2 ? 0.7 : timeSpent > 30000 ? 0.6 : 0.2;
+
+     // Pass engagement to funnel store
+     const { readingCount, setQuestionDepth, setHesitationScore } = useFunnelStore.getState();
+     setQuestionDepth?.(questionDepth);
+     setHesitationScore?.(hesitationScore);
+
+     // Generate behavioral wrap based on engagement
+     const emotion = domainAnalysis?.emotionalTone || 'neutral';
+     const wrap = wrapReadingWithBehavior(language, userName.trim(), selectedTopic || 'general', {
+       readingCount,
+       questionDepth,
+       hesitationScore,
+       emotionIntensity: hesitationScore > 0.5 ? 'high' : 'medium',
+     });
+     setBehavioralWrap(wrap);
+     setShowPremiumTrigger(wrap.showPremium);
+
      // Use the selected cards and user name from state/store
      const { selectedCardsWithDetails } = useReadingStore.getState();
      const finalUserName = userName.trim() || 'Seeker';
@@ -185,24 +247,29 @@ export default function RitualReadingHub() {
        domainAnalysis: domainAnalysis!,
      }).then(() => {
        incrementReadingCount();
+
+       // Save reminder preference
+       if (reminderOptIn) {
+         localStorage.setItem('tarot_daily_reminder', 'true');
+       }
+
        setTimeout(() => {
          setStep('reading-delivery');
        }, 2000);
      });
    };
 
-    // Reset and start over
-    const handleStartOver = () => {
-      resetReadingStore();
-      setSelectedTopic(null);
-      setQuestion('');
-      setUserName('');
-      setDomainAnalysis(null);
-      setStep('topic-select');
-      // Reset reading flow to allow new reading
-      resetReadingFlow();
-      // No need to manually set deck - fresh reading will generate new cards
-    };
+   // Reset and start over
+   const handleStartOver = () => {
+     resetReadingStore();
+     setSelectedTopic(null);
+     setQuestion('');
+     setUserName('');
+     setDomainAnalysis(null);
+     setStep('topic-select');
+     // Reset reading flow to allow new reading
+     resetReadingFlow();
+   };
 
   // Render individual step
   const renderStep = () => {
@@ -404,6 +471,8 @@ function QuestionInput({
   onUserNameChange: (name: string) => void;
 }) {
   const { t } = useLanguage();
+  const { trackQuestionEdit } = useRitualReadingHub(); // Need to expose
+
   return (
     <div className="space-y-8">
       <motion.div
@@ -911,8 +980,10 @@ function ReadingDelivery({
 }) {
   const [streamComplete, setStreamComplete] = useState(false);
   const [showPreStream, setShowPreStream] = useState(true);
-  const { t } = useLanguage();
-  
+  const { t, language } = useLanguage();
+  // Access behavioral wrap from parent via context or prop - for now approximate
+  const { readingCount } = useFunnelStore();
+
   // Pre-stream message then start streaming after 2 seconds
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -920,6 +991,27 @@ function ReadingDelivery({
     }, 2000);
     return () => clearTimeout(timer);
   }, []);
+
+   // Generate behavioral hooks after reading completes
+   const getDailyHook = () => {
+     const firstName = result.name?.split(' ')[0] || 'friend';
+     const hooks: Record<string, string[]> = {
+       en: [
+         `${firstName}, there's an energy shift coming in the next 48 hours. Come back tomorrow — I'll have decoded it for you.`,
+         `This isn't the full picture yet. Something's in motion. Return tomorrow and I'll guide you through the next phase.`,
+       ],
+       hi: [
+         `${firstName}, aage 48 hours mein energy shift aa raha hai. Kal wapas aana — main decode kar ke batati hoon.`,
+         `Yeh complete picture nahi hai. Kuch chal raha hai. Kal wapas aana, main next phase guide karti hoon.`,
+       ],
+       hinglish: [
+         `${firstName}, next 48 hours mein energy shift aa raha hai. Kal aana — main decode kar ke bataungi.`,
+         `Yeh picture incomplete hai. Kuch chal raha hai. Kal wapas aana, next phase guide karti hoon.`,
+       ],
+     };
+     const pool = hooks[language] || hooks.en;
+     return pool[Math.floor(Math.random() * pool.length)];
+   };
 
   return (
     <div className="space-y-8">
@@ -975,29 +1067,93 @@ function ReadingDelivery({
         </motion.div>
       )}
 
-      {/* Closing - appears after guidance */}
-      {streamComplete && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
-          className="text-center space-y-6"
-        >
-          <p className="font-serif text-xl md:text-2xl text-foreground-secondary leading-relaxed">
-            &quot;{t('ritualHub.closingQuote')}&quot;
-          </p>
+       {/* Closing - appears after guidance */}
+       {streamComplete && (
+         <motion.div
+           initial={{ opacity: 0, y: 20 }}
+           animate={{ opacity: 1, y: 0 }}
+           transition={{ delay: 0.5 }}
+           className="text-center space-y-6"
+         >
+           <p className="font-serif text-xl md:text-2xl text-foreground-secondary leading-relaxed">
+             "{t('ritualHub.closingQuote')}"
+           </p>
 
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button variant="secondary" size="md" onClick={onStartOver}>
-              {t('ritualHub.startOver')}
-            </Button>
-            <Button variant="primary" size="md" onClick={() => window.location.href = '/premium'}>
-              {t('ritualHub.unlockAccess')}
-            </Button>
-          </div>
-        </motion.div>
-      )}
-    </div>
-  );
-}
+           {/* Behavioral Hook: Daily Return Prompt */}
+           <motion.div
+             initial={{ opacity: 0 }}
+             animate={{ opacity: 1 }}
+             transition={{ delay: 0.7 }}
+             className="p-6 rounded-2xl bg-gradient-to-r from-purple-900/30 via-gold/10 to-purple-900/30 border border-gold/20 space-y-4"
+           >
+             <div className="flex items-center justify-center gap-3 mb-2">
+               <Clock className="h-5 w-5 text-gold" />
+               <h4 className="font-heading text-lg text-gold">
+                 {t('ritualHub.behavioral.dailyHook')}
+               </h4>
+             </div>
+             <p className="text-foreground/80 leading-relaxed max-w-lg mx-auto text-sm md:text-base">
+               {getDailyHook()}
+             </p>
+
+             {/* Countdown Timer */}
+             <div className="flex justify-center my-4">
+               <CountdownTimer
+                 hours={24}
+                 minutes={0}
+                 seconds={0}
+               />
+             </div>
+
+             {/* Optional Reminder Opt-in */}
+             <div className="flex items-center justify-center gap-2 pt-2">
+               <button
+                 onClick={() => setReminderOptIn(!reminderOptIn)}
+                 className={`flex items-center gap-2 px-4 py-2 rounded-full transition-all text-sm ${
+                   reminderOptIn
+                     ? 'bg-gold/20 text-gold border border-gold/40'
+                     : 'bg-surface/50 text-foreground-muted border border-gold/10 hover:border-gold/30'
+                 }`}
+               >
+                 {reminderOptIn ? <Bell className="h-4 w-4" /> : <BellOff className="h-4 w-4" />}
+                 <span>
+                   {reminderOptIn ? t('ritualHub.reminder.optInActive') : t('ritualHub.reminder.optIn')}
+                 </span>
+               </button>
+             </div>
+           </motion.div>
+
+           {/* Premium Trigger - shown after 2+ readings OR deep questions */}
+           {showPremiumTrigger && readingCount >= 2 && (
+             <motion.div
+               initial={{ opacity: 0, y: 10 }}
+               animate={{ opacity: 1, y: 0 }}
+               transition={{ delay: 0.9 }}
+               className="mt-6"
+             >
+               <SoftPaywall
+                 triggerReason="deep_engagement"
+               />
+             </motion.div>
+           )}
+
+           {/* Action Buttons */}
+           <motion.div
+             initial={{ opacity: 0, y: 20 }}
+             animate={{ opacity: 1, y: 0 }}
+             transition={{ delay: 0.5 }}
+             className="flex flex-col sm:flex-row gap-4 justify-center"
+           >
+             <Button variant="secondary" size="md" onClick={onStartOver}>
+               {t('ritualHub.startOver')}
+             </Button>
+             <Button variant="primary" size="md" onClick={() => window.location.href = '/premium'}>
+               {t('ritualHub.unlockAccess')}
+             </Button>
+           </motion.div>
+         </motion.div>
+       )}
+     </div>
+   );
+ }
 

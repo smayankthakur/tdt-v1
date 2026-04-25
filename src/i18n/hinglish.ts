@@ -226,90 +226,130 @@ export const hinglish: TranslationSchema = {
       instant: 'Instant answers, kabhi bhi',
     },
   },
-
+  
   testimonials: {
     title: 'Seekers kya kehte hain',
     seeMore: 'Aur reviews dekho',
   },
 
-  footer: {
-    ...en.footer,
-    tagline: 'Clarity begins within',
-    copyright: '© Sitelytc Digital Media. All rights reserved.',
-    madeWith: 'Cosmic energy se bana',
-    privacy: 'Privacy',
-  },
-
-  chat: {
-    button: 'Ginni se baat karo',
-    tooltip: 'Guidance chahiye? Ginni se chat karo',
-    welcome: 'Namaste! Main Ginni hoon, tumhari spiritual guide',
-    afterReading: 'Isme aur hai... mujhse baat karo',
-    placeholder: 'Message likho...',
-    send: 'Send',
-  },
-
-  paywall: {
-    title: {
-      curious: 'Cards kuch powerful dikha rahe hain...',
-      urgent: 'Tumhari clarity wait kar rahi hai...',
-      soft: 'Ek deeper perspective await kar raha hai',
-    },
-    description: {
-      curious: 'Aur bhi depth hai isme. Deep jana chahte ho?',
-      urgent: 'Ye insight sab kuch change kar sakti hai. Confused mat raho.',
-      soft: 'Universe aur dikhana chahta hai. Jab ready ho, continue karo.',
-    },
-    cta: {
-      curious: 'Reading continue karo',
-      urgent: 'Abhi unlock karo',
-      soft: 'Journey continue karo',
-    },
-    timeLimited: 'Limited offer',
-    savings: 'Bundle se 40% bachaao',
-    securePayment: 'Secure payment • 30-day guarantee',
-  },
-
-  premium: {
-    badge: 'Premium Member',
-    active: 'Premium Access Active',
-    enjoy: 'Unlimited readings enjoy karo',
-  },
-
-  urgency: {
-    timeSensitive: 'Time-sensitive',
-    limitedSpots: 'Sirf 2 spots bache hain',
-    endsTonight: 'Aaj raat end hoga',
-    lastChance: 'Last chance',
-  },
-
-  booking: {
-    selectDate: 'Date choose karo',
-    availableTimes: 'Available times',
-    chooseSessionLength: 'Session length choose karo',
-    bookingSummary: 'Booking Summary',
-    topic: 'Topic',
-    date: 'Date',
-    duration: 'Duration',
-    name: 'Name',
-    total: 'Total',
-    readingBooked: 'Tumhari reading book ho gayi',
-    bookingId: 'Booking ID',
-  },
-
-  readingForm: {
-    title: 'Thoda aur batao…',
-    subtitle: 'Taaki clear dekh sakein',
-    name: 'Tumhara naam',
-    namePlaceholder: 'Tumhara naam…',
-    nameError: 'Naam bhi batao… thoda personal connect banta hai',
-    question: 'Tumhara sawal',
-    questionPlaceholder: 'Kya jaan na chahte ho?',
-    questionError: 'Sawal clear hoga tabhi answer bhi clear aayega',
-    processing: 'Reading generate ho raha hai…',
-    patience: 'Thoda patience rakhho…',
-    guidance: 'Guidance',
-    tryAgain: 'Naya reading',
-    unlockFull: 'Full access lo',
+   ritualHub: {
+     topicSelect: {
+       title: "Aaj tum kis baare mein clarity chahte ho?",
+       subtitle: "Inme se woh topic choose karo jo tumhare dil ke kareeb hai…",
+     },
+     question: {
+       title: "Jo tumhare mind mein baar baar aa raha hai…",
+       subtitle: "Usse likho. Pure dil se likho.",
+       label: "Tumhara sawal",
+       placeholder: "Kya jaan na chahte ho?",
+       submit: "Aage badhte hain",
+       hint: "Jitna clear sawal… utni clear direction",
+       back: "← Wapas",
+     },
+     intentionLock: {
+       message: "Theek hai… focus wahi ja raha hai",
+       topicLabel: "Topic",
+     },
+     cardSelect: {
+       title: "Inme se woh cards chuno jo tumhe attract kar rahe hain…",
+       selectionMessage: "{count} cards select kiye — abhi {remaining} or chuno",
+       complete: "Perfect! Tumhara selection complete hai…",
+     },
+     suspense: {
+       default: "Jo tumne choose kiya hai… woh random nahi hota",
+     },
+     cardReveal: {
+       progress: "Card {current} of {total} — thoda aur ruko…",
+     },
+     intent: {
+       love: "Tumhare dil ke baare mein jo baar baar soch rahe ho… woh energy inme hai.",
+       career: "Tumhare professional life ka sawal tumhare mann mein chal raha hai.",
+       finance: "Tum financial clarity chahte ho. Cards tumhare money ke signals lae rahe hain.",
+       conflict: "Conflict ki wajah se yeh situation bani hai",
+       action: "Tumhare action ki zaroorat hai situation change karne ke liye",
+       spiritual: "Ye situation ek spiritual lesson hai jo tumhe samajhni hai",
+       no_contact: "No contact rule tumhari situation ko improve kar sakta hai",
+       general: "Ye situation tumhara growth ka hissa hai",
+     },
+     suspenseMsgs: {
+       love: "Tumhare relationship mein kuch important chal raha hai",
+       career: "Tumhare career mein change aa raha hai",
+       finance: "Tumhare finances mein shift ho raha hai",
+       conflict: "Conflict resolve hone wala hai",
+       action: "Action take karne ka time aa raha hai",
+       spiritual: "Tumhari spiritual journey strengthen ho rahi hai",
+       no_contact: "No contact rule tumhari shanti la raha hai",
+       general: "Tumhari energy clear ho rahi hai",
+     },
+     shuffle: [
+       "Sirf thoda ruk jao…",
+       "Energy align ho rahi hai…",
+       "Jo aane wala hai woh important hai…",
+       "Cards tumhe bata rahe hain…",
+       "Signals catch ho rahe hain…",
+     ],
+     reveal: [
+       "Yeh pehla signal hai…",
+       "Ab jo aa raha hai woh important hai…",
+       "Dekho kya hidden hai…",
+       "Energy clear ho rahi hai…",
+       "Jo tum dhundh rahe the woh yahi hai…",
+     ],
+     fallbackClosing: "Tum already jaante ho kya sahi hai… bas ab usse ignore mat karo.",
+     loadingMessage: "Thoda ruk jao… signal aa rahe hain",
+     preStreamText: "Thoda dhyaan se dekhna… jo aa raha hai woh important hai.",
+     readingFallback: "Tumhara sawal clarity la raha hai… direction ban rahi hai.",
+     guidanceIntro: "Tumhare cards yeh keh rahe hain:",
+     closingQuote: "Ab jo next step hai… woh tum already feel kar rahe ho.",
+     startOver: "Phir se shuru karein",
+     unlockAccess: "Full Access 🔓",
+     reminder: {
+       optIn: "🔔 Kal yaad dilao",
+       optInActive: "🔔 Kal ke liye reminder set",
+     },
+     behavioral: {
+       dailyHook: "Kal aane wala kya hai?",
+       subHook: "Tumhara next insight baan raha hai…",
+     },
    },
+
+   footer: {
+     ...en.footer,
+     tagline: 'Clarity begins within',
+     copyright: `© Sitelytc Digital Media। सर्वाधिकार सुरक्षित।`,
+     madeWith: 'ब्रह्मांडीय ऊर्जा के साथ बनाया गया',
+     privacy: 'गोपनीयता',
+     navigation: 'Navigation',
+     support: 'Support',
+     connect: 'Connect',
+     disclaimer: 'This is not a replacement for professional advice. It is here to provide you clarity and direction.',
+   },
+
+    ritualHub: {
+      ...en.ritualHub,
+      reminder: {
+        optIn: "🔔 Kal yaad dilao",
+        optInActive: "🔔 Kal ke liye reminder set",
+      },
+      behavioral: {
+        dailyHook: "Kal aane wala kya hai?",
+        subHook: "Tumhara next insight baan raha hai…",
+      },
+    },
+
+    readingForm: {
+      title: 'Thoda aur batao…',
+      subtitle: 'Taaki clear dekh sakein',
+      name: 'Tumhara naam',
+      namePlaceholder: 'Tumhara naam…',
+      nameError: 'Naam bhi batao… thoda personal connect banta hai',
+      question: 'Tumhara sawal',
+      questionPlaceholder: 'Kya jaan na chahte ho?',
+      questionError: 'Sawal clear hoga tabhi answer bhi clear aayega',
+      processing: 'Reading generate ho raha hai…',
+      patience: 'Thoda patience rakhho…',
+      guidance: 'Guidance',
+      tryAgain: 'Naya reading',
+      unlockFull: 'Full access lo',
+    },
  };

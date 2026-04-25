@@ -4,9 +4,10 @@ import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useLanguageStore } from '@/store/languageStore';
 import type { Language } from '@/store/languageStore';
 import { detectLanguageFromText } from '@/lib/languageDetector';
+import { t as i18nT } from '@/i18n/i18n';
 
 export function useLanguage() {
-  const { language, setLanguage, t: baseT } = useLanguageStore();
+  const { language, setLanguage } = useLanguageStore();
 
   const [isHydrated, setIsHydrated] = useState(false);
 
@@ -14,10 +15,10 @@ export function useLanguage() {
     setIsHydrated(true);
   }, []);
 
-  // Wrap base t to provide same interface
-  const t = useCallback((key: string, variables?: Record<string, string>) => {
-    return baseT(key, variables);
-  }, [baseT]);
+  // Wrap i18n t to provide same interface with fallback
+  const t = useCallback((key: string, variables?: Record<string, string | number>) => {
+    return i18nT(key, language, variables);
+  }, [language]);
 
   const setLanguageSafe = useCallback((lang: Language) => {
     setLanguage(lang);
@@ -65,9 +66,9 @@ export function useLanguage() {
     return t(randomBadge);
   }, [t]);
 
-   const isRTL = useMemo(() => {
-     return false; // Only en/hi/hinglish supported; none are RTL
-   }, [language]);
+  const isRTL = useMemo(() => {
+    return false; // Only en/hi/hinglish supported; none are RTL
+  }, [language]);
 
   const detectAndSetFromInput = useCallback((inputText: string) => {
     if (!inputText || inputText.length < 3) return;

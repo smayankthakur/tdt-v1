@@ -331,9 +331,8 @@ const FALLBACK: Record<string, Record<string, string>> = {
  * Get translation from nested structure (existing system)
  */
 function getNestedTranslation(key: string, lang: Language): string {
-  const mappedLang = langMap[lang] || lang
   const keys = key.split('.')
-  let value: unknown = TRANSLATIONS[mappedLang]
+  let value: unknown = TRANSLATIONS[lang]
 
   if (!value) {
     return key

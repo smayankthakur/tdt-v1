@@ -1,60 +1,19 @@
-'use client';
+import { create } from "zustand"
 
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
-import { TRANSLATIONS } from '@/lib/i18n/translations';
-
-export type Language = 'en' | 'hi' | 'hinglish';
+export type Language = "en" | "hi" | "hinglish"
 
 interface LanguageState {
-  language: Language;
-  setLanguage: (lang: Language) => void;
-  t: (path: string, variables?: Record<string, string>) => string;
+  language: Language
+  setLanguage: (lang: Language) => void
 }
 
-const getTranslation = (lang: Language, path: string, variables?: Record<string, string>): string => {
-  const keys = path.split('.');
-  let value: any = TRANSLATIONS[lang];
+export const useLanguageStore = create<LanguageState>((set) => ({
+  language: typeof window !== "undefined"
+    ? (localStorage.getItem("lang") as Language) || "hinglish"
+    : "hinglish",
 
-  for (const key of keys) {
-    value = value?.[key];
-  }
-
-  if (value === undefined || value === null) {
-    // Fallback to English
-    value = TRANSLATIONS.en;
-    for (const key of keys) {
-      value = value?.[key];
-    }
-  }
-
-  if (value === undefined || value === null) {
-    return path;
-  }
-
-  let result = String(value);
-  
-  if (variables) {
-    Object.keys(variables).forEach((k) => {
-      result = result.replace(`{${k}}`, variables[k]);
-    });
-  }
-
-  return result;
-};
-
-export const useLanguageStore = create<LanguageState>()(
-  persist(
-    (set, get) => ({
-      language: 'hinglish',
-      setLanguage: (lang: Language) => set({ language: lang }),
-      t: (path: string, variables?: Record<string, string>) => {
-        const state = get();
-        return getTranslation(state.language, path, variables);
-      },
-    }),
-    {
-      name: 'tarot-language',
-    }
-  )
-);
+  setLanguage: (lang: Language) => {
+    localStorage.setItem("lang", lang)
+    set({ language: lang })
+  },
+}))

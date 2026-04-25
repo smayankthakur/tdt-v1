@@ -251,28 +251,16 @@ export const hi: TranslationSchema = {
       lastChance: 'आखिरी मौका',
     },
 
-    premium: {
-      ...en.premium,
-      badge: 'प्रीमियम सदस्य',
-      active: 'प्रीमियम एक्सेस सक्रिय',
-      enjoy: 'असीमित रीडिंग का आनंद लें',
-      contact: {
-        heading: 'संपर्क करें',
-        subtitle: 'क्या आपका कोई सवाल है? हमें आपकी बात सुनने में खुशी होगी।',
-        name: 'नाम',
-        namePlaceholder: 'अपना नाम दर्ज करें',
-        nameHelper: 'क्यों? ताकि हम आपको व्यक्तिगत रूप से संबोधित कर सकें',
-        email: 'ईमेल',
-        emailPlaceholder: 'name@example.com',
-        emailHelper: 'हम आपको ईमेल पर परिणाम भेजेंगे',
-        message: 'संदेश',
-        messagePlaceholder: 'आप क्या जानना चाहते हैं?',
-         messageHelper: 'स्पष्ट सवाल - स्पष्ट उत्तर',
-        submit: 'संदेश भेजें',
-        success: {
-           title: 'संदेश भेज दिया गया',
-           message: 'हम जल्द ही आपसे संपर्क करेंगे।',
-         },
+     premium: {
+       ...en.premium,
+       badge: 'प्रीमियम सदस्य',
+       active: 'प्रीमियम एक्सेस सक्रिय',
+       enjoy: 'असीमित रीडिंग का आनंद लें',
+       buttons: {
+         getStartedFree: 'मुफ्त शुरू करें',
+         getStarted: 'शुरू करें',
+         subscribe: 'सदस्यता लें',
        },
      },
-   };
+  };
+}

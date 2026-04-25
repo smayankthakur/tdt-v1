@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Sparkles, Mail, Phone, MapPin, Clock, User, MessageSquare } from 'lucide-react';
-import { useLanguage } from '@/hooks/useLanguage';
+import { useTranslation } from '@/hooks/useTranslation';
 import Button from '@/components/ui/button';
 import FloatingInput, { FloatingTextarea } from '@/components/ui/FloatingInput';
 
@@ -14,6 +14,8 @@ export default function ContactPage() {
     message: '',
   });
   const [submitted, setSubmitted] = useState(false);
+
+  const { t } = useTranslation();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -37,10 +39,10 @@ export default function ContactPage() {
           className="text-center mb-12"
         >
           <h1 className="font-heading text-3xl md:text-4xl text-[rgb(var(--foreground))] mb-4">
-            Get In Touch
+            {t('contact.heading')}
           </h1>
           <p className="text-[rgb(var(--foreground-secondary))]">
-            Have a question? We would love to hear from you.
+            {t('contact.subtitle')}
           </p>
         </motion.div>
 
@@ -56,12 +58,12 @@ export default function ContactPage() {
               className="text-center p-8 rounded-2xl bg-[rgb(var(--surface))/50] border border-[rgb(var(--gold))/20]"
             >
               <div className="text-4xl mb-4">✨</div>
-              <h3 className="font-heading text-xl text-[rgb(var(--foreground))] mb-2">
-                Message Sent
-              </h3>
-              <p className="text-[rgb(var(--foreground-secondary))]">
-                We will get back to you soon.
-              </p>
+               <h3 className="font-heading text-xl text-[rgb(var(--foreground))] mb-2">
+                  {t('contact.success.title')}
+                </h3>
+                <p className="text-[rgb(var(--foreground-secondary))]">
+                  {t('contact.success.message')}
+                </p>
             </motion.div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-6">
@@ -75,29 +77,39 @@ export default function ContactPage() {
                 required
               />
               <FloatingInput
-                label="Tumhara email"
+                label={t('contact.name')}
+                value={formData.name}
+                onChange={(v) => setFormData({ ...formData, name: v })}
+                placeholder={t('contact.namePlaceholder')}
+                type="text"
+                icon={<User className="h-5 w-5" />}
+                helperText={t('contact.nameHelper')}
+                required
+              />
+              <FloatingInput
+                label={t('contact.email')}
                 value={formData.email}
                 onChange={(v) => setFormData({ ...formData, email: v })}
-                placeholder="name@example.com"
+                placeholder={t('contact.emailPlaceholder')}
                 type="email"
                 icon={<Mail className="h-5 w-5" />}
-                helperText="Results email par bhejege"
+                helperText={t('contact.emailHelper')}
                 required
               />
               <FloatingTextarea
-                label="Jo mann mein baar baar aa raha hai"
+                label={t('contact.message')}
                 value={formData.message}
                 onChange={(v) => setFormData({ ...formData, message: v })}
-                placeholder="Jo mann mein baar baar aa raha hai…"
+                placeholder={t('contact.messagePlaceholder')}
                 rows={5}
                 icon={<MessageSquare className="h-5 w-5" />}
-                helperText="Jitna clear sawal… utni clear direction"
+                helperText={t('contact.messageHelper')}
                 required
               />
               <div className="text-center">
-                <Button type="submit" size="lg">
-                  Continue
-                </Button>
+                 <Button type="submit" size="lg">
+                   {t('contact.submit')}
+                 </Button>
               </div>
             </form>
           )}

@@ -6,7 +6,7 @@ import { useLanguage } from '@/hooks/useLanguage';
 
 const featuresData = [
   { key: 'personalized', icon: Brain },
-  { key: 'ai', icon: Sparkles },
+  // { key: 'ai', icon: Sparkles },
   { key: 'privacy', icon: Zap },
   { key: 'instant', icon: Heart },
 ];
@@ -28,10 +28,10 @@ export default function WhySection() {
               {isHydrated ? t('whySection.title') : 'Why The Devine Tarot?'}
             </h2>
             <p className="text-subheading text-foreground-secondary leading-relaxed mb-block">
-              {isHydrated ? t('whySection.description') : 'We combine ancient tarot wisdom with cutting-edge AI technology to create something truly unique.'}
+              {isHydrated ? t('whySection.description') : 'We combine ancient tarot wisdom with cutting-edge technology to create something truly unique.'}
             </p>
             <p className="text-body text-foreground-secondary leading-relaxed mb-block">
-              Unlike generic fortune tellers, our AI understands context, recognizes
+              Unlike generic fortune tellers, we understands context, recognizes
               emotional patterns, and provides guidance that resonates with your
               specific journey.
             </p>

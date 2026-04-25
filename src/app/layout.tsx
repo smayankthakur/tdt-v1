@@ -1,28 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import "./globals.css";
-import ClientProviders from "@/components/ClientProviders";
-import Header from "@/components/layout/Header";
-import Footer from "@/components/layout/Footer";
-import AnalyticsProvider from "@/components/AnalyticsProvider";
-import Watermark from "@/components/security/Watermark";
-import ContentGuard from "@/components/ContentGuard";
-import DebugPanel from "@/components/DebugPanel";
-import { LanguageWrapper } from "@/components/LanguageWrapper";
-import LanguageMeta from "@/components/LanguageMeta";
-import dynamic from 'next/dynamic';
-
-const GinniChatWrapper = dynamic(() => import('@/components/GinniChatWrapper'), {
-  ssr: false,
-  loading: () => null
-});
-
-export const viewport: Viewport = {
-  width: 'device-width',
-  initialScale: 1,
-  maximumScale: 5,
-};
-
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://thedivinetarot.com';
+import ClientLayout from "./client-layout";
 
 export const metadata: Metadata = {
   title: "The Devine Tarot | Premium AI-Powered Tarot Readings",
@@ -40,12 +17,18 @@ export const metadata: Metadata = {
     },
   },
   openGraph: {
-    url: BASE_URL,
+    url: process.env.NEXT_PUBLIC_BASE_URL || 'https://thedivinetarot.com',
     alternateLocale: 'hi',
   },
   twitter: {
     card: 'summary_large_image',
   },
+};
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
 };
 
 export default function RootLayout({
@@ -118,22 +101,12 @@ export default function RootLayout({
           />
         )}
       </head>
-       <body className="antialiased bg-[rgb(var(--background))] text-[rgb(var(--foreground))]" suppressHydrationWarning>
-         <DebugPanel />
-         <LanguageMeta />
-         <Watermark />
-         <ContentGuard>
-           <ClientProviders>
-             <AnalyticsProvider />
-             <LanguageWrapper>
-               <Header />
-               <main className="min-h-screen">{children}</main>
-               <Footer />
-             </LanguageWrapper>
-             <GinniChatWrapper />
-           </ClientProviders>
-         </ContentGuard>
-       </body>
+      <body
+        className="antialiased bg-[rgb(var(--background))] text-[rgb(var(--foreground))]"
+        suppressHydrationWarning
+      >
+        <ClientLayout>{children}</ClientLayout>
+      </body>
     </html>
   );
 }

@@ -254,5 +254,23 @@ export const hinglish: TranslationSchema = {
       guidance: 'Guidance',
       tryAgain: 'Naya reading',
       unlockFull: 'Full access lo',
+    contact: {
+      heading: 'Get In Touch',
+      subtitle: 'Have a question? We would love to hear from you.',
+      name: 'Name',
+      namePlaceholder: 'Enter your name',
+      nameHelper: 'Why? So we can address you personally',
+      email: 'Email',
+      emailPlaceholder: 'name@example.com',
+      emailHelper: 'We will send results to your email',
+      message: 'Message',
+      messagePlaceholder: 'What would you like to know?',
+      messageHelper: 'Clear question leads to clear answer',
+      submit: 'Send Message',
+      success: {
+        title: 'Message Sent',
+        message: 'We will get back to you soon.',
+      },
     },
- };
+  },
+};

@@ -20,19 +20,38 @@ export default function ClientProviders({ children }: ClientProvidersProps) {
       setUserId(anonId);
       
       try {
-        await ensureUser();
+        // Add timeout to ensureUser to prevent hanging
+        const timeoutPromise = new Promise<string>((resolve) => {
+          setTimeout(() => {
+            console.warn('[User] ensureUser timeout - using anonymous ID');
+            resolve(anonId);
+          }, 5000);
+        });
+        
+        const result = await Promise.race([
+          ensureUser(),
+          timeoutPromise
+        ]);
+        
+        if (result !== anonId) {
+          setUserId(result);
+        }
       } catch (e) {
-        console.warn('Failed to ensure user in database');
+        console.warn('[User] Failed to ensure user in database:', e);
+      } finally {
+        setIsReady(true);
       }
-      
-      setIsReady(true);
     };
 
     initUser();
   }, []);
 
-  if (!isReady) {
-    return null;
+   if (!isReady) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[rgb(var(--background))]">
+        <div className="text-foreground animate-pulse">Loading...</div>
+      </div>
+    );
   }
 
   return (

@@ -419,10 +419,11 @@ export const schema = {
          features: [] as string[],
        },
      },
-     buttons: {
-       getStartedFree: "",
-       subscribe: "",
-     },
+      buttons: {
+        getStartedFree: "",
+        getStarted: "",
+        subscribe: "",
+      },
      guarantee: "",
    },
 
@@ -453,29 +454,48 @@ export const schema = {
     bookingId: "",
   },
 
-  // =====================
-  // READING FORM (personalization)
-  // =====================
-     readingForm: {
+   // =====================
+   // READING FORM (personalization)
+   // =====================
+   readingForm: {
+     title: "",
+     subtitle: "",
+     name: "",
+     namePlaceholder: "",
+     nameError: "",
+     question: "",
+     questionPlaceholder: "",
+     questionError: "",
+     processing: "",
+     patience: "",
+     guidance: "",
+     tryAgain: "",
+     unlockFull: "",
+   },
+   metadata: {
+     title: "",
+     description: "",
+   },
+   contact: {
+     heading: "",
+     subtitle: "",
+     name: "",
+     namePlaceholder: "",
+     nameHelper: "",
+     email: "",
+     emailPlaceholder: "",
+     emailHelper: "",
+     message: "",
+     messagePlaceholder: "",
+     messageHelper: "",
+     submit: "",
+     success: {
        title: "",
-       subtitle: "",
-       name: "",
-       namePlaceholder: "",
-       nameError: "",
-       question: "",
-       questionPlaceholder: "",
-       questionError: "",
-       processing: "",
-       patience: "",
-       guidance: "",
-       tryAgain: "",
-       unlockFull: "",
-      },
-      metadata: {
-        title: "",
-        description: "",
-      },
-   };
+       message: "",
+     },
+   },
+ };
 
  export type TranslationSchema = typeof schema;
  export type TranslationKey = keyof TranslationSchema;
+

@@ -48,13 +48,13 @@ export function useSafeLanguage() {
     return translateDynamic(content, language as SupportedLanguage);
   };
 
-  return {
-    language,
-    setLanguage: (lang: SupportedLanguage) => setLanguage(lang as any),
-    t,
-    translate,
-    isRTL: language === 'ar' || language === 'he',
-  };
+   return {
+     language,
+     setLanguage: (lang: SupportedLanguage) => setLanguage(lang as any),
+     t,
+     translate,
+     isRTL: false, // Only 3 languages supported; no RTL languages
+   };
 }
 
 /**

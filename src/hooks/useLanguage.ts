@@ -2,93 +2,84 @@
 
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useLanguageStore } from '@/store/languageStore';
-import type { Language } from '@/lib/i18n/config';
-import { LANGUAGE_STORAGE_KEY } from '@/lib/i18n/config';
-import { getTranslationSync, refreshTranslations } from '@/lib/i18n/loader';
+import type { Language } from '@/store/languageStore';
 import { detectLanguageFromText } from '@/lib/languageDetector';
 
 export function useLanguage() {
-  const {
-    language,
-    setLanguage: storeSetLanguage,
-    t: storeT,
-  } = useLanguageStore();
+  const { language, setLanguage, t: baseT } = useLanguageStore();
 
   const [isHydrated, setIsHydrated] = useState(false);
 
   useEffect(() => {
     setIsHydrated(true);
-    refreshTranslations();
   }, []);
 
-  const setLanguage = useCallback((lang: Language) => {
-    storeSetLanguage(lang);
-    refreshTranslations();
-  }, [storeSetLanguage]);
+  // Wrap base t to provide same interface
+  const t = useCallback((key: string, variables?: Record<string, string>) => {
+    return baseT(key, variables);
+  }, [baseT]);
 
-  // Direct t from store (self-healing)
-  const t = useCallback((key: string, params?: Record<string, string | number>): string => {
-    return storeT(key, params);
-  }, [storeT]);
+  const setLanguageSafe = useCallback((lang: Language) => {
+    setLanguage(lang);
+  }, [setLanguage]);
 
-  const getHeroHeadline = useCallback((intent: string = 'default'): string => {
-    return getTranslationSync(`hero.headline.${intent}`, language);
-  }, [language]);
+  const getHeroHeadline = useCallback((type: string): string => {
+    return t(`hero.headline.${type}`);
+  }, [t]);
 
-  const getHeroSubheadline = useCallback((intent: string = 'default'): string => {
-    return getTranslationSync(`hero.subheadline.${intent}`, language);
-  }, [language]);
+  const getHeroSubheadline = useCallback((type: string): string => {
+    return t(`hero.subheadline.${type}`);
+  }, [t]);
 
-  const getCTAText = useCallback((type: string): string => {
-    return getTranslationSync(`cta.${type}`, language);
-  }, [language]);
+  const getCTAText = useCallback((key: string): string => {
+    return t(`cta.${key}`);
+  }, [t]);
 
   const getPaywallTitle = useCallback((tone: string): string => {
-    return getTranslationSync(`paywall.title.${tone}`, language);
-  }, [language]);
-
+    return t(`paywall.title.${tone}`);
+  }, [t]);
+  
   const getPaywallDescription = useCallback((tone: string): string => {
-    return getTranslationSync(`paywall.description.${tone}`, language);
-  }, [language]);
+    return t(`paywall.description.${tone}`);
+  }, [t]);
 
   const getPaywallCTA = useCallback((tone: string): string => {
-    return getTranslationSync(`paywall.cta.${tone}`, language);
-  }, [language]);
+    return t(`paywall.cta.${tone}`);
+  }, [t]);
 
   const getChatButtonText = useCallback((): string => {
-    return getTranslationSync('chat.button', language);
-  }, [language]);
+    return t('chat.button');
+  }, [t]);
 
   const getChatTooltip = useCallback((): string => {
-    return getTranslationSync('chat.tooltip', language);
-  }, [language]);
+    return t('chat.tooltip');
+  }, [t]);
 
   const getReadingTopic = useCallback((topic: string): string => {
-    return getTranslationSync(`reading.${topic}`, language);
-  }, [language]);
+    return t(`reading.${topic}`);
+  }, [t]);
 
   const getUrgencyBadge = useCallback((): string => {
     const badges = ['urgency.timeSensitive', 'urgency.limitedSpots', 'urgency.endsTonight', 'urgency.lastChance'];
     const randomBadge = badges[Math.floor(Math.random() * badges.length)];
-    return getTranslationSync(randomBadge, language);
-  }, [language]);
+    return t(randomBadge);
+  }, [t]);
 
-  const isRTL = useMemo(() => {
-    return language === 'ar' || language === 'he';
-  }, [language]);
+   const isRTL = useMemo(() => {
+     return false; // Only en/hi/hinglish supported; none are RTL
+   }, [language]);
 
-  // Auto-detect language from user input text
   const detectAndSetFromInput = useCallback((inputText: string) => {
     if (!inputText || inputText.length < 3) return;
     const detected = detectLanguageFromText(inputText);
     if (detected !== language) {
-      storeSetLanguage(detected as Language);
+      setLanguage(detected as Language);
     }
-  }, [language, storeSetLanguage]);
+  }, [language, setLanguage]);
 
   return {
     language,
-    setLanguage,
+    setLanguage: setLanguageSafe,
     t,
     isHydrated,
     getHeroHeadline,
@@ -104,14 +95,4 @@ export function useLanguage() {
     isRTL,
     detectAndSetFromInput,
   };
-}
-
-export function useTranslation() {
-  const { language, t: storeT } = useLanguageStore();
-
-  const t = useCallback((key: string, params?: Record<string, string | number>): string => {
-    return storeT(key, params);
-  }, [storeT]);
-
-  return { t, language };
 }

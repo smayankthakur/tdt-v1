@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import type { Language } from '@/lib/i18n/config';
+import type { Language } from '@/store/languageStore';
 import { useLanguage } from '@/hooks/useLanguage';
 
 export interface UseLanguageOptions {

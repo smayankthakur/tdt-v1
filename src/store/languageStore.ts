@@ -1,36 +1,60 @@
+'use client';
+
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import type { Language } from '@/lib/i18n/config';
-import { DEFAULT_LANGUAGE } from '@/lib/i18n/config';
-// Use new self-healing translation system
-import { t as translate, SupportedLanguage } from '@/i18n';
+import { TRANSLATIONS } from '@/lib/i18n/translations';
+
+export type Language = 'en' | 'hi' | 'hinglish';
 
 interface LanguageState {
   language: Language;
   setLanguage: (lang: Language) => void;
-  t: (key: string, params?: Record<string, string | number>) => string;
+  t: (path: string, variables?: Record<string, string>) => string;
 }
+
+const getTranslation = (lang: Language, path: string, variables?: Record<string, string>): string => {
+  const keys = path.split('.');
+  let value: any = TRANSLATIONS[lang];
+
+  for (const key of keys) {
+    value = value?.[key];
+  }
+
+  if (value === undefined || value === null) {
+    // Fallback to English
+    value = TRANSLATIONS.en;
+    for (const key of keys) {
+      value = value?.[key];
+    }
+  }
+
+  if (value === undefined || value === null) {
+    return path;
+  }
+
+  let result = String(value);
+  
+  if (variables) {
+    Object.keys(variables).forEach((k) => {
+      result = result.replace(`{${k}}`, variables[k]);
+    });
+  }
+
+  return result;
+};
 
 export const useLanguageStore = create<LanguageState>()(
   persist(
     (set, get) => ({
-      language: DEFAULT_LANGUAGE,
-
-      setLanguage: (lang: Language) => {
-        set({ language: lang });
-        if (typeof window !== 'undefined') {
-          localStorage.setItem('divine_tarot_language', lang);
-        }
-      },
-
-      t: (key: string, params?: Record<string, string | number>) => {
-        const lang = get().language as SupportedLanguage;
-        return translate(key, lang, params);
+      language: 'hinglish',
+      setLanguage: (lang: Language) => set({ language: lang }),
+      t: (path: string, variables?: Record<string, string>) => {
+        const state = get();
+        return getTranslation(state.language, path, variables);
       },
     }),
     {
-      name: 'divine_tarot_language',
-      skipHydration: true,
+      name: 'tarot-language',
     }
   )
 );

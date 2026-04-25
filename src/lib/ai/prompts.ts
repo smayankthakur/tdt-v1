@@ -40,15 +40,20 @@ export function buildPrompt(
   
   let prompt = tarotReadingPrompt
     .replace('{question}', question)
-    .replace('{cards}', cardsFormatted)
-    .replace('{context}', topicSection + contextSection);
+    .replace('{cards}', cardsFormatted);
   
-   if (name) {
-     prompt = prompt.replace('{name}', name);
-   }
-   
-   return prompt;
- }
+  if (topic) {
+    prompt = prompt.replace('{context}', topicSection + contextSection);
+  } else {
+    prompt = prompt.replace('{context}', '');
+  }
+  
+  if (name) {
+    prompt = prompt.replace('{name}', name);
+  }
+  
+  return prompt;
+}
 
 export function getLanguagePrompt(language: string): string {
   const prompts: Record<string, string> = {

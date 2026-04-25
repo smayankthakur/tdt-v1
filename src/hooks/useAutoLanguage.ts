@@ -15,7 +15,7 @@ import {
   getStoredRegion, 
   type UserRegion 
 } from '@/lib/regionDetector';
-import { Language } from '@/lib/i18n/config';
+import { Language } from '@/store/languageStore';
 
 const DETECTED_TO_LANGUAGE: Record<DetectedLanguage, Language> = {
   hi: 'hi',

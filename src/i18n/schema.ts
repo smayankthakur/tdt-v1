@@ -412,56 +412,56 @@ export const schema = {
      tryAgain: "",
      unlockFull: "",
     },
-   ritualHub: {
-     topicSelect: {
-       title: "",
-       subtitle: "",
-     },
-     question: {
-       title: "",
-       subtitle: "",
-       label: "",
-       placeholder: "",
-       submit: "",
-       hint: "",
-       back: "",
-     },
-     intentionLock: {
-       message: "",
-       topicLabel: "",
-     },
-     cardSelect: {
-       title: "",
-       selectionMessage: "",
-       complete: "",
-     },
-     suspense: {
-       default: "",
-     },
-     cardReveal: {
-       progress: "",
-     },
-     intent: {},
-     suspenseMsgs: {},
-     shuffle: [],
-     reveal: [],
-     fallbackClosing: "",
-     loadingMessage: "",
-     preStreamText: "",
-     readingFallback: "",
-     guidanceIntro: "",
-     closingQuote: "",
-     startOver: "",
-     unlockAccess: "",
-     reminder: {
-       optIn: "",
-       optInActive: "",
-     },
-     behavioral: {
-       dailyHook: "",
-       subHook: "",
-     },
-   },
+    ritualHub: {
+      topicSelect: {
+        title: "",
+        subtitle: "",
+      },
+      question: {
+        title: "",
+        subtitle: "",
+        label: "",
+        placeholder: "",
+        submit: "",
+        hint: "",
+        back: "",
+      },
+      intentionLock: {
+        message: "",
+        topicLabel: "",
+      },
+      cardSelect: {
+        title: "",
+        selectionMessage: "",
+        complete: "",
+      },
+      suspense: {
+        default: "",
+      },
+      cardReveal: {
+        progress: "",
+      },
+      intent: {},
+      suspenseMsgs: {},
+      shuffle: [] as string[],
+      reveal: [] as string[],
+      fallbackClosing: "",
+      loadingMessage: "",
+      preStreamText: "",
+      readingFallback: "",
+      guidanceIntro: "",
+      closingQuote: "",
+      startOver: "",
+      unlockAccess: "",
+      reminder: {
+        optIn: "",
+        optInActive: "",
+      },
+      behavioral: {
+        dailyHook: "",
+        subHook: "",
+      },
+    },
   };
 
  export type TranslationSchema = typeof schema;

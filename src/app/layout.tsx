@@ -8,6 +8,7 @@ import Watermark from "@/components/security/Watermark";
 import ContentGuard from "@/components/ContentGuard";
 import DebugPanel from "@/components/DebugPanel";
 import { LanguageWrapper } from "@/components/LanguageWrapper";
+import LanguageMeta from "@/components/LanguageMeta";
 import dynamic from 'next/dynamic';
 
 const GinniChatWrapper = dynamic(() => import('@/components/GinniChatWrapper'), {
@@ -118,20 +119,21 @@ export default function RootLayout({
         )}
       </head>
        <body className="antialiased bg-[rgb(var(--background))] text-[rgb(var(--foreground))]" suppressHydrationWarning>
-        <DebugPanel />
-        <Watermark />
-        <ContentGuard>
-          <ClientProviders>
-            <AnalyticsProvider />
-            <LanguageWrapper>
-              <Header />
-              <main className="min-h-screen">{children}</main>
-              <Footer />
-            </LanguageWrapper>
-            <GinniChatWrapper />
-          </ClientProviders>
-        </ContentGuard>
-      </body>
+         <DebugPanel />
+         <LanguageMeta />
+         <Watermark />
+         <ContentGuard>
+           <ClientProviders>
+             <AnalyticsProvider />
+             <LanguageWrapper>
+               <Header />
+               <main className="min-h-screen">{children}</main>
+               <Footer />
+             </LanguageWrapper>
+             <GinniChatWrapper />
+           </ClientProviders>
+         </ContentGuard>
+       </body>
     </html>
   );
 }

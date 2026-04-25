@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { Lock, Sparkles, ArrowRight } from 'lucide-react';
-import { useLanguage } from '@/hooks/useLanguage';
+import { useTranslation } from '@/hooks/useTranslation';
 import { getPremiumCTA } from '@/lib/behavioral/engine';
 import Button from '@/components/ui/button';
 
@@ -17,41 +17,16 @@ export default function SoftPaywall({
   onClose,
   onUnlock,
 }: SoftPaywallProps) {
-  const { t, language } = useLanguage();
+  const { t, language } = useTranslation();
 
-  // Get appropriate message based on trigger reason
   const getMessage = () => {
-    const messages: Record<string, Record<string, { title: string; desc: string }>> = {
-      en: {
-        deep_engagement: {
-          title: "There's depth here I can explore with you",
-          desc: "You're asking important questions. I can personally guide you through the complete reading and answer everything in detail.",
-        },
-        hesitation: {
-          title: "You're searching for real clarity",
-          desc: "I can see you're thinking hard about this. Let me give you the full picture so you can decide with confidence.",
-        },
-        recurring_theme: {
-          title: "This pattern keeps showing up for you",
-          desc: "Some energies repeat until we resolve them. Let me give you the complete guidance to finally move forward.",
-        },
-      },
-      hi: {
-        deep_engagement: {
-          title: "Yeh depth ke baare mein main tumhare saath explore kar sakti hoon",
-          desc: "Tum important questions puch rahe ho. Main tumhe poora reading guide kar sakti hoon aur har detail mein answer dungi.",
-        },
-      },
-      hinglish: {
-        deep_engagement: {
-          title: "Yeh depth main tumhare saath explore kar sakti hoon",
-          desc: "Tum important questions puch rahe ho. Main tumhe full reading guide kar sakti hoon aur har cheez detail mein bataungi.",
-        },
-      },
+    const titleKey = `paywall.messages.${triggerReason}.title`;
+    const descKey = `paywall.messages.${triggerReason}.desc`;
+    
+    return {
+      title: t(titleKey),
+      desc: t(descKey),
     };
-
-    const pool = messages[language]?.[triggerReason] || messages.en.deep_engagement;
-    return pool;
   };
 
   const content = getMessage();
@@ -105,15 +80,15 @@ export default function SoftPaywall({
               onClick={onClose}
               className="text-foreground-muted hover:text-foreground"
             >
-              Maybe later
+              {t('common.maybeLater')}
             </Button>
           )}
         </div>
 
         {/* Trust indicator */}
          <p className="text-xs text-center text-foreground-muted mt-3">
-           No pressure — this is your journey. But there&apos;s more here for you.
-         </p>
+          {t('common.noPressure')}
+        </p>
       </div>
     </motion.div>
   );

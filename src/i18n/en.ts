@@ -34,8 +34,10 @@ export const en: TranslationSchema = {
     recommendedForYou: 'Recommended for you',
     fromPreviousReading: 'From your previous reading',
     premiumAccessActive: 'Premium Access Active',
-    enjoyUnlimited: 'Enjoy unlimited readings',
-  },
+     enjoyUnlimited: 'Enjoy unlimited readings',
+     maybeLater: 'Maybe later',
+     noPressure: 'No pressure — this is your journey. But there\'s more here for you.',
+   },
 
   nav: {
     home: 'Home',
@@ -49,6 +51,17 @@ export const en: TranslationSchema = {
     contact: 'Contact',
     talkToGinni: 'Talk to Ginni',
     yesno: 'Yes/No',
+   },
+
+  countdown: {
+    hours: 'h',
+    minutes: 'm',
+    seconds: 's',
+    untilNext: 'until next insight',
+  },
+
+  watermark: {
+    text: 'Divine Tarot • Private • User: {userId}',
   },
 
   home: {
@@ -108,9 +121,10 @@ export const en: TranslationSchema = {
       p2: 'This platform combines ancient tarot wisdom with modern AI technology to create something truly unique: readings that feel personal, that understand your emotional context, and that give you insight when you need it most.',
       p3: "Whether you're at 2 AM with a racing mind or need a quick perspective before a big decision — the answers are here, waiting for you.",
     },
-    cta: {
-      text: 'Ready to find your clarity?',
-    },
+     cta: {
+       text: 'Ready to find your clarity?',
+       startReading: 'Continue',
+     },
   },
 
   ritualHub: {
@@ -307,14 +321,16 @@ export const en: TranslationSchema = {
     disclaimer: 'This is not a replacement for professional advice. It is here to provide you clarity and direction.',
   },
 
-  chat: {
-    button: 'Talk to Ginni',
-    tooltip: 'Need guidance? Chat with Ginni',
-    welcome: "Namaste! I'm Ginni, your spiritual guide",
-    afterReading: "There's more to this… talk to me",
-    placeholder: 'Type your message...',
-    send: 'Send',
-  },
+   chat: {
+     button: 'Talk to Ginni',
+     tooltip: 'Need guidance? Chat with Ginni',
+     welcome: "Namaste! I'm Ginni, your spiritual guide",
+     afterReading: "There's more to this… talk to me",
+     placeholder: 'Type your message...',
+     send: 'Send',
+     contextNotice: "There's more to your reading... Starting conversation",
+     footerPowered: "Powered by Divine Tarot • Spiritual guidance",
+   },
 
   paywall: {
     title: {
@@ -334,14 +350,70 @@ export const en: TranslationSchema = {
     },
     timeLimited: 'Limited time offer',
     savings: 'Save 40% with bundle',
-    securePayment: 'Secure payment • 30-day guarantee',
-  },
+     securePayment: 'Secure payment • 30-day guarantee',
+     messages: {
+       deep_engagement: {
+         title: "There's depth here I can explore with you",
+         desc: "You're asking important questions. I can personally guide you through the complete reading and answer everything in detail.",
+       },
+       hesitation: {
+         title: "You're searching for real clarity",
+         desc: "I can see you're thinking hard about this. Let me give you the full picture so you can decide with confidence.",
+       },
+       recurring_theme: {
+         title: "This pattern keeps showing up for you",
+         desc: "Some energies repeat until we resolve them. Let me give you the complete guidance to finally move forward.",
+       },
+     },
+   },
 
-  premium: {
-    badge: 'Premium Member',
-    active: 'Premium Access Active',
-    enjoy: 'Enjoy unlimited readings',
-  },
+   premium: {
+     badge: 'Premium Member',
+     active: 'Premium Access Active',
+     enjoy: 'Enjoy unlimited readings',
+     page: {
+       title: 'Unlock Divine Guidance',
+       subtitle: 'Choose your path to deeper insights. Upgrade for unlimited readings, priority AI responses, and exclusive WhatsApp guidance.',
+     },
+     mostPopular: 'Most Popular',
+     plans: {
+       free: {
+         name: 'Free',
+         features: [
+           '1 tarot reading per day',
+           'Basic card interpretations',
+           'Daily horoscope access',
+         ],
+       },
+       premium: {
+         name: 'Premium',
+         features: [
+           'Unlimited tarot readings',
+           'Deep AI insights',
+           'Priority AI responses',
+           'Personalized guidance',
+           'Daily WhatsApp messages',
+           'Exclusive content',
+         ],
+       },
+       pro: {
+         name: 'Pro',
+         features: [
+           'Everything in Premium',
+           'Monthly personal consultation',
+           'Exclusive tarot sessions',
+           'Priority WhatsApp access',
+           'Custom birth chart reading',
+           'Early access to new features',
+         ],
+       },
+     },
+     buttons: {
+       getStartedFree: 'Get Started Free',
+       subscribe: 'Subscribe Now',
+     },
+     guarantee: 'All plans include a 7-day money-back guarantee. Cancel anytime.',
+   },
 
   urgency: {
     timeSensitive: 'Time-sensitive',
@@ -364,19 +436,23 @@ export const en: TranslationSchema = {
     bookingId: 'Booking ID',
   },
 
-  readingForm: {
-    title: 'Tell us a bit more…',
-    subtitle: 'So we can see clearly',
-    name: 'Your name',
-    namePlaceholder: 'Your name…',
-    nameError: 'Also tell your name… creates personal connect',
-    question: 'Your question',
-    questionPlaceholder: 'What would you like to know?',
-    questionError: 'Clear question → clear answer',
-    processing: 'Reading is being generated…',
-    patience: 'A little patience please…',
-    guidance: 'Guidance',
-    tryAgain: 'New reading',
-    unlockFull: 'Get full access',
-   },
- };
+    readingForm: {
+      title: 'Tell us a bit more…',
+      subtitle: 'So we can see clearly',
+      name: 'Your name',
+      namePlaceholder: 'Your name…',
+      nameError: 'Also tell your name… creates personal connect',
+      question: 'Your question',
+      questionPlaceholder: 'What would you like to know?',
+      questionError: 'Clear question → clear answer',
+      processing: 'Reading is being generated…',
+      patience: 'A little patience please…',
+      guidance: 'Guidance',
+      tryAgain: 'New reading',
+      unlockFull: 'Get full access',
+     },
+    metadata: {
+      title: "The Devine Tarot | Premium AI-Powered Tarot Readings",
+      description: "Get answers from the universe in seconds. Experience mystical, emotionally intelligent tarot readings.",
+    },
+  };

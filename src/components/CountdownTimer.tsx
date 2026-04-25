@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Clock } from 'lucide-react';
+import { useTranslation } from '@/hooks/useTranslation';
 
 interface CountdownTimerProps {
   hours: number;
@@ -24,6 +25,7 @@ export default function CountdownTimer({
     minutes: initialMinutes,
     seconds: initialSeconds,
   });
+  const { t } = useTranslation();
 
   useEffect(() => {
     // Calculate target time (24 hours from now)
@@ -60,13 +62,13 @@ export default function CountdownTimer({
     >
       <Clock className="h-5 w-5" />
       <div className="flex items-center gap-1">
-        <span className="bg-gold/10 px-2 py-1 rounded">{pad(timeLeft.hours)}h</span>
+        <span className="bg-gold/10 px-2 py-1 rounded">{pad(timeLeft.hours)}{t('countdown.hours')}</span>
         <span>:</span>
-        <span className="bg-gold/10 px-2 py-1 rounded">{pad(timeLeft.minutes)}m</span>
+        <span className="bg-gold/10 px-2 py-1 rounded">{pad(timeLeft.minutes)}{t('countdown.minutes')}</span>
         <span>:</span>
-        <span className="bg-gold/10 px-2 py-1 rounded">{pad(timeLeft.seconds)}s</span>
+        <span className="bg-gold/10 px-2 py-1 rounded">{pad(timeLeft.seconds)}{t('countdown.seconds')}</span>
       </div>
-      <span className="text-sm text-foreground-muted ml-2">until next insight</span>
+      <span className="text-sm text-foreground-muted ml-2">{t('countdown.untilNext')}</span>
     </motion.div>
   );
 }

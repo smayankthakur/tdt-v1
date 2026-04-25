@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Minimize2, Maximize2, Send } from 'lucide-react';
 import { useLanguage } from '@/hooks/useLanguage';
+import { useTranslation } from '@/hooks/useTranslation';
 import { langMap } from '@/lib/i18n/config';
 
 export interface GinniContext {
@@ -40,14 +41,15 @@ export default function GinniChat({
   const [isExpanded, setIsExpanded] = useState(true);
   const [showContextNotice, setShowContextNotice] = useState(false);
   const [iframeSrc, setIframeSrc] = useState(GINNI_BASE_URL);
-  const [language, setLanguage] = useState('en');
+  const [languageState, setLanguageState] = useState('en');
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const inactivityTimerRef = useRef<NodeJS.Timeout | null>(null);
   const { isHydrated, language: lang } = useLanguage();
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (isHydrated) {
-      setLanguage(langMap[lang] || 'en');
+      setLanguageState(langMap[lang] || 'en');
     }
   }, [isHydrated, lang]);
 
@@ -59,7 +61,7 @@ export default function GinniChat({
         '*'
       );
     }
-  }, [language, isOpen, lang]);
+  }, [languageState, isOpen, lang]);
 
   const buildIframeSrc = useCallback((ctx?: GinniContext) => {
     const baseUrl = GINNI_BASE_URL;
@@ -87,11 +89,11 @@ export default function GinniChat({
       params.set('context', summary);
     }
 
-    params.set('lang', language);
+    params.set('lang', languageState);
 
     const queryString = params.toString();
     return queryString ? `${baseUrl}?${queryString}` : baseUrl;
-  }, [language]);
+  }, [languageState]);
 
   useEffect(() => {
     if (context && context.question) {
@@ -173,7 +175,7 @@ export default function GinniChat({
   const handleMessageToGinni = (message: string) => {
     if (iframeRef.current?.contentWindow) {
       iframeRef.current.contentWindow.postMessage(
-        { type: 'MESSAGE', payload: { message, language } },
+        { type: 'MESSAGE', payload: { message, language: lang } },
         '*'
       );
     }
@@ -211,7 +213,7 @@ export default function GinniChat({
             </div>
             <div>
               <h3 className="font-semibold text-white">Ginni</h3>
-              <p className="text-xs text-white/80">Your spiritual guide</p>
+              <p className="text-xs text-white/80">{t('common.yourSpiritualGuide')}</p>
             </div>
           </div>
           <div className="flex items-center gap-1">
@@ -229,7 +231,7 @@ export default function GinniChat({
               onClick={handleClose}
               className="p-2 rounded-full hover:bg-white/20 transition-colors"
             >
-              <X className="w-4 h-4 text-white" />
+              <X className="w-4 w-4 text-white" />
             </button>
           </div>
         </div>
@@ -244,7 +246,7 @@ export default function GinniChat({
               className="bg-amber-50 border-b border-amber-100 px-4 py-2"
             >
               <p className="text-sm text-amber-800">
-                💫 There&apos;s more to your reading... Starting conversation
+                💫 {t('chat.contextNotice')}
               </p>
             </motion.div>
           )}
@@ -262,7 +264,7 @@ export default function GinniChat({
                 >
                   🔮
                 </motion.div>
-                <p className="text-sm text-gray-500">Connecting to Ginni...</p>
+                <p className="text-sm text-gray-500">{t('common.connectingToGinni')}</p>
               </div>
             </div>
           )}
@@ -279,38 +281,10 @@ export default function GinniChat({
         {/* Footer */}
         <div className="px-4 py-2 bg-gray-50 border-t border-gray-100">
           <p className="text-xs text-center text-gray-400">
-            Powered by Divine Tarot • Spiritual guidance
+            {t('chat.footerPowered')}
           </p>
         </div>
       </div>
     </motion.div>
   );
-}
-
-export function sendQuestionToGinni(question: string, language: string = 'en'): void {
-  const params = new URLSearchParams();
-  params.set('q', question);
-  params.set('lang', language);
-  
-  const url = `${GINNI_BASE_URL}?${params.toString()}`;
-  
-  window.open(url, '_blank', 'noopener,noreferrer');
-}
-
-export function openGinniChat(context?: GinniContext): void {
-  const store = (window as unknown as { __ginniStore?: { setTriggerOpen: (v: boolean) => void } }).__ginniStore;
-  if (store) {
-    store.setTriggerOpen(true);
-  } else {
-    const url = context ? buildContextUrl(context) : GINNI_BASE_URL;
-    window.open(url, '_blank', 'noopener,noreferrer');
-  }
-}
-
-function buildContextUrl(context: GinniContext): string {
-  const params = new URLSearchParams();
-  if (context.question) params.set('q', context.question);
-  if (context.theme) params.set('theme', context.theme);
-  if (context.emotion) params.set('emotion', context.emotion);
-  return `${GINNI_BASE_URL}?${params.toString()}`;
 }

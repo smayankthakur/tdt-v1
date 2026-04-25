@@ -1,88 +1,41 @@
 'use client';
 
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useCallback } from 'react';
 import { useLanguageStore } from '@/store/languageStore';
+import { useTranslation } from '@/hooks/useTranslation';
 import type { Language } from '@/store/languageStore';
-import { detectLanguageFromText } from '@/lib/languageDetector';
-import { t as i18nT } from '@/i18n/i18n';
 
 export function useLanguage() {
-  const { language, setLanguage } = useLanguageStore();
+  const { language } = useLanguageStore();
+  const { t } = useTranslation();
 
-  const [isHydrated, setIsHydrated] = useState(false);
-
-  useEffect(() => {
-    setIsHydrated(true);
+  const setLanguage = useCallback((lang: Language) => {
+    useLanguageStore.getState().setLanguage(lang);
   }, []);
 
-  // Wrap i18n t to provide same interface with fallback
-  const t = useCallback((key: string, variables?: Record<string, string | number>) => {
-    return i18nT(key, language, variables);
-  }, [language]);
-
-  const setLanguageSafe = useCallback((lang: Language) => {
-    setLanguage(lang);
-  }, [setLanguage]);
-
-  const getHeroHeadline = useCallback((type: string): string => {
-    return t(`hero.headline.${type}`);
-  }, [t]);
-
-  const getHeroSubheadline = useCallback((type: string): string => {
-    return t(`hero.subheadline.${type}`);
-  }, [t]);
-
-  const getCTAText = useCallback((key: string): string => {
-    return t(`cta.${key}`);
-  }, [t]);
-
-  const getPaywallTitle = useCallback((tone: string): string => {
-    return t(`paywall.title.${tone}`);
-  }, [t]);
-  
-  const getPaywallDescription = useCallback((tone: string): string => {
-    return t(`paywall.description.${tone}`);
-  }, [t]);
-
-  const getPaywallCTA = useCallback((tone: string): string => {
-    return t(`paywall.cta.${tone}`);
-  }, [t]);
-
-  const getChatButtonText = useCallback((): string => {
-    return t('chat.button');
-  }, [t]);
-
-  const getChatTooltip = useCallback((): string => {
-    return t('chat.tooltip');
-  }, [t]);
-
-  const getReadingTopic = useCallback((topic: string): string => {
-    return t(`reading.${topic}`);
-  }, [t]);
-
-  const getUrgencyBadge = useCallback((): string => {
+  // Legacy getters (kept for backward compatibility)
+  const getHeroHeadline = useCallback((type: string) => t(`hero.headline.${type}`), [t]);
+  const getHeroSubheadline = useCallback((type: string) => t(`hero.subheadline.${type}`), [t]);
+  const getCTAText = useCallback((key: string) => t(`cta.${key}`), [t]);
+  const getPaywallTitle = useCallback((tone: string) => t(`paywall.title.${tone}`), [t]);
+  const getPaywallDescription = useCallback((tone: string) => t(`paywall.description.${tone}`), [t]);
+  const getPaywallCTA = useCallback((tone: string) => t(`paywall.cta.${tone}`), [t]);
+  const getChatButtonText = useCallback(() => t('chat.button'), [t]);
+  const getChatTooltip = useCallback(() => t('chat.tooltip'), [t]);
+  const getReadingTopic = useCallback((topic: string) => t(`reading.${topic}`), [t]);
+  const getUrgencyBadge = useCallback(() => {
     const badges = ['urgency.timeSensitive', 'urgency.limitedSpots', 'urgency.endsTonight', 'urgency.lastChance'];
     const randomBadge = badges[Math.floor(Math.random() * badges.length)];
     return t(randomBadge);
   }, [t]);
 
-  const isRTL = useMemo(() => {
-    return false; // Only en/hi/hinglish supported; none are RTL
-  }, [language]);
-
-  const detectAndSetFromInput = useCallback((inputText: string) => {
-    if (!inputText || inputText.length < 3) return;
-    const detected = detectLanguageFromText(inputText);
-    if (detected !== language) {
-      setLanguage(detected as Language);
-    }
-  }, [language, setLanguage]);
+  const isRTL = false; // Only en/hi/hinglish supported; none are RTL
 
   return {
     language,
-    setLanguage: setLanguageSafe,
+    setLanguage,
     t,
-    isHydrated,
+    isHydrated: true,
     getHeroHeadline,
     getHeroSubheadline,
     getCTAText,
@@ -94,6 +47,6 @@ export function useLanguage() {
     getReadingTopic,
     getUrgencyBadge,
     isRTL,
-    detectAndSetFromInput,
   };
 }
+

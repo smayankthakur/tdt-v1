@@ -35,8 +35,10 @@ export const schema = {
     recommendedForYou: "",
     fromPreviousReading: "",
     premiumAccessActive: "",
-    enjoyUnlimited: "",
-  },
+     enjoyUnlimited: "",
+     maybeLater: "",
+     noPressure: "",
+   },
 
   // =====================
   // NAVIGATION
@@ -53,12 +55,23 @@ export const schema = {
     contact: "",
     talkToGinni: "",
     yesno: "",
+   },
+
+  countdown: {
+    hours: "",
+    minutes: "",
+    seconds: "",
+    untilNext: "",
   },
 
-  // =====================
-  // HOME PAGE
-  // =====================
-  home: {
+  watermark: {
+    text: "",
+  },
+
+   // =====================
+   // HOME PAGE
+   // =====================
+   home: {
     hero: {
       sloganLine1: "",
       sloganLine2: "",
@@ -118,9 +131,10 @@ export const schema = {
       p2: "",
       p3: "",
     },
-    cta: {
-      text: "",
-    },
+     cta: {
+       text: "",
+       startReading: "",
+     },
   },
 
   // =====================
@@ -333,14 +347,16 @@ export const schema = {
   // =====================
   // CHAT
   // =====================
-  chat: {
-    button: "",
-    tooltip: "",
-    welcome: "",
-    afterReading: "",
-    placeholder: "",
-    send: "",
-  },
+   chat: {
+     button: "",
+     tooltip: "",
+     welcome: "",
+     afterReading: "",
+     placeholder: "",
+     send: "",
+     contextNotice: "",
+     footerPowered: "",
+   },
 
   // =====================
   // PAYWALL
@@ -363,14 +379,52 @@ export const schema = {
     },
     timeLimited: "",
     savings: "",
-    securePayment: "",
-   },
+     securePayment: "",
+     messages: {
+       deep_engagement: {
+         title: "",
+         desc: "",
+       },
+       hesitation: {
+         title: "",
+         desc: "",
+       },
+       recurring_theme: {
+         title: "",
+         desc: "",
+       },
+     },
+    },
 
-   premium: {
-    badge: "",
-    active: "",
-    enjoy: "",
-  },
+    premium: {
+     badge: "",
+     active: "",
+     enjoy: "",
+     page: {
+       title: "",
+       subtitle: "",
+     },
+     mostPopular: "",
+     plans: {
+       free: {
+         name: "",
+         features: [] as string[],
+       },
+       premium: {
+         name: "",
+         features: [] as string[],
+       },
+       pro: {
+         name: "",
+         features: [] as string[],
+       },
+     },
+     buttons: {
+       getStartedFree: "",
+       subscribe: "",
+     },
+     guarantee: "",
+   },
 
   // =====================
   // URGENCY BADGES
@@ -402,22 +456,26 @@ export const schema = {
   // =====================
   // READING FORM (personalization)
   // =====================
-    readingForm: {
-      title: "",
-      subtitle: "",
-      name: "",
-      namePlaceholder: "",
-      nameError: "",
-      question: "",
-      questionPlaceholder: "",
-      questionError: "",
-      processing: "",
-      patience: "",
-      guidance: "",
-      tryAgain: "",
-      unlockFull: "",
-     },
-  };
+     readingForm: {
+       title: "",
+       subtitle: "",
+       name: "",
+       namePlaceholder: "",
+       nameError: "",
+       question: "",
+       questionPlaceholder: "",
+       questionError: "",
+       processing: "",
+       patience: "",
+       guidance: "",
+       tryAgain: "",
+       unlockFull: "",
+      },
+      metadata: {
+        title: "",
+        description: "",
+      },
+   };
 
  export type TranslationSchema = typeof schema;
  export type TranslationKey = keyof TranslationSchema;

@@ -5,6 +5,7 @@ import { Check, Sparkles, Zap, Crown } from 'lucide-react';
 import Link from 'next/link';
 import { SUBSCRIPTION_PLANS, type PlanType } from '@/lib/payments/plans';
 import Button from '@/components/ui/button';
+import { useTranslation } from '@/hooks/useTranslation';
 
 const PLAN_ICONS: Record<PlanType, typeof Sparkles> = {
   free: Sparkles,
@@ -19,6 +20,8 @@ const PLAN_COLORS: Record<PlanType, string> = {
 };
 
 export default function PremiumPage() {
+  const { t } = useTranslation();
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-[rgb(var(--background))] via-[rgb(var(--surface))] to-[rgb(var(--background))] py-16 md:py-20">
       <div className="mx-auto max-w-6xl px-6">
@@ -29,11 +32,10 @@ export default function PremiumPage() {
           className="text-center mb-16"
         >
           <h1 className="font-heading text-3xl md:text-4xl lg:text-5xl text-[rgb(var(--foreground))] mb-4">
-            Unlock Divine Guidance
+            {t('premium.page.title')}
           </h1>
           <p className="text-lg text-[rgb(var(--foreground-secondary))] max-w-2xl mx-auto">
-            Choose your path to deeper insights. Upgrade for unlimited readings, 
-            priority AI responses, and exclusive WhatsApp guidance.
+            {t('premium.page.subtitle')}
           </p>
         </motion.div>
 
@@ -53,7 +55,7 @@ export default function PremiumPage() {
               >
                 {isPopular && (
                   <div className="absolute -top-4 left-1/2 -translate-x-1/2 rounded-full bg-gradient-to-r from-[rgb(var(--gold-start))] to-[rgb(var(--gold))] px-4 py-1 text-sm font-semibold text-black">
-                    Most Popular
+                    {t('premium.mostPopular')}
                   </div>
                 )}
                 
@@ -69,11 +71,11 @@ export default function PremiumPage() {
                       <Icon className="h-6 w-6" />
                     </div>
                     <h3 className="font-heading text-2xl text-[rgb(var(--foreground))] mb-2">
-                      {plan.name}
+                      {t(`premium.plans.${planType}.name`)}
                     </h3>
                     <div className="text-4xl font-bold text-[rgb(var(--foreground))]">
                       {plan.price === 0 ? (
-                        'Free'
+                        t('premium.plans.free.name')
                       ) : (
                         <>
                           <span className="text-2xl">₹</span>{plan.price}
@@ -87,7 +89,7 @@ export default function PremiumPage() {
                     {plan.features.map((feature, i) => (
                       <li key={i} className="flex items-start gap-3 text-[rgb(var(--foreground-secondary))]">
                         <Check className="h-5 w-5 text-[rgb(var(--gold))] flex-shrink-0 mt-0.5" />
-                        <span>{feature}</span>
+                        <span>{t(`premium.plans.${planType}.features.${i}`)}</span>
                       </li>
                     ))}
                   </ul>
@@ -98,7 +100,7 @@ export default function PremiumPage() {
                       variant={planType === 'free' ? 'secondary' : 'primary'}
                       className="w-full"
                     >
-                      {planType === 'free' ? 'Get Started Free' : 'Subscribe Now'}
+                      {planType === 'free' ? t('premium.buttons.getStarted') : t('premium.buttons.subscribe')}
                     </Button>
                   </Link>
                 </div>
@@ -114,7 +116,7 @@ export default function PremiumPage() {
           className="mt-16 text-center"
         >
           <p className="text-[rgb(var(--foreground-muted))] text-sm">
-            All plans include a 7-day money-back guarantee. Cancel anytime.
+            {t('premium.guarantee')}
           </p>
         </motion.div>
       </div>

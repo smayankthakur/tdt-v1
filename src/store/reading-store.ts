@@ -1,6 +1,8 @@
 'use client';
 
 import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
+import { createCuriosityGap } from '@/lib/convert/CuriosityGap';
 import { TarotCard, SelectedCard, getAllCards } from '@/lib/tarot/logic';
 
 interface ReadingState {

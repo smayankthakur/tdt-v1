@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Divine Tarot - Footer Demo</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #1a1a1a;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .demo-content {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 24px;
+        }
+        /* Simulated Footer Styles */
+        footer {
+            background: #000;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            color: #fff;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 60px 20px 20px;
+        }
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+        @media (max-width: 768px) {
+            .footer-grid { grid-template-columns: 1fr; gap: 30px; }
+        }
+        .brand-section .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        .brand-section .logo-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #FFD700, #FF4D4D);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .brand-section h2 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 8px;
+        }
+        .brand-section p {
+            color: #A1A1AA;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        .section-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #EAEAF0;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .social-links {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .social-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid transparent;
+            border-radius: 12px;
+            text-decoration: none;
+            color: #A1A1AA;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        .social-link:hover {
+            border-color: rgba(255,215,0,0.3);
+            background: rgba(255,215,0,0.05);
+            color: #EAEAF0;
+            transform: translateX(4px);
+        }
+        .social-icon {
+            width: 40px;
+            height: 40px;
+            background: #1A1A1F;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        .social-link:hover .social-icon {
+            background: linear-gradient(135deg, rgba(255,215,0,0.2), rgba(255,77,77,0.2));
+            transform: scale(1.1);
+        }
+        .social-icon svg { width: 20px; height: 20px; color: #A1A1AA; }
+        .social-link:hover .social-icon svg { color: #FFD700; }
+        .newsletter-form { display: flex; flex-direction: column; gap: 12px; }
+        .newsletter-input {
+            padding: 12px 16px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid #3C281A;
+            border-radius: 12px;
+            color: #EAEAF0;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+        .newsletter-input:focus {
+            border-color: #FFD700;
+            box-shadow: 0 0 0 2px rgba(255,215,0,0.1);
+        }
+        .newsletter-btn {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #FFD700, #FF4D4D);
+            color: #000;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .newsletter-btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 4px 20px rgba(255,215,0,0.3);
+        }
+        .trust-badges { display: flex; flex-direction: column; gap: 12px; }
+        .trust-badge {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(60,40,26,0.5);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+        .trust-badge:hover { border-color: rgba(255,215,0,0.3); }
+        .trust-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, rgba(255,215,0,0.1), rgba(255,77,77,0.1));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .trust-icon svg { width: 20px; height: 20px; color: #FFD700; }
+        .trust-badge span { color: #A1A1AA; font-size: 14px; }
+        .contact-info {
+            margin-top: 20px;
+            padding: 16px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,215,0,0.1);
+            border-radius: 12px;
+        }
+        .contact-info p { color: #A1A1AA; font-size: 13px; }
+        .contact-info a { color: #FFD700; text-decoration: none; }
+        .contact-info a:hover { text-decoration: underline; }
+        .footer-bottom {
+            padding: 20px 0;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+        .footer-bottom p { color: #A1A1AA; font-size: 13px; }
+        .footer-links { display: flex; gap: 24px; }
+        .footer-links a { color: #A1A1AA; text-decoration: none; font-size: 13px; transition: color 0.3s; }
+        .footer-links a:hover { color: #FFD700; }
+        /* Animations */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-in { animation: fadeInUp 0.6s ease forwards; }
+        .delay-1 { animation-delay: 0.1s; opacity: 0; }
+        .delay-2 { animation-delay: 0.2s; opacity: 0; }
+        .delay-3 { animation-delay: 0.3s; opacity: 0; }
+        .delay-4 { animation-delay: 0.4s; opacity: 0; }
+    </style>
+</head>
+<body>
+    <div class="demo-content">
+        <p>Scroll down to see the footer demo ↓</p>
+    </div>
+
+    <footer>
+        <div class="footer-container">
+            <!-- Mobile Newsletter -->
+            <div style="display: none; margin-bottom: 30px; padding: 24px; background: linear-gradient(135deg, rgba(255,215,0,0.05), rgba(255,77,77,0.05)); border: 1px solid rgba(255,215,0,0.1); border-radius: 16px;">
+                <h3 style="font-size: 20px; font-weight: 600; color: #fff; margin-bottom: 8px;">Get Daily Tarot Guidance</h3>
+                <p style="color: #A1A1AA; font-size: 14px; margin-bottom: 16px;">Receive personalized insights directly to your inbox.</p>
+                <div style="display: flex; gap: 8px;">
+                    <input type="email" placeholder="your.email@example.com" class="newsletter-input" style="flex: 1;">
+                    <button class="newsletter-btn">Subscribe</button>
+                </div>
+            </div>
+
+            <!-- Main Grid -->
+            <div class="footer-grid">
+                <!-- Brand Section -->
+                <div class="brand-section animate-in">
+                    <div class="logo">
+                        <div class="logo-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"/>
+                                <path d="M12 2a10 10 0 0 1 0 20"/>
+                                <path d="M12 2v20"/>
+                                <path d="M12 12l8-4"/>
+                                <circle cx="12" cy="12" r="3" fill="#000"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <h2>The Divine Tarot</h2>
+                            <p style="font-size: 12px; color: #A1A1AA;">Premium AI-Powered Readings</p>
+                        </div>
+                    </div>
+                    <p>Guiding your path with clarity, intuition, and cosmic insight.</p>
+                    
+                    <!-- Desktop Newsletter -->
+                    <div style="margin-top: 24px; padding: 20px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,215,0,0.1); border-radius: 12px;">
+                        <h4 style="font-size: 14px; font-weight: 600; color: #EAEAF0; margin-bottom: 12px;">Daily Guidance</h4>
+                        <p style="font-size: 12px; color: #A1A1AA; margin-bottom: 12px;">Receive exclusive readings to your inbox.</p>
+                        <div style="display: flex; gap: 8px;">
+                            <input type="email" placeholder="Enter email" class="newsletter-input" style="font-size: 12px; padding: 10px 12px;">
+                            <button class="newsletter-btn" style="padding: 10px 16px; font-size: 12px;">Join</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Social Links -->
+                <div class="animate-in delay-1">
+                    <h3 class="section-title">Connect With Us</h3>
+                    <div class="social-links">
+                        <a href="https://instagram.com/thedivineetarot" class="social-link" target="_blank">
+                            <div class="social-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="2" y="2" width="20" height="20" rx="5"/>
+                                    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+                                    <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+                                </svg>
+                            </div>
+                            <span>Instagram</span>
+                        </a>
+                        <a href="https://facebook.com/profile.php?id=61578567343068" class="social-link" target="_blank">
+                            <div class="social-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
+                                </svg>
+                            </div>
+                            <span>Facebook</span>
+                        </a>
+                        <a href="https://youtube.com/@thedivineetarot" class="social-link" target="_blank">
+                            <div class="social-icon">
+                                <svg viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M23.5 6.2a2.8 2.8 0 0 0-1.9-2C19.8 4 12 4 12 4s-7.8 0-9.6.2a2.8 2.8 0 0 0-1.9 2A30 30 0 0 0 0 11.8a30 30 0 0 0 .5 5.4 2.8 2.8 0 0 0 1.9 2C4.2 20 12 20 12 20s7.8 0 9.6-.2a2.8 2.8 0 0 0 1.9-2 30 30 0 0 0 .5-5.4 30 30 0 0 0-.5-5.4z"/>
+                                    <path d="M10 15l5-3-5-3z"/>
+                                </svg>
+                            </div>
+                            <span>YouTube</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Quick Links -->
+                <div class="animate-in delay-2">
+                    <h3 class="section-title">Quick Links</h3>
+                    <ul style="list-style: none;">
+                        <li style="margin-bottom: 12px;"><a href="/about" style="color: #A1A1AA; text-decoration: none; font-size: 14px; display: flex; align-items: center; gap: 8px; transition: color 0.3s;" onmouseover="this.style.color='#FFD700'" onmouseout="this.style.color='#A1A1AA'"><span style="width: 6px; height: 6px; background: #FFD700; border-radius: 50%;"></span>About Us</a></li>
+                        <li style="margin-bottom: 12px;"><a href="/reading" style="color: #A1A1AA; text-decoration: none; font-size: 14px; display: flex; align-items: center; gap: 8px; transition: color 0.3s;" onmouseover="this.style.color='#FFD700'" onmouseout="this.style.color='#A1A1AA'"><span style="width: 6px; height: 6px; background: #FFD700; border-radius: 50%;"></span>Tarot Readings</a></li>
+                        <li style="margin-bottom: 12px;"><a href="/premium" style="color: #A1A1AA; text-decoration: none; font-size: 14px; display: flex; align-items: center; gap: 8px; transition: color 0.3s;" onmouseover="this.style.color='#FFD700'" onmouseout="this.style.color='#A1A1AA'"><span style="width: 6px; height: 6px; background: #FFD700; border-radius: 50%;"></span>Premium</a></li>
+                        <li style="margin-bottom: 12px;"><a href="/contact" style="color: #A1A1AA; text-decoration: none; font-size: 14px; display: flex; align-items: center; gap: 8px; transition: color 0.3s;" onmouseover="this.style.color='#FFD700'" onmouseout="this.style.color='#A1A1AA'"><span style="width: 6px; height: 6px; background: #FFD700; border-radius: 50%;"></span>Contact</a></li>
+                    </ul>
+                </div>
+
+                <!-- Trust Badges -->
+                <div class="animate-in delay-3">
+                    <h3 class="section-title">Your Trust</h3>
+                    <div class="trust-badges">
+                        <div class="trust-badge">
+                            <div class="trust-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                                </svg>
+                            </div>
+                            <span>Secure Experience</span>
+                        </div>
+                        <div class="trust-badge">
+                            <div class="trust-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                                </svg>
+                            </div>
+                            <span>Trusted by Seekers</span>
+                        </div>
+                        <div class="trust-badge">
+                            <div class="trust-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="3"/>
+                                    <path d="M12 1v6m0 6v10"/>
+                                    <path d="M12 19a7 7 0 0 0 7-7"/>
+                                </svg>
+                            </div>
+                            <span>AI + Intuition</span>
+                        </div>
+                    </div>
+                    <div class="contact-info">
+                        <p>Support: <a href="mailto:thedivinetarot111@gmail.com">thedivinetarot111@gmail.com</a></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Bar -->
+            <div class="footer-bottom">
+                <p>© 2026 The Divine Tarot. All rights reserved.</p>
+                <div class="footer-links">
+                    <a href="/privacy">Privacy Policy</a>
+                    <a href="/terms">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Animations on scroll
+        document.addEventListener('DOMContentLoaded', function() {
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+            
+            const observer = new IntersectionObserver(function(entries) {
+                entries.forEach(function(entry) {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, observerOptions);
+            
+            document.querySelectorAll('.animate-in').forEach(function(el) {
+                observer.observe(el);
+            });
+            
+            // Newsletter form handler
+            const forms = document.querySelectorAll('.newsletter-form, .newsletter-input');
+            forms.forEach(function(form) {
+                if (form.tagName === 'FORM') {
+                    form.addEventListener('submit', function(e) {
+                        e.preventDefault();
+                        const btn = form.querySelector('.newsletter-btn');
+                        const input = form.querySelector('.newsletter-input');
+                        const email = input.value;
+                        
+                        if (!email || !email.includes('@')) {
+                            input.style.borderColor = '#EF4444';
+                            return;
+                        }
+                        
+                        input.style.borderColor = '#10B981';
+                        btn.textContent = 'Subscribed! ✨';
+                        btn.style.background = '#10B981';
+                        setTimeout(() => {
+                            form.reset();
+                            btn.textContent = 'Join';
+                            btn.style.background = '';
+                            input.style.borderColor = '';
+                        }, 3000);
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

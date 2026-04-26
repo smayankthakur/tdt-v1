@@ -2,12 +2,9 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { 
-  Instagram, 
-  Facebook, 
-  Youtube, 
-  Mail 
-} from 'lucide-react';
+import {
+  Mail
+} from "lucide-react";
 import { useLanguage } from '@/hooks/useLanguage';
 
 export default function Footer() {
@@ -105,45 +102,6 @@ export default function Footer() {
                 href="https://instagram.com/thedivineetarot" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="flex items-center gap-3 text-white/70 hover:text-white hover:scale-105 transition-transform duration-300"
-              >
-                <Instagram className="w-5 h-5 text-gold hover:text-gold-light transition-colors duration-300" />
-                <span className="text-sm">Instagram</span>
-              </a>
-              
-              {/* Facebook */}
-              <a 
-                href="https://facebook.com/profile.php?id=61578567343068" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="flex items-center gap-3 text-white/70 hover:text-white hover:scale-105 transition-transform duration-300"
-              >
-                <Facebook className="w-5 h-5 text-gold hover:text-gold-light transition-colors duration-300" />
-                <span className="text-sm">Facebook</span>
-              </a>
-              
-              {/* YouTube Channel 1 */}
-              <a 
-                href="https://youtube.com/@thedivineetarot" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="flex items-center gap-3 text-white/70 hover:text-white hover:scale-105 transition-transform duration-300"
-              >
-                <Youtube className="w-5 h-5 text-gold hover:text-gold-light transition-colors duration-300" />
-                <span className="text-sm">YouTube</span>
-              </a>
-              
-              {/* YouTube Channel 2 */}
-              <a 
-                href="https://www.youtube.com/@TheDivineTarot" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="flex items-center gap-3 text-white/70 hover:text-white hover:scale-105 transition-transform duration-300"
-              >
-                <Youtube className="w-5 h-5 text-gold hover:text-gold-light transition-colors duration-300" />
-                <span className="text-sm">YouTube Channel</span>
-              </a>
-            </div>
             
             {/* CONTACT INFO */}
             <div className="space-y-2">
@@ -168,8 +126,8 @@ export default function Footer() {
       {/* BOTTOM STRIP */}
       <div className="border-t border-white/10 py-6">
         <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center text-center md:text-left text-xs opacity-60">
-          <p>© {currentYear} Divine Tarot. All rights reserved.</p>
-          <p className="md:mt-0 mt-1">Powered by Sitelytc Digital Media Pvt. Ltd. (sitelytc.com)</p>
+           <p>© {currentYear} Divine Tarot. All rights reserved.</p>
+           <p className="md:mt-0 mt-1">Powered by Sitelytc Digital Media Pvt. Ltd. (<a href="https://www.sitelytc.com" target="_blank" rel="noopener noreferrer">sitelytc.com</a>)</p>
         </div>
       </div>
 

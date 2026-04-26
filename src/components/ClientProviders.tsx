@@ -56,8 +56,8 @@ export default function ClientProviders({ children }: ClientProvidersProps) {
 
   return (
     <PersonalizationProvider userId={userId}>
-      {/* Force re-render when language changes - wraps entire app */}
-      <div key={language}>
+      {/* Language changes now propagate via context – no forced remount */}
+      <div>
         {children}
       </div>
     </PersonalizationProvider>

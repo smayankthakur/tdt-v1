@@ -466,7 +466,7 @@ function CardSelection({
   };
 
   return (
-    <div key={language} className="space-y-8">
+    <div className="space-y-8">
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center">
         <h2 className="font-heading text-2xl md:text-3xl text-foreground mb-2">{t('ritualHub.cardSelect.title')}</h2>
         <p className="text-foreground-secondary text-sm md:text-base leading-relaxed max-w-lg mx-auto">{getIntentMessage()}</p>

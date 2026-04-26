@@ -10,73 +10,95 @@ interface StreamingOutputProps {
   lineDelay?: number;
 }
 
-export default function StreamingOutput({ 
-  lines, 
-  onComplete, 
+export default function StreamingOutput({
+  lines,
+  onComplete,
   startDelay = 1000,
   lineDelay = 120,
 }: StreamingOutputProps) {
-  const [currentLineIndex, setCurrentLineIndex] = useState(-1);
   const [displayedLines, setDisplayedLines] = useState<string[]>([]);
   const lineRefs = useRef<(HTMLParagraphElement | null)[]>([]);
 
+  // Refs to persist across renders without causing re-renders
+  const linesRef = useRef(lines);
+  const displayedCountRef = useRef(0);
+  const isCompleteRef = useRef(false);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Keep linesRef up to date
+  useEffect(() => {
+    linesRef.current = lines;
+  }, [lines]);
+
+  // Start streaming once on mount
   useEffect(() => {
     let mounted = true;
-    let currentIdx = -1;
+    let startTimer: NodeJS.Timeout;
 
-    const timer = setTimeout(() => {
-      const interval = setInterval(() => {
+    const startStreaming = () => {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+
+      intervalRef.current = setInterval(() => {
         if (!mounted) {
-          clearInterval(interval);
+          clearInterval(intervalRef.current!);
           return;
         }
 
-        if (currentIdx < lines.length - 1) {
-          currentIdx++;
-          setCurrentLineIndex(currentIdx);
-          setDisplayedLines(prev => [...prev, lines[currentIdx]]);
-          
-          // Scroll to current line smoothly
-          if (lineRefs.current[currentIdx]) {
-            lineRefs.current[currentIdx]!.scrollIntoView({ 
-              behavior: 'smooth', 
-              block: 'nearest' 
-            });
-          }
+        const currentLines = linesRef.current;
+        const count = displayedCountRef.current;
+
+        if (count < currentLines.length) {
+          const nextLine = currentLines[count];
+          setDisplayedLines((prev) => [...prev, nextLine]);
+          displayedCountRef.current = count + 1;
         } else {
-          clearInterval(interval);
-          if (onComplete) onComplete();
+          if (!isCompleteRef.current && displayedCountRef.current > 0) {
+            isCompleteRef.current = true;
+            if (onComplete) onComplete();
+          }
+          clearInterval(intervalRef.current!);
         }
       }, lineDelay);
+    };
 
-      return () => clearInterval(interval);
-    }, startDelay);
+    startTimer = setTimeout(startStreaming, startDelay);
 
     return () => {
       mounted = false;
-      clearTimeout(timer);
+      clearTimeout(startTimer);
+      if (intervalRef.current) clearInterval(intervalRef.current);
     };
-  }, [lines, onComplete, startDelay, lineDelay]);
+  }, [onComplete, startDelay, lineDelay]);
+
+  // Scroll to newest line when it appears
+  useEffect(() => {
+    if (displayedLines.length > 0) {
+      const lastIdx = displayedLines.length - 1;
+      requestAnimationFrame(() => {
+        if (lineRefs.current[lastIdx]) {
+          lineRefs.current[lastIdx]!.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+      });
+    }
+  }, [displayedLines]);
+
+  // Debug safety check – logs reading state
+  console.log('READING STATE:', displayedLines.join('\n'));
 
   return (
     <div className="reading-text space-y-3 font-serif text-base md:text-lg text-white">
       {displayedLines.map((line, idx) => {
-        const isNewest = idx === currentLineIndex;
-        
-        // Skip rendering pure whitespace lines (but keep spacing)
         if (line.trim() === '') {
           return <div key={idx} className="h-4" />;
         }
 
         let content: React.ReactNode = line;
-        let className = "leading-relaxed text-white/90";
-        
-        // Bullet point styling
+        let className = 'leading-relaxed text-white/90';
+
         if (line.startsWith('•')) {
-          className += " pl-4 border-l-2 border-gold/30 text-gold/90";
+          className += ' pl-4 border-l-2 border-gold/30 text-gold/90';
         } else if (line.startsWith('Card ')) {
-          className += " pl-4";
-          // Parse card header vs content
+          className += ' pl-4';
           const parts = line.split(':');
           if (parts.length > 1) {
             content = (
@@ -93,7 +115,9 @@ export default function StreamingOutput({
         return (
           <motion.p
             key={idx}
-            ref={(el) => { lineRefs.current[idx] = el; }}
+            ref={(el) => {
+              lineRefs.current[idx] = el;
+            }}
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, ease: 'easeOut' }}
@@ -103,9 +127,9 @@ export default function StreamingOutput({
           </motion.p>
         );
       })}
-      
-      {/* Typing cursor */}
-      {currentLineIndex < lines.length - 1 && (
+
+      {/* Typing cursor – shows while there are more lines to stream */}
+      {displayedCountRef.current < linesRef.current.length && (
         <motion.span
           animate={{ opacity: [1, 0] }}
           transition={{ duration: 0.8, repeat: Infinity }}

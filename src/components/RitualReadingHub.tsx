@@ -711,8 +711,8 @@ const { t, language } = useLanguage();
       return t(tKey);
     };
 
-return (
-    <div key={language} className="space-y-8">
+ return (
+     <div className="space-y-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

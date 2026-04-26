@@ -348,9 +348,9 @@
 
             <!-- Bottom Bar -->
             <div class="footer-bottom">
-                <p>© 2026 The Divine Tarot. All rights reserved.</p>
+                <p>© <span id="year"></span> The Divine Tarot. All rights reserved.</p>
                 <div class="footer-links">
-                    <p>Designed with ❤️ by <a href="https://www.sitelytc.com" target="_blank" style="color: #A1A1AA; text-decoration: none;">SitelytcDigital Media</a></p>
+                    <p>Designed with ❤️ by <a href="https://www.sitelytc.com" target="_blank" style="color: #A1A1AA; text-decoration: none;">Sitelytc Digital Media Pvt. Ltd.</a></p>
                 </div>
             </div>
         </div>
@@ -405,6 +405,7 @@
                 }
             });
         });
+        document.getElementById("year").innerHTML = new Date().getFullYear();
     </script>
 </body>
 </html>

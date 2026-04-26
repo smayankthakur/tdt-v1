@@ -620,3 +620,80 @@
 ::selection {
   background: rgba(255, 255, 255, 0.2);
 }
+
+/* === FOOTER STYLES === */
+
+footer {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Focus states for footer interactive elements */
+footer a:focus-visible,
+footer button:focus-visible,
+footer input:focus-visible {
+  outline: 2px solid #FFD700;
+  outline-offset: 2px;
+}
+
+/* Scrollbar for any potential overflow in footer */
+footer ::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+footer ::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+footer ::-webkit-scrollbar-thumb {
+  background: #3C281A;
+  border-radius: 3px;
+}
+
+footer ::-webkit-scrollbar-thumb:hover {
+  background: #FFD700;
+}
+
+/* Reduced motion support for footer animations */
+@media (prefers-reduced-motion: reduce) {
+  footer .group,
+  footer [class*="transition"],
+  footer .motion-safe\\:transition-all {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+/* Ensure footer links are keyboard accessible */
+footer a:not([class*="focus"]):focus {
+  outline: 2px solid #FFD700;
+  outline-offset: 2px;
+}
+
+footer button:not([class*="focus"]):focus {
+  outline: 2px solid #FFD700;
+  outline-offset: 2px;
+}
+
+/* Footer form input states */
+footer input[data-invalid="true"] {
+  border-color: #EF4444 !important;
+}
+
+footer input[data-valid="true"] {
+  border-color: #10B981 !important;
+}
+
+/* Screen reader only text */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

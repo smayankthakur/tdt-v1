@@ -1,378 +1,323 @@
 import { NextRequest, NextResponse } from 'next/server';
-import OpenAI from 'openai';
-import { pickCards, formatCardsForAI, SelectedCard, CardHistory } from '@/lib/tarot/logic';
-import { supabase, isSupabaseConfigured } from '@/lib/supabase/client';
-import { updateUserMemory, getUserMemory, buildMemoryContext } from '@/lib/ai/memory';
+import { createServerClient, isSupabaseConfigured } from '@/lib/supabase/server';
+import { streamReading } from '@/lib/ai/streaming';
+import { updateUserMemory } from '@/lib/ai/memory';
+import type { SelectedCard } from '@/lib/tarot/logic';
 
-let _openai: OpenAI | undefined;
-
-function getOpenAI() {
-  if (!_openai) {
-    const apiKey = process.env.OPENAI_API_KEY || process.env.OPENAI_KEY;
-    if (!apiKey) {
-      throw new Error('Missing OPENAI_API_KEY');
-    }
-    _openai = new OpenAI({ apiKey });
-  }
-  return _openai;
+// Helper to send SSE event
+function sseEncode(type: string, data: any): string {
+  return `event: ${type}\ndata: ${JSON.stringify(data)}\n\n`;
 }
 
-// Emotion extraction patterns
-const EMOTION_PATTERNS: Record<string, string[]> = {
-  anxious: ['worried', 'stress', 'nervous', 'uncertain', 'afraid', 'fear', 'scared'],
-  hopeful: ['hope', 'wish', 'best', 'positive', 'good', 'better', 'dream', 'want'],
-  confused: ['confused', 'don\'t know', 'uncertain', 'lost', 'direction', 'what should'],
-  heartbroken: ['hurt', 'pain', 'broken', 'miss', 'love', 'heart', 'sad', 'grief'],
-  stuck: ['stuck', 'can\'t', 'blocked', 'same', 'repetitive', 'going in circles'],
-  determined: ['will', 'must', 'need to', 'going to', 'try', 'fight', '努力'],
-};
+export async function GET(request: NextRequest) {
+  const { searchParams } = new URL(request.url);
+  const jobId = searchParams.get('jobId');
 
-const TOPIC_PATTERNS: Record<string, string[]> = {
-  love: ['love', 'relationship', 'partner', 'dating', 'marriage', 'crush', 'heart', 'romance', 'boyfriend', 'girlfriend', 'ex', 'no contact', 'together'],
-  career: ['career', 'job', 'work', 'boss', 'colleague', 'promotion', 'salary', 'unemployed', 'business', 'professional'],
-  finance: ['money', 'financial', 'rich', 'debt', 'invest', 'income', 'lottery', 'wealth', 'prosperity', 'financial'],
-  no_contact: ['no contact', 'hasn\'t reached', 'not talking', 'silence', 'blocked', 'ghosting', 'waiting'],
-};
-
-function extractEmotion(text: string): string {
-  const lower = text.toLowerCase();
-  for (const [emotion, patterns] of Object.entries(EMOTION_PATTERNS)) {
-    for (const pattern of patterns) {
-      if (lower.includes(pattern)) return emotion;
-    }
+  if (!jobId) {
+    return new Response(
+      sseEncode('error', { error: 'jobId is required' }),
+      { status: 400, headers: { 'Content-Type': 'text/event-stream' } }
+    );
   }
-  return 'neutral';
-}
 
-function extractTopic(text: string): string {
-  const lower = text.toLowerCase();
-  for (const [topic, patterns] of Object.entries(TOPIC_PATTERNS)) {
-    for (const pattern of patterns) {
-      if (lower.includes(pattern)) return topic;
-    }
+  const supabase = await createServerClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  const userId = user?.id;
+
+  // Fetch job
+  const { data: job, error: jobError } = await supabase
+    .from('reading_jobs')
+    .select('*')
+    .eq('id', jobId)
+    .single();
+
+  if (jobError || !job) {
+    return new Response(
+      sseEncode('error', { error: 'Job not found' }),
+      { status: 404, headers: { 'Content-Type': 'text/event-stream' } }
+    );
   }
-  return 'general';
-}
 
-function summarizeHistory(history: CardHistory[]): string {
-  if (!history.length) return '';
-  
-  const topics = Array.from(new Set(history.map(h => h.topic).filter(Boolean)));
-  const emotions = history.map(h => extractEmotion(h.question || '')).filter(e => e !== 'neutral');
-  const recentQuestions = history.slice(0, 3).map(h => h.question).filter(Boolean);
-  const readingCount = history.length;
-  
-  let summary = '';
-  
-  if (readingCount > 1) {
-    summary += `You've been here before - this seems like an ongoing situation. `;
+  // Authorization: ensure job belongs to this user (if logged in)
+  if (userId && job.user_id && job.user_id !== userId) {
+    return new Response(
+      sseEncode('error', { error: 'Unauthorized' }),
+      { status: 403, headers: { 'Content-Type': 'text/event-stream' } }
+    );
   }
-  
-  if (topics.length > 0) {
-    summary += `Recent themes: ${topics.join(', ')}. `;
-  }
-  
-  if (emotions.length > 0) {
-    const dominantEmotion = emotions.sort((a, b) =>
-      emotions.filter(v => v === a).length - emotions.filter(v => v === b).length
-    ).pop();
-    if (dominantEmotion && dominantEmotion !== 'neutral') {
-      summary += `Emotional pattern: feeling ${dominantEmotion}. `;
-    }
-  }
-  
-  if (recentQuestions.length > 1) {
-    summary += `This keeps circling back - questions like "${recentQuestions[0]}" keep bringing you here. `;
-  }
-  
-  return summary;
-}
 
-const ILLUSION_LINES = [
-  "This isn't random - your energy is very clear here...",
-  "This came through very strongly from your cards...",
-  "I sense something significant in what the cards are showing...",
-  "There's a pattern emerging that I want you to notice...",
-  "Your energy is speaking loudly through these cards...",
-  // Pattern-aware illusion lines
-  "This doesn't feel random...",
-  "This is coming through very clearly...",
-  "There's a deeper layer here that I want you to see...",
-  "I've been sensing this pattern in your readings for a while now...",
-  "This keeps showing up in your readings...",
-  "There's something about this situation that feels very familiar...",
-];
+  // Prepare stream
+  const encoder = new TextEncoder();
 
-const EMOTIONAL_OPENERS = [
-  "I can feel the weight of this question on your mind...",
-  "There's an emotional current running through this that I want you to feel...",
-  "I sense the uncertainty you've been carrying...",
-  "This situation has been on your mind more than you admit...",
-  "There's something you need to hear, and I'm here to tell you...",
-  "I can feel something shifting in your energy right now...",
-  // Pattern-aware openers for returning users
-  "This situation feels like it hasn't fully settled yet...",
-  "I can sense this keeps circling back emotionally...",
-  "There's a pattern here that keeps pulling you back...",
-  "This doesn't feel like something new... more like something ongoing...",
-  "I've been feeling this energy from you for a while now...",
-  "Something about this situation feels familiar... like it's been here before...",
-];
-
- const HUMAN_TAROT_SYSTEM_PROMPT = `You are Ginni, a deeply intuitive tarot reader who speaks like a close, understanding friend. Your readings are personal, emotional, and feel written just for the user. Write in natural, conversational Hinglish (Hindi-English mix) with a soft, calm, slightly intimate tone.
-
- CORE OBJECTIVE:
- Create ONE unified, emotionally rich reading that flows like a single story. The user should feel: "Yeh sirf mere liye likha gaya hai."
-
- NON-NEGOTIABLE RULES:
- ❌ NEVER:
- - Mention card names or explain individual cards
- - Say "based on the cards", "this card means…", or textbook definitions
- - Use bullet points, numbered lists, or section headings
- - Sound robotic, analytical, or generic
- - Refer to yourself as AI, assistant, chatbot, or system
-
- ✅ ALWAYS:
- - Address the user by name (if provided) naturally, 1–2 times max
- - Merge all card insights into ONE continuous narrative
- - Focus on emotion, situation, and clarity
- - Keep it under 300 words
- - Make it feel immersive and personal
-
- INVISIBLE FLOW (FOLLOW THIS ORDER):
- 1. GREETING: Start gently with name (if known). E.g., "Mayank, ek baat clearly dikh rahi hai…" or "Mayank, tumhare question mein kuch interesting hai…"
-
- 2. SITUATION READING: Combine all card signals into one insight about their question. E.g., "Tum ek aise phase mein ho jahan…", "Jo tum feel kar rahe ho na…"
-
- 3. EMOTIONAL VALIDATION: Acknowledge their feelings. "Aur honestly, yeh feeling galat nahi hai…", "Kisi bhi insaan ko yeh confuse kar deta…"
-
- 4. HIDDEN PATTERN: Reveal deeper 'why' with psychological layer. "Kyunki tum last time…", "Yeh pattern isiliye dikh raha hai…"
-
- 5. DIRECTION: Subtle future insight, not absolute prediction. "Aage kuch months mein…", "Jo aa raha hai woh…"
-
- 6. GUIDANCE: Clear, actionable step. "Ab tumhe yeh karna chahiye…", "Ek chhota sa step jo sab change kar sakta hai…"
-
- 7. EMOTIONAL CLOSING: End with impact. "Tum already jaante ho kya sahi hai…", "Bas is baar apne aapko ignore mat karna…"
-
- LANGUAGE & STYLE:
- - Conversational Hinglish – mix Hindi/English naturally
- - Use phrases like "jo dikh raha hai…", "ek pattern clearly aa raha hai…"
- - Avoid any system, technical, or corporate language
-
- PERSONALIZATION:
- - Use name naturally if available (max 1–2 times)
- - Reference question indirectly: "Jo tum pooch rahe ho…", "Is situation mein…"
- - Adapt tone to detected emotion (love: emotional, career: pressure, confusion: overthinking)
-
- FINAL CHECK:
- ✔ Reads like a real person, not a machine
- ✔ No card names, no sections, no bullet points
- ✔ Feels deeply personal and emotional
- ✔ Leaves the user feeling understood`;
-
-const LANGUAGE_PROMPTS: Record<string, string> = {
-  en: HUMAN_TAROT_SYSTEM_PROMPT,
-  hi: `${HUMAN_TAROT_SYSTEM_PROMPT} Write in natural, beautiful Hindi with emotional depth.`,
-  hinglish: `${HUMAN_TAROT_SYSTEM_PROMPT} Write in conversational Hinglish - mix of Hindi and English, WhatsApp style, keep it real and personal.`,
-};
-
-export async function POST(request: NextRequest) {
-  try {
-    const body = await request.json();
-    const { question, userId, language = 'en', topic, selectedCards: providedCards, name } = body;
-
-    if (!question || question.length < 3) {
-      return NextResponse.json(
-        { error: 'Please ask a question to receive guidance from the cards.' },
-        { status: 400 }
-      );
-    }
-
-    // Extract emotion and topic from question
-    const extractedEmotion = extractEmotion(question);
-    const extractedTopic = extractTopic(question);
-    const finalTopic = topic || extractedTopic;
-
-    // Fetch user memory and history
-    let memoryContext = '';
-    const cardHistory: CardHistory[] = [];
-    
-    if (userId && isSupabaseConfigured()) {
+  const stream = new ReadableStream({
+    async start(controller) {
       try {
-        const memory = await getUserMemory(userId);
-        memoryContext = buildMemoryContext(memory);
-        
-        const { data: recentReadings } = await supabase
-          .from('readings')
-          .select('id, question, topic, created_at')
-          .eq('user_id', userId)
-          .order('created_at', { ascending: false })
-          .limit(5);
-        
-        if (recentReadings) {
-          for (const reading of recentReadings) {
-            const { data: cards } = await supabase
-              .from('cards_drawn')
-              .select('card_name')
-              .eq('reading_id', reading.id);
-            
-            cardHistory.push({
-              cards: cards?.map(c => c.card_name) || [],
-              topic: reading.topic,
-              question: reading.question,
-              createdAt: new Date(reading.created_at)
-            });
+        // If job already completed, stream cached result immediately
+        if (job.status === 'completed' && job.result) {
+          try {
+            const result = JSON.parse(job.result);
+            // Send cards
+            controller.enqueue(encoder.encode(sseEncode('cards', result.cards)));
+            // Send content line by line? result.reading is full text. We'll stream by sentences to mimic live.
+            const sentences = (result.reading || '').split(/(?<=[.!?])\s+/g);
+            for (const sentence of sentences) {
+              if (sentence.trim()) {
+                controller.enqueue(encoder.encode(sseEncode('content', sentence + ' ')));
+                await new Promise(r => setTimeout(r, 30));
+              }
+            }
+            controller.enqueue(encoder.encode(sseEncode('done', {})));
+            controller.close();
+            return;
+          } catch (e) {
+            // fall through to regenerate
           }
         }
-      } catch (memError) {
-        console.error('[Memory Fetch Error]', memError);
-      }
-    }
 
-    // Get or select cards
-    const selectedCards = providedCards?.length >= 3 
-      ? providedCards 
-      : pickCards({
-          userId,
-          topic: finalTopic,
-          question,
-          history: cardHistory,
-          count: 3
-        });
-    
-    const cardsFormatted = formatCardsForAI(selectedCards);
-    const historySummary = summarizeHistory(cardHistory);
-    const isReturningUser = cardHistory.length > 0;
-    
-    // Pick opener based on user status
-    const basicOpeners = EMOTIONAL_OPENERS.slice(0, 6);
-    const patternOpeners = EMOTIONAL_OPENERS.slice(6);
-    const availableOpeners = isReturningUser ? EMOTIONAL_OPENERS : basicOpeners;
-    const emotionalOpener = availableOpeners[Math.floor(Math.random() * availableOpeners.length)];
-    
-    // Pick illusion line
-    const illusionLine = ILLUSION_LINES[Math.floor(Math.random() * ILLUSION_LINES.length)];
+        // If job is failed, send error
+        if (job.status === 'failed') {
+          controller.enqueue(encoder.encode(sseEncode('error', { error: job.error || 'Reading failed' })));
+          controller.close();
+          return;
+        }
 
-    // Build enhanced prompt
-    const topicSection = finalTopic ? `\nTopic: ${finalTopic}` : '';
-    const emotionSection = extractedEmotion !== 'neutral' 
-      ? `\nUser is feeling: ${extractedEmotion}` 
-      : '';
-    const historySection = historySummary 
-      ? `\nRecent context: ${historySummary}` 
-      : '';
-    
-     let userPrompt = '';
-     if (name) {
-       userPrompt += `The person asking is: ${name}\n\n`;
-     }
-     userPrompt += `${emotionalOpener}\n\nQuestion: "${question}"${topicSection}${emotionSection}\nCards drawn: ${cardsFormatted}${memoryContext}${historySection}\n\n${illusionLine}\n\nGive a deeply personal reading following the structure above. Make sure to naturally use their name (${name}) in your response.`;
-
-    const systemPrompt = LANGUAGE_PROMPTS[language] || LANGUAGE_PROMPTS.en;
-
-    // Create streaming response
-    const encoder = new TextEncoder();
-    const stream = new ReadableStream({
-      async start(controller) {
-        try {
-          const openai = getOpenAI();
+        // If job is pending or processing, try to claim it (if pending)
+        let isProcessor = false;
+        if (job.status === 'pending') {
+          const { error: updateError } = await supabase
+            .from('reading_jobs')
+            .update({ status: 'processing', updated_at: new Date().toISOString() })
+            .eq('id', jobId)
+            .eq('status', 'pending');
           
-           const controllerAbort = new AbortController();
-           const timeout = setTimeout(() => controllerAbort.abort(), 28000);
+          if (!updateError) {
+            isProcessor = true;
+          }
+        } else if (job.status === 'processing') {
+          // If already processing by someone else, we wait for completion
+          isProcessor = false;
+        }
 
-          const streamResponse = await openai.chat.completions.create({
-            model: 'gpt-4o-mini',
-            messages: [
-              { role: 'system', content: systemPrompt },
-              { role: 'user', content: userPrompt }
-            ],
-            temperature: 0.7,
-            max_tokens: 350,
-            stream: true,
-          }, { signal: controllerAbort.signal });
+        if (isProcessor) {
+          // This instance will process the reading
+          const { question, selected_cards, language, name, topic } = job;
 
-           clearTimeout(timeout);
+          // Convert stored selected_cards (should already be array with card objects)
+          const cards: SelectedCard[] = selected_cards as SelectedCard[];
 
-          // Send cards first so frontend can display them
-          controller.enqueue(encoder.encode(`data: ${JSON.stringify({ type: 'cards', cards: selectedCards })}\n\n`));
-
-          // Stream the response with pacing for natural feel
-          let lastWasParagraph = false;
-          for await (const chunk of streamResponse) {
-            const content = chunk.choices[0]?.delta?.content;
-            if (content) {
-              controller.enqueue(encoder.encode(`data: ${JSON.stringify({ type: 'content', content })}\n\n`));
-              
-              // Add natural pauses after paragraph breaks
-              const isParagraphBreak = content === '\n' || content === '\n\n';
-              if (isParagraphBreak || (lastWasParagraph && content.length > 0)) {
-                await new Promise(resolve => setTimeout(resolve, 80));
-              } else {
-                await new Promise(resolve => setTimeout(resolve, 15));
+          // Build memory context if user
+          let memoryContext = '';
+          let historySummary = '';
+          if (userId) {
+            try {
+              const { getUserMemory, buildMemoryContext } = await import('@/lib/ai/memory');
+              const memory = await getUserMemory(userId);
+              if (memory) {
+                memoryContext = buildMemoryContext(memory);
               }
-              lastWasParagraph = isParagraphBreak;
+              const { data: recentReadings } = await supabase
+                .from('readings')
+                .select('question, topic, created_at')
+                .eq('user_id', userId)
+                .order('created_at', { ascending: false })
+                .limit(5);
+              if (recentReadings) {
+                const summaries = recentReadings.map(r => `${r.topic}: ${r.question}`).join('; ');
+                historySummary = summaries;
+              }
+            } catch (e) {
+              console.error('[Memory fetch error]', e);
             }
           }
 
-          // Signal completion
-          controller.enqueue(encoder.encode(`data: ${JSON.stringify({ type: 'done' })}\n\n`));
-          try { controller.close(); } catch(e) {}
+          // Stream reading
+          let fullContent = '';
+          try {
+            for await (const event of streamReading({
+              question,
+              selectedCards: cards,
+              language: language || 'en',
+              name: name || undefined,
+              topic,
+              memoryContext,
+              historySummary,
+            })) {
+              if (event.type === 'cards') {
+                controller.enqueue(encoder.encode(sseEncode('cards', event.data)));
+              } else if (event.type === 'content') {
+                fullContent += event.data;
+                controller.enqueue(encoder.encode(sseEncode('content', event.data)));
+              } else if (event.type === 'done') {
+                controller.enqueue(encoder.encode(sseEncode('done', {})));
+                // Save result to job
+                const resultPayload = {
+                  reading: fullContent,
+                  cards,
+                  language,
+                  name,
+                  topic,
+                  question,
+                  timestamp: new Date().toISOString(),
+                };
+                await supabase
+                  .from('reading_jobs')
+                  .update({
+                    status: 'completed',
+                    result: JSON.stringify(resultPayload),
+                    updated_at: new Date().toISOString(),
+                  })
+                  .eq('id', jobId);
 
-          // Save to database after streaming
-          if (userId && isSupabaseConfigured()) {
-            saveReadingAsync(userId, question, selectedCards, finalTopic, extractedEmotion, language).catch(err => {
-              console.error('[Async Save Error]', err);
-            });
+                // Also create reading record in history if user exists
+                if (userId) {
+                  await saveReadingToHistory(supabase, userId, question, cards, topic || '', language || 'en', fullContent);
+                  // Increment reading count after successful save
+                  try {
+                    const { data: user } = await supabase
+                      .from('users')
+                      .select('readings_today, last_reading_date')
+                      .eq('id', userId)
+                      .single();
+                    
+                    if (user) {
+                      const today = new Date().toDateString();
+                      const lastDate = user.last_reading_date 
+                        ? new Date(user.last_reading_date).toDateString() 
+                        : null;
+                      
+                      await supabase
+                        .from('users')
+                        .update({
+                          readings_today: lastDate === today ? (user.readings_today || 0) + 1 : 1,
+                          last_reading_date: new Date().toISOString(),
+                        })
+                        .eq('id', userId);
+                    }
+                  } catch (e) {
+                    console.error('[Increment count error]', e);
+                  }
+                }
+                break;
+              } else if (event.type === 'error') {
+                controller.enqueue(encoder.encode(sseEncode('error', event.data)));
+                await supabase
+                  .from('reading_jobs')
+                  .update({
+                    status: 'failed',
+                    error: event.data?.error || 'Unknown error',
+                    updated_at: new Date().toISOString(),
+                  })
+                  .eq('id', jobId);
+                break;
+              }
+            }
+          } catch (err: any) {
+            console.error('[Processing Error]', err);
+            controller.enqueue(encoder.encode(sseEncode('error', { error: err.message || 'Processing failed' })));
+            await supabase
+              .from('reading_jobs')
+              .update({
+                status: 'failed',
+                error: err.message,
+                updated_at: new Date().toISOString(),
+              })
+              .eq('id', jobId);
           }
+        } else {
+          // Not the processor; wait for job to complete by polling
+          let attempts = 0;
+          const maxAttempts = 60; // 30 seconds max wait
+          const interval = setInterval(async () => {
+            const { data: updatedJob } = await supabase
+              .from('reading_jobs')
+              .select('status, result, error')
+              .eq('id', jobId)
+              .single();
 
-        } catch (error) {
-          console.error('[Streaming Error]', error);
-          controller.enqueue(encoder.encode(`data: ${JSON.stringify({ type: 'error', error: 'The energy is unclear. Please try again.' })}\n\n`));
-          try { controller.close(); } catch(e) {}
+            if (!updatedJob) {
+              clearInterval(interval);
+              return;
+            }
+
+            if (updatedJob.status === 'completed' && updatedJob.result) {
+              clearInterval(interval);
+              try {
+                const result = JSON.parse(updatedJob.result);
+                controller.enqueue(encoder.encode(sseEncode('cards', result.cards)));
+                const sentences = (result.reading || '').split(/(?<=[.!?])\s+/g);
+                for (const sentence of sentences) {
+                  if (sentence.trim()) {
+                    controller.enqueue(encoder.encode(sseEncode('content', sentence + ' ')));
+                  }
+                }
+                controller.enqueue(encoder.encode(sseEncode('done', {})));
+                controller.close();
+              } catch (e) {
+                controller.enqueue(encoder.encode(sseEncode('error', { error: 'Failed to parse result' })));
+                controller.close();
+              }
+            } else if (updatedJob.status === 'failed') {
+              clearInterval(interval);
+              controller.enqueue(encoder.encode(sseEncode('error', { error: updatedJob.error || 'Failed' })));
+              controller.close();
+            } else if (++attempts >= maxAttempts) {
+              clearInterval(interval);
+              controller.enqueue(encoder.encode(sseEncode('error', { error: 'Reading timed out' })));
+              controller.close();
+            }
+            // else continue polling
+          }, 500);
         }
+      } catch (err: any) {
+        console.error('[Stream Error]', err);
+        controller.enqueue(encoder.encode(sseEncode('error', { error: err.message || 'Stream failed' })));
+        controller.close();
       }
-    });
+    },
+  });
 
-    return new Response(stream, {
-      headers: {
-        'Content-Type': 'text/event-stream',
-        'Cache-Control': 'no-cache',
-        'Connection': 'keep-alive',
-      },
-    });
-
-  } catch (error) {
-    console.error('Reading generation error:', error);
-    return NextResponse.json(
-      { error: 'The cards are having difficulty connecting. Please try again.' },
-      { status: 500 }
-    );
-  }
+  return new Response(stream, {
+    headers: {
+      'Content-Type': 'text/event-stream',
+      'Cache-Control': 'no-cache',
+      'Connection': 'keep-alive',
+    },
+  });
 }
 
-async function saveReadingAsync(
+// Optional: keep POST for backward compatibility but redirect to start endpoint? We'll implement POST to start job internally if someone uses it directly.
+export async function POST(request: NextRequest) {
+  // Legacy: treat as start? But we already have /start. We'll just reject with instruction.
+  return NextResponse.json(
+    { error: 'Use /api/reading/start to begin a reading, then connect to this endpoint with the jobId' },
+    { status: 400 }
+  );
+}
+
+async function saveReadingToHistory(
+  supabase: any,
   userId: string,
   question: string,
   cards: SelectedCard[],
   topic: string,
-  emotion: string,
-  language: string
+  language: string,
+  interpretation: string
 ) {
   try {
     const { data: reading, error: readingError } = await supabase
       .from('readings')
       .insert({
         user_id: userId,
-        question: question,
+        question,
         spread_type: '3-card',
-        topic: topic,
-        language: language,
+        topic,
+        language,
       })
       .select('id')
       .single();
 
     if (readingError || !reading) {
-      console.error('[DB Reading Error]', readingError);
+      console.error('[History Save Error]', readingError);
       return;
     }
 
@@ -382,19 +327,13 @@ async function saveReadingAsync(
       position: sc.position,
       is_reversed: sc.isReversed || false,
     }));
-    
+
     await supabase.from('cards_drawn').insert(cardsData);
-
-    // Update user memory
-    await updateUserMemory(
-      userId, 
-      question, 
-      '', // interpretation saved separately
-      cards.map(sc => ({ card_name: sc.card.name }))
-    );
-
-    console.log('[Reading Saved]', reading.id);
-  } catch (dbError) {
-    console.error('[DB Save Error]', dbError);
+    await supabase.from('ai_responses').insert({
+      reading_id: reading.id,
+      response: interpretation,
+    });
+  } catch (e) {
+    console.error('[History Save Exception]', e);
   }
 }

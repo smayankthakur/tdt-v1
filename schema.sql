@@ -56,6 +56,23 @@ CREATE TABLE IF NOT EXISTS user_memory (
   UNIQUE(user_id, key)
 );
 
+-- Reading jobs for async processing
+CREATE TABLE IF NOT EXISTS reading_jobs (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID REFERENCES users(id) ON DELETE SET NULL,
+  status TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'processing', 'completed', 'failed')),
+  question TEXT NOT NULL,
+  selected_cards JSONB NOT NULL,
+  language TEXT DEFAULT 'en',
+  name TEXT,
+  topic TEXT,
+  result TEXT,
+  error TEXT,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  expires_at TIMESTAMP WITH TIME ZONE DEFAULT (NOW() + INTERVAL '1 hour')
+);
+
 -- Indexes for performance
 CREATE INDEX IF NOT EXISTS idx_readings_user_id ON readings(user_id);
 CREATE INDEX IF NOT EXISTS idx_readings_created_at ON readings(created_at);
@@ -65,6 +82,10 @@ CREATE INDEX IF NOT EXISTS idx_events_user_id ON events(user_id);
 CREATE INDEX IF NOT EXISTS idx_events_created_at ON events(created_at);
 CREATE INDEX IF NOT EXISTS idx_events_event_name ON events(event_name);
 CREATE INDEX IF NOT EXISTS idx_user_memory_user_id ON user_memory(user_id);
+CREATE INDEX IF NOT EXISTS idx_reading_jobs_id ON reading_jobs(id);
+CREATE INDEX IF NOT EXISTS idx_reading_jobs_user_id ON reading_jobs(user_id);
+CREATE INDEX IF NOT EXISTS idx_reading_jobs_status ON reading_jobs(status);
+CREATE INDEX IF NOT EXISTS idx_reading_jobs_expires_at ON reading_jobs(expires_at);
 
 -- Row level security (optional - enable if needed)
 ALTER TABLE users ENABLE ROW LEVEL SECURITY;

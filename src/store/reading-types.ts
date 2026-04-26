@@ -11,12 +11,13 @@ export type ReadingType =
   | 'no_contact'
   | 'general';
 
-export interface ReadingLimitState {
+interface ReadingLimitState {
   dailyReadings: number;
   lastResetDate: string | null;
   typeUsage: Record<ReadingType, number>;
   isSubscribed: boolean;
   paywallShown: boolean;
+  remainingReadings: number; // -1 for unlimited
   
   incrementReading: (type: ReadingType) => void;
   canRead: () => boolean;
@@ -25,6 +26,7 @@ export interface ReadingLimitState {
   setSubscribed: (status: boolean) => void;
   dismissPaywall: () => void;
   resetDaily: () => void;
+  checkFromServer: () => Promise<void>; //
 }
 
 function getTodayDate(): string {
@@ -46,7 +48,8 @@ export const useReadingLimitStore = create<ReadingLimitState>()(
       },
       isSubscribed: false,
       paywallShown: false,
-      
+      remainingReadings: -1, // -1 = unlimited (default for dev)
+
       incrementReading: (type: ReadingType) => {
         const today = getTodayDate();
         const state = get();
@@ -60,26 +63,27 @@ export const useReadingLimitStore = create<ReadingLimitState>()(
           lastResetDate: today,
         });
       },
-      
+
       canRead: () => {
-        // Unlimited readings - no limits
-        return true;
+        const state = get();
+        if (state.remainingReadings === -1) return true; // unlimited
+        return state.remainingReadings > 0;
       },
-      
+
       getRemainingReadings: () => {
-        // Unlimited readings
-        return 999;
+        const state = get();
+        return state.remainingReadings;
       },
-      
+
       showPaywall: () => {
-        // No paywall - unlimited readings
-        return false;
+        const state = get();
+        return state.remainingReadings === 0 && !state.isSubscribed;
       },
-      
-      setSubscribed: (isSubscribed: boolean) => set({ isSubscribed }),
-      
+
+      setSubscribed: (isSubscribed: boolean) => set({ isSubscribed: isSubscribed, remainingReadings: -1 }),
+
       dismissPaywall: () => set({ paywallShown: true }),
-      
+
       resetDaily: () => {
         const today = getTodayDate();
         const state = get();
@@ -87,9 +91,32 @@ export const useReadingLimitStore = create<ReadingLimitState>()(
           set({ dailyReadings: 0, lastResetDate: today });
         }
       },
+
+      checkFromServer: async () => {
+        // In development without Supabase, keep unlimited
+        if (!process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL === 'https://placeholder.supabase.co') {
+          set({ remainingReadings: -1 });
+          return;
+        }
+
+        try {
+          const res = await fetch('/api/reading/limit');
+          if (res.ok) {
+            const data = await res.json();
+            set({
+              remainingReadings: data.remaining,
+              isSubscribed: data.plan !== 'free',
+              dailyReadings: data.used || 0,
+            });
+          }
+        } catch (e) {
+          console.error('[Limit check]', e);
+        }
+      },
     }),
     {
       name: 'reading-limit-storage',
+      version: 2,
     }
   )
 );

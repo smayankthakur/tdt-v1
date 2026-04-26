@@ -1,6 +1,6 @@
 import { getRegionalPricing, type UserRegion } from '@/lib/regionDetector';
 
-export type PlanType = 'free' | 'premium' | 'pro';
+export type PlanType = 'free' | 'premium';
 export type SubscriptionStatus = 'active' | 'inactive' | 'cancelled' | 'past_due';
 
 export interface SubscriptionPlan {
@@ -23,11 +23,11 @@ export const SUBSCRIPTION_PLANS: Record<PlanType, SubscriptionPlan> = {
     type: 'free',
     price: 0,
     features: [
-      '1 tarot reading per day',
+      '3 tarot readings per day',
       'Basic card interpretations',
-      'Daily horoscope access',
+      'Standard AI responses',
     ],
-    readingsPerDay: 1,
+    readingsPerDay: 3,
     aiResponsesPriority: false,
     personalConsultation: false,
     whatsappExclusive: false,
@@ -40,35 +40,14 @@ export const SUBSCRIPTION_PLANS: Record<PlanType, SubscriptionPlan> = {
     priceId: 'premium_monthly',
     features: [
       'Unlimited tarot readings',
-      'Deep AI insights',
+      'Deep AI interpretation',
       'Priority AI responses',
       'Personalized guidance',
-      'Daily WhatsApp messages',
-      'Exclusive content',
     ],
     readingsPerDay: -1,
     aiResponsesPriority: true,
     personalConsultation: false,
-    whatsappExclusive: true,
-  },
-  pro: {
-    id: 'pro',
-    name: 'Pro',
-    type: 'pro',
-    price: 999,
-    priceId: 'pro_monthly',
-    features: [
-      'Everything in Premium',
-      'Monthly personal consultation',
-      'Exclusive tarot sessions',
-      'Priority WhatsApp access',
-      'Custom birth chart reading',
-      'Early access to new features',
-    ],
-    readingsPerDay: -1,
-    aiResponsesPriority: true,
-    personalConsultation: true,
-    whatsappExclusive: true,
+    whatsappExclusive: false,
   },
 };
 
@@ -87,13 +66,10 @@ export function canAccessFeature(userPlan: PlanType, feature: string): boolean {
   const plan = SUBSCRIPTION_PLANS[userPlan];
   
   const featureAccess: Record<string, PlanType[]> = {
-    unlimited_readings: ['premium', 'pro'],
-    deep_insights: ['premium', 'pro'],
-    priority_ai: ['premium', 'pro'],
-    personal_consultation: ['pro'],
-    whatsapp_exclusive: ['premium', 'pro'],
-    daily_messages: ['premium', 'pro'],
-    exclusive_content: ['premium', 'pro'],
+    unlimited_readings: ['premium'],
+    deep_insights: ['premium'],
+    priority_ai: ['premium'],
+    personal_consultation: ['premium'],
   };
   
   const allowedPlans = featureAccess[feature] || [];
@@ -111,8 +87,7 @@ export function hasUnlimitedReadings(plan: PlanType): boolean {
 export function getNextPlan(currentPlan: PlanType): PlanType | null {
   const upgrades: Record<PlanType, PlanType | null> = {
     free: 'premium',
-    premium: 'pro',
-    pro: null,
+    premium: null,
   };
   return upgrades[currentPlan];
 }

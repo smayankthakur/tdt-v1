@@ -1,25 +1,28 @@
 import { NextResponse } from 'next/server';
-import { createServerClient, isSupabaseConfigured } from '@/lib/supabase/server';
-import { checkReadingAccess } from '@/lib/payments/access-control';
+import { createServerClient } from '@/lib/supabase/server';
+import { checkUserAccess, incrementReadingCount } from '@/lib/access-control';
 
 export async function POST(request: Request) {
   try {
     const supabase = await createServerClient();
     const { data: { user } } = await supabase.auth.getUser();
 
-    // For development/anonymous, allow without auth but limit via client-side store
-    // In production with Supabase, enforce paywall
     const userId = user?.id;
 
-    // Validate access (paywall) if user is logged in and Supabase is configured
-    if (userId && isSupabaseConfigured()) {
-      const access = await checkReadingAccess(userId);
-      if (!access.allowed) {
-        return NextResponse.json(
-          { error: access.upgradePrompt || 'Daily reading limit exceeded', upgrade: true },
-          { status: 403 }
-        );
-      }
+    // CRITICAL: Enforce access control on backend for ALL users
+    const access = await checkUserAccess(userId);
+    
+    if (!access.allowed) {
+      return NextResponse.json(
+        { 
+          error: 'limit_exceeded',
+          upgrade: true,
+          message: access.plan === 'free' 
+            ? 'Your free readings are used for today. Upgrade to Premium for unlimited access.'
+            : 'Please upgrade to continue.'
+        },
+        { status: 403 }
+      );
     }
 
     const body = await request.json();

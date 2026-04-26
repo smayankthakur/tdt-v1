@@ -64,11 +64,10 @@ export async function checkReadingAccess(userId: string): Promise<ReadingAccessR
   };
 }
 
-function getUpgradePrompt(currentPlan: PlanType): string {
+export function getUpgradePrompt(currentPlan: PlanType): string {
   const prompts: Record<PlanType, string> = {
     free: "You've used your free reading for today. Unlock unlimited readings for just ₹299/month!",
-    premium: "Upgrade to Pro for exclusive consultation sessions.",
-    pro: "You've reached your daily limit. Contact support for assistance.",
+     premium: "Your premium subscription has expired. Renew to continue enjoying unlimited readings.",
   };
   return prompts[currentPlan];
 }
@@ -107,7 +106,7 @@ export async function incrementReadingCount(userId: string): Promise<void> {
 
 export async function initiatePayment(
   userId: string,
-  planType: 'premium' | 'pro'
+  planType: "premium"
 ): Promise<{ orderId: string; amount: number; key?: string } | null> {
   const plan = SUBSCRIPTION_PLANS[planType];
   
@@ -132,12 +131,12 @@ export async function verifyAndActivateSubscription(
   userId: string,
   paymentData: {
     razorpay_order_id: string;
-    razorpay_payment_id: string;
+    planType: "premium";
     razorpay_signature: string;
-    planType: 'premium' | 'pro';
+    razorpay_payment_id?: string;
   }
 ): Promise<{ success: boolean; error?: string }> {
-  const isValid = verifyPaymentSignature(paymentData);
+  const isValid = verifyPaymentSignature(paymentData as any);
   
   if (!isValid) {
     return { success: false, error: 'Invalid payment signature' };
@@ -220,8 +219,7 @@ export async function cancelUserSubscription(userId: string): Promise<boolean> {
 export function getUpgradeCTAMessage(userPlan: PlanType): string {
   const messages: Record<PlanType, string> = {
     free: "Unlock unlimited readings and deep insights with Premium!",
-    premium: "Upgrade to Pro for personal consultation sessions!",
-    pro: "You're on the highest plan - enjoy!",
+    premium: "Your Premium plan is active - enjoy unlimited readings!",
   };
   return messages[userPlan];
 }

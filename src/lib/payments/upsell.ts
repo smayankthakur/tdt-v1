@@ -100,14 +100,7 @@ export function shouldShowUpsell(context: UpsellContext): boolean {
 export function getUpsellForPlan(plan: PlanType): UpsellConfig | undefined {
   const configs: Record<PlanType, UpsellConfig | undefined> = {
     free: UPSELL_CONFIGS['post-reading'],
-    premium: {
-      trigger: 'high-engagement',
-      title: "Unlock Pro Features",
-      message: "Upgrade to Pro for personal consultations and exclusive content.",
-      ctaText: "Go Pro",
-      ctaLink: "/upgrade?source=pro-prompt",
-    },
-    pro: undefined,
+    premium: undefined,
   };
   
   return configs[plan];

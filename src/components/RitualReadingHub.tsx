@@ -1,6 +1,6 @@
 'use client';
 
- import { useState, useEffect, useCallback, useRef } from 'react';
+ import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
  import { motion, AnimatePresence } from 'framer-motion';
  import { Sparkles, ArrowRight, Loader2, Heart, Briefcase, TrendingUp, Users, Home, Compass, Clock, Bell, BellOff } from 'lucide-react';
  import { useLanguage } from '@/hooks/useLanguage';
@@ -15,9 +15,10 @@
  import Button from '@/components/ui/button';
  import TarotCardComponent from '@/components/TarotCard';
  import { FloatingTextarea } from '@/components/ui/FloatingInput';
- import StreamingOutput from './StreamingOutput';
- import CountdownTimer from './CountdownTimer';
- import SoftPaywall from './SoftPaywall';
+  import StreamingOutput from './StreamingOutput';
+  import CountdownTimer from './CountdownTimer';
+  import SoftPaywall from './SoftPaywall';
+  import Watermark from '@/components/ui/Watermark';
 
 // Generate simple unique session ID
 const generateSessionId = () => `session_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`;
@@ -1006,7 +1007,19 @@ function ReadingDelivery({
    const { readingCount } = useFunnelStore();
    const { returnMessage, streakMessage } = useReadingFlow();
 
-  // Pre-stream message then start streaming after 2 seconds
+   // Memoize lines to prevent unnecessary re-initialization of streaming
+  const lines = useMemo(() => {
+    if (result.streamingLines && result.streamingLines.length > 0) {
+      return result.streamingLines;
+    }
+    return [result.reading || t('ritualHub.readingFallback')];
+  }, [result.streamingLines, result.reading, t]);
+
+  const handleStreamComplete = useCallback(() => {
+    setStreamComplete(true);
+  }, []);
+
+   // Pre-stream message then start streaming after 2 seconds
   useEffect(() => {
     const timer = setTimeout(() => {
       setShowPreStream(false);
@@ -1042,7 +1055,7 @@ function ReadingDelivery({
    };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 relative">
       {/* Pre-stream message */}
       <AnimatePresence>
         {showPreStream && (
@@ -1069,10 +1082,8 @@ function ReadingDelivery({
           className="p-6 md:p-8 rounded-2xl bg-surface/50 border border-gold/20 backdrop-blur-sm"
         >
           <StreamingOutput 
-            lines={result.streamingLines || [
-              result.reading || t('ritualHub.readingFallback')
-            ]}
-            onComplete={() => setStreamComplete(true)}
+            lines={lines}
+            onComplete={handleStreamComplete}
             startDelay={0}
           />
         </motion.div>
@@ -1201,10 +1212,11 @@ function ReadingDelivery({
              <Button variant="primary" size="md" onClick={() => window.location.href = '/premium'}>
                {t('ritualHub.unlockAccess')}
              </Button>
-           </motion.div>
-         </motion.div>
-       )}
-     </div>
+            </motion.div>
+            <Watermark />
+          </motion.div>
+        )}
+      </div>
    );
  }
 

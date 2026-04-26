@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useCallback, useEffect, useRef } from 'react';
+import React, { useState, useCallback, useEffect, useRef, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Sparkles, Loader2, ArrowRight, Heart, Briefcase, TrendingUp, Home, Users } from 'lucide-react';
 import { useLanguage } from '@/hooks/useLanguage';
@@ -14,6 +14,7 @@ import Button from '@/components/ui/button';
 import TarotCard from '@/components/TarotCard';
 import { FloatingTextarea } from '@/components/ui/FloatingInput';
 import StreamingOutput from './StreamingOutput';
+import Watermark from '@/components/ui/Watermark';
 import ErrorFallback from './ErrorFallback';
 
 type RitualStep =
@@ -569,13 +570,21 @@ function ReadingDelivery({ content, onStartOver }: { content: string; onStartOve
   const { t } = useLanguage();
   const [streamComplete, setStreamComplete] = useState(false);
 
-  // Split content into lines for streaming effect
-  const lines = content.split('\n').filter(l => l.trim().length > 0);
+  // Split content into lines for streaming effect - memoized to prevent re-creation
+  const lines = useMemo(() => 
+    content.split('\n').filter(l => l.trim().length > 0),
+    [content]
+  );
+
+  // Stable callback to avoid StreamingOutput effect re-run
+  const handleComplete = useCallback(() => {
+    setStreamComplete(true);
+  }, []);
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 relative">
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }} className="p-6 md:p-8 rounded-2xl bg-surface/50 border border-gold/20 backdrop-blur-sm">
-        <StreamingOutput lines={lines} onComplete={() => setStreamComplete(true)} startDelay={0} />
+        <StreamingOutput lines={lines} onComplete={handleComplete} startDelay={0} />
       </motion.div>
 
       {streamComplete && (
@@ -583,6 +592,9 @@ function ReadingDelivery({ content, onStartOver }: { content: string; onStartOve
           <Button variant="secondary" size="md" onClick={onStartOver}>Start Another Reading</Button>
         </motion.div>
       )}
+
+      {/* Watermark */}
+      <Watermark />
     </div>
   );
 }

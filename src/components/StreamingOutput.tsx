@@ -59,7 +59,7 @@ export default function StreamingOutput({
   }, [lines, onComplete, startDelay, lineDelay]);
 
   return (
-    <div className="space-y-3 font-serif text-base md:text-lg text-white">
+    <div className="reading-text space-y-3 font-serif text-base md:text-lg text-white">
       {displayedLines.map((line, idx) => {
         const isNewest = idx === currentLineIndex;
         

@@ -52,12 +52,28 @@ const TOPIC_CARDS: TopicCard[] = [
 
 const getShuffleMessages = (t: (key: string) => string) => {
   const msgs = t('ritualHub.shuffle');
-  return Array.isArray(msgs) ? msgs : [];
+  if (Array.isArray(msgs)) return msgs;
+  // Fallback if translation system doesn't support array values
+  return [
+    "Just a moment...",
+    "Aligning energy...",
+    "What's meant to come...",
+    "The cards are speaking...",
+    "Catching signals...",
+  ];
 };
 
 const getRevealMessages = (t: (key: string) => string) => {
   const msgs = t('ritualHub.reveal');
-  return Array.isArray(msgs) ? msgs : [];
+  if (Array.isArray(msgs)) return msgs;
+  // Fallback if translation system doesn't support array values
+  return [
+    "This is the first sign...",
+    "What's coming is important...",
+    "Look at what's hidden...",
+    "Energy is clearing...",
+    "This is what you've been seeking...",
+  ];
 };
 
 // Micro-interaction: vibration effect

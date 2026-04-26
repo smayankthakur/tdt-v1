@@ -30,46 +30,32 @@ export default function StreamingOutput({
     linesRef.current = lines;
   }, [lines]);
 
-  // Start streaming once on mount
-  useEffect(() => {
-    let mounted = true;
-    let startTimer: NodeJS.Timeout;
+   // Start streaming once on mount
+   useEffect(() => {
+     const startTimer = setTimeout(() => {
+       if (intervalRef.current) clearInterval(intervalRef.current);
 
-    const startStreaming = () => {
-      if (intervalRef.current) clearInterval(intervalRef.current);
+       intervalRef.current = setInterval(() => {
+         const currentLines = linesRef.current;
+         const count = displayedCountRef.current;
 
-      intervalRef.current = setInterval(() => {
-        if (!mounted) {
-          clearInterval(intervalRef.current!);
-          return;
-        }
+         if (count < currentLines.length) {
+           const nextLine = currentLines[count];
+           setDisplayedLines((prev) => [...prev, nextLine]);
+           displayedCountRef.current = count + 1;
+         } else if (!isCompleteRef.current && displayedCountRef.current > 0) {
+           isCompleteRef.current = true;
+           if (onComplete) onComplete();
+           clearInterval(intervalRef.current!);
+         }
+       }, lineDelay);
+     }, startDelay);
 
-        const currentLines = linesRef.current;
-        const count = displayedCountRef.current;
-
-        if (count < currentLines.length) {
-          const nextLine = currentLines[count];
-          setDisplayedLines((prev) => [...prev, nextLine]);
-          displayedCountRef.current = count + 1;
-        } else if (!isCompleteRef.current && displayedCountRef.current > 0) {
-          // We've caught up to all lines received so far and have displayed at least one.
-          // Assume streaming is done and stop the interval.
-          isCompleteRef.current = true;
-          if (onComplete) onComplete();
-          clearInterval(intervalRef.current!);
-        }
-        // else: no new lines yet but we haven't started or still expect more – keep interval alive
-      }, lineDelay);
-    };
-
-    startTimer = setTimeout(startStreaming, startDelay);
-
-    return () => {
-      mounted = false;
-      clearTimeout(startTimer);
-      if (intervalRef.current) clearInterval(intervalRef.current);
-    };
-  }, [onComplete, startDelay, lineDelay]);
+     return () => {
+       clearTimeout(startTimer);
+       if (intervalRef.current) clearInterval(intervalRef.current);
+     };
+   }, [onComplete, startDelay, lineDelay]);
 
   // Scroll to newest line when it appears
   useEffect(() => {
@@ -83,9 +69,11 @@ export default function StreamingOutput({
     }
   }, [displayedLines]);
 
-  // Debug safety check – log state changes without overwhelming console
+  // Debug safety check – log state changes in development only
   useEffect(() => {
-    console.log('READING STATE – lines displayed:', displayedCountRef.current, '/', linesRef.current.length);
+    if (process.env.NODE_ENV === 'development') {
+      console.log('READING STATE – lines displayed:', displayedCountRef.current, '/', linesRef.current.length);
+    }
   }, [displayedLines.length]);
 
   return (

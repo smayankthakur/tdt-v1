@@ -2,6 +2,12 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
+import { 
+  Instagram, 
+  Facebook, 
+  Youtube, 
+  Mail 
+} from 'lucide-react';
 import { useLanguage } from '@/hooks/useLanguage';
 
 export default function Footer() {
@@ -86,14 +92,75 @@ export default function Footer() {
           </ul>
         </div>
 
-        {/* CONNECT */}
+        {/* CONNECT WITH US - NEW SECTION */}
         <div>
           <h3 className="text-sm uppercase tracking-wider opacity-50 mb-4">
-            {isHydrated ? t('footer.connect') : 'Connect'}
+            Connect With Us
           </h3>
-          <p className="text-sm opacity-70 leading-relaxed">
-            {isHydrated ? t('footer.disclaimer') : 'This is not a replacement for professional advice. It is here to provide you clarity and direction.'}
-          </p>
+          <div className="space-y-4">
+            {/* SOCIAL LINKS */}
+            <div className="space-y-3">
+              {/* Instagram */}
+              <a 
+                href="https://instagram.com/thedivineetarot" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="flex items-center gap-3 text-white/70 hover:text-white hover:scale-105 transition-transform duration-300"
+              >
+                <Instagram className="w-5 h-5 text-gold hover:text-gold-light transition-colors duration-300" />
+                <span className="text-sm">Instagram</span>
+              </a>
+              
+              {/* Facebook */}
+              <a 
+                href="https://facebook.com/profile.php?id=61578567343068" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="flex items-center gap-3 text-white/70 hover:text-white hover:scale-105 transition-transform duration-300"
+              >
+                <Facebook className="w-5 h-5 text-gold hover:text-gold-light transition-colors duration-300" />
+                <span className="text-sm">Facebook</span>
+              </a>
+              
+              {/* YouTube Channel 1 */}
+              <a 
+                href="https://youtube.com/@thedivineetarot" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="flex items-center gap-3 text-white/70 hover:text-white hover:scale-105 transition-transform duration-300"
+              >
+                <Youtube className="w-5 h-5 text-gold hover:text-gold-light transition-colors duration-300" />
+                <span className="text-sm">YouTube</span>
+              </a>
+              
+              {/* YouTube Channel 2 */}
+              <a 
+                href="https://www.youtube.com/@TheDivineTarot" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="flex items-center gap-3 text-white/70 hover:text-white hover:scale-105 transition-transform duration-300"
+              >
+                <Youtube className="w-5 h-5 text-gold hover:text-gold-light transition-colors duration-300" />
+                <span className="text-sm">YouTube Channel</span>
+              </a>
+            </div>
+            
+            {/* CONTACT INFO */}
+            <div className="space-y-2">
+              <div className="flex items-center gap-3">
+                <Mail className="w-5 h-5 text-gold hover:text-gold-light transition-colors duration-300" />
+                <div>
+                  <a 
+                    href="mailto:thedivinetarot111@gmail.com" 
+                    className="block text-sm text-white/70 hover:text-white transition-colors duration-300"
+                  >
+                    Email Us
+                  </a>
+                  <p className="text-xs text-white/60">thedivinetarot111@gmail.com</p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
       </div>

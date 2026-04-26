@@ -15,6 +15,18 @@ interface ReadingState {
   isLoading: boolean;
   analysis: { theme: string; emotion: string; hiddenInsight: string } | null;
   userName: string;
+  readingPreview: {
+    fullText: string;
+    preview: string;
+    isLocked: boolean;
+    hook: string;
+    cta: string;
+    urgency: string;
+  } | null;
+  showPaywall: boolean;
+  paywallTrigger: string;
+  engagementScore: number;
+  questionLength: number;
   setQuestion: (question: string) => void;
   setDeck: (deck: TarotCard[]) => void;
   selectCard: (card: TarotCard) => void;
@@ -24,6 +36,18 @@ interface ReadingState {
   setAnalysis: (analysis: { theme: string; emotion: string; hiddenInsight: string }) => void;
   setSelectedCardsWithDetails: (cards: SelectedCard[]) => void;
   setUserName: (name: string) => void;
+  setReadingPreview: (preview: {
+    fullText: string;
+    preview: string;
+    isLocked: boolean;
+    hook: string;
+    cta: string;
+    urgency: string;
+  } | null) => void;
+  setShowPaywall: (show: boolean) => void;
+  setPaywallTrigger: (trigger: string) => void;
+  setEngagementScore: (score: number) => void;
+  setQuestionLength: (length: number) => void;
   reset: () => void;
 }
 
@@ -43,6 +67,11 @@ export const useReadingStore = create<ReadingState>((set) => ({
   isLoading: false,
   analysis: null,
   userName: '',
+  readingPreview: null,
+  showPaywall: false,
+  paywallTrigger: '',
+  engagementScore: 0,
+  questionLength: 0,
 
   setQuestion: (question) => set({ question }),
 
@@ -66,6 +95,16 @@ export const useReadingStore = create<ReadingState>((set) => ({
 
   setUserName: (name) => set({ userName: name }),
 
+  setReadingPreview: (preview) => set({ readingPreview: preview }),
+
+  setShowPaywall: (show) => set({ showPaywall: show }),
+
+  setPaywallTrigger: (trigger) => set({ paywallTrigger: trigger }),
+
+  setEngagementScore: (score) => set({ engagementScore: score }),
+
+  setQuestionLength: (length) => set({ questionLength: length }),
+
   reset: () => set({
     question: '',
     deck: getRandomDeck(),
@@ -76,5 +115,10 @@ export const useReadingStore = create<ReadingState>((set) => ({
     isLoading: false,
     analysis: null,
     userName: '',
+    readingPreview: null,
+    showPaywall: false,
+    paywallTrigger: '',
+    engagementScore: 0,
+    questionLength: 0,
   }),
 }));

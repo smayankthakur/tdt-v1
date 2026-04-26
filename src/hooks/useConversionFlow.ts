@@ -5,10 +5,9 @@ import { useState, useCallback, useRef } from 'react';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useUserPlanStore } from '@/lib/store/user-plan-store';
 import { useReadingStore } from '@/store/reading-store';
-import { useFunnelStore } from '@/store/funnel-store';
 import { checkUserAccess } from '@/lib/access-control';
 import { createCuriosityGap, shouldTriggerCuriosityGap } from '@/lib/convert/CuriosityGap';
-import { evaluateTriggers, getPersonalizedCTA } from '@/lib/convert/ConversionTriggers';
+import { evaluateTriggers } from '@/lib/convert/ConversionTriggers';
 import { SelectedCard } from '@/lib/tarot/logic';
 import type { DomainAnalysis } from '@/lib/cardEngine';
 import { generatePersonalizedReading, cleanReading } from '@/lib/personalizedReadingEngine';
@@ -54,9 +53,8 @@ export function useConversionFlow() {
   } | null>(null);
   
   const { language } = useLanguage();
-  const { plan, isPremium, remainingReads } = useUserPlanStore();
+  const { plan, isPremium: isPremiumUser } = useUserPlanStore();
   const { setReadingPreview, setShowPaywall: setStorePaywall, setPaywallTrigger } = useReadingStore();
-  const { setCurrentStage } = useFunnelStore();
 
   const hasRunRef = useRef(false);
 
@@ -70,8 +68,7 @@ export function useConversionFlow() {
     setStorePaywall(true);
     setPaywallTrigger(triggerType);
     setPaywallData(context);
-    setCurrentStage('paywall');
-  }, [setStorePaywall, setPaywallTrigger, setCurrentStage]);
+  }, [setStorePaywall, setPaywallTrigger]);
 
   const generateReading = useCallback(async (
     input: {
@@ -95,7 +92,6 @@ export function useConversionFlow() {
     try {
       // Check user access
       const access = await checkUserAccess(null);
-      const isPremiumUser = access.plan === 'premium';
       const hasAccess = access.allowed;
 
       if (!hasAccess) {
@@ -175,7 +171,7 @@ export function useConversionFlow() {
           `The cards suggest paying attention to the deeper patterns.`;
       }
 
-      // Extract next hook (what brings them back)
+      // Extract next hook
       const returnHooks = [
         "This insight is only the beginning...",
         "The pattern is developing — check back tomorrow.",
@@ -202,7 +198,14 @@ export function useConversionFlow() {
 
       if (!isPremiumUser && triggerCuriosity) {
         const gap = createCuriosityGap(cleanedReading, false);
-        preview = gap;
+        preview = {
+          fullText: cleanedReading,
+          preview: gap.preview,
+          isLocked: true,
+          hook: gap.hook,
+          cta: gap.cta,
+          urgency: gap.urgency
+        };
         
         // Trigger paywall for curiosity gap
         triggerPaywall('curiosity_gap', {
@@ -211,11 +214,17 @@ export function useConversionFlow() {
           urgency: gap.urgency,
           remainingReads: access.remainingReads
         });
-      }
-
-      // For premium users or non-triggered free users, show full reading
-      if (isPremiumUser || !triggerCuriosity) {
-        preview = createCuriosityGap(cleanedReading, true);
+      } else {
+        // For premium users or non-triggered, show full
+        const gap = createCuriosityGap(cleanedReading, true);
+        preview = {
+          fullText: cleanedReading,
+          preview: gap.preview,
+          isLocked: false,
+          hook: '',
+          cta: '',
+          urgency: ''
+        };
       }
 
       const result: ConversionReadingResult = {
@@ -238,9 +247,7 @@ export function useConversionFlow() {
       };
 
       setResult(result);
-      
-      // Update reading store with preview
-      setReadingPreview(preview);
+      setReadingPreview(result.preview);
 
     } catch (err: any) {
       console.error('[ConversionFlow] Error:', err);
@@ -249,7 +256,7 @@ export function useConversionFlow() {
       setIsLoading(false);
       hasRunRef.current = false;
     }
-  }, [language, triggerPaywall, setReadingPreview]);
+  }, [language, triggerPaywall, setReadingPreview, isPremiumUser]);
 
   const reset = useCallback(() => {
     hasRunRef.current = false;

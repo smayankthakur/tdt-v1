@@ -132,7 +132,7 @@ export const getMilestoneMessage = (
 ): string => {
   const name = userName || '';
 
-  const milestones = {
+  const milestones: Record<number, string> = {
     1: `${name} First reading. The journey begins...»`,
     3: `${name} Third insight. Patterns are emerging...»`,
     5: `${name} Five readings deep. What's the common thread?»`,

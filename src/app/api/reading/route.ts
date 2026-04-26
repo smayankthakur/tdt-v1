@@ -3,6 +3,7 @@ import { selectRandomCards } from '@/lib/tarot';
 import { generateReading } from '@/lib/ai';
 import { supabase, isSupabaseConfigured } from '@/lib/supabase/client';
 import { updateUserMemory, getUserMemory, buildMemoryContext } from '@/lib/ai/memory';
+import { checkReadingAccess } from '@/lib/payments/access-control';
 
 export async function POST(request: Request) {
   try {
@@ -21,6 +22,17 @@ export async function POST(request: Request) {
     if (userId && isSupabaseConfigured()) {
       const memory = await getUserMemory(userId);
       memoryContext = buildMemoryContext(memory);
+    }
+
+    // Check reading access BEFORE generating (prevent bypass)
+    if (userId && isSupabaseConfigured()) {
+      const access = await checkReadingAccess(userId);
+      if (!access.allowed) {
+        return NextResponse.json(
+          { error: access.upgradePrompt || 'Daily reading limit exceeded' },
+          { status: 403 }
+        );
+      }
     }
 
     // Select 3 random cards
@@ -75,6 +87,14 @@ export async function POST(request: Request) {
       } catch (dbError) {
         console.error('[DB Save Error]', dbError);
       }
+    }
+
+    // Increment reading count after DB save
+    if (userId && isSupabaseConfigured()) {
+      try {
+        const { incrementReadingCount } = await import('@/lib/payments/access-control');
+        await incrementReadingCount(userId).catch(() => {});
+      } catch(e) {}
     }
 
     return NextResponse.json({

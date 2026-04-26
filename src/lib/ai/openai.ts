@@ -86,25 +86,33 @@ export async function generateReading(
   name?: string
 ): Promise<ReadingResult> {
   const cardsFormatted = formatCardsForAI(selectedCards);
-  const prompt = buildPrompt(question, cardsFormatted, memoryContext, undefined, name);
+  // Sanitize user inputs
+    const cleanQ = (q: string | null | undefined) => ((q||"")).toString().substring(0,500).replace(/[<{}]/g, "");
+    const prompt = buildPrompt(cleanQ(question), cardsFormatted, memoryContext, undefined, (name||"").toString().substring(0,100).replace(/[<{}]/g, ""));
   const toneInstruction = LANGUAGE_TONE_PROMPTS[language] || LANGUAGE_TONE_PROMPTS.en;
 
+  // Primary attempt with timeout
   try {
-  const response = await getOpenAI().chat.completions.create({
-    model: 'gpt-4o-mini',
-    messages: [
-      {
-        role: 'system',
-        content: toneInstruction
-      },
-      {
-        role: 'user',
-        content: `${prompt}\n\nIMPORTANT: Address the user by their name naturally. Do NOT use the word "seeker". Keep it personal and avoid repetition.`
-      }
-    ],
-    temperature: 0.85,
-    max_tokens: 400,
-  });
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 25000);
+
+    const response = await getOpenAI().chat.completions.create({
+      model: 'gpt-4o-mini',
+      messages: [
+        {
+          role: 'system',
+          content: toneInstruction
+        },
+        {
+          role: 'user',
+          content: `${prompt}\n\nIMPORTANT: Address the user by their name naturally. Do NOT use the word "seeker". Keep it personal and avoid repetition.`
+        }
+      ],
+      temperature: 0.85,
+      max_tokens: 300,
+    }, { signal: controller.signal });
+
+    clearTimeout(timeout);
 
     const interpretation = response.choices[0]?.message?.content || 
       'Jo dikh raha hai woh important hai… thoda wait karo, clarity aayegi.';
@@ -113,9 +121,52 @@ export async function generateReading(
       cards: selectedCards,
       interpretation
     };
-  } catch (error) {
+  } catch (error: any) {
+    // Abort or timeout - try fallback model
+    if (error.name === 'AbortError' || error.code === 'ETIMEDOUT' || error.message?.includes('abort')) {
+      console.error('OpenAI primary timeout, falling back:', error);
+      
+      // Try with faster model as fallback
+      try {
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 20000);
+
+        const response = await getOpenAI().chat.completions.create({
+          model: 'gpt-3.5-turbo',
+          messages: [
+            {
+              role: 'system',
+              content: `You are Ginni, a warm tarot reader. Write in natural ${language === 'hi' ? 'Hindi' : language === 'hinglish' ? 'Hinglish' : 'English'}. Personal, under 200 words. Address by name (${name || 'friend'}) 1-2 times.`
+            },
+            {
+              role: 'user',
+              content: `${prompt}\n\nKeep it personal and flowing.`
+            }
+          ],
+          temperature: 0.8,
+          max_tokens: 280,
+        }, { signal: controller.signal });
+
+        clearTimeout(timeout);
+
+        const interpretation = response.choices[0]?.message?.content || 
+          'Jo dikh raha hai woh important hai… thoda wait karo, clarity aayegi.';
+
+        return {
+          cards: selectedCards,
+          interpretation
+        };
+      } catch (fallbackError) {
+        console.error('OpenAI fallback also failed:', fallbackError);
+        return {
+          cards: selectedCards,
+          interpretation: 'Jo dikh raha hai woh important hai… thoda wait karo, clarity aayegi.'
+        };
+      }
+    }
+
+    // Other errors
     console.error('OpenAI API error:', error);
-    
     return {
       cards: selectedCards,
       interpretation: 'Jo dikh raha hai woh important hai… thoda wait karo, clarity aayegi.'

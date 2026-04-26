@@ -277,6 +277,9 @@ export async function POST(request: NextRequest) {
         try {
           const openai = getOpenAI();
           
+           const controllerAbort = new AbortController();
+           const timeout = setTimeout(() => controllerAbort.abort(), 28000);
+
           const streamResponse = await openai.chat.completions.create({
             model: 'gpt-4o-mini',
             messages: [
@@ -284,9 +287,11 @@ export async function POST(request: NextRequest) {
               { role: 'user', content: userPrompt }
             ],
             temperature: 0.7,
-            max_tokens: 500,
+            max_tokens: 350,
             stream: true,
-          });
+          }, { signal: controllerAbort.signal });
+
+           clearTimeout(timeout);
 
           // Send cards first so frontend can display them
           controller.enqueue(encoder.encode(`data: ${JSON.stringify({ type: 'cards', cards: selectedCards })}\n\n`));
@@ -311,7 +316,7 @@ export async function POST(request: NextRequest) {
 
           // Signal completion
           controller.enqueue(encoder.encode(`data: ${JSON.stringify({ type: 'done' })}\n\n`));
-          controller.close();
+          try { controller.close(); } catch(e) {}
 
           // Save to database after streaming
           if (userId && isSupabaseConfigured()) {
@@ -323,7 +328,7 @@ export async function POST(request: NextRequest) {
         } catch (error) {
           console.error('[Streaming Error]', error);
           controller.enqueue(encoder.encode(`data: ${JSON.stringify({ type: 'error', error: 'The energy is unclear. Please try again.' })}\n\n`));
-          controller.close();
+          try { controller.close(); } catch(e) {}
         }
       }
     });

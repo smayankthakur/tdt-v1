@@ -234,18 +234,6 @@ export const hi: TranslationSchema = {
     lastChance: 'आखिरी मौका',
   },
 
-  premium: {
-    ...en.premium,
-    badge: 'प्रीमियम सदस्य',
-    active: 'प्रीमियम एक्सेस सक्रिय',
-    enjoy: 'असीमित रीडिंग का आनंद लें',
-    buttons: {
-      getStartedFree: 'मुफ्त शुरू करें',
-      getStarted: 'शुरू करें',
-      subscribe: 'सदस्यता लें',
-    },
-  },
-
   contact: {
     heading: 'संपर्क करें',
     subtitle: 'क्या आपका कोई सवाल है? हमें आपकी बात सुनने में खुशी होगी।',

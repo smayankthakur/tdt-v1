@@ -94,7 +94,7 @@ export default function RitualReadingHub() {
   const shuffleMessages = getShuffleMessages(t);
   const revealMessages = getRevealMessages(t);
   const { handleUserInput } = useAutoLanguage();
-   const { generateReading, result, isLoading, error, reset: resetReadingFlow } = useReadingFlow();
+   const { generateReading, result, isLoading, error, reset: resetReadingFlow, returnMessage, streakMessage } = useReadingFlow();
   const { reset: resetReadingStore, setDeck, setSelectedCardsWithDetails, selectedCardsWithDetails } = useReadingStore();
   const { setCurrentStage, setQuestion: setFunnelQuestion, incrementReadingCount } = useFunnelStore();
 
@@ -985,9 +985,10 @@ function ReadingDelivery({
 }) {
   const [streamComplete, setStreamComplete] = useState(false);
   const [showPreStream, setShowPreStream] = useState(true);
-  const { t, language } = useLanguage();
-  // Access behavioral wrap from parent via context or prop - for now approximate
-  const { readingCount } = useFunnelStore();
+   const { t, language } = useLanguage();
+   // Access behavioral wrap from parent via context or prop - for now approximate
+   const { readingCount } = useFunnelStore();
+   const { returnMessage, streakMessage } = useReadingFlow();
 
   // Pre-stream message then start streaming after 2 seconds
   useEffect(() => {
@@ -998,8 +999,14 @@ function ReadingDelivery({
   }, []);
 
    // Generate behavioral hooks after reading completes
-   const getDailyHook = () => {
-     const firstName = result.name?.split(' ')[0] || 'friend';
+   const getDailyHook = (): string => {
+     // Use the nextHook from the new reading result if available
+     if (result?.nextHook) {
+       return result.nextHook;
+     }
+
+     // Fallback hooks (should rarely be used)
+     const firstName = result?.name?.split(' ')[0] || 'friend';
      const hooks: Record<string, string[]> = {
        en: [
          `${firstName}, there's an energy shift coming in the next 48 hours. Come back tomorrow — I'll have decoded it for you.`,
@@ -1084,22 +1091,45 @@ function ReadingDelivery({
               &ldquo;{t('ritualHub.closingQuote')}&rdquo;
             </p>
 
-           {/* Behavioral Hook: Daily Return Prompt */}
-           <motion.div
-             initial={{ opacity: 0 }}
-             animate={{ opacity: 1 }}
-             transition={{ delay: 0.7 }}
-             className="p-6 rounded-2xl bg-gradient-to-r from-purple-900/30 via-gold/10 to-purple-900/30 border border-gold/20 space-y-4"
-           >
-             <div className="flex items-center justify-center gap-3 mb-2">
-               <Clock className="h-5 w-5 text-gold" />
-               <h4 className="font-heading text-lg text-gold">
-                 {t('ritualHub.behavioral.dailyHook')}
-               </h4>
-             </div>
-             <p className="text-foreground/80 leading-relaxed max-w-lg mx-auto text-sm md:text-base">
-               {getDailyHook()}
-             </p>
+            {/* Behavioral Hook: Daily Return Prompt */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.7 }}
+              className="p-6 rounded-2xl bg-gradient-to-r from-purple-900/30 via-gold/10 to-purple-900/30 border border-gold/20 space-y-4"
+            >
+              <div className="flex items-center justify-center gap-3 mb-2">
+                <Clock className="h-5 w-5 text-gold" />
+                <h4 className="font-heading text-lg text-gold">
+                  {t('ritualHub.behavioral.dailyHook')}
+                </h4>
+              </div>
+              <p className="text-foreground/80 leading-relaxed max-w-lg mx-auto text-sm md:text-base">
+                {getDailyHook()}
+              </p>
+
+              {/* Return Message (if returning user) */}
+              {returnMessage && (
+                <motion.p
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="text-foreground/70 italic text-sm text-center max-w-lg mx-auto"
+                >
+                  {returnMessage}
+                </motion.p>
+              )}
+
+              {/* Streak Message */}
+              {streakMessage && (
+                <motion.p
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.2 }}
+                  className="text-amber-400 font-medium text-center text-sm"
+                >
+                  {streakMessage}
+                </motion.p>
+              )}
 
              {/* Countdown Timer */}
              <div className="flex justify-center my-4">

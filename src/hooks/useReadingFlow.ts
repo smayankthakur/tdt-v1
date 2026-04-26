@@ -1,24 +1,34 @@
 'use client';
 
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import { useReadingLimitStore } from '@/store/reading-types';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useAutoLanguage } from '@/hooks/useAutoLanguage';
-import { type ReadingType } from '@/store/reading-types';
+import type { ReadingType } from '@/store/reading-types';
 import { SelectedCard } from '@/lib/tarot/logic';
-import { generateHumanizedReading, createContextFromAnalysis } from '@/lib/humanizeReading';
+import { generatePersonalizedReading, cleanReading } from '@/lib/personalizedReadingEngine';
+import { useUserStateStore, useDailyTrigger, useStreakSystem } from '@/lib/userStateStore';
 import type { DomainAnalysis } from '@/lib/cardEngine';
-import { cleanupReadingOutput, extractFirstName, removeDuplicateSentences } from '@/lib/utils/readingCleanup';
 
 export interface ReadingResult {
   name: string;
   question: string;
-  greeting: string;
+  cards: SelectedCard[];
   reading: string;
   guidance: string;
+  nextHook: string;
+  urgencyLevel: 'low' | 'medium' | 'high';
   streamingLines: string[];
   language: string;
   timestamp: string;
+  meta: {
+    streak: number;
+    isReturning: boolean;
+    personalization: {
+      nameUsage: number;
+      lineCount: number;
+    };
+  };
 }
 
 interface GenerateInput {
@@ -27,228 +37,6 @@ interface GenerateInput {
   readingType: ReadingType;
   selectedCards?: SelectedCard[];
   domainAnalysis?: DomainAnalysis;
-}
-
-const PERSONALITY_OPENINGS = {
-  hinglish: [
-    "{name}, jo energy aa rahi hai…",
-    "{name}, tumhare situation mein kuch interesting chal raha hai.",
-    "{name}, suno… jo dikh raha hai woh important hai.",
-    "Hey {name}, thoda deep focus kar raha hoon…",
-  ],
-  english: [
-    "{name}, I'm sensing something here…",
-    "Let me share what I'm seeing for you, {name}.",
-    "Take a moment with this, {name}…",
-    "What I'm picking up on, {name}…",
-  ],
-  hindi: [
-    "{name}, jo sanket mil rahe hain…",
-    "{name}, aapke question ke answers mein kuch interesting hai…",
-  ],
-};
-
-const GUIDANCE_TEMPLATES = {
-  hinglish: [
-    "Toh ab kya karein? Patience rakhho aur apni instinct pe trust karo. Jo chahte ho woh apne aap milega.",
-    "Direction clear hai. Bas thoda time lagega, par progress zaroor hogi.",
-    "Situation thoda complex hai, par solution simple hai. Soch kar samajh ao.",
-    "Energy abhi shifting hai. Thoda wait karo, results aayenge.",
-  ],
-  english: [
-    "Trust your instincts here. The universe is guiding you, even if the path isn't clear yet.",
-    "What you're seeking is already on its way. Just stay open.",
-    "There's more to this than meets the eye. Take your time processing.",
-    "The timing isn't right yet, but it will be. Stay patient.",
-  ],
-  hindi: [
-    "Abhi wait karna pad sakta hai. Par jo chahte ho woh zaroor milega.",
-    " situation clear ho raha hai. Thoda time do.",
-    "Apni instinct pe bharosa rakho. Answers aayenge.",
-  ],
-};
-
-const READING_PATTERNS = {
-  detailed: [
-    { pattern: 'love', content: "Tumhare relationship mein kuch important chal raha hai. Jo feel kar rahe ho woh real hai. Ek person ka impact tum par bahut hai, aur woh person bhi tumhe feel kar raha hai. Status ab gray zone mein hai - na tum close ho, na door. Par communication se sab sudhar sakta hai.", guidance: "Pehle approach karo. Adha time do. Koi bada decision abhi mat lo. Communication is the key." },
-    { pattern: 'career', content: "Tumhara professional journey ab ek crucial point par hai. Jo kaam kar rahe ho usme kuch missing feel ho raha hai. Either growth chahiye ya new opportunity. Interview ya promotion ki timing abhi right hai.", guidance: "Apne skills showcase karo. Jab timing sahi ho, tab opportunity khud aayegi." },
-  ],
-  yesno: [
-    { pattern: 'yes', content: "Haan. Probability high hai. Jo tum chahte ho, wohone wala hai.", guidance: "Keep doing what you're doing. Results aane wale hain." },
-    { pattern: 'no', content: "Abhi no. Timing wrong hai. Par future mein possibility hai.", guidance: "Wait karo. Aur prepare karo. Time change karega." },
-  ],
-  daily: [
-    { content: "Aaj ka din balanced hai. Morning me start strong karo, afternoon me challenges aayenge, but evening good hai. Health ka dhyan rakhna hai - water piyo. Emotions unpredictable rahenge, but control tumhare paas hai.", guidance: "Schedule me flexibility rakhna. Overthinking se avoid karo." },
-  ],
-  union: [
-    { content: "Union possible hai, par conditions apply hote hain. Person interested hai but show nahi kar raha. Tumhe patience rakhna hoga. Time lag sakta hai, but final outcome positive dikh raha hai. Koi external factor delay kar sakta hai.", guidance: "Proactively connect karo but desperate mat bano. Let nature take its course." },
-  ],
-  thirdparty: [
-    { content: "Third party situation clear dikh raha hai. Person aware hai tumhe aur us person ke beech. Unki priority ab aap nahi ho. End ho chuka hai ya hone vala hai. Wishful thinking zone mein ho tum.", guidance: "Accept reality. Move on. Naya connection wait kar raha hai." },
-  ],
-  shaadi: [
-    { content: "Shaadi ka probability time ke saath increase ho raha hai. Logistics kaana hai. Traditional approach better kaam karegi. Family ki involvement required hogi. Date ya timeline abhi vague hai.", guidance: "Start looking. Attend events. Let family know. Settings ke saath raho." },
-  ],
-  baby: [
-    { content: "Timing abhi right nahi hai. Preparation phase mein ho. Health ya financial pe kaam karna hoga pehle. Nature kaana hai tumhe ready hai. Doctor ya expert guidance le sakte ho.", guidance: "Prepare properly. Take medical advice. When ready, try without stress." },
-  ],
-  partner: [
-    { content: "Partner ki feelings clear hain - woh deeply care karte hain, per expression issue hai. Apna pyaar but show nahi karte. Actions speak louder - observe what they do, not say.", guidance: " communicate openly but gently. Ask, don't assume." },
-  ],
-  spiritual: [
-    { content: "Spiritual journey strong movement mein hai. Inner work required hai. Darr ke saath deal karna hoga. Transformation hone vala hai - painful but necessary. Past life echoes present.", guidance: "Meditation rakhna. Journaling help karegi. Professional help lo if needed." },
-  ],
-  month: [
-    { content: "This month kuch interesting laane wala hai Unexpected opportunity ya meeting possible hai. Financially stable rahega but new expense bhi aayega. People in your life will shift - some close, some distant.", guidance: "Stay adaptable. New beginnings ke liye ready raho." },
-  ],
-  universe: [
-    { content: "Universe tumhe guide kar raha hai. Signs ignore mat karo - they are everywhere. Tum ready ho us level ke insights ke liye. Deep transformation happening. Trust the unseen.", guidance: "Pay attention to coincidences. Keep a journal. Trust what feels right." },
-  ],
-  action: [
-    { content: "Partner next step le sakta hai - wait kar rahe hain tumhe. Initiative tumse expect kar rahe hain. Decision door ya door hai. Clear communication needed hai before action.", guidance: "Be bold first. Set the tone. They will respond." },
-  ],
-  relationship: [
-    { content: "Past: Connection strong start hua tha. Issues developed over time. Present: At crossroads - choice time. Future: Positive agar changes kiya. Niche fix karna hoga, surface nahi.", guidance: "Work on the foundation. Counseling help kar sakti hai. Both need to try." },
-  ],
-  default: [
-    { content: "Energy is shifting. You are at a point of transformation. What you seek is seeking you. Trust the journey.", guidance: "Be patient. Trust yourself. The answers will come when the time is right." },
-  ],
-};
-
-function generateOpening(name: string, language: string): string {
-  const openings = PERSONALITY_OPENINGS[language as keyof typeof PERSONALITY_OPENINGS] || PERSONALITY_OPENINGS.english;
-  const opening = openings[Math.floor(Math.random() * openings.length)];
-  return opening.replace(/{name}/g, name);
-}
-
-function generateGuidance(readingType: string, language: string): string {
-  const templates = GUIDANCE_TEMPLATES[language as keyof typeof GUIDANCE_TEMPLATES] || GUIDANCE_TEMPLATES.english;
-  return templates[Math.floor(Math.random() * templates.length)];
-}
-
-function generateReadingFromCards(
-  selectedCards: SelectedCard[],
-  question: string,
-  readingType: string,
-  name: string = 'Seeker',
-  domainAnalysis?: DomainAnalysis,
-  language: string = 'en'
-): { reading: string; guidance: string; streamingLines: string[]; greeting?: string } {
-  let context;
-  if (domainAnalysis) {
-    context = createContextFromAnalysis(domainAnalysis, question, name);
-  } else {
-    context = createContextFromAnalysis(
-      {
-        primaryDomain: 'general',
-        emotionalTone: 'neutral',
-        keywords: [],
-      },
-      question,
-      name
-    );
-  }
-
-  const reading = generateHumanizedReading(context, selectedCards, language as 'en' | 'hi' | 'hinglish');
-
-  const greeting = reading.opening;
-  // Compose reading without guidance to avoid duplication (guidance shown separately)
-  const fullReading = `${reading.opening} ${reading.presentEnergy} ${reading.underlyingPattern} ${reading.direction} ${reading.closing}`;
-
-  const lines = fullReading
-    .split('. ')
-    .map(s => s.trim())
-    .filter(s => s.length > 0)
-    .flatMap((sentence, idx, arr) => {
-      if (idx === 0 || idx === arr.length - 1) {
-        return [sentence];
-      }
-      if (idx % 3 === 0 && idx < arr.length - 2) {
-        return [sentence, ''];
-      }
-      return [sentence];
-    });
-
-  return {
-    reading: fullReading,
-    guidance: reading.guidance,
-    streamingLines: lines,
-    greeting,
-  };
-}
-
-function generateReadingContent(question: string, readingType: string, language: string): string {
-  const patterns = READING_PATTERNS[readingType as keyof typeof READING_PATTERNS] || READING_PATTERNS.default;
-
-  if (Array.isArray(patterns)) {
-    const lowerQ = question.toLowerCase();
-
-    for (const p of patterns) {
-      if ('pattern' in p && p.pattern && lowerQ.includes(p.pattern)) {
-        return p.content;
-      }
-    }
-
-    const randomItem = patterns[Math.floor(Math.random() * patterns.length)];
-    return randomItem.content;
-  }
-
-  return "The cards are listening to your question...";
-}
-
-function analyzeEmotion(question: string): string {
-  const lowerQ = question.toLowerCase();
-
-  if (lowerQ.includes('fear') || lowerQ.includes('darr') || lowerQ.includes('nervous')) {
-    return 'fear';
-  }
-  if (lowerQ.includes('hope') || lowerQ.includes('wish') || lowerQ.includes('want')) {
-    return 'hope';
-  }
-  if (lowerQ.includes('confused') || lowerQ.includes('kya') || lowerQ.includes('samajh')) {
-    return 'confusion';
-  }
-
-  return 'curious';
-}
-
-const READINGS_STORAGE_KEY = (sessionKey: string, lang: string) => `tdt_persisted_readings_${sessionKey}_${lang}`;
-
-interface StoredReading extends ReadingResult {
-  storedAt: number;
-  sessionKey: string;
-}
-
-function getStoredReadings(sessionKey: string, lang: string): StoredReading[] {
-  if (typeof window === 'undefined') return [];
-  try {
-    const stored = localStorage.getItem(READINGS_STORAGE_KEY(sessionKey, lang));
-    return stored ? JSON.parse(stored) : [];
-  } catch {
-    return [];
-  }
-}
-
-function saveReadingToStorage(reading: ReadingResult, sessionKey: string, lang: string): void {
-  if (typeof window === 'undefined') return;
-  try {
-    const stored = getStoredReadings(sessionKey, lang);
-    const newStored: StoredReading = {
-      ...reading,
-      storedAt: Date.now(),
-      sessionKey,
-    };
-    const updated = [newStored, ...stored.slice(0, 9)];
-    localStorage.setItem(READINGS_STORAGE_KEY(sessionKey, lang), JSON.stringify(updated));
-  } catch {
-    // Ignore storage errors
-  }
-}
-
-function getStoredReading(sessionKey: string, lang: string): ReadingResult | null {
-  const stored = getStoredReadings(sessionKey, lang);
-  const found = stored.find(r => r.sessionKey === sessionKey);
-  return found || null;
 }
 
 export function useReadingFlow() {
@@ -261,6 +49,9 @@ export function useReadingFlow() {
   const { canRead, incrementReading } = useReadingLimitStore();
   const { language } = useLanguage();
   const { region } = useAutoLanguage();
+  const userState = useUserStateStore();
+  const { checkAndIncrementStreak } = useStreakSystem();
+  const { getReturnMessage, getStreakMessage } = useDailyTrigger();
 
   // Track input for regeneration on language change
   const lastInputRef = useRef<GenerateInput | null>(null);
@@ -293,71 +84,134 @@ export function useReadingFlow() {
     }
 
     try {
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      // Simulate processing time for effect
+      await new Promise(resolve => setTimeout(resolve, 1500));
 
       const targetLanguage = language;
 
-      let readingContent: string;
-      let guidance: string;
-      let streamingLines: string[] = [];
-      let greeting: string;
+      // Check streak before generating
+      checkAndIncrementStreak();
 
-      if (input.selectedCards && input.selectedCards.length > 0) {
-        const generated = generateReadingFromCards(
-          input.selectedCards,
-          input.question,
-          input.readingType,
-          input.name,
-          input.domainAnalysis,
-          targetLanguage
-        );
-        readingContent = generated.reading;
-        guidance = generated.guidance;
-        streamingLines = generated.streamingLines;
-        greeting = generated.greeting || generateOpening(input.name, targetLanguage);
-      } else {
-        greeting = generateOpening(input.name, targetLanguage);
-        readingContent = generateReadingContent(input.question, input.readingType, targetLanguage);
-        guidance = generateGuidance(input.readingType, targetLanguage);
-        streamingLines = [
-          `${greeting} ${readingContent} ${guidance}`,
-        ];
+      // Build reading input from user state and selected cards
+      const userStateData = useUserStateStore.getState();
+      const readingInput = {
+        name: input.name || 'Seeker',
+        question: input.question,
+        cards: input.selectedCards?.slice(0, 3) || [],
+        contextSummary: input.domainAnalysis ? `${input.domainAnalysis.primaryDomain} - ${input.domainAnalysis.emotionalTone}` : undefined,
+        language: targetLanguage as 'en' | 'hi' | 'hinglish',
+        emotionalHint: userStateData.lastEmotion,
+        userState: {
+          lastReading: userStateData.lastReading,
+          lastCards: userStateData.lastCards,
+          openLoops: userStateData.openLoops
+        }
+      };
+
+      // Generate personalized reading
+      const personalizedOutput = generatePersonalizedReading(readingInput);
+
+      // Clean the reading to remove duplicate lines
+      let cleanedReading = cleanReading(personalizedOutput.reading);
+
+      // Extract guidance and closing line (hook) from reading
+      const lines = cleanedReading.split('\n');
+      let guidance = '';
+      let closingLine = '';
+
+       // Find line that contains hook keywords
+       const closingIndex = lines.findIndex((line: string) =>
+         line.toLowerCase().includes('watch for it') ||
+         line.toLowerCase().includes('ignore mat karna') ||
+         line.toLowerCase().includes('ready raho') ||
+         line.toLowerCase().includes('remember') ||
+         line.toLowerCase().includes('keep') ||
+         line.toLowerCase().includes('something') ||
+         line.toLowerCase().includes('change')
+       );
+
+       if (closingIndex !== -1) {
+         closingLine = lines[closingIndex];
+         lines.splice(closingIndex, 1);
+         cleanedReading = lines.join('\n');
+
+         // Extract guidance lines (advice)
+         const guidanceLines: string[] = [];
+         lines.forEach((line: string) => {
+           const lower = line.toLowerCase();
+           if (lower.includes('take') ||
+               lower.includes('do') ||
+               lower.includes('action') ||
+               lower.includes('avoid') ||
+               lower.includes('stop') ||
+               lower.includes('should') ||
+               lower.includes('try')) {
+             guidanceLines.push(line);
+           }
+         });
+         guidance = guidanceLines.join('. ');
+       }
+
+       if (!guidance) {
+         guidance = "Trust your intuition and take one small step today.";
+       }
+
+       // Build streaming lines for animation
+       const allLines = [...lines.filter((l: string) => l.trim().length > 0)];
+      if (closingLine) {
+        allLines.push(closingLine);
       }
 
-      // Clean duplicates: remove duplicate sentences from the reading
-      readingContent = removeDuplicateSentences(readingContent);
+      const streamingLines: string[] = [];
+      let currentSegment: string[] = [];
+
+      for (let i = 0; i < allLines.length; i++) {
+        const line = allLines[i].trim();
+        if (!line) continue;
+        currentSegment.push(line);
+        if (currentSegment.length >= 2 || i === allLines.length - 1) {
+          streamingLines.push(currentSegment.join('. '));
+          currentSegment = [];
+        }
+      }
+
+      // Update user state with this reading
+      userState.updateFromReading(readingInput, {
+        nextHook: personalizedOutput.nextHook,
+        reading: cleanedReading
+      });
+
+      // Build meta with streak and return status
+      const freshState = useUserStateStore.getState();
+      const returnContext = freshState.markReturn();
+      const streak = freshState.streak || 0;
 
       const readingResult: ReadingResult = {
         name: input.name,
         question: input.question,
-        greeting,
-        reading: readingContent,
+        cards: input.selectedCards || [],
+        reading: cleanedReading,
         guidance,
+        nextHook: personalizedOutput.nextHook,
+        urgencyLevel: personalizedOutput.urgencyLevel,
         streamingLines,
         language: targetLanguage,
         timestamp: new Date().toISOString(),
+        meta: {
+          streak,
+          isReturning: returnContext.isReturning,
+          personalization: {
+            nameUsage: personalizedOutput.personalization.nameUsage,
+            lineCount: personalizedOutput.personalization.lineCount
+          }
+        }
       };
 
-      const firstName = extractFirstName(input.name);
-      const cleanedReading = removeDuplicateSentences(readingContent);
-      const cleanedGuidance = cleanupReadingOutput(guidance, input.name, firstName);
-      const cleanedStreamingLines = streamingLines.map(line =>
-        cleanupReadingOutput(line, input.name, firstName)
-      );
-
-      const cleanedResult: ReadingResult = {
-        ...readingResult,
-        reading: cleanedReading,
-        guidance: cleanedGuidance,
-        streamingLines: cleanedStreamingLines,
-      };
-
-      saveReadingToStorage(cleanedResult, sessionKey, language);
-
-      setResult(cleanedResult);
+      setResult(readingResult);
       incrementReading(input.readingType as any);
 
     } catch (e) {
+      console.error('Reading generation error:', e);
       setError('Failed to generate reading');
       hasRunRef.current = false;
     } finally {
@@ -365,16 +219,18 @@ export function useReadingFlow() {
         hasRunRef.current = false;
       }
     }
-  }, [canRead, incrementReading, region, sessionKey, language]);
+  }, [canRead, incrementReading, region, language, userState, checkAndIncrementStreak]);
 
-  // Regenerate reading when language changes (if we have a reading already)
+  // Regenerate reading when language changes
   useEffect(() => {
     if (lastLanguageRef.current !== language && lastInputRef.current && result) {
-      // Language changed - regenerate the reading
       generateReading(lastInputRef.current);
     }
     lastLanguageRef.current = language;
   }, [language, result, generateReading]);
+
+  const returnMessage = result ? getReturnMessage(result.name, language as any) : null;
+  const streakMessage = result ? getStreakMessage(result.name, language as any) : null;
 
   return {
     result,
@@ -383,5 +239,7 @@ export function useReadingFlow() {
     canRead,
     generateReading,
     reset,
+    returnMessage,
+    streakMessage
   };
 }

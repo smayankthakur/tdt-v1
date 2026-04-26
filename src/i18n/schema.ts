@@ -396,36 +396,6 @@ export const schema = {
      },
     },
 
-    premium: {
-     badge: "",
-     active: "",
-     enjoy: "",
-     page: {
-       title: "",
-       subtitle: "",
-     },
-     mostPopular: "",
-     plans: {
-       free: {
-         name: "",
-         features: [] as string[],
-       },
-       premium: {
-         name: "",
-         features: [] as string[],
-       },
-       pro: {
-         name: "",
-         features: [] as string[],
-       },
-     },
-      buttons: {
-        getStartedFree: "",
-        getStarted: "",
-        subscribe: "",
-      },
-     guarantee: "",
-   },
 
   // =====================
   // URGENCY BADGES

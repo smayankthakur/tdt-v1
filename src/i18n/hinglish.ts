@@ -259,56 +259,6 @@ export const hinglish: TranslationSchema = {
     lastChance: 'Aakhri mauka',
   },
 
-  premium: {
-    ...en.premium,
-    badge: 'Premium Member',
-    active: 'Premium Access Active',
-    enjoy: 'Unlimited readings ka maza lijiye',
-    buttons: {
-      getStartedFree: 'Free mein shuru karein',
-      getStarted: 'Shuru karein',
-      subscribe: 'Subscribe karein',
-    },
-    page: {
-      title: 'Unlock Divine Guidance',
-      subtitle: 'Choose your path to deeper insights. Upgrade for unlimited readings, priority AI responses, and exclusive WhatsApp guidance.',
-    },
-    mostPopular: 'Most Popular',
-    plans: {
-      free: {
-        name: 'Free',
-        features: [
-          '1 tarot reading per day',
-          'Basic card interpretations',
-          'Daily horoscope access',
-        ],
-      },
-      premium: {
-        name: 'Premium',
-        features: [
-          'Unlimited tarot readings',
-          'Deep AI insights',
-          'Priority AI responses',
-          'Personalized guidance',
-          'Daily WhatsApp messages',
-          'Exclusive content',
-        ],
-      },
-      pro: {
-        name: 'Pro',
-        features: [
-          'Everything in Premium',
-          'Monthly personal consultation',
-          'Exclusive tarot sessions',
-          'Priority WhatsApp access',
-          'Custom birth chart reading',
-          'Early access to new features',
-        ],
-      },
-    },
-    guarantee: 'All plans include a 7-day money-back guarantee. Cancel anytime.',
-  },
-
   contact: {
     heading: 'Get In Touch',
     subtitle: 'Have a question? We would love to hear from you.',

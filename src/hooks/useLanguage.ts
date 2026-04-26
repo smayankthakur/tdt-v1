@@ -1,9 +1,9 @@
 'use client';
 
 import { useCallback } from 'react';
-import { useLanguageStore } from '@/store/languageStore';
-import { useTranslation } from '@/hooks/useTranslation';
-import type { Language } from '@/store/languageStore';
+import { useLanguageStore } from '../store/languageStore';
+import { useTranslation } from './useTranslation';
+import type { Language } from '../store/languageStore';
 
 export function useLanguage() {
   const { language } = useLanguageStore();

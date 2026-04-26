@@ -365,54 +365,6 @@ export const en: TranslationSchema = {
         desc: "Some energies repeat until we resolve them. Let me give you the complete guidance to finally move forward.",
       },
     },
-    premium: {
-      badge: 'Premium Member',
-      active: 'Premium Access Active',
-      enjoy: 'Enjoy unlimited readings',
-      page: {
-        title: 'Unlock Divine Guidance',
-        subtitle: 'Choose your path to deeper insights. Upgrade for unlimited readings, priority AI responses, and exclusive WhatsApp guidance.',
-      },
-      mostPopular: 'Most Popular',
-      plans: {
-        free: {
-          name: 'Free',
-          features: [
-            '1 tarot reading per day',
-            'Basic card interpretations',
-            'Daily horoscope access',
-          ],
-        },
-        premium: {
-          name: 'Premium',
-          features: [
-            'Unlimited tarot readings',
-            'Deep AI insights',
-            'Priority AI responses',
-            'Personalized guidance',
-            'Daily WhatsApp messages',
-            'Exclusive content',
-          ],
-        },
-        pro: {
-          name: 'Pro',
-          features: [
-            'Everything in Premium',
-            'Monthly personal consultation',
-            'Exclusive tarot sessions',
-            'Priority WhatsApp access',
-            'Custom birth chart reading',
-            'Early access to new features',
-          ],
-        },
-      },
-      buttons: {
-        getStartedFree: 'Get Started Free',
-        getStarted: 'Get Started',
-        subscribe: 'Subscribe Now',
-      },
-      guarantee: 'All plans include a 7-day money-back guarantee. Cancel anytime.',
-    },
   },
 
   urgency: {

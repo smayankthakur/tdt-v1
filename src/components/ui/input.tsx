@@ -20,20 +20,15 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     'transition-all duration-300',
     'focus:outline-none',
     
-    variant === 'underline' && [
-      'bg-transparent border-b border-gold/20',
-      'py-3 px-0',
-      'text-foreground placeholder:text-foreground-muted',
-      'hover:border-gold/40',
-      'focus:border-gold focus:shadow-[0_0_10px_rgba(244,197,66,0.3)]',
+     variant === 'underline' && [
+      'w-full px-5 py-4 rounded-2xl bg-[#0B0F1A] border border-[#2A2F3A] text-white placeholder:text-gray-400',
+      'focus:border-[#D4AF37] focus:ring-2 focus:ring-[#D4AF37]/30 outline-none transition-all duration-200',
     ],
     
-    variant === 'filled' && [
-      'bg-surface/50 border border-gold/20 rounded-xl',
-      'py-3 px-4',
-      'text-foreground placeholder:text-foreground-muted',
-      'hover:bg-surface/70 hover:border-gold/30',
-      'focus:border-gold/50 focus:ring-1 focus:ring-gold/20',
+     variant === 'filled' && [
+      'w-full px-5 py-4 rounded-2xl bg-[#0B0F1A] border border-[#2A2F3A] text-white placeholder:text-gray-400',
+      'hover:border-[#2A2F3A]/80',
+      'focus:border-[#D4AF37] focus:ring-2 focus:ring-[#D4AF37]/30 outline-none transition-all duration-200',
     ],
     
     variant === 'minimal' && [
@@ -44,12 +39,9 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       'focus:bg-surface/50 focus:border-gold/30',
     ],
 
-    variant === 'premium' && [
-      'bg-transparent border border-white/20 rounded-xl',
-      'py-3 px-4',
-      'text-foreground placeholder:text-foreground-muted',
-      'hover:border-white/40',
-      'focus:border-[#FFD700] focus:shadow-[0_0_10px_rgba(255,215,0,0.3)]',
+     variant === 'premium' && [
+      'w-full px-5 py-4 rounded-2xl bg-[#0B0F1A] border border-[#2A2F3A] text-white placeholder:text-gray-400',
+      'focus:border-[#D4AF37] focus:ring-2 focus:ring-[#D4AF37]/30 outline-none transition-all duration-200',
     ],
     
     error && [

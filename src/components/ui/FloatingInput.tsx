@@ -57,25 +57,25 @@ export default function FloatingInput({
           </div>
         )}
         
-        <input
-          ref={inputRef}
-          type={type}
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          onFocus={() => setFocused(true)}
-          onBlur={() => setFocused(false)}
-          onKeyDown={handleKeyDown}
-          required={required}
-          placeholder={isActive ? placeholder : ''}
-          className={cn(
-            'w-full bg-transparent border rounded-xl font-sans text-base py-3 px-4 transition-all duration-300',
-            'text-foreground placeholder:text-foreground-muted',
-            'focus:outline-none',
-            'border-white/20',
-            'focus:border-[#FFD700] focus:shadow-[0_0_10px_rgba(255,215,0,0.3)]',
-            icon && 'pl-10'
-          )}
-        />
+          <input
+           ref={inputRef}
+           type={type}
+           value={value}
+           onChange={(e) => onChange(e.target.value)}
+           onFocus={() => setFocused(true)}
+           onBlur={() => setFocused(false)}
+           onKeyDown={handleKeyDown}
+           required={required}
+           placeholder={isActive ? placeholder : ''}
+           className={cn(
+             'w-full bg-[#0B0F1A] border rounded-xl font-sans text-base py-3 px-4 transition-all duration-300',
+             'text-white placeholder:text-gray-400',
+             'focus:outline-none',
+             'border-[#2A2F3A]',
+             'focus:border-[#D4AF37] focus:shadow-[0_0_10px_rgba(212,175,55,0.3)]',
+             icon && 'pl-10'
+           )}
+         />
         
         {/* Floating Label */}
         <motion.label
@@ -167,25 +167,25 @@ export function FloatingTextarea({
             {icon}
           </div>
         )}
-        <textarea
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          onFocus={() => setFocused(true)}
-          onBlur={() => setFocused(false)}
-          rows={rows}
-          maxLength={maxLength}
-          autoFocus={autoFocus}
-          required={required}
-          placeholder={isActive ? placeholder : ''}
-          className={cn(
-            'w-full bg-transparent border rounded-xl font-sans text-base py-3 transition-all duration-300',
-            'text-foreground placeholder:text-foreground-muted',
-            'focus:outline-none',
-            'border-white/20',
-            'focus:border-[#FFD700] focus:shadow-[0_0_10px_rgba(255,215,0,0.3)]',
-            icon ? 'pl-10 pr-4' : 'px-4'
-          )}
-        />
+         <textarea
+           value={value}
+           onChange={(e) => onChange(e.target.value)}
+           onFocus={() => setFocused(true)}
+           onBlur={() => setFocused(false)}
+           rows={rows}
+           maxLength={maxLength}
+           autoFocus={autoFocus}
+           required={required}
+           placeholder={isActive ? placeholder : ''}
+           className={cn(
+             'w-full bg-[#0B0F1A] border rounded-xl font-sans text-base py-3 px-4 transition-all duration-300',
+             'text-white placeholder:text-gray-400',
+             'focus:outline-none resize-none',
+             'border-[#2A2F3A]',
+             'focus:border-[#D4AF37] focus:shadow-[0_0_10px_rgba(212,175,55,0.3)]',
+             icon ? 'pl-10 pr-4' : 'px-4'
+           )}
+         />
         
         {/* Floating Label */}
         <motion.label

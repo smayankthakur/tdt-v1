@@ -59,7 +59,7 @@ export default function StreamingOutput({
   }, [lines, onComplete, startDelay, lineDelay]);
 
   return (
-    <div className="space-y-3 font-serif text-base md:text-lg">
+    <div className="space-y-3 font-serif text-base md:text-lg text-white">
       {displayedLines.map((line, idx) => {
         const isNewest = idx === currentLineIndex;
         
@@ -69,7 +69,7 @@ export default function StreamingOutput({
         }
 
         let content: React.ReactNode = line;
-        let className = "leading-relaxed text-foreground/90";
+        let className = "leading-relaxed text-white/90";
         
         // Bullet point styling
         if (line.startsWith('•')) {

@@ -8,7 +8,7 @@ import { type ReadingType } from '@/store/reading-types';
 import { SelectedCard } from '@/lib/tarot/logic';
 import { generateHumanizedReading, createContextFromAnalysis } from '@/lib/humanizeReading';
 import type { DomainAnalysis } from '@/lib/cardEngine';
-import { cleanupReadingOutput, extractFirstName } from '@/lib/utils/readingCleanup';
+import { cleanupReadingOutput, extractFirstName, removeDuplicateSentences } from '@/lib/utils/readingCleanup';
 
 export interface ReadingResult {
   name: string;
@@ -74,7 +74,7 @@ const READING_PATTERNS = {
     { pattern: 'career', content: "Tumhara professional journey ab ek crucial point par hai. Jo kaam kar rahe ho usme kuch missing feel ho raha hai. Either growth chahiye ya new opportunity. Interview ya promotion ki timing abhi right hai.", guidance: "Apne skills showcase karo. Jab timing sahi ho, tab opportunity khud aayegi." },
   ],
   yesno: [
-    { pattern: 'yes', content: "Haan. Probability high hai. Jo tum chahte ho, wohhone wala hai.", guidance: "Keep doing what you're doing. Results aane wale hain." },
+    { pattern: 'yes', content: "Haan. Probability high hai. Jo tum chahte ho, wohone wala hai.", guidance: "Keep doing what you're doing. Results aane wale hain." },
     { pattern: 'no', content: "Abhi no. Timing wrong hai. Par future mein possibility hai.", guidance: "Wait karo. Aur prepare karo. Time change karega." },
   ],
   daily: [
@@ -89,14 +89,11 @@ const READING_PATTERNS = {
   shaadi: [
     { content: "Shaadi ka probability time ke saath increase ho raha hai. Logistics kaana hai. Traditional approach better kaam karegi. Family ki involvement required hogi. Date ya timeline abhi vague hai.", guidance: "Start looking. Attend events. Let family know. Settings ke saath raho." },
   ],
-  soulmate: [
-    { content: "Soulmate connection agree rahe hain. Personality traits clear hain - emotional, supportive, growth-oriented. physical meeting abhi door hai, but online connection possible hai. Trust the process.", guidance: " Don't settle. Your person is coming. Stay true to your needs." },
-  ],
   baby: [
     { content: "Timing abhi right nahi hai. Preparation phase mein ho. Health ya financial pe kaam karna hoga pehle. Nature kaana hai tumhe ready hai. Doctor ya expert guidance le sakte ho.", guidance: "Prepare properly. Take medical advice. When ready, try without stress." },
   ],
   partner: [
-    { content: "Partner ki feelings clear hain - woh deeply care karte hain, par expression issue hai. Apna pyaar but show nahi karte. Actions speak louder - observe what they do, not say.", guidance: " communicate openly but gently. Ask, don't assume." },
+    { content: "Partner ki feelings clear hain - woh deeply care karte hain, per expression issue hai. Apna pyaar but show nahi karte. Actions speak louder - observe what they do, not say.", guidance: " communicate openly but gently. Ask, don't assume." },
   ],
   spiritual: [
     { content: "Spiritual journey strong movement mein hai. Inner work required hai. Darr ke saath deal karna hoga. Transformation hone vala hai - painful but necessary. Past life echoes present.", guidance: "Meditation rakhna. Journaling help karegi. Professional help lo if needed." },
@@ -154,9 +151,9 @@ function generateReadingFromCards(
 
   const reading = generateHumanizedReading(context, selectedCards, language as 'en' | 'hi' | 'hinglish');
 
-   const greeting = reading.opening;
-   // Compose reading without guidance to avoid duplication (guidance shown separately)
-   const fullReading = `${reading.opening} ${reading.presentEnergy} ${reading.underlyingPattern} ${reading.direction} ${reading.closing}`;
+  const greeting = reading.opening;
+  // Compose reading without guidance to avoid duplication (guidance shown separately)
+  const fullReading = `${reading.opening} ${reading.presentEnergy} ${reading.underlyingPattern} ${reading.direction} ${reading.closing}`;
 
   const lines = fullReading
     .split('. ')
@@ -265,8 +262,13 @@ export function useReadingFlow() {
   const { language } = useLanguage();
   const { region } = useAutoLanguage();
 
+  // Track input for regeneration on language change
+  const lastInputRef = useRef<GenerateInput | null>(null);
+  const lastLanguageRef = useRef(language);
+
   const reset = useCallback(() => {
     hasRunRef.current = false;
+    lastInputRef.current = null;
     setResult(null);
     setIsLoading(false);
     setError(null);
@@ -278,6 +280,7 @@ export function useReadingFlow() {
       return;
     }
     hasRunRef.current = true;
+    lastInputRef.current = input;
 
     setIsLoading(true);
     setError(null);
@@ -285,13 +288,7 @@ export function useReadingFlow() {
     if (!canRead()) {
       setError('Limit reached');
       setIsLoading(false);
-      return;
-    }
-
-    const existingReading = getStoredReading(sessionKey, language);
-    if (existingReading) {
-      setResult(existingReading);
-      setIsLoading(false);
+      hasRunRef.current = false;
       return;
     }
 
@@ -327,6 +324,9 @@ export function useReadingFlow() {
         ];
       }
 
+      // Clean duplicates: remove duplicate sentences from the reading
+      readingContent = removeDuplicateSentences(readingContent);
+
       const readingResult: ReadingResult = {
         name: input.name,
         question: input.question,
@@ -339,7 +339,7 @@ export function useReadingFlow() {
       };
 
       const firstName = extractFirstName(input.name);
-      const cleanedReading = cleanupReadingOutput(readingContent, input.name, firstName);
+      const cleanedReading = removeDuplicateSentences(readingContent);
       const cleanedGuidance = cleanupReadingOutput(guidance, input.name, firstName);
       const cleanedStreamingLines = streamingLines.map(line =>
         cleanupReadingOutput(line, input.name, firstName)
@@ -359,10 +359,22 @@ export function useReadingFlow() {
 
     } catch (e) {
       setError('Failed to generate reading');
+      hasRunRef.current = false;
     } finally {
-      setIsLoading(false);
+      if (hasRunRef.current) {
+        hasRunRef.current = false;
+      }
     }
   }, [canRead, incrementReading, region, sessionKey, language]);
+
+  // Regenerate reading when language changes (if we have a reading already)
+  useEffect(() => {
+    if (lastLanguageRef.current !== language && lastInputRef.current && result) {
+      // Language changed - regenerate the reading
+      generateReading(lastInputRef.current);
+    }
+    lastLanguageRef.current = language;
+  }, [language, result, generateReading]);
 
   return {
     result,

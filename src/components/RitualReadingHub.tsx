@@ -502,7 +502,7 @@ function QuestionInput({
             onChange={(e) => onUserNameChange(e.target.value)}
             placeholder={t('readingForm.namePlaceholder')}
             maxLength={50}
-            className="w-full px-4 py-3 rounded-xl bg-surface/50 border border-gold/20 focus:border-gold/50 focus:ring-2 focus:ring-gold/20 outline-none transition-all text-foreground placeholder:text-foreground-muted text-center"
+            className="w-full px-5 py-4 rounded-2xl bg-[#0B0F1A] border border-[#2A2F3A] focus:border-[#D4AF37] focus:ring-2 focus:ring-[#D4AF37]/30 outline-none transition-all text-white placeholder:text-gray-400 text-center"
             autoFocus
           />
           {!userName.trim() && (

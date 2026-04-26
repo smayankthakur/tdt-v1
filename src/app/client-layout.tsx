@@ -35,7 +35,7 @@ export default function ClientLayout({
   }, [language]);
 
   return (
-    <div key={language} className="antialiased bg-[rgb(var(--background))] text-[rgb(var(--foreground))]" suppressHydrationWarning>
+    <div className="antialiased bg-[rgb(var(--background))] text-[rgb(var(--foreground))]" suppressHydrationWarning>
       <DebugPanel />
       <LanguageMeta />
       <Watermark />

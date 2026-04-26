@@ -51,13 +51,14 @@ export default function StreamingOutput({
           const nextLine = currentLines[count];
           setDisplayedLines((prev) => [...prev, nextLine]);
           displayedCountRef.current = count + 1;
-        } else {
-          if (!isCompleteRef.current && displayedCountRef.current > 0) {
-            isCompleteRef.current = true;
-            if (onComplete) onComplete();
-          }
+        } else if (!isCompleteRef.current && displayedCountRef.current > 0) {
+          // We've caught up to all lines received so far and have displayed at least one.
+          // Assume streaming is done and stop the interval.
+          isCompleteRef.current = true;
+          if (onComplete) onComplete();
           clearInterval(intervalRef.current!);
         }
+        // else: no new lines yet but we haven't started or still expect more – keep interval alive
       }, lineDelay);
     };
 
@@ -82,8 +83,10 @@ export default function StreamingOutput({
     }
   }, [displayedLines]);
 
-  // Debug safety check – logs reading state
-  console.log('READING STATE:', displayedLines.join('\n'));
+  // Debug safety check – log state changes without overwhelming console
+  useEffect(() => {
+    console.log('READING STATE – lines displayed:', displayedCountRef.current, '/', linesRef.current.length);
+  }, [displayedLines.length]);
 
   return (
     <div className="reading-text space-y-3 font-serif text-base md:text-lg text-white">

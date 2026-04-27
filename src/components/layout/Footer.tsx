@@ -1,29 +1,47 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
-import { Mail, Shield, Moon, Sparkles } from 'lucide-react';
 
-// Simple SVG icon components for social media (lucide-react doesn't have these)
-const Instagram = (props: any) => (
+// Icons (exact SVG match from demo)
+const InstagramIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" {...props}>
-    <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
-    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
-    <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+    <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+    <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
   </svg>
 );
 
-const Facebook = (props: any) => (
+const FacebookIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" {...props}>
-    <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
+    <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
   </svg>
 );
 
-const Youtube = (props: any) => (
+const YoutubeIcon = (props: React.SVGProps<SVGSVGElement>) => (
+  <svg viewBox="0 0 24 24" fill="currentColor" {...props}>
+    <path d="M23.5 6.2a2.8 2.8 0 0 0-1.9-2C19.8 4 12 4 12 4s-7.8 0-9.6.2a2.8 2.8 0 0 0-1.9 2A30 30 0 0 0 0 11.8a30 30 0 0 0 .5 5.4 2.8 2.8 0 0 0 1.9 2C4.2 20 12 20 12 20s7.8 0 9.6-.2a2.8 2.8 0 0 0 1.9-2 30 30 0 0 0 .5-5.4 30 30 0 0 0-.5-5.4z" />
+    <path d="M10 15l5-3-5-3z" />
+  </svg>
+);
+
+const ShieldIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" {...props}>
-    <path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z"/>
-    <polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"/>
+    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+  </svg>
+);
+
+const EyeIcon = (props: React.SVGProps<SVGSVGElement>) => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" {...props}>
+    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+  </svg>
+);
+
+const SparklesIcon = (props: React.SVGProps<SVGSVGElement>) => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" {...props}>
+    <circle cx="12" cy="12" r="3" />
+    <path d="M12 1v6m0 6v10" />
+    <path d="M12 19a7 7 0 0 0 7-7" />
   </svg>
 );
 
@@ -40,7 +58,7 @@ const Footer = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!validateEmail(email)) {
       setError('Please enter a valid email address');
       return;
@@ -61,7 +79,7 @@ const Footer = () => {
       if (response.ok) {
         setIsSuccess(true);
         setEmail('');
-        setTimeout(() => setIsSuccess(false), 5000);
+        setTimeout(() => setIsSuccess(false), 3000);
       } else {
         const data = await response.json();
         setError(data.message || 'Something went wrong. Please try again.');
@@ -77,34 +95,71 @@ const Footer = () => {
     {
       name: 'Instagram',
       url: 'https://instagram.com/thedivineetarot',
-      icon: Instagram,
+      icon: InstagramIcon,
       ariaLabel: 'Visit our Instagram',
     },
     {
       name: 'Facebook',
       url: 'https://facebook.com/profile.php?id=61578567343068',
-      icon: Facebook,
+      icon: FacebookIcon,
       ariaLabel: 'Visit our Facebook page',
     },
     {
       name: 'YouTube',
       url: 'https://youtube.com/@thedivineetarot',
-      icon: Youtube,
+      icon: YoutubeIcon,
       ariaLabel: 'Visit our YouTube channel',
     },
     {
-      name: 'YouTube Second',
+      name: 'YouTube',
       url: 'https://www.youtube.com/@TheDivineTarot',
-      icon: Youtube,
+      icon: YoutubeIcon,
       ariaLabel: 'Visit our second YouTube channel',
     },
   ];
 
-  const trustBadges = [
-    { icon: Shield, label: 'Secure Experience' },
-    { icon: Moon, label: 'Trusted by Tarot Seekers' },
-    { icon: Sparkles, label: 'AI + Intuition Powered' },
+  const quickLinks = [
+    { name: 'About Us', href: '/about' },
+    { name: 'Tarot Readings', href: '/reading' },
+    { name: 'Premium', href: '/premium' },
+    { name: 'Contact', href: '/contact' },
+    { name: 'Privacy Policy', href: '/privacy' },
+    { name: 'Terms of Service', href: '/terms' },
   ];
+
+  const trustBadges = [
+    { icon: ShieldIcon, label: 'Secure Experience' },
+    { icon: EyeIcon, label: 'Trusted by Seekers' },
+    { icon: SparklesIcon, label: 'Guidance Intuition' },
+  ];
+
+  // Intersection Observer for scroll animations (matches demo exactly)
+  useEffect(() => {
+    const observerOptions: IntersectionObserverInit = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const target = entry.target as HTMLElement;
+          target.style.opacity = '1';
+          target.style.transform = 'translateY(0)';
+        }
+      });
+    }, observerOptions);
+
+    document.querySelectorAll('.animate-in').forEach((el) => {
+      observer.observe(el);
+    });
+
+    // Set current year
+    const yearEl = document.getElementById('footer-year');
+    if (yearEl) {
+      yearEl.textContent = new Date().getFullYear().toString();
+    }
+  }, []);
 
   return (
     <>
@@ -132,19 +187,17 @@ const Footer = () => {
         }}
       />
 
-      <footer className="relative bg-[#000] border-t border-white/10 mt-auto">
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0B0B0F] via-transparent to-[#0B0B0F] pointer-events-none" />
-        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#FFD700]/30 to-transparent" />
-
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
-          <div className="lg:hidden mb-10 p-6 rounded-2xl bg-gradient-to-br from-[#FFD700]/5 via-transparent to-[#FF4D4D]/5 border border-[#FFD700]/10">
+      <footer className="bg-[#000] border-t border-white/10">
+        <div className="max-w-[1200px] mx-auto px-5 lg:px-5 py-12 lg:py-16">
+          {/* Mobile Newsletter - visible only on mobile, EXACT demo match */}
+          <div className="lg:hidden mb-10 p-6 rounded-2xl bg-gradient-to-br from-[#FFD700]/5 via-transparent to-[#FF4D4D]/5 border border-[#FFD700]/10" style={{ display: 'none' }}>
             <h3 className="font-serif text-xl font-semibold text-[#EAEAF0] mb-2">
               Get Daily Tarot Guidance
             </h3>
             <p className="text-[#A1A1AA] text-sm mb-4">
-              Receive personalized insights and cosmic updates directly to your inbox.
+              Receive personalized insights directly to your inbox.
             </p>
-            <form onSubmit={handleSubmit} className="space-y-3">
+            <form onSubmit={handleSubmit} className="flex gap-2">
               <input
                 type="email"
                 value={email}
@@ -153,14 +206,14 @@ const Footer = () => {
                   setError('');
                 }}
                 placeholder="your.email@example.com"
-                className="w-full px-4 py-3 rounded-xl bg-white/5 border border-[#3C281A] text-[#EAEAF0] placeholder-[#A1A1AA] focus:outline-none focus:border-[#FFD700] focus:ring-2 focus:ring-[#FFD700]/20 transition-all"
+                className="flex-1 px-4 py-3 rounded-xl bg-white/5 border border-[#3C281A] text-[#EAEAF0] placeholder-[#A1A1AA] focus:outline-none focus:border-[#FFD700] focus:ring-2 focus:ring-[#FFD700]/20 transition-all"
                 disabled={isSubmitting || isSuccess}
                 aria-label="Email address for newsletter subscription"
               />
               <button
                 type="submit"
                 disabled={isSubmitting || isSuccess}
-                className={`w-full py-3 rounded-xl font-medium transition-all duration-300 ${
+                className={`px-6 py-3 rounded-xl font-semibold text-sm transition-all duration-300 ${
                   isSuccess
                     ? 'bg-green-600 text-white cursor-default'
                     : isSubmitting
@@ -168,193 +221,159 @@ const Footer = () => {
                     : 'bg-gradient-to-r from-[#FFD700] to-[#FF4D4D] text-[#000] hover:shadow-lg hover:shadow-[#FFD700]/25 hover:scale-[1.02]'
                 }`}
               >
-                {isSuccess ? "You're now connected to your daily guidance ✨" :
-                 isSubmitting ? 'Connecting...' : 'Get My Daily Reading'}
+                {isSuccess ? 'Subscribed!' : isSubmitting ? 'Joining...' : 'Subscribe'}
               </button>
-              {error && (
-                <p className="text-red-400 text-sm text-center">{error}</p>
-              )}
             </form>
+            {error && <p className="text-red-400 text-sm mt-2">{error}</p>}
           </div>
 
-          <div className="grid grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-12">
-            <div className="lg:col-span-3 space-y-6">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6 }}
-                className="flex items-center gap-3"
-              >
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#FFD700] to-[#FF4D4D] flex items-center justify-center shadow-lg shadow-[#FFD700]/20">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-7 h-7 text-[#000]">
-                    <circle cx="12" cy="12" r="10" />
-                    <path d="M12 2a10 10 0 0 1 0 20" />
-                    <path d="M12 2v20" />
-                    <path d="M12 12l8-4" />
-                    <circle cx="12" cy="12" r="3" fill="currentColor" />
-                  </svg>
-                </div>
+          {/* Main Grid - EXACT demo: 4 equal columns, gap: 40px, margin-bottom: 40px */}
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-10" style={{ gap: '40px', marginBottom: '40px' }}>
+            {/* Brand Section */}
+            <div className="animate-in space-y-6">
+              <div className="flex items-center gap-3">
+                {/* EXACT: 48x48px image with border-radius: 12px - NO gradient SVG wrapper */}
+                <img
+                  src="/logo.png"
+                  alt="The Divine Tarot Logo"
+                  className="w-12 h-12 rounded-xl object-cover"
+                  style={{ width: '48px', height: '48px', borderRadius: '12px' }}
+                />
                 <div>
-                  <h2 className="font-serif text-xl font-bold text-[#EAEAF0]">The Divine Tarot</h2>
-                  <p className="text-[#A1A1AA] text-sm leading-relaxed">
-                    Guiding your path with clarity, intuition, and cosmic insight.
+                  <h2 className="font-serif text-xl font-bold text-[#EAEAF0]">
+                    The Divine Tarot
+                  </h2>
+                  <p className="text-[#A1A1AA] text-xs">
+                    Premium Readings
                   </p>
                 </div>
-              </motion.div>
+              </div>
+              <p className="text-[#A1A1AA] text-sm leading-relaxed">
+                Guiding your path with clarity, intuition, and cosmic insight.
+              </p>
 
-              <div className="hidden lg:block p-5 rounded-2xl bg-gradient-to-br from-[#FFD700]/5 via-transparent to-[#FF4D4D]/5 border border-[#FFD700]/10">
+              {/* Desktop Newsletter - EXACT demo match */}
+              <div className="hidden lg:block p-5 rounded-2xl bg-white/5 border border-[#3C281A]/50" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,215,0,0.1)', marginTop: '24px' }}>
                 <h3 className="font-serif text-lg font-semibold text-[#EAEAF0] mb-2">
-                  Get Daily Tarot Guidance
+                  Daily Guidance
                 </h3>
-                <p className="text-[#A1A1AA] text-sm mb-4">
-                  Receive personalized insights, cosmic updates, and exclusive readings directly to your inbox.
+                <p className="text-[#A1A1AA] text-xs mb-3">
+                  Receive exclusive readings to your inbox.
                 </p>
-                <form onSubmit={handleSubmit} className="space-y-3">
-                  <div className="flex gap-2">
-                    <div className="relative flex-1">
-                      <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#A1A1AA]" />
-                      <input
-                        type="email"
-                        value={email}
-                        onChange={(e) => {
-                          setEmail(e.target.value);
-                          setError('');
-                        }}
-                        placeholder="Enter your email"
-                        className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white/5 border border-[#3C281A] text-[#EAEAF0] placeholder-[#A1A1AA] focus:outline-none focus:border-[#FFD700] focus:ring-2 focus:ring-[#FFD700]/20 transition-all"
-                        disabled={isSubmitting || isSuccess}
-                        aria-label="Email address for newsletter subscription"
-                      />
-                    </div>
-                    <button
-                      type="submit"
-                      disabled={isSubmitting || isSuccess}
-                      className={`px-5 py-2.5 rounded-xl font-medium transition-all duration-300 whitespace-nowrap ${
-                        isSuccess
-                          ? 'bg-green-600 text-white cursor-default'
-                          : isSubmitting
-                          ? 'bg-[#FFD700]/50 text-[#000] cursor-wait'
-                          : 'bg-gradient-to-r from-[#FFD700] to-[#FF4D4D] text-[#000] hover:shadow-lg hover:shadow-[#FFD700]/25 hover:scale-105'
-                      }`}
-                    >
-                      {isSuccess ? 'Subscribed!' : isSubmitting ? 'Joining...' : 'Get Reading'}
-                    </button>
-                  </div>
-                  {error && (
-                    <p className="text-red-400 text-sm">{error}</p>
-                  )}
-                  {isSuccess && (
-                    <p className="text-[#FFD700] text-sm flex items-center gap-1">
-                      <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
-                        <polyline points="22 4 12 14.01 9 11.01" />
-                      </svg>
-                      Connected to daily guidance ✨
-                    </p>
-                  )}
+                <form onSubmit={handleSubmit} className="space-y-2">
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => {
+                      setEmail(e.target.value);
+                      setError('');
+                    }}
+                    placeholder="Enter email"
+                    className="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-[#3C281A] text-[#EAEAF0] placeholder-[#A1A1AA] focus:outline-none focus:border-[#FFD700] focus:ring-2 focus:ring-[#FFD700]/20 transition-all text-sm"
+                    disabled={isSubmitting || isSuccess}
+                    aria-label="Email address for newsletter subscription"
+                  />
+                  <button
+                    type="submit"
+                    disabled={isSubmitting || isSuccess}
+                    className={`w-full py-2.5 rounded-xl font-semibold text-sm transition-all duration-300 ${
+                      isSuccess
+                        ? 'bg-green-600 text-white cursor-default'
+                        : isSubmitting
+                        ? 'bg-[#FFD700]/50 text-[#000] cursor-wait'
+                        : 'bg-gradient-to-r from-[#FFD700] to-[#FF4D4D] text-[#000] hover:shadow-lg hover:shadow-[#FFD700]/25 hover:scale-105'
+                    }`}
+                  >
+                    {isSuccess ? 'Subscribed!' : isSubmitting ? 'Joining...' : 'Join'}
+                  </button>
                 </form>
+                {error && <p className="text-red-400 text-xs mt-1">{error}</p>}
               </div>
             </div>
 
-            <div className="lg:col-span-3">
-              <motion.h4
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.1 }}
-                className="font-serif font-semibold text-[#EAEAF0] mb-6"
-              >
+            {/* Social Links - EXACT demo match */}
+            <div className="animate-in delay-1">
+              <h3 className="font-serif font-semibold text-[#EAEAF0] mb-4 text-sm uppercase tracking-wider">
                 Connect With Us
-              </motion.h4>
-              <div className="grid grid-cols-2 gap-3">
-                {socialLinks.map((social, index) => {
+              </h3>
+              <div className="space-y-3">
+                {socialLinks.map((social) => {
                   const Icon = social.icon;
                   return (
-                    <motion.a
-                      key={social.name}
+                    <a
+                      key={social.name + social.url}
                       href={social.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.4, delay: 0.2 + index * 0.1 }}
-                      className="group flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-transparent hover:border-[#FFD700]/30 hover:bg-[#FFD700]/5 transition-all duration-300"
+                      className="group flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-transparent hover:border-[#FFD700]/30 hover:bg-[#FFD700]/5 transition-all duration-300 hover:translate-x-1"
                       aria-label={social.ariaLabel}
                     >
                       <div className="w-10 h-10 rounded-lg bg-[#1A1A1F] flex items-center justify-center group-hover:bg-gradient-to-br group-hover:from-[#FFD700]/20 group-hover:to-[#FF4D4D]/20 transition-all duration-300 group-hover:shadow-[0_0_20px_rgba(255,215,0,0.3)]">
                         <Icon className="w-5 h-5 text-[#A1A1AA] group-hover:text-[#FFD700] transition-colors duration-300" />
                       </div>
-                      <span className="text-[#A1A1AA] group-hover:text-[#EAEAF0] transition-colors font-medium">
+                      <span className="text-[#A1A1AA] group-hover:text-[#EAEAF0] transition-colors text-sm font-medium">
                         {social.name}
                       </span>
-                    </motion.a>
+                    </a>
                   );
                 })}
               </div>
             </div>
 
-            <div className="hidden lg:col-span-3 lg:block">
-              <h4 className="font-serif font-semibold text-[#EAEAF0] mb-6">
+            {/* Quick Links - EXACT demo match with inline hover styles */}
+            <div className="animate-in delay-2">
+              <h3 className="font-serif font-semibold text-[#EAEAF0] mb-4 text-sm uppercase tracking-wider">
                 Quick Links
-              </h4>
-              <ul className="space-y-3">
-                {['About Us', 'Tarot Readings', 'Premium Subscription', 'Contact'].map((link, index) => (
-                  <motion.li
-                    key={link}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.4, delay: 0.3 + index * 0.1 }}
-                  >
+              </h3>
+              <ul className="space-y-3" style={{ listStyle: 'none' }}>
+                {quickLinks.map((link) => (
+                  <li key={link.name} style={{ marginBottom: '12px' }}>
                     <Link
-                      href={`/${link.toLowerCase().replace(/\s+/g, '-')}`}
-                      className="text-[#A1A1AA] hover:text-[#FFD700] transition-colors duration-300 flex items-center gap-2 group"
+                      href={link.href}
+                      className="text-[#A1A1AA] hover:text-[#FFD700] transition-colors duration-300 flex items-center gap-2 group text-sm"
+                      onMouseOver={(e) => { e.currentTarget.style.color = '#FFD700'; }}
+                      onMouseOut={(e) => { e.currentTarget.style.color = '#A1A1AA'; }}
                     >
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#FFD700]/30 group-hover:bg-[#FFD700] transition-colors"></span>
-                      {link}
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#FFD700]/30 group-hover:bg-[#FFD700] transition-colors" />
+                      {link.name}
                     </Link>
-                  </motion.li>
+                  </li>
                 ))}
               </ul>
             </div>
 
-            <div className="lg:col-span-3">
-              <motion.h4
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.2 }}
-                className="font-serif font-semibold text-[#EAEAF0] mb-6"
-              >
-                Your Trust, Our Priority
-              </motion.h4>
-              <div className="space-y-4">
-                {trustBadges.map((badge, index) => {
+            {/* Trust Badges - EXACT demo match */}
+            <div className="animate-in delay-3">
+              <h3 className="font-serif font-semibold text-[#EAEAF0] mb-4 text-sm uppercase tracking-wider">
+                Your Trust
+              </h3>
+              <div className="space-y-3">
+                {trustBadges.map((badge) => {
                   const Icon = badge.icon;
                   return (
-                    <motion.div
+                    <div
                       key={badge.label}
-                      initial={{ opacity: 0, x: 20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ duration: 0.4, delay: 0.4 + index * 0.1 }}
                       className="flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-[#3C281A]/50 hover:border-[#FFD700]/30 transition-all duration-300 group"
                     >
                       <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#FFD700]/10 to-[#FF4D4D]/10 flex items-center justify-center group-hover:scale-110 transition-transform">
                         <Icon className="w-5 h-5 text-[#FFD700]" />
                       </div>
-                      <span className="text-[#A1A1AA] group-hover:text-[#EAEAF0] transition-colors">
+                      <span className="text-[#A1A1AA] group-hover:text-[#EAEAF0] transition-colors text-sm">
                         {badge.label}
                       </span>
-                    </motion.div>
+                    </div>
                   );
                 })}
               </div>
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.4, delay: 0.7 }}
-                className="mt-6 p-4 rounded-xl bg-gradient-to-br from-[#FFD700]/5 to-[#FF4D4D]/10 border border-[#FFD700]/10"
-              >
+
+              {/* Contact Info - EXACT demo match */}
+              <div className="mt-4 p-4 rounded-xl bg-gradient-to-br from-[#FFD700]/5 to-[#FF4D4D]/10 border border-[#FFD700]/10">
                 <div className="flex items-center gap-3">
-                  <Mail className="w-5 h-5 text-[#FFD700]" />
-                  <span className="text-[#A1A1AA] text-sm">
+                  <svg className="w-5 h-5 text-[#FFD700]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                    <polyline points="22,6 12,13 2,6" />
+                  </svg>
+                  <span className="text-[#A1A1AA] text-xs">
                     Support:{' '}
                     <a
                       href="mailto:thedivinetarot111@gmail.com"
@@ -364,36 +383,32 @@ const Footer = () => {
                     </a>
                   </span>
                 </div>
-              </motion.div>
+              </div>
             </div>
           </div>
 
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.6, delay: 0.8 }}
-            className="relative mt-12 pt-8 border-t border-[#3C281A]"
-          >
+          {/* Bottom Bar - EXACT demo match with designer credit */}
+          <div className="mt-12 pt-8 border-t border-[#3C281A]">
             <div className="flex flex-col lg:flex-row items-center justify-between gap-4">
               <p className="text-[#A1A1AA] text-sm">
-                © 2026 The Divine Tarot. All rights reserved.
+                © <span id="footer-year"></span> The Divine Tarot. All rights reserved.
               </p>
               <div className="flex items-center gap-6">
-                <Link
-                  href="/privacy"
-                  className="text-[#A1A1AA] hover:text-[#FFD700] transition-colors duration-300 text-sm"
-                >
-                  Privacy Policy
-                </Link>
-                <Link
-                  href="/terms"
-                  className="text-[#A1A1AA] hover:text-[#FFD700] transition-colors duration-300 text-sm"
-                >
-                  Terms of Service
-                </Link>
+                <span className="text-[#A1A1AA] text-sm">
+                  Designed with ❤️ by{' '}
+                  <a
+                    href="https://www.sitelytc.com"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[#A1A1AA] hover:text-[#FFD700] transition-colors duration-300"
+                    style={{ textDecoration: 'none' }}
+                  >
+                    Sitelytc Digital Media Pvt. Ltd.
+                  </a>
+                </span>
               </div>
             </div>
-          </motion.div>
+          </div>
         </div>
       </footer>
     </>

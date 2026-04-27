@@ -1,24 +1,25 @@
 'use client';
 
- import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
- import { motion, AnimatePresence } from 'framer-motion';
- import { Sparkles, ArrowRight, Loader2, Heart, Briefcase, TrendingUp, Users, Home, Compass, Clock, Bell, BellOff } from 'lucide-react';
- import { useLanguage } from '@/hooks/useLanguage';
- import { useAutoLanguage } from '@/hooks/useAutoLanguage';
- import { useReadingFlow } from '@/hooks/useReadingFlow';
- import { useReadingStore } from '@/store/reading-store';
- import { useFunnelStore } from '@/store/funnel-store';
- import { READING_TYPES, type ReadingType } from '@/store/reading-types';
- import { SelectedCard } from '@/lib/tarot/logic';
- import { generateCardSet, analyzeIntent, recordReadingSelection, finalizeReadingCards, type DomainAnalysis } from '@/lib/cardEngine';
- import { wrapReadingWithBehavior, getPremiumCTA } from '@/lib/behavioral/engine';
- import Button from '@/components/ui/button';
- import TarotCardComponent from '@/components/TarotCard';
- import { FloatingTextarea } from '@/components/ui/FloatingInput';
-  import StreamingOutput from './StreamingOutput';
-  import CountdownTimer from './CountdownTimer';
-  import SoftPaywall from './SoftPaywall';
-  import Watermark from '@/components/ui/Watermark';
+import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Sparkles, ArrowRight, Loader2, Heart, Briefcase, TrendingUp, Users, Home, Compass, Clock, Bell, BellOff } from 'lucide-react';
+import { useLanguage } from '@/hooks/useLanguage';
+import { useAutoLanguage } from '@/hooks/useAutoLanguage';
+import { useReadingFlow } from '@/hooks/useReadingFlow';
+import { useReadingStore } from '@/store/reading-store';
+import { useFunnelStore } from '@/store/funnel-store';
+import { READING_TYPES, type ReadingType } from '@/store/reading-types';
+import { SelectedCard } from '@/lib/tarot/logic';
+import { generateCardSet, analyzeIntent, recordReadingSelection, finalizeReadingCards, type DomainAnalysis } from '@/lib/cardEngine';
+import { wrapReadingWithBehavior, getPremiumCTA } from '@/lib/behavioral/engine';
+import Button from '@/components/ui/button';
+import TarotCardComponent from '@/components/TarotCard';
+import { FloatingTextarea } from '@/components/ui/FloatingInput';
+import StreamingOutput from './StreamingOutput';
+import CountdownTimer from './CountdownTimer';
+import SoftPaywall from './SoftPaywall';
+import ReadingOutput from './ReadingOutput';
+import Watermark from '@/components/ui/Watermark';
 
 // Generate simple unique session ID
 const generateSessionId = () => `session_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`;
@@ -84,8 +85,12 @@ const vibrate = () => {
   }
 };
 
-export default function RitualReadingHub() {
-   const [step, setStep] = useState<RitualStep>('topic-select');
+interface RitualReadingHubProps {
+  userId?: string | null;
+}
+
+export default function RitualReadingHub({ userId: propUserId }: RitualReadingHubProps) {
+  const [step, setStep] = useState<RitualStep>('topic-select');
   const [selectedTopic, setSelectedTopic] = useState<ReadingType | null>(null);
   const [question, setQuestion] = useState('');
   const [userName, setUserName] = useState('');
@@ -96,6 +101,14 @@ export default function RitualReadingHub() {
   const [behavioralWrap, setBehavioralWrap] = useState<import('@/lib/behavioral/engine').BehavioralWrap | null>(null);
   const [showPremiumTrigger, setShowPremiumTrigger] = useState(false);
   const [reminderOptIn, setReminderOptIn] = useState(false);
+  const [internalUserId, setInternalUserId] = useState<string | null>(propUserId || null);
+
+  // Sync prop changes
+  useEffect(() => {
+    if (propUserId !== undefined) {
+      setInternalUserId(propUserId);
+    }
+  }, [propUserId]);
   const questionStartTime = useRef<number>(0);
   const questionEdits = useRef<number>(0);
 
@@ -343,8 +356,8 @@ export default function RitualReadingHub() {
       case 'loading-result':
         return <LoadingState text={loadingText} />;
 
-      case 'reading-delivery':
-        return <ReadingDelivery result={result!} onStartOver={handleStartOver} reminderOptIn={reminderOptIn} setReminderOptIn={setReminderOptIn} showPremiumTrigger={showPremiumTrigger} />;
+       case 'reading-delivery':
+         return <ReadingDelivery result={result!} onStartOver={handleStartOver} reminderOptIn={reminderOptIn} setReminderOptIn={setReminderOptIn} showPremiumTrigger={showPremiumTrigger} userId={internalUserId} />;
 
       default:
         return null;
@@ -986,28 +999,215 @@ function LoadingState({ text }: { text: string }) {
   );
 }
 
-// ========== STEP 9: READING DELIVERY (HUMANIZED, STREAMING) ==========
+// ========== COMPONENT: Pre-stream message ==========
+function PreStreamMessage() {
+  const { t } = useLanguage();
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.5 }}
+      className="p-6 md:p-8 rounded-2xl bg-surface/50 border border-gold/20 backdrop-blur-sm text-center"
+    >
+      <p className="font-serif text-xl md:text-2xl text-foreground/80 leading-relaxed">
+        {t('ritualHub.preStreamText')}
+      </p>
+    </motion.div>
+  );
+}
+
+// ========== COMPONENT: Final Interactive Closing Block ==========
+function FinalInteractiveBlock({
+  onStartOver,
+  reminderOptIn,
+  setReminderOptIn,
+  returnMessage,
+  streakMessage,
+  getDailyHook,
+  showPremiumTrigger,
+  readingCount,
+}: {
+  onStartOver: () => void;
+  reminderOptIn: boolean;
+  setReminderOptIn: (value: boolean) => void;
+  returnMessage: string | null;
+  streakMessage: string | null;
+  getDailyHook: () => string;
+  showPremiumTrigger: boolean;
+  readingCount: number;
+}) {
+  const { t } = useLanguage();
+
+  return (
+    <div className="text-center space-y-6 mt-10">
+
+      {/* Hook – Direct, personal */}
+      <motion.p
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.6 }}
+        className="text-xl md:text-2xl font-serif text-white/90"
+      >
+        Before you leave…
+      </motion.p>
+
+      {/* Engagement Question */}
+      <motion.p
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.7 }}
+        className="text-lg text-white/80 max-w-lg mx-auto"
+      >
+        What&apos;s one word that describes how that reading felt to you?
+      </motion.p>
+
+      <motion.p
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.8 }}
+        className="text-sm italic text-white/60 max-w-md mx-auto"
+      >
+         Don&apos;t think too much. The first thing that came to your mind — that&apos;s the truth.
+      </motion.p>
+
+      {/* Behavioral Hook + Timer */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.9 }}
+        className="p-6 rounded-xl border border-gold/20 bg-gradient-to-r from-purple-900/20 to-black/30 space-y-4"
+      >
+        <p className="text-gold font-medium">
+          {t('ritualHub.behavioral.dailyHook')}
+        </p>
+
+        <p className="text-white/70 text-sm max-w-md mx-auto">
+          {getDailyHook()}
+        </p>
+
+        <p className="text-white/50 text-xs italic">
+          {t('ritualHub.behavioral.timerContext')}
+        </p>
+
+        <div className="flex justify-center mt-3">
+          <CountdownTimer hours={24} minutes={0} seconds={0} />
+        </div>
+
+        {/* Reminder opt-in */}
+        <div className="flex items-center justify-center gap-2 pt-2">
+          <button
+            onClick={() => setReminderOptIn(!reminderOptIn)}
+            className={`flex items-center gap-2 px-4 py-2 rounded-full transition-all text-sm ${
+              reminderOptIn
+                ? 'bg-gold/20 text-gold border border-gold/40'
+                : 'bg-surface/50 text-foreground-muted border border-gold/10 hover:border-gold/30'
+            }`}
+          >
+            {reminderOptIn ? <Bell className="h-4 w-4" /> : <BellOff className="h-4 w-4" />}
+            <span>
+              {reminderOptIn ? t('ritualHub.reminder.optInActive') : t('ritualHub.reminder.optIn')}
+            </span>
+          </button>
+        </div>
+
+        {/* Return/Streak messages */}
+        {returnMessage && (
+          <motion.p
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-white/70 italic text-sm text-center max-w-lg mx-auto"
+          >
+            {returnMessage}
+          </motion.p>
+        )}
+
+        {streakMessage && (
+          <motion.p
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="text-amber-400 font-medium text-center text-sm"
+          >
+            {streakMessage}
+          </motion.p>
+        )}
+      </motion.div>
+
+      {/* Premium Trigger */}
+      {showPremiumTrigger && readingCount >= 2 && (
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 1.0 }}
+          className="mt-6"
+        >
+          <SoftPaywall triggerReason="deep_engagement" />
+        </motion.div>
+      )}
+
+      {/* CTAs – continuation buttons */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 1.1 }}
+        className="flex flex-col sm:flex-row gap-4 justify-center"
+      >
+        <button
+          onClick={onStartOver}
+          className="px-6 py-2 border border-gold rounded-full text-gold hover:bg-gold/10 transition"
+        >
+          {t('ritualHub.startOver')}
+        </button>
+
+        <button
+          onClick={() => window.location.href = '/premium'}
+          className="px-6 py-2 rounded-full bg-gradient-to-r from-orange-400 to-yellow-300 text-black font-semibold shadow-lg hover:shadow-xl transition"
+        >
+          {t('ritualHub.unlockAccess')}
+        </button>
+      </motion.div>
+
+      {/* Micro-trust trigger */}
+      <motion.p
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1.2 }}
+        className="text-xs text-white/40 italic max-w-sm mx-auto"
+      >
+        The first thought you had… that&apos;s the answer your mind was trying to show you.
+      </motion.p>
+
+    </div>
+  );
+}
+
+// ========== STEP 9: READING DELIVERY (CLEAN STATE ARCHITECTURE) ==========
 function ReadingDelivery({
   result,
   onStartOver,
   reminderOptIn,
   setReminderOptIn,
   showPremiumTrigger,
+  userId,
 }: {
   result: any;
   onStartOver: () => void;
   reminderOptIn: boolean;
   setReminderOptIn: (value: boolean) => void;
   showPremiumTrigger: boolean;
+  userId?: string | null;
 }) {
-  const [streamComplete, setStreamComplete] = useState(false);
-  const [showPreStream, setShowPreStream] = useState(true);
-   const { t, language } = useLanguage();
-   // Access behavioral wrap from parent via context or prop - for now approximate
-   const { readingCount } = useFunnelStore();
-   const { returnMessage, streakMessage } = useReadingFlow();
+  const [streamText, setStreamText] = useState('');
+  const [finalText, setFinalText] = useState('');
+  const [isStreaming, setIsStreaming] = useState(false);
+  const [isComplete, setIsComplete] = useState(false);
 
-   // Memoize lines to prevent unnecessary re-initialization of streaming
+  const { t, language } = useLanguage();
+  const { readingCount } = useFunnelStore();
+  const { returnMessage, streakMessage } = useReadingFlow();
+
+  // Get lines for streaming
   const lines = useMemo(() => {
     if (result.streamingLines && result.streamingLines.length > 0) {
       return result.streamingLines;
@@ -1015,82 +1215,88 @@ function ReadingDelivery({
     return [result.reading || t('ritualHub.readingFallback')];
   }, [result.streamingLines, result.reading, t]);
 
-  const handleStreamComplete = useCallback(() => {
-    setStreamComplete(true);
+  // Streaming handler – STRICT REPLACE, NOT APPEND
+  const handleStreamChunk = useCallback((chunk: string) => {
+    setIsStreaming(true);
+    setStreamText(prev => prev + chunk);
   }, []);
 
-   // Pre-stream message then start streaming after 2 seconds
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowPreStream(false);
-    }, 2000);
-    return () => clearTimeout(timer);
-  }, []);
+  // Stream end – CLEAN STATE SWITCH
+  const handleStreamEnd = useCallback(() => {
+    setIsStreaming(false);
+    setIsComplete(true);
 
-   // Generate behavioral hooks after reading completes
-   const getDailyHook = (): string => {
-     // Use the nextHook from the new reading result if available
-     if (result?.nextHook) {
-       return result.nextHook;
-     }
+    // CRITICAL: Replace buffer with final text
+    setFinalText(result.reading || t('ritualHub.readingFallback'));
 
-     // Fallback hooks (should rarely be used)
-     const firstName = result?.name?.split(' ')[0] || 'friend';
-     const hooks: Record<string, string[]> = {
-       en: [
-         `${firstName}, there's an energy shift coming in the next 48 hours. Come back tomorrow — I'll have decoded it for you.`,
-         `This isn't the full picture yet. Something's in motion. Return tomorrow and I'll guide you through the next phase.`,
-       ],
-       hi: [
-         `${firstName}, aage 48 hours mein energy shift aa raha hai. Kal wapas aana — main decode kar ke batati hoon.`,
-         `Yeh complete picture nahi hai. Kuch chal raha hai. Kal wapas aana, main next phase guide karti hoon.`,
-       ],
-       hinglish: [
-         `${firstName}, next 48 hours mein energy shift aa raha hai. Kal aana — main decode kar ke bataungi.`,
-         `Yeh picture incomplete hai. Kuch chal raha hai. Kal wapas aana, next phase guide karti hoon.`,
-       ],
-     };
-     const pool = hooks[language] || hooks.en;
-     return pool[Math.floor(Math.random() * pool.length)];
-   };
+    // Clear streaming buffer (prevents duplicate renders)
+    setStreamText('');
+  }, [result.reading, t]);
+
+  // Display logic – ONLY ONE SOURCE OF TRUTH
+  const displayText = isComplete ? finalText : streamText;
+
+  // Generate behavioral hooks after reading completes
+  const getDailyHook = (): string => {
+    // Use the nextHook from the new reading result if available
+    if (result?.nextHook) {
+      return result.nextHook;
+    }
+
+    // Fallback hooks
+    const firstName = result?.name?.split(' ')[0] || 'friend';
+    const hooks: Record<string, string[]> = {
+      en: [
+        `${firstName}, there's an energy shift coming in the next 48 hours. Come back tomorrow — I'll have decoded it for you.`,
+        `This isn't the full picture yet. Something's in motion. Return tomorrow and I'll guide you through the next phase.`,
+      ],
+      hi: [
+        `${firstName}, aage 48 hours mein energy shift aa raha hai. Kal wapas aana — main decode kar ke batati hoon.`,
+        `Yeh complete picture nahi hai. Kuch chal raha hai. Kal wapas aana, main next phase guide karti hoon.`,
+      ],
+      hinglish: [
+        `${firstName}, next 48 hours mein energy shift aa raha hai. Kal aana — main decode kar ke bataungi.`,
+        `Yeh picture incomplete hai. Kuch chal raha hai. Kal wapas aana, next phase guide karti hoon.`,
+      ],
+    };
+    const pool = hooks[language] || hooks.en;
+    return pool[Math.floor(Math.random() * pool.length)];
+  };
 
   return (
-    <div className="space-y-8 relative">
+    <div className="reading-delivery space-y-8 relative">
       {/* Pre-stream message */}
-      <AnimatePresence>
-        {showPreStream && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.5 }}
-            className="p-6 md:p-8 rounded-2xl bg-surface/50 border border-gold/20 backdrop-blur-sm text-center"
-          >
-            <p className="font-serif text-xl md:text-2xl text-foreground/80 leading-relaxed">
-              {t('ritualHub.preStreamText')}
-            </p>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <PreStreamMessage />
 
-      {/* Main reading content - streamed */}
-      {!showPreStream && (
+      {/* Main reading content – SINGLE OUTPUT COMPONENT */}
+      {!isComplete && (
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.3 }}
           className="p-6 md:p-8 rounded-2xl bg-surface/50 border border-gold/20 backdrop-blur-sm"
         >
-          <StreamingOutput 
+          <StreamingOutput
             lines={lines}
-            onComplete={handleStreamComplete}
+            onComplete={handleStreamEnd}
             startDelay={0}
           />
         </motion.div>
       )}
 
-      {/* Guidance Box - appears after stream */}
-      {streamComplete && (
+      {/* Final rendered text – ONLY SHOWN AFTER COMPLETION */}
+      {isComplete && !isStreaming && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="p-6 md:p-8 rounded-2xl bg-surface/50 border border-gold/20 backdrop-blur-sm"
+        >
+          <ReadingOutput text={displayText} />
+        </motion.div>
+      )}
+
+      {/* Guidance Box – appears after stream completes */}
+      {isComplete && (
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -1106,117 +1312,23 @@ function ReadingDelivery({
         </motion.div>
       )}
 
-       {/* Closing - appears after guidance */}
-       {streamComplete && (
-         <motion.div
-           initial={{ opacity: 0, y: 20 }}
-           animate={{ opacity: 1, y: 0 }}
-           transition={{ delay: 0.5 }}
-           className="text-center space-y-6"
-         >
-            <p className="font-serif text-xl md:text-2xl text-foreground-secondary leading-relaxed">
-              &ldquo;{t('ritualHub.closingQuote')}&rdquo;
-            </p>
+      {/* ✅ INTERACTIVE CLOSING SECTION – isolated final block */}
+      {isComplete && !isStreaming && (
+        <FinalInteractiveBlock
+          onStartOver={onStartOver}
+          reminderOptIn={reminderOptIn}
+          setReminderOptIn={setReminderOptIn}
+          returnMessage={returnMessage}
+          streakMessage={streakMessage}
+          getDailyHook={getDailyHook}
+          showPremiumTrigger={showPremiumTrigger}
+          readingCount={readingCount}
+        />
+      )}
 
-            {/* Behavioral Hook: Daily Return Prompt */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.7 }}
-              className="p-6 rounded-2xl bg-gradient-to-r from-purple-900/30 via-gold/10 to-purple-900/30 border border-gold/20 space-y-4"
-            >
-              <div className="flex items-center justify-center gap-3 mb-2">
-                <Clock className="h-5 w-5 text-gold" />
-                <h4 className="font-heading text-lg text-gold">
-                  {t('ritualHub.behavioral.dailyHook')}
-                </h4>
-              </div>
-              <p className="text-foreground/80 leading-relaxed max-w-lg mx-auto text-sm md:text-base">
-                {getDailyHook()}
-              </p>
-
-              {/* Return Message (if returning user) */}
-              {returnMessage && (
-                <motion.p
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="text-foreground/70 italic text-sm text-center max-w-lg mx-auto"
-                >
-                  {returnMessage}
-                </motion.p>
-              )}
-
-              {/* Streak Message */}
-              {streakMessage && (
-                <motion.p
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.2 }}
-                  className="text-amber-400 font-medium text-center text-sm"
-                >
-                  {streakMessage}
-                </motion.p>
-              )}
-
-             {/* Countdown Timer */}
-             <div className="flex justify-center my-4">
-               <CountdownTimer
-                 hours={24}
-                 minutes={0}
-                 seconds={0}
-               />
-             </div>
-
-             {/* Optional Reminder Opt-in */}
-             <div className="flex items-center justify-center gap-2 pt-2">
-               <button
-                 onClick={() => setReminderOptIn(!reminderOptIn)}
-                 className={`flex items-center gap-2 px-4 py-2 rounded-full transition-all text-sm ${
-                   reminderOptIn
-                     ? 'bg-gold/20 text-gold border border-gold/40'
-                     : 'bg-surface/50 text-foreground-muted border border-gold/10 hover:border-gold/30'
-                 }`}
-               >
-                 {reminderOptIn ? <Bell className="h-4 w-4" /> : <BellOff className="h-4 w-4" />}
-                 <span>
-                   {reminderOptIn ? t('ritualHub.reminder.optInActive') : t('ritualHub.reminder.optIn')}
-                 </span>
-               </button>
-             </div>
-           </motion.div>
-
-           {/* Premium Trigger - shown after 2+ readings OR deep questions */}
-           {showPremiumTrigger && readingCount >= 2 && (
-             <motion.div
-               initial={{ opacity: 0, y: 10 }}
-               animate={{ opacity: 1, y: 0 }}
-               transition={{ delay: 0.9 }}
-               className="mt-6"
-             >
-               <SoftPaywall
-                 triggerReason="deep_engagement"
-               />
-             </motion.div>
-           )}
-
-           {/* Action Buttons */}
-           <motion.div
-             initial={{ opacity: 0, y: 20 }}
-             animate={{ opacity: 1, y: 0 }}
-             transition={{ delay: 0.5 }}
-             className="flex flex-col sm:flex-row gap-4 justify-center"
-           >
-             <Button variant="secondary" size="md" onClick={onStartOver}>
-               {t('ritualHub.startOver')}
-             </Button>
-             <Button variant="primary" size="md" onClick={() => window.location.href = '/premium'}>
-               {t('ritualHub.unlockAccess')}
-             </Button>
-            </motion.div>
-            <Watermark />
-          </motion.div>
-        )}
-      </div>
-   );
- }
+      {/* WATERMARK */}
+      {isComplete && !isStreaming && <Watermark userId={userId} />}
+    </div>
+  );
+}
 

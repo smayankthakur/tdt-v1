@@ -196,16 +196,16 @@ export const en: TranslationSchema = {
     preStreamText: "Look carefully… what's coming is important.",
     readingFallback: "Your question brings clarity… direction is forming.",
     guidanceIntro: "Your cards are saying:",
-    closingQuote: "The next step… you already feel it.",
-    startOver: "Start over",
-    unlockAccess: "Full Access",
+    startOver: "Ask Something New",
+    unlockAccess: "See What's Hidden",
     reminder: {
       optIn: "🔔 Remind me tomorrow",
       optInActive: "🔔 Reminder set for tomorrow",
     },
     behavioral: {
-      dailyHook: "What's coming tomorrow?",
-      subHook: "Your next insight is already forming…",
+      dailyHook: "Something shifted in that reading…",
+      subHook: "You'll only notice it in the next 24 hours — but only if you stay aware.",
+      timerContext: "Watch closely. This is where things start aligning.",
     },
   },
 

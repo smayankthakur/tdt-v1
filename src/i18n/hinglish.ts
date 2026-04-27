@@ -128,8 +128,9 @@ export const hinglish: TranslationSchema = {
       optInActive: "🔔 Kal ke liye reminder set",
     },
     behavioral: {
-      dailyHook: "Kal aane wala kya hai?",
-      subHook: "Tumhara next insight baan raha hai…",
+      dailyHook: "Reading mein kuch shift hua…",
+      subHook: "Isko pehchaanoge sirf agar agle 24 ghante mein dhyaan doge.",
+      timerContext: "Dhyan se dekho. Yahi waqt hai jab sab align hone lagega.",
     },
   },
 

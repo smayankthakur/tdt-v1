@@ -1,29 +1,15 @@
 'use client';
 
-import { supabase } from '@/lib/supabase/client';
-import { useEffect, useState } from 'react';
+interface WatermarkProps {
+  userId?: string | null;
+}
 
-export default function Watermark() {
-  const [userId, setUserId] = useState<string | null>(null);
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const { data: { user } } = await supabase.auth.getUser();
-        if (user?.id) {
-          setUserId(user.id);
-        }
-      } catch (error) {
-        // Silent fail – watermark shows generic text if unauthenticated
-        console.debug('Watermark: unable to fetch user', error);
-      }
-    };
-    fetchUser();
-  }, []);
-
+export default function Watermark({ userId }: WatermarkProps) {
+  const displayId = userId?.slice(0, 8).toUpperCase() || 'GUEST';
+  
   return (
-    <div className="watermark">
-      The Divine Tarot • {userId || "Guest"}
+    <div className="fixed bottom-4 right-4 text-[10px] text-white/20 pointer-events-none select-none">
+      THE DIVINE TAROT • {displayId}
     </div>
   );
 }

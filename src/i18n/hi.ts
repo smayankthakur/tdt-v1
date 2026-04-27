@@ -124,8 +124,9 @@ export const hi: TranslationSchema = {
       optInActive: "🔔 कल के लिए रिमाइंडर सेट",
     },
     behavioral: {
-      dailyHook: "कल आने वाला क्या है?",
-      subHook: "आपका अगला insight बन रहा है…",
+      dailyHook: "Reading mein kuch shift hua…",
+      subHook: "Isko pehchaanoge sirf agar agle 24 ghante mein dhyaan doge.",
+      timerContext: "Dhyan se dekho. Yahi waqt hai jab sab align hone lagega.",
     },
   },
 

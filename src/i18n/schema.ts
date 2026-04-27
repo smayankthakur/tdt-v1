@@ -195,23 +195,23 @@ export const schema = {
      // Arrays
      shuffle: [] as string[],
      reveal: [] as string[],
-     // Fallback/general messages
-      fallbackClosing: "",
-      loadingMessage: "",
-      preStreamText: "",
-      readingFallback: "",
-      guidanceIntro: "",
-      closingQuote: "",
-      startOver: "",
-      unlockAccess: "",
-      reminder: {
-        optIn: "",
-        optInActive: "",
-      },
-      behavioral: {
-        dailyHook: "",
-        subHook: "",
-      },
+      // Fallback/general messages
+       fallbackClosing: "",
+       loadingMessage: "",
+       preStreamText: "",
+       readingFallback: "",
+       guidanceIntro: "",
+       startOver: "",
+       unlockAccess: "",
+       reminder: {
+         optIn: "",
+         optInActive: "",
+       },
+       behavioral: {
+         dailyHook: "",
+         subHook: "",
+         timerContext: "",
+       },
     },
 
   // =====================

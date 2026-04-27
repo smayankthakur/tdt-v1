@@ -40,22 +40,23 @@ export const schema = {
      noPressure: "",
    },
 
-  // =====================
-  // NAVIGATION
-  // =====================
-  nav: {
-    home: "",
-    about: "",
-    reading: "",
-    subscription: "",
-    premium: "",
-    bookReading: "",
-    booking: "",
-    blog: "",
-    contact: "",
-    talkToGinni: "",
-    yesno: "",
-   },
+   // =====================
+   // NAVIGATION
+   // =====================
+   nav: {
+     home: "",
+     about: "",
+     reading: "",
+     subscription: "",
+     premium: "",
+     bookReading: "",
+     booking: "",
+     blog: "",
+     course: "",
+     contact: "",
+     talkToGinni: "",
+     yesno: "",
+    },
 
   countdown: {
     hours: "",

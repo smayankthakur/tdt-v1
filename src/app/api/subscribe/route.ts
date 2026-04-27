@@ -1,7 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { Resend } from 'resend';
-
-const resend = new Resend(process.env.RESEND_API_KEY);
+import { getResendClient } from '@/lib/resend';
 
 // In-memory storage for demo/dev - replace with database in production
 const subscribers = new Set<string>();
@@ -42,8 +40,9 @@ export async function POST(request: NextRequest) {
     console.log('New subscriber:', email, 'at', new Date().toISOString());
 
     // Send welcome email via Resend (optional)
-    try {
-      if (process.env.RESEND_API_KEY && process.env.RESEND_FROM_EMAIL) {
+    const resend = getResendClient();
+    if (resend && process.env.RESEND_FROM_EMAIL) {
+      try {
         await resend.emails.send({
           from: process.env.RESEND_FROM_EMAIL,
           to: email,
@@ -74,13 +73,13 @@ export async function POST(request: NextRequest) {
                   If you wish to unsubscribe, reply to this email or click the link in our future messages.
                 </p>
               </div>
-            </div>
-          `
+             </div>
+           `
         });
+      } catch (emailError) {
+        console.warn('Failed to send welcome email:', emailError);
+        // Don't fail the subscription if email sending fails
       }
-    } catch (emailError) {
-      console.warn('Failed to send welcome email:', emailError);
-      // Don't fail the subscription if email sending fails
     }
 
     return NextResponse.json(

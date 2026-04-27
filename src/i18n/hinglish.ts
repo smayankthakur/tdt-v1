@@ -52,6 +52,7 @@ export const hinglish: TranslationSchema = {
     bookReading: 'Book Reading',
     booking: 'Booking',
     blog: 'Blog',
+    course: 'Course',
     contact: 'Contact',
     talkToGinni: 'Ginni se baat karo',
     yesno: 'Yes/No',

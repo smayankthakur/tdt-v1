@@ -14,6 +14,8 @@ const navLinks = [
   { href: '/about', labelKey: 'nav.about' },
   { href: '/reading', labelKey: 'nav.reading' },
   { href: '/premium', labelKey: 'nav.subscription', isExternal: false },
+  { href: 'https://course.thedivinetarotonline.com/', labelKey: 'nav.course', isExternal: true },
+  { href: 'https://course.thedivinetarotonline.com/blogs', labelKey: 'nav.blog', isExternal: true },
   { href: 'https://thedivinetarotonline.co.in/', labelKey: 'nav.booking', isExternal: true },
 ];
 
@@ -22,6 +24,8 @@ const NAV_LABEL_KEYS: Record<string, string> = {
   'nav.about': 'nav.about',
   'nav.reading': 'nav.reading',
   'nav.subscription': 'nav.subscription',
+  'nav.course': 'nav.course',
+  'nav.blog': 'nav.blog',
   'nav.booking': 'nav.booking',
 };
 

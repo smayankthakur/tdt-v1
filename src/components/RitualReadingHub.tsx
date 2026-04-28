@@ -4,7 +4,6 @@ import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Sparkles, ArrowRight, Loader2, Heart, Briefcase, TrendingUp, Users, Home, Compass, Clock, Bell, BellOff } from 'lucide-react';
 import { useLanguage } from '@/hooks/useLanguage';
-import { useAutoLanguage } from '@/hooks/useAutoLanguage';
 import { useReadingFlow } from '@/hooks/useReadingFlow';
 import { useReadingStore } from '@/store/reading-store';
 import { useFunnelStore } from '@/store/funnel-store';
@@ -123,7 +122,6 @@ export default function RitualReadingHub({ userId: propUserId }: RitualReadingHu
   const { t, language, isHydrated } = useLanguage();
   const shuffleMessages = getShuffleMessages(t);
   const revealMessages = getRevealMessages(t);
-  const { handleUserInput: handleAutoLanguage } = useAutoLanguage();
   const { generateReading, result, isLoading, error, reset: resetReadingFlow, returnMessage, streakMessage } = useReadingFlow();
   const { reset: resetReadingStore, setDeck, setSelectedCardsWithDetails, selectedCardsWithDetails } = useReadingStore();
   const { setCurrentStage, setQuestion: setFunnelQuestion, incrementReadingCount } = useFunnelStore();
@@ -187,7 +185,7 @@ export default function RitualReadingHub({ userId: propUserId }: RitualReadingHu
 
     // Auto-detect language from user's question
     if (question.length > 10) {
-      handleAutoLanguage(question);
+      // Language detection no longer needed - handled globally
     }
 
     // 1. Analyze intent of the question

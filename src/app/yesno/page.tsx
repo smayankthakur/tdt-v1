@@ -7,7 +7,6 @@ import { Sparkles, Zap, MessageCircle, Copy, RefreshCw, Lock } from 'lucide-reac
 import { useYesNoStore, YesNoResult } from '@/store/yesno-store';
 import { selectYesNoCard, generateYesNoResponse, yesNoSuspenseMessages, yesNoEmptyQuestionMessage, YesNoTarotCard } from '@/lib/yesNoTarot';
 import { useLanguage } from '@/hooks/useLanguage';
-import { useAutoLanguage } from '@/hooks/useAutoLanguage';
 import { getCardImage } from '@/lib/cardImageMap';
 import { FloatingTextarea } from '@/components/ui/FloatingInput';
 import Button from '@/components/ui/button';
@@ -28,7 +27,6 @@ type YesNoStep = 'question' | 'suspense' | 'reveal';
 
 export default function YesNoPage() {
   const { t } = useLanguage();
-  const { handleUserInput } = useAutoLanguage();
   
   const {
     yesNoReadings,
@@ -67,9 +65,6 @@ export default function YesNoPage() {
 
   const handleQuestionChange = (value: string) => {
     setQuestion(value);
-    if (value.length > 5) {
-      handleUserInput(value);
-    }
   };
 
   const handleSubmit = () => {

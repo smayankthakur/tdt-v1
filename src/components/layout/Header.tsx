@@ -15,7 +15,7 @@ const navLinks = [
   { href: '/reading', labelKey: 'nav.reading' },
   { href: '/premium', labelKey: 'nav.subscription', isExternal: false },
   { href: 'https://course.thedivinetarotonline.com/', labelKey: 'nav.course', isExternal: true },
-  { href: 'https://blog.thedivinetarotonline.com/blogs', labelKey: 'nav.blog', isExternal: true },
+  { href: 'https://blog.thedivinetarotonline.com/', labelKey: 'nav.blog', isExternal: true },
   { href: 'https://thedivinetarotonline.co.in/', labelKey: 'nav.booking', isExternal: true },
 ];
 

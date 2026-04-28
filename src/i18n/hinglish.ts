@@ -107,12 +107,12 @@ export const hinglish: TranslationSchema = {
         desc: 'Hum tumhe tumhare answers tak pahunchate hain. Power hamesha tumhare andar thi.',
       },
     },
-    why: {
+     why: {
       ...en.about.why,
       title: 'Why This Platform?',
-      p1: 'Traditional tarot readings ke liye appointment, wait, aur premium price chahiye. But clarity wait nahi karni chahiye.',
-      p2: 'Yeh platform ancient tarot wisdom ko modern AI technology ke saath mix karta hai — readings jo personal hain, jo tumhari emotional context samajhte hain.',
-      p3: 'Chahe tum 2 AM par confused ho ya big decision se pehle quick perspective chahiye — answers yahan hain, tumhare liye wait kar rahe hain.',
+      p1: 'Traditional tarot readings ke liye appointment, wait, aur premium price chahiye. Lekin clarity wait nahi karni chahiye — aur iski badi keemat nahi honi chahiye.',
+      p2: 'Yeh platform vyakti-gat aur gehri raedings dene ke liye prachin tarot gyan ka istemal karta hai — jo tumhe samajhne mein madad karti hain.',
+      p3: 'Chahe tum 2 AM par uljhe ho ya kisi bade faisle se pehle turant drishtikon ki zarurat ho — jawaab yahan hain, tumhara intezaar kar rahe hain.',
     },
     cta: {
       ...en.about.cta,

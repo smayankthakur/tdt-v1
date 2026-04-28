@@ -41,9 +41,9 @@ export function useSafeLanguage() {
     return text;
   };
 
-  /**
-   * Translate dynamic content (readings, AI output)
-   */
+    /**
+     * Translate dynamic content (readings, interpretations)
+     */
   const translate = async (content: string): Promise<string> => {
     return translateDynamic(content, language as SupportedLanguage);
   };

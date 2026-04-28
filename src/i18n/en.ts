@@ -119,7 +119,7 @@ export const en: TranslationSchema = {
     why: {
       title: 'Why This Platform?',
       p1: "Traditional tarot readings require appointments, waiting, and often come with a premium price tag. But clarity shouldn't wait — and it shouldn't cost a fortune.",
-      p2: 'This platform combines ancient tarot wisdom with modern AI technology to create something truly unique: readings that feel personal, that understand your emotional context, and that give you insight when you need it most.',
+      p2: 'This platform provides clarity through ancient tarot wisdom. Readings are crafted to feel personal and understand your emotional context.',
       p3: "Whether you're at 2 AM with a racing mind or need a quick perspective before a big decision — the answers are here, waiting for you.",
     },
     cta: {

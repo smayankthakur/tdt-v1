@@ -5,11 +5,8 @@
 import { t, SupportedLanguage } from './i18n';
 
 /**
- * Translate dynamic content (user-generated readings)
- * This is where you'd hook in a real translation API
- *
- * For now: Basic word-by-word mapping for common terms
- * In production: Connect to Google Translate, DeepL, or your AI engine
+ * Translate dynamic content (readings, interpretations)
+ * In production: Connect to translation service
  */
 
 const HINGLISH_MAP: Record<string, string> = {
@@ -64,7 +61,7 @@ const HINDI_MAP: Record<string, string> = {
 
 /**
  * Mock translation function
- * In production: Replace with actual translation API call
+ * In production: Replace with actual translation API
  */
 async function autoTranslate(text: string, targetLang: SupportedLanguage): Promise<string> {
   if (targetLang === 'en') return text;

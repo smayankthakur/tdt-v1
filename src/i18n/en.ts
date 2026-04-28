@@ -87,16 +87,16 @@ export const en: TranslationSchema = {
     },
   },
 
-  about: {
-    hero: {
-      title: 'About The Journey',
-      subtitle: 'This platform was not created just for readings. It was created to provide clarity when life feels confusing.',
-    },
-    founder: {
-      role: 'Founder & Lead Tarot Reader',
-      bio: "Over 10 years of experience guiding seekers through life's most confusing moments. What started as a personal journey into tarot evolved into a mission — making spiritual guidance accessible to everyone, anytime.",
-      philosophy: "This platform isn't about predictions. It's about helping you see what you already feel deep inside. The cards don't tell you what to do — they help you understand what you already know.",
-    },
+   about: {
+      hero: {
+        title: 'About The Journey',
+        subtitle: 'This platform was created to provide clarity when life feels confusing.',
+      },
+      founder: {
+        role: 'Founder & Lead Tarot Reader',
+        bio: "Over 10 years of experience guiding seekers through life's most confusing moments. What started as a personal journey into tarot evolved into a mission — making spiritual guidance accessible to everyone, anytime.",
+        philosophy: "This platform isn't about predictions. It's about helping you see what you already feel deep inside. The cards don't tell you what to do — they help you understand what you already know.",
+      },
     stats: {
       readings: '10,000+ Readings',
       since: 'Since 2014',
@@ -292,19 +292,19 @@ export const en: TranslationSchema = {
     },
   },
 
-  whySection: {
-    title: 'Why The Devine Tarot?',
-    description: 'We combine ancient tarot wisdom with cutting-edge AI technology to create something truly unique - readings that feel personal, profound, and precisely tailored to you.',
-    readings: '10,000+ readings',
-    rating: '4.9 rating',
-    speed: 'Under 60 seconds',
-    features: {
-      personalized: 'Personalized readings based on your energy',
-      ai: 'AI-powered insights with human warmth',
-      privacy: '100% private and secure',
-      instant: 'Instant answers, anytime',
+   whySection: {
+      title: 'Why The Devine Tarot?',
+      description: 'We combine ancient tarot wisdom to create something truly unique - readings that feel personal, profound, and precisely tailored to you.',
+      readings: '10,000+ readings',
+      rating: '4.9 rating',
+      speed: 'Under 60 seconds',
+      features: {
+        personalized: 'Personalized readings based on your energy',
+        ai: 'Deep insights with human warmth',
+        privacy: '100% private and secure',
+        instant: 'Instant answers, anytime',
+      },
     },
-  },
 
   testimonials: {
     title: 'What Seekers Say',
@@ -424,8 +424,8 @@ export const en: TranslationSchema = {
     },
   },
 
-  metadata: {
-    title: "The Devine Tarot | Premium AI-Powered Tarot Readings",
-    description: "Get answers from the universe in seconds. Experience mystical, emotionally intelligent tarot readings.",
-  },
+   metadata: {
+      title: "The Divine Tarot | Premium Tarot Readings",
+      description: "Get answers from the universe in seconds. Experience mystical, emotionally intelligent tarot readings.",
+    },
 };

@@ -1,6 +1,7 @@
 import OpenAI from 'openai';
 import { buildPrompt } from './prompts';
 import { SelectedCard, formatCardsForAI } from '@/lib/tarot/logic';
+import { safeAIRequest } from '@/lib/system/safeAIRequest';
 
 let _openai: OpenAI | undefined;
 
@@ -58,6 +59,7 @@ STYLE:
 - एक प्रवाही कहानी, बुलेट पॉइंट्स नहीं
 - 300 शब्दों से कम
 - व्यक्तिगत संदेश जैसा लगे`,
+
   hinglish: `You are Ginni, a deeply intuitive tarot reader.
 
 LANGUAGE & TONE:
@@ -78,7 +80,7 @@ STYLE:
 -Personal message jaisa lage`,
 };
 
-export async function generateReading(
+async function generateReadingWithAI(
   question: string, 
   selectedCards: SelectedCard[],
   memoryContext?: string,
@@ -87,8 +89,8 @@ export async function generateReading(
 ): Promise<ReadingResult> {
   const cardsFormatted = formatCardsForAI(selectedCards);
   // Sanitize user inputs
-    const cleanQ = (q: string | null | undefined) => ((q||"")).toString().substring(0,500).replace(/[<{}]/g, "");
-    const prompt = buildPrompt(cleanQ(question), cardsFormatted, memoryContext, undefined, (name||"").toString().substring(0,100).replace(/[<{}]/g, ""));
+  const cleanQ = (q: string | null | undefined) => ((q||"")).toString().substring(0,500).replace(/[<{}]/g, "");
+  const prompt = buildPrompt(cleanQ(question), cardsFormatted, memoryContext, undefined, (name||"").toString().substring(0,100).replace(/[<{}]/g, ""));
   const toneInstruction = LANGUAGE_TONE_PROMPTS[language] || LANGUAGE_TONE_PROMPTS.en;
 
   // Primary attempt with timeout
@@ -172,4 +174,28 @@ export async function generateReading(
       interpretation: 'Jo dikh raha hai woh important hai… thoda wait karo, clarity aayegi.'
     };
   }
+}
+
+export async function generateReading(
+  question: string, 
+  selectedCards: SelectedCard[],
+  memoryContext?: string,
+  language: string = 'en',
+  name?: string
+): Promise<ReadingResult> {
+  // Wrap the AI call with safeAIRequest to prevent 524 errors
+  const result = await safeAIRequest(() => 
+    generateReadingWithAI(question, selectedCards, memoryContext, language, name)
+  );
+
+  // If we got a fallback result, return it
+  if ('fallback' in result) {
+    return {
+      cards: selectedCards,
+      interpretation: result.message
+    };
+  }
+
+  // Otherwise return the actual result
+  return result;
 }

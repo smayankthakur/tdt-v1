@@ -1,59 +1,19 @@
 'use client';
 
-import React, { useState, useCallback, useEffect, useRef, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, Loader2, ArrowRight, Heart, Briefcase, TrendingUp, Home, Users } from 'lucide-react';
+import { Sparkles, ArrowRight, Briefcase, Target, TrendingUp } from 'lucide-react';
 import { useLanguage } from '@/hooks/useLanguage';
-import { useAutoLanguage } from '@/hooks/useAutoLanguage';
-import { useTarotReading } from '@/hooks/useEnhancedReadingFlow';
-import { useReadingStore } from '@/store/reading-store';
-import { READING_TYPES, type ReadingType } from '@/store/reading-types';
-import { SelectedCard } from '@/lib/tarot/logic';
-import { generateCardSet, analyzeIntent, finalizeReadingCards, type DomainAnalysis } from '@/lib/cardEngine';
+import { useReadingFlow } from '@/store/reading-store';
 import Button from '@/components/ui/button';
-import TarotCard from '@/components/TarotCard';
-import { FloatingTextarea } from '@/components/ui/FloatingInput';
-import StreamingOutput from './StreamingOutput';
-import Watermark from '@/components/ui/Watermark';
-import ErrorFallback from './ErrorFallback';
+import FloatingTextarea from '@/components/ui/FloatingInput';
+import { TarotCard } from '@/components/TarotCard';
+import { Select } from '@/components/ui/select';
 
-type RitualStep =
-  | 'topic-select'
-  | 'intention-lock'
-  | 'question-input'
-  | 'shuffle'
-  | 'card-select'
-  | 'processing'
-  | 'reading-delivery'
-  | 'error';
-
-const TOPIC_CARDS: { id: ReadingType; label: string; emoji: string; icon: any; color: string }[] = [
-  { id: 'love', label: 'Love', emoji: '💕', icon: Heart, color: 'from-pink-500/20 to-rose-500/20' },
-  { id: 'career', label: 'Career', emoji: '💼', icon: Briefcase, color: 'from-amber-500/20 to-orange-500/20' },
-  { id: 'finance', label: 'Finance', emoji: '💰', icon: TrendingUp, color: 'from-emerald-500/20 to-teal-500/20' },
-  { id: 'marriage', label: 'Marriage', emoji: '💒', icon: Home, color: 'from-purple-500/20 to-violet-500/20' },
-  { id: 'no_contact', label: 'No Contact', emoji: '🔇', icon: Users, color: 'from-red-500/20 to-rose-500/20' },
-  { id: 'general', label: 'General', emoji: '🔮', icon: Sparkles, color: 'from-blue-500/20 to-cyan-500/20' },
-];
-
-const SHUFFLE_MESSAGES = [
-  'The cards are awakening...',
-  'Your energy is connecting with the deck...',
-  'Shuffling the threads of fate...',
-  'The patterns are forming...',
-  'Reading your vibrational signature...',
-];
-
-const REVEAL_MESSAGES = [
-  'The first card reveals...',
-  'A sign is emerging...',
-  'The cards are whispering...',
-  'This is important...',
-  'Pay attention to this...',
-];
-
-const vibrate = () => {
-  if (navigator.vibrate) navigator.vibrate(50);
+const POSITION_LABELS = {
+  past: 'Past Foundation',
+  present: 'Current Challenge',
+  future: 'Career Trajectory',
 };
 
 export default function TarotReadingJobFlow() {
@@ -66,9 +26,8 @@ export default function TarotReadingJobFlow() {
   const sessionId = useRef(`session_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`);
   
   const { t, language } = useLanguage();
-  const { handleUserInput } = useAutoLanguage();
-  
-   const { startReading, reset: resetFlow, isActive, isLoading, stage, content, error, hasError } = useTarotReading();
+   
+  const { startReading, reset: resetFlow, isActive, isLoading, stage, content, error, hasError } = useTarotReading();
    const { reset: resetStore, setDeck, setSelectedCardsWithDetails } = useReadingStore();
 
    // Shuffle animation message rotator
@@ -95,7 +54,7 @@ export default function TarotReadingJobFlow() {
 
     // Auto-detect language if question long enough
     if (question.length > 10) {
-      handleUserInput(question);
+      // Language detection no longer needed - handled globally
     }
 
     // Analyze intent and generate card pool

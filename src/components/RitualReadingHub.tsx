@@ -120,11 +120,11 @@ export default function RitualReadingHub({ userId: propUserId }: RitualReadingHu
     }
   }, []);
 
-   const { t, language, isHydrated } = useLanguage();
+  const { t, language, isHydrated } = useLanguage();
   const shuffleMessages = getShuffleMessages(t);
   const revealMessages = getRevealMessages(t);
-  const { handleUserInput } = useAutoLanguage();
-   const { generateReading, result, isLoading, error, reset: resetReadingFlow, returnMessage, streakMessage } = useReadingFlow();
+  const { handleUserInput: handleAutoLanguage } = useAutoLanguage();
+  const { generateReading, result, isLoading, error, reset: resetReadingFlow, returnMessage, streakMessage } = useReadingFlow();
   const { reset: resetReadingStore, setDeck, setSelectedCardsWithDetails, selectedCardsWithDetails } = useReadingStore();
   const { setCurrentStage, setQuestion: setFunnelQuestion, incrementReadingCount } = useFunnelStore();
 
@@ -187,7 +187,7 @@ export default function RitualReadingHub({ userId: propUserId }: RitualReadingHu
 
     // Auto-detect language from user's question
     if (question.length > 10) {
-      handleUserInput(question);
+      handleAutoLanguage(question);
     }
 
     // 1. Analyze intent of the question

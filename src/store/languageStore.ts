@@ -1,4 +1,5 @@
 import { create } from "zustand"
+import { getDefaultLanguage } from "@/lib/i18n/getDefaultLanguage"
 
 export type Language = "en" | "hi" | "hinglish"
 
@@ -8,9 +9,7 @@ interface LanguageState {
 }
 
 export const useLanguageStore = create<LanguageState>((set) => ({
-  language: typeof window !== "undefined"
-    ? (localStorage.getItem("lang") as Language) || "hinglish"
-    : "hinglish",
+  language: getDefaultLanguage(),
 
   setLanguage: (lang: Language) => {
     localStorage.setItem("lang", lang)

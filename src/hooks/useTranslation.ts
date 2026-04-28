@@ -1,14 +1,12 @@
 import { useLanguageStore } from '@/store/languageStore'
-import { autoTranslate } from '@/lib/i18n/autoTranslate'
 import { getTranslationSync, loadTranslations } from '@/lib/i18n/loader'
 import { useEffect, useState } from 'react'
 
 export function useTranslation() {
   const { language } = useLanguageStore()
 
-  const [dynamicTranslations, setDynamicTranslations] = useState<
-    Record<string, string>
-  >({})
+  const [dynamicTranslations, setDynamicTranslations] =
+    useState<Record<string, string>>({})
 
   useEffect(() => {
     loadTranslations(language)
@@ -16,7 +14,7 @@ export function useTranslation() {
 
   function t(path: string, vars?: Record<string, string>) {
     let value = getTranslationSync(path, language)
-    const isActuallyMissing = (value === path)
+    const isActuallyMissing = value === path
 
     if (isActuallyMissing && !dynamicTranslations[path]) {
       const keys = path.split('.')
@@ -41,16 +39,15 @@ export function useTranslation() {
       return value
     }
 
-    const aiTranslated = dynamicTranslations[path]
-    if (vars && aiTranslated) {
-      let result = aiTranslated
+    if (vars && dynamicTranslations[path]) {
+      let result = dynamicTranslations[path]
       Object.entries(vars).forEach(([k, v]) => {
         result = result.replace('{' + k + '}', v)
       })
       return result
     }
 
-    return aiTranslated || value
+    return dynamicTranslations[path] || value
   }
 
   return { t, language }

@@ -1,27 +1,14 @@
 import type { Metadata, Viewport } from "next";
 import ClientLayout from "./client-layout";
+import ErrorBoundary from "@/components/system/ErrorBoundary";
 
 export const metadata: Metadata = {
-  title: "The Devine Tarot | Premium AI-Powered Tarot Readings",
+  title: "The Divine Tarot | Premium Tarot Readings",
   description: "Get answers from the universe in seconds. Experience mystical, emotionally intelligent tarot readings.",
   keywords: "tarot, tarot reading, spiritual guidance, fortune telling, psychic reading",
   icons: {
     icon: "/tdt-v3/favicon.ico",
     apple: "/tdt-v3/favicon.ico",
-  },
-  alternates: {
-    languages: {
-      en: '/',
-      hi: '/',
-      'x-default': '/',
-    },
-  },
-  openGraph: {
-    url: process.env.NEXT_PUBLIC_BASE_URL || 'https://thedivinetarot.com',
-    alternateLocale: 'hi',
-  },
-  twitter: {
-    card: 'summary_large_image',
   },
 };
 
@@ -42,11 +29,6 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        {/* SEO: hreflang for multilingual support */}
-        <link rel="alternate" hrefLang="en" href="/" />
-        <link rel="alternate" hrefLang="hi" href="/" />
-        <link rel="alternate" hrefLang="x-default" href="/" />
-        
         {process.env.NODE_ENV === 'production' && (
           <script
             dangerouslySetInnerHTML={{
@@ -105,7 +87,9 @@ export default function RootLayout({
         className="antialiased bg-[rgb(var(--background))] text-[rgb(var(--foreground))]"
         suppressHydrationWarning
       >
-        <ClientLayout>{children}</ClientLayout>
+        <ErrorBoundary>
+          <ClientLayout>{children}</ClientLayout>
+        </ErrorBoundary>
       </body>
     </html>
   );

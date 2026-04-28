@@ -38,7 +38,7 @@ export async function POST(request: Request) {
     // Select 3 random cards
     const selectedCards = selectRandomCards(3);
     
-    // Generate AI reading with memory context, language, and optional name
+    // Generate reading with memory context, language, and optional name
     const result = await generateReading(question, selectedCards, memoryContext, language, name);
 
     // Save to database if configured
@@ -68,9 +68,9 @@ export async function POST(request: Request) {
             .from('cards_drawn')
             .insert(cardsData);
 
-          // Insert AI response
+          // Insert response
           await supabase
-            .from('ai_responses')
+            .from('responses')
             .insert({
               reading_id: reading.id,
               response: result.interpretation,

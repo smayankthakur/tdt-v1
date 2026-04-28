@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react';
 import { PersonalizationProvider } from '@/components/personalization/PersonalizationProvider';
 import { getUserId, ensureUser } from '@/lib/utils/user';
-import { useLanguage } from '@/hooks/useLanguage';
 
 interface ClientProvidersProps {
   children: React.ReactNode;
@@ -12,7 +11,6 @@ interface ClientProvidersProps {
 export default function ClientProviders({ children }: ClientProvidersProps) {
   const [userId, setUserId] = useState<string | null>(null);
   const [isReady, setIsReady] = useState(false);
-  const { language } = useLanguage();
 
   useEffect(() => {
     const initUser = async () => {
@@ -47,12 +45,12 @@ export default function ClientProviders({ children }: ClientProvidersProps) {
   }, []);
 
    if (!isReady) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-[rgb(var(--background))]">
-        <div className="text-foreground animate-pulse">Loading...</div>
-      </div>
-    );
-  }
+     return (
+       <div className="min-h-screen flex items-center justify-center bg-[rgb(var(--background))]">
+         <div className="text-foreground animate-pulse">Loading...</div>
+       </div>
+     );
+   }
 
   return (
     <PersonalizationProvider userId={userId}>

@@ -3,7 +3,6 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { useReadingLimitStore } from '@/store/reading-types';
 import { useLanguage } from '@/hooks/useLanguage';
-import { useAutoLanguage } from '@/hooks/useAutoLanguage';
 import type { ReadingType } from '@/store/reading-types';
 import { SelectedCard } from '@/lib/tarot/logic';
 import { generatePersonalizedReading, cleanReading } from '@/lib/personalizedReadingEngine';
@@ -48,7 +47,6 @@ export function useReadingFlow() {
 
   const { canRead, incrementReading } = useReadingLimitStore();
   const { language } = useLanguage();
-  const { region } = useAutoLanguage();
   const userState = useUserStateStore();
   const { checkAndIncrementStreak } = useStreakSystem();
   const { getReturnMessage, getStreakMessage } = useDailyTrigger();
@@ -219,7 +217,7 @@ export function useReadingFlow() {
         hasRunRef.current = false;
       }
     }
-  }, [canRead, incrementReading, region, language, userState, checkAndIncrementStreak]);
+  }, [canRead, incrementReading, language, userState, checkAndIncrementStreak]);
 
   // Regenerate reading when language changes
   useEffect(() => {

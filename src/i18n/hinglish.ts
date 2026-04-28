@@ -210,20 +210,20 @@ export const hinglish: TranslationSchema = {
     seeMore: 'Aur reviews dekho',
   },
 
-  whySection: {
-    ...en.whySection,
-    title: 'Kyun The Devine Tarot?',
-    description: 'Hum ancient tarot wisdom ko AI tech ke saath mix karte hain - readings jo personal, profound aur bilkul tumhare liye perfect hain.',
-    readings: '10,000+ readings',
-    rating: '4.9 rating',
-    speed: '60 seconds se kam',
-    features: {
-      personalized: 'Tumhari energy ke according personalized readings',
-      ai: 'AI-powered insights with human touch',
-      privacy: '100% private aur secure',
-      instant: 'Instant answers, kabhi bhi',
+   whySection: {
+      ...en.whySection,
+      title: 'Kyun The Devine Tarot?',
+      description: 'Hum ancient tarot wisdom ko tumhari energy ke saath mix karte hain - readings jo personal, profound aur bilkul tumhare liye perfect hain.',
+      readings: '10,000+ readings',
+      rating: '4.9 rating',
+      speed: '60 seconds se kam',
+      features: {
+        personalized: 'Tumhari energy ke according personalized readings',
+        ai: 'Insights with human touch',
+        privacy: '100% private aur secure',
+        instant: 'Instant answers, kabhi bhi',
+      },
     },
-  },
 
   footer: {
     ...en.footer,

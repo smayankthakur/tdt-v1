@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, Globe, ChevronDown } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useLanguage } from '@/hooks/useLanguage';
 
@@ -15,7 +15,7 @@ const navLinks = [
   { href: '/reading', labelKey: 'nav.reading' },
   { href: '/premium', labelKey: 'nav.subscription', isExternal: false },
   { href: 'https://course.thedivinetarotonline.com/', labelKey: 'nav.course', isExternal: true },
-  { href: 'https://course.thedivinetarotonline.com/blogs', labelKey: 'nav.blog', isExternal: true },
+  { href: 'https://blog.thedivinetarotonline.com/blogs', labelKey: 'nav.blog', isExternal: true },
   { href: 'https://thedivinetarotonline.co.in/', labelKey: 'nav.booking', isExternal: true },
 ];
 
@@ -29,17 +29,10 @@ const NAV_LABEL_KEYS: Record<string, string> = {
   'nav.booking': 'nav.booking',
 };
 
-const LANGUAGES = [
-  { code: 'hinglish', name: 'Hinglish', flag: '💬' },
-  { code: 'en', name: 'English', flag: '🇺🇸' },
-  { code: 'hi', name: 'हिंदी', flag: '🇮🇳' },
-];
-
 export default function Header() {
   const pathname = usePathname();
-  const { language, setLanguage, isHydrated, t } = useLanguage();
+  const { isHydrated, t } = useLanguage();
   const [isMobileOpen, setIsMobileOpen] = useState(false);
-  const [isLangOpen, setIsLangOpen] = useState(false);
 
   const getNavLabel = (labelKey: string): string => {
     if (!isHydrated) return labelKey.split('.').pop() || labelKey;
@@ -106,47 +99,6 @@ export default function Header() {
           </nav>
 
           <div className="flex items-center gap-4">
-            <div className="relative hidden md:block">
-              <button
-                onClick={() => setIsLangOpen(!isLangOpen)}
-                className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-white/70 hover:text-white hover:bg-white/10 transition-colors"
-              >
-                <Globe className="h-4 w-4" />
-                <span>{LANGUAGES.find(l => l.code === language)?.name || 'Hinglish'}</span>
-                <ChevronDown className={cn('h-4 w-4 transition-transform', isLangOpen && 'rotate-180')} />
-              </button>
-
-              <AnimatePresence>
-                {isLangOpen && (
-                  <motion.div
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    className="absolute right-0 mt-2 w-36 rounded-xl bg-[#1a1a1a] shadow-lg border border-white/10 py-1"
-                  >
-                    {LANGUAGES.map((lang) => (
-                      <button
-                        key={lang.code}
-                        onClick={() => {
-                          setLanguage(lang.code as 'en' | 'hi' | 'hinglish');
-                          setIsLangOpen(false);
-                        }}
-                        className={cn(
-                          'w-full px-4 py-2 text-left text-sm transition-colors flex items-center gap-2',
-                          language === lang.code
-                            ? 'text-[#FFD700] font-medium bg-white/5'
-                            : 'text-white/70 hover:text-white hover:bg-white/5'
-                        )}
-                      >
-                        <span>{lang.flag}</span>
-                        {lang.name}
-                      </button>
-                    ))}
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-
             <Link 
               href="/contact"
               className="hidden md:block bg-gradient-to-r from-[#FF4D4D] to-[#FFD700] text-black font-medium rounded-xl px-5 py-2 hover:scale-105 transition-transform"
@@ -191,29 +143,6 @@ export default function Header() {
                 >
                   <X className="h-6 w-6" />
                 </button>
-              </div>
-
-              <div className="px-6 py-2">
-                <div className="flex items-center gap-2 text-sm text-white/50 mb-3">
-                  <Globe className="h-4 w-4" />
-                  <span>{t('common.language')}</span>
-                </div>
-                <div className="flex gap-2">
-                  {LANGUAGES.map((lang) => (
-                    <button
-                      key={lang.code}
-                      onClick={() => setLanguage(lang.code as 'en' | 'hi' | 'hinglish')}
-                      className={cn(
-                        'flex-1 rounded-lg py-2 text-sm font-medium transition-colors',
-                        language === lang.code
-                          ? 'bg-[#FFD700]/20 text-[#FFD700]'
-                          : 'bg-white/5 text-white/70 hover:text-white'
-                      )}
-                    >
-                      {lang.name}
-                    </button>
-                  ))}
-                </div>
               </div>
 
               <nav className="flex flex-col gap-2 px-6 py-4">

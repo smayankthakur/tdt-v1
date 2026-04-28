@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect } from 'react';
 import type { Metadata, Viewport } from "next";
@@ -7,7 +7,7 @@ import ClientProviders from "@/components/ClientProviders";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import AnalyticsProvider from "@/components/AnalyticsProvider";
-import Watermark from "@/components/security/Watermark";
+import GlobalWatermark from "@/components/global-watermark";
 import ContentGuard from "@/components/ContentGuard";
 import DebugPanel from "@/components/DebugPanel";
 import { LanguageWrapper } from "@/components/LanguageWrapper";
@@ -38,7 +38,7 @@ export default function ClientLayout({
     <div className="antialiased bg-[rgb(var(--background))] text-[rgb(var(--foreground))]" suppressHydrationWarning>
       <DebugPanel />
       <LanguageMeta />
-      <Watermark />
+      <GlobalWatermark />
       <ContentGuard>
         <ClientProviders>
           <AnalyticsProvider />

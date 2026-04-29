@@ -1,5 +1,6 @@
 import OpenAI from 'openai';
 import { ZODIAC_SIGNS } from '@/lib/blog/seo-strategy';
+import { safeAIRequest } from '@/lib/system/safeAIRequest';
 
 const openai = process.env.OPENAI_API_KEY || process.env.OPENAI_KEY
   ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY || process.env.OPENAI_KEY })
@@ -72,7 +73,7 @@ async function generateAIHoroscope(
 
   const typeLabel = type === 'daily' ? 'today' : type === 'weekly' ? 'this week' : 'this month';
 
-  const response = await openai.chat.completions.create({
+  const result = await safeAIRequest(() => openai.chat.completions.create({
     model: 'gpt-4o-mini',
     messages: [
       {
@@ -97,13 +98,20 @@ Write like you're speaking directly to ${sign}. Be warm, mysterious, but clear.`
     ],
     temperature: 0.8,
     max_tokens: 600,
-  });
+  }));
 
+  // If we got a fallback result, return null to use template
+  if ('fallback' in result) {
+    console.error('[Horoscope] AI generation failed, using template');
+    return null;
+  }
+
+  const response = result;
   const content = response.choices[0]?.message?.content;
   if (!content) return null;
 
   const sections = content.split('\n\n').filter(s => s.trim());
-  
+   
   return {
     sign,
     type,

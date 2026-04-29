@@ -1,4 +1,4 @@
-export async function safeAIRequest<T>(fn: () => Promise<T>): Promise<T | { fallback: true; message: string }> {
+export async function safeAIRequest(fn: () => Promise<any>) {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 25000);
 
@@ -6,8 +6,7 @@ export async function safeAIRequest<T>(fn: () => Promise<T>): Promise<T | { fall
     const result = await fn();
     return result;
   } catch (e) {
-    // Log failure
-    fetch('/api/log', {
+    await fetch('/api/log', {
       method: 'POST',
       body: JSON.stringify({
         type: 'ai_error',

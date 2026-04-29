@@ -8,6 +8,7 @@ import { SelectedCard } from '@/lib/tarot/logic';
 import { generatePersonalizedReading, cleanReading } from '@/lib/personalizedReadingEngine';
 import { useUserStateStore, useDailyTrigger, useStreakSystem } from '@/lib/userStateStore';
 import type { DomainAnalysis } from '@/lib/cardEngine';
+import { measurePerfAsync, logPerf } from '@/lib/system/perf';
 
 export interface ReadingResult {
   name: string;
@@ -106,11 +107,15 @@ export function useReadingFlow() {
         }
       };
 
-      // Generate personalized reading
-      const personalizedOutput = generatePersonalizedReading(readingInput);
+      // Generate personalized reading with performance tracking
+      const personalizedOutput = await measurePerfAsync(
+        'generate_personalized_reading',
+        () => Promise.resolve(generatePersonalizedReading(readingInput)),
+        'reading_generation'
+      );
 
       // Clean the reading to remove duplicate lines
-      let cleanedReading = cleanReading(personalizedOutput.reading);
+      const cleanedReading = cleanReading(personalizedOutput.reading);
 
       // Extract guidance and closing line (hook) from reading
       const lines = cleanedReading.split('\n');
@@ -119,43 +124,44 @@ export function useReadingFlow() {
 
        // Find line that contains hook keywords
        const closingIndex = lines.findIndex((line: string) =>
-         line.toLowerCase().includes('watch for it') ||
-         line.toLowerCase().includes('ignore mat karna') ||
-         line.toLowerCase().includes('ready raho') ||
-         line.toLowerCase().includes('remember') ||
-         line.toLowerCase().includes('keep') ||
-         line.toLowerCase().includes('something') ||
-         line.toLowerCase().includes('change')
-       );
+        line.toLowerCase().includes('watch for it') ||
+        line.toLowerCase().includes('ignore mat karna') ||
+        line.toLowerCase().includes('ready raho') ||
+        line.toLowerCase().includes('remember') ||
+        line.toLowerCase().includes('keep') ||
+        line.toLowerCase().includes('something') ||
+        line.toLowerCase().includes('change')
+      );
 
-       if (closingIndex !== -1) {
-         closingLine = lines[closingIndex];
-         lines.splice(closingIndex, 1);
-         cleanedReading = lines.join('\n');
+      if (closingIndex !== -1) {
+        closingLine = lines[closingIndex];
+        lines.splice(closingIndex, 1);
+        const updatedReading = lines.join('\n');
+        (cleanedReading as string) = updatedReading;
+      }
 
-         // Extract guidance lines (advice)
-         const guidanceLines: string[] = [];
-         lines.forEach((line: string) => {
-           const lower = line.toLowerCase();
-           if (lower.includes('take') ||
-               lower.includes('do') ||
-               lower.includes('action') ||
-               lower.includes('avoid') ||
-               lower.includes('stop') ||
-               lower.includes('should') ||
-               lower.includes('try')) {
-             guidanceLines.push(line);
-           }
-         });
-         guidance = guidanceLines.join('. ');
-       }
+      // Extract guidance lines (advice)
+      const guidanceLines: string[] = [];
+      lines.forEach((line: string) => {
+        const lower = line.toLowerCase();
+        if (lower.includes('take') ||
+            lower.includes('do') ||
+            lower.includes('action') ||
+            lower.includes('avoid') ||
+            lower.includes('stop') ||
+            lower.includes('should') ||
+            lower.includes('try')) {
+          guidanceLines.push(line);
+        }
+      });
+      guidance = guidanceLines.join('. ');
 
-       if (!guidance) {
-         guidance = "Trust your intuition and take one small step today.";
-       }
+      if (!guidance) {
+        guidance = "Trust your intuition and take one small step today.";
+      }
 
-       // Build streaming lines for animation
-       const allLines = [...lines.filter((l: string) => l.trim().length > 0)];
+      // Build streaming lines for animation
+      const allLines = [...lines.filter((l: string) => l.trim().length > 0)];
       if (closingLine) {
         allLines.push(closingLine);
       }
@@ -204,6 +210,8 @@ export function useReadingFlow() {
           }
         }
       };
+
+      logPerf('reading_generation_complete', Date.now(), input.readingType);
 
       setResult(readingResult);
       incrementReading(input.readingType as any);

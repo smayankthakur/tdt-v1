@@ -106,11 +106,11 @@ Write like you're speaking directly to ${sign}. Be warm, mysterious, but clear.`
     return null;
   }
 
-  const response = result;
-  const content = response.choices[0]?.message?.content;
+  const response = result as any;
+  const content = response.choices?.[0]?.message?.content;
   if (!content) return null;
 
-  const sections = content.split('\n\n').filter(s => s.trim());
+  const sections = content.split('\n\n').filter((s: string) => s.trim());
    
   return {
     sign,

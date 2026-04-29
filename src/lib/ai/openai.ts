@@ -2,6 +2,7 @@ import OpenAI from 'openai';
 import { buildPrompt } from './prompts';
 import { SelectedCard, formatCardsForAI } from '@/lib/tarot/logic';
 import { safeAIRequest } from '@/lib/system/safeAIRequest';
+import { logPerf } from '@/lib/system/perf';
 
 let _openai: OpenAI | undefined;
 
@@ -77,7 +78,7 @@ PERSONALIZATION RULES:
 STYLE:
 - Ek flowing narrative, no bullet points
 - 300 words se kam
--Personal message jaisa lage`,
+- Personal message jaisa lage`,
 };
 
 async function generateReadingWithAI(
@@ -93,87 +94,52 @@ async function generateReadingWithAI(
   const prompt = buildPrompt(cleanQ(question), cardsFormatted, memoryContext, undefined, (name||"").toString().substring(0,100).replace(/[<{}]/g, ""));
   const toneInstruction = LANGUAGE_TONE_PROMPTS[language] || LANGUAGE_TONE_PROMPTS.en;
 
-  // Primary attempt with timeout
-  try {
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 25000);
+  // Wrap the complete AI call with safeAIRequest
+  const healingResponse = await safeAIRequest(async () => {
+    try {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 25000);
 
-    const response = await getOpenAI().chat.completions.create({
-      model: 'gpt-4o-mini',
-      messages: [
-        {
-          role: 'system',
-          content: toneInstruction
-        },
-        {
-          role: 'user',
-          content: `${prompt}\n\nIMPORTANT: Address the user by their name naturally. Do NOT use the word "seeker". Keep it personal and avoid repetition.`
-        }
-      ],
-      temperature: 0.85,
-      max_tokens: 300,
-    }, { signal: controller.signal });
+      const response = await getOpenAI().chat.completions.create({
+        model: 'gpt-4o-mini',
+        messages: [
+          {
+            role: 'system',
+            content: toneInstruction
+          },
+          {
+            role: 'user',
+            content: `${prompt}\n\nIMPORTANT: Address the user by their name naturally. Do NOT use the word "seeker". Keep it personal and avoid repetition.`
+          }
+        ],
+        temperature: 0.85,
+        max_tokens: 300,
+      }, { signal: controller.signal });
 
-    clearTimeout(timeout);
+      clearTimeout(timeout);
 
-    const interpretation = response.choices[0]?.message?.content || 
-      'Jo dikh raha hai woh important hai… thoda wait karo, clarity aayegi.';
-
-    return {
-      cards: selectedCards,
-      interpretation
-    };
-  } catch (error: any) {
-    // Abort or timeout - try fallback model
-    if (error.name === 'AbortError' || error.code === 'ETIMEDOUT' || error.message?.includes('abort')) {
-      console.error('OpenAI primary timeout, falling back:', error);
+      const interpretation = response.choices[0]?.message?.content || 
+        'Jo dikh raha hai woh important hai… thoda wait karo, clarity aayegi.';
       
-      // Try with faster model as fallback
-      try {
-        const controller = new AbortController();
-        const timeout = setTimeout(() => controller.abort(), 20000);
+      logPerf('ai_generation', response.usage?.total_tokens || 0, language);
 
-        const response = await getOpenAI().chat.completions.create({
-          model: 'gpt-3.5-turbo',
-          messages: [
-            {
-              role: 'system',
-              content: `You are Ginni, a warm tarot reader. Write in natural ${language === 'hi' ? 'Hindi' : language === 'hinglish' ? 'Hinglish' : 'English'}. Personal, under 200 words. Address by name (${name || 'friend'}) 1-2 times.`
-            },
-            {
-              role: 'user',
-              content: `${prompt}\n\nKeep it personal and flowing.`
-            }
-          ],
-          temperature: 0.8,
-          max_tokens: 280,
-        }, { signal: controller.signal });
-
-        clearTimeout(timeout);
-
-        const interpretation = response.choices[0]?.message?.content || 
-          'Jo dikh raha hai woh important hai… thoda wait karo, clarity aayegi.';
-
-        return {
-          cards: selectedCards,
-          interpretation
-        };
-      } catch (fallbackError) {
-        console.error('OpenAI fallback also failed:', fallbackError);
-        return {
-          cards: selectedCards,
-          interpretation: 'Jo dikh raha hai woh important hai… thoda wait karo, clarity aayegi.'
-        };
-      }
+      return {
+        cards: selectedCards,
+        interpretation
+      };
+    } catch (error: any) {
+      // Log error for safeAIRequest to handle
+      throw error;
     }
+  });
 
-    // Other errors
-    console.error('OpenAI API error:', error);
-    return {
-      cards: selectedCards,
-      interpretation: 'Jo dikh raha hai woh important hai… thoda wait karo, clarity aayegi.'
-    };
-  }
+  // Return the data from the healing response (unwrap the fallback info)
+  return {
+    cards: healingResponse.data?.cards || selectedCards,
+    interpretation: healingResponse.data?.interpretation || 
+      (healingResponse as any).message || 
+      'Jo dikh raha hai woh important hai… thoda wait karo, clarity aayegi.'
+  };
 }
 
 export async function generateReading(
@@ -183,19 +149,7 @@ export async function generateReading(
   language: string = 'en',
   name?: string
 ): Promise<ReadingResult> {
-  // Wrap the AI call with safeAIRequest to prevent 524 errors
-  const result = await safeAIRequest(() => 
-    generateReadingWithAI(question, selectedCards, memoryContext, language, name)
-  );
-
-  // If we got a fallback result, return it
-  if ('fallback' in result) {
-    return {
-      cards: selectedCards,
-      interpretation: result.message
-    };
-  }
-
-  // Otherwise return the actual result
+  // safeAIRequest is now wrapped inside generateReadingWithAI
+  const result = await generateReadingWithAI(question, selectedCards, memoryContext, language, name);
   return result;
 }

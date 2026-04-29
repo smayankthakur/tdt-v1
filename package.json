@@ -2,7 +2,7 @@
   "name": "divine-tarot",
   "version": "0.1.0",
   "private": true,
-  "scripts": {
+"scripts": {
     "dev": "next dev",
     "build": "npm run validate:env && npm run validate:i18n && next build",
     "start": "next start",
@@ -12,7 +12,6 @@
     "check:imports": "eslint src --max-warnings=0",
     "graph": "madge --ts-config tsconfig.json --image graph.png src",
     "graph:check": "madge --circular --ts-config tsconfig.json src",
-    "dep:heatmap": "dependency-cruise src | dot -T svg > depheatmap.svg",
     "barrels": "barrelsby --directory src --delete --location all --structure filesystem",
     "barrels:watch": "chokidar 'src/**/*.{ts,tsx}' -c 'npm run barrels'",
     "validate:arch": "npm run lint && npm run graph:check",
@@ -21,7 +20,9 @@
     "i18n:gen": "ts-node scripts/gen-i18n-types.ts",
     "i18n:check": "ts-node scripts/gen-i18n-types.ts",
     "validate:i18n": "node scripts/validateTranslations.js",
-    "validate:env": "node scripts/validateEnv.js"
+    "validate:env": "node scripts/validateEnv.js",
+    "optimize:scan": "tsx scripts/optimize-cli.ts",
+    "optimize": "tsx scripts/optimize-cli.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",

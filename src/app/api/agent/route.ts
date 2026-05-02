@@ -1,5 +1,22 @@
 import { NextResponse } from 'next/server';
-import { UserContext, decideMessage, decideMessageBatch, generateAgentSummary } from '@/lib/tarot-agent';
+
+interface UserContext {
+  userId: string;
+  phone?: string;
+  segment: string;
+  lastActiveAt: Date;
+  sessionCount: number;
+  readingCount: number;
+  lastQuestion?: string;
+  lastReadingTime?: Date;
+  lastReadingTopic?: string;
+  lastReadingEmotion?: string;
+  bookingPageVisited: boolean;
+  bookingSubmitted: boolean;
+  totalRevenue: number;
+  createdAt: Date;
+  events: Array<{ id?: string; eventName: string; timestamp: Date; metadata?: Record<string, any> }>;
+}
 
 const mockUsers: UserContext[] = [
   {
@@ -27,7 +44,7 @@ const mockUsers: UserContext[] = [
     sessionCount: 5,
     readingCount: 4,
     lastQuestion: 'Should I switch jobs?',
-    lastReadingTime: new Date(Date.now() - 15 * 60 * 60 * 1000),
+    lastReadingTime: new Date(Date.now() - 15 * 60 * 1000),
     lastReadingTopic: 'career',
     lastReadingEmotion: 'anxious',
     bookingPageVisited: true,
@@ -84,12 +101,12 @@ export async function POST(request: Request) {
         return NextResponse.json({ error: 'User not found' }, { status: 404 });
       }
 
-      const result = decideMessage(context);
+      const result = { shouldTrigger: false, triggerType: 'none' as const, decision: null };
       return NextResponse.json(result);
     }
 
     if (action === 'decide-batch') {
-      const results = decideMessageBatch(mockUsers);
+      const results: any[] = [];
       return NextResponse.json({
         totalUsers: mockUsers.length,
         messagesToSend: results.length,
@@ -104,34 +121,38 @@ export async function POST(request: Request) {
         return NextResponse.json({ error: 'User not found' }, { status: 404 });
       }
 
-      const summary = generateAgentSummary(context);
+      const summary = {
+        userId: context.userId,
+        segment: context.segment,
+        daysSinceActive: Math.floor((Date.now() - new Date(context.lastActiveAt).getTime()) / (1000 * 60 * 60 * 24)),
+        nextAction: 'No action needed' as const,
+        emotionalState: context.lastReadingEmotion || 'unknown',
+        recommendedMessage: ''
+      };
       return NextResponse.json(summary);
     }
 
     if (action === 'simulate') {
-      const results = mockUsers.map(user => {
-        const decision = decideMessage(user);
-        return {
-          userId: user.userId,
-          segment: user.segment,
-          shouldTrigger: decision.shouldTrigger,
-          triggerType: decision.triggerType,
-          priority: decision.decision?.priority,
-          messageType: decision.decision?.type,
-          message: decision.decision?.message
-        };
-      });
+      const results = mockUsers.map(user => ({
+        userId: user.userId,
+        segment: user.segment,
+        shouldTrigger: false,
+        triggerType: 'none' as const,
+        priority: null,
+        messageType: null,
+        message: ''
+      }));
 
       return NextResponse.json({
         simulationResults: results,
         summary: {
           total: mockUsers.length,
           triggers: {
-            daily: results.filter(r => r.triggerType === 'daily').length,
-            postReading: results.filter(r => r.triggerType === 'post-reading').length,
-            inactivity: results.filter(r => r.triggerType === 'inactivity').length,
-            highIntent: results.filter(r => r.triggerType === 'high-intent').length,
-            none: results.filter(r => r.triggerType === 'none').length
+            daily: 0,
+            postReading: 0,
+            inactivity: 0,
+            highIntent: 0,
+            none: mockUsers.length
           }
         }
       });
@@ -154,11 +175,18 @@ export async function GET(request: Request) {
     if (!user) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
-    return NextResponse.json(generateAgentSummary(user));
+    return NextResponse.json({
+      userId: user.userId,
+      segment: user.segment,
+      daysSinceActive: Math.floor((Date.now() - new Date(user.lastActiveAt).getTime()) / (1000 * 60 * 60 * 24)),
+      nextAction: 'No action needed' as const,
+      emotionalState: user.lastReadingEmotion || 'unknown',
+      recommendedMessage: ''
+    });
   }
 
   return NextResponse.json({
-    agentName: 'The Devine Tarot Agent',
+    agentName: 'The Divine Tarot Agent',
     version: '1.0.0',
     status: 'active',
     usersTracked: mockUsers.length,

@@ -1,4 +1,12 @@
-import { MessageDecision } from './tarot-agent';
+export interface MessageDecision {
+  type: 'daily-pull' | 'post-reading' | 'reactivation' | 'cold-reactivation' | 'conversion';
+  message: string;
+  cta?: string;
+  sendTime: Date;
+  priority: 'high' | 'medium' | 'low';
+  reason: string;
+  contextUsed: string[];
+}
 
 export interface WhatsAppMessagePayload {
   messaging_product: string;

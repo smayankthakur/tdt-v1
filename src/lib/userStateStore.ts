@@ -1,6 +1,5 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import type { ReadingInput } from './personalizedReadingEngine';
 import type { Language } from './i18n/config';
 
 export interface UserState {
@@ -16,7 +15,6 @@ export interface UserState {
 }
 
 interface UserStateManager extends UserState {
-  updateFromReading: (input: ReadingInput, output: { nextHook: string; reading: string }) => void;
   markReturn: () => ReturnContext;
   incrementStreak: () => void;
   resetStreak: () => void;
@@ -66,6 +64,19 @@ function recordVisit(): void {
   localStorage.setItem(VISIT_HISTORY_KEY, JSON.stringify(trimmed));
 }
 
+function detectIntent(question: string): string {
+  const q = question.toLowerCase();
+  if (q.includes('love') || q.includes('pyaar')) return 'love';
+  if (q.includes('career') || q.includes('job')) return 'career';
+  if (q.includes('money') || q.includes('paise')) return 'finance';
+  if (q.includes('confused') || q.includes('uljhan')) return 'confusion';
+  if (q.includes('anxious') || q.includes('chinta')) return 'anxiety';
+  if (q.includes('broken') || q.includes('hurt')) return 'heartbreak';
+  if (q.includes('stuck') || q.includes('ruka')) return 'stuck';
+  if (q.includes('hope') || q.includes('aasha')) return 'hopeful';
+  return 'general';
+}
+
 export const useUserStateStore = create<UserStateManager>()(
   persist(
     (set, get) => ({
@@ -78,24 +89,6 @@ export const useUserStateStore = create<UserStateManager>()(
       lastEmotion: undefined,
       lastTopic: undefined,
       openLoops: [],
-
-      updateFromReading: (input, output) => {
-        const now = Date.now();
-        const state = get();
-        const lastVisit = state.lastVisit || now;
-
-        set({
-          lastReading: output.reading,
-          lastCards: input.cards.map(c => c.card?.name || ''),
-          nextHook: output.nextHook,
-          lastVisit: now,
-          lastEmotion: detectIntent(input.question),
-          lastTopic: input.question.split(' ')[0].toLowerCase(),
-          totalVisits: (state.totalVisits || 0) + 1
-        });
-
-        recordVisit();
-      },
 
       markReturn: () => {
         const state = get();
@@ -164,19 +157,6 @@ export const useUserStateStore = create<UserStateManager>()(
   )
 );
 
-function detectIntent(question: string): string {
-  const q = question.toLowerCase();
-  if (q.includes('love') || q.includes('pyaar')) return 'love';
-  if (q.includes('career') || q.includes('job')) return 'career';
-  if (q.includes('money') || q.includes('paise')) return 'finance';
-  if (q.includes('confused') || q.includes('uljhan')) return 'confusion';
-  if (q.includes('anxious') || q.includes('chinta')) return 'anxiety';
-  if (q.includes('broken') || q.includes('hurt')) return 'heartbreak';
-  if (q.includes('stuck') || q.includes('ruka')) return 'stuck';
-  if (q.includes('hope') || q.includes('aasha')) return 'hopeful';
-  return 'general';
-}
-
 // Hook for daily return triggers
 export function useDailyTrigger() {
   const { markReturn } = useUserStateStore();
@@ -237,7 +217,7 @@ export function useDailyTrigger() {
       ],
       he: [
         `🔥 ${streak} ימים רצ continously. אל תשבור את השרשרת.`,
-        `ה� רצף של ${streak} יום מראה התמקדות. היקום מודע.`
+        `הקסם של ${streak} יום מראה התמקדות. היקום מודע.`
       ]
     };
 
@@ -297,3 +277,4 @@ export function useStreakSystem() {
 }
 
 export default useUserStateStore;
+

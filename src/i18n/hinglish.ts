@@ -121,19 +121,6 @@ export const hinglish: TranslationSchema = {
     },
   },
 
-  ritualHub: {
-    ...en.ritualHub,
-    reminder: {
-      optIn: "🔔 Kal yaad dilao",
-      optInActive: "🔔 Kal ke liye reminder set",
-    },
-    behavioral: {
-      dailyHook: "Reading mein kuch shift hua…",
-      subHook: "Isko pehchaanoge sirf agar agle 24 ghante mein dhyaan doge.",
-      timerContext: "Dhyan se dekho. Yahi waqt hai jab sab align hone lagega.",
-    },
-  },
-
   reading: {
     ...en.reading,
     title: 'Tumhara Tarot Reading',

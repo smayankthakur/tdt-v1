@@ -43,15 +43,6 @@ export const startReadingSchema = z.object({
     .min(5, 'Question must be at least 5 characters')
     .max(500, 'Question too long (max 500 chars)')
     .trim(),
-  topic: z
-    .string()
-    .min(2, 'Topic required')
-    .max(50, 'Topic too long')
-    .optional()
-    .default('general'),
-  spreadType: z
-    .enum(['single', 'three-card', 'celtic-cross', 'relationship', 'yesno'])
-    .default('single'),
   language: z
     .enum(['en', 'hi', 'hinglish', 'ar', 'he'])
     .default('hinglish'),

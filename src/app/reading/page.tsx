@@ -20,6 +20,7 @@ export default function ReadingPage() {
   const [iframeLoaded, setIframeLoaded] = useState(false);
   const [iframeError, setIframeError] = useState(false);
   const [retryCount, setRetryCount] = useState(0);
+  const [sessionToken, setSessionToken] = useState<string | null>(null);
 
   const iframeRef = useRef<HTMLIFrameElement>(null);
 
@@ -121,8 +122,23 @@ export default function ReadingPage() {
         case 'payment_trigger': {
           // Block iframe and show paywall
           setHasAccess(false);
-          // Optional: navigate to premium
-          // router.push('/premium');
+          break;
+        }
+        case 'session_request': {
+          // Respond with session token if available
+          if (iframeRef.current?.contentWindow) {
+            iframeRef.current.contentWindow.postMessage(
+              {
+                type: 'session_response',
+                payload: {
+                  token: sessionToken,
+                  userId: user?.id,
+                  subscriptionStatus: hasAccess ? 'active' : 'inactive',
+                },
+              },
+              IFRAME_ORIGIN
+            );
+          }
           break;
         }
         default:
@@ -132,7 +148,7 @@ export default function ReadingPage() {
 
     window.addEventListener('message', handleMessage);
     return () => window.removeEventListener('message', handleMessage);
-  }, [user, router]);
+  }, [user, router, hasAccess, sessionToken]);
 
   // Send INIT message to iframe after load
   const handleIframeLoad = useCallback(() => {
@@ -147,12 +163,13 @@ export default function ReadingPage() {
             userId: user?.id || null,
             subscriptionStatus: hasAccess ? 'active' : 'inactive',
             language: language,
+            sessionToken: sessionToken,
           },
         },
         IFRAME_ORIGIN
       );
     }
-  }, [user, hasAccess, language]);
+  }, [user, hasAccess, language, sessionToken]);
 
   const handleRetry = () => {
     setIframeError(false);
@@ -272,7 +289,7 @@ export default function ReadingPage() {
           setIframeError(true);
           setIframeLoaded(false);
         }}
-        title="Tarot Reading"
+        title="Ginni Reading"
         style={{
           // Prevent layout shift and ensure fullscreen
           position: 'fixed',

@@ -5,11 +5,10 @@ export type EventName =
   | 'start_reading_click'
   | 'reading_started'
   | 'question_submitted'
-  | 'cards_selected'
-  | 'reading_completed'
-  | 'reading_viewed'
-  | 'ginni_opened'
   | 'ginni_message_sent'
+  | 'reading_completed'
+  | 'ginni_opened'
+  | 'reading_viewed'
   | 'booking_page_visit'
   | 'booking_click'
   | 'booking_submitted'
@@ -59,11 +58,10 @@ export function getFunnelStage(eventName: EventName): string {
     start_reading_click: 'visitor',
     reading_started: 'reader', // Reading session initiated
     question_submitted: 'reader',
-    cards_selected: 'reader',
-    reading_completed: 'engaged',
-    reading_viewed: 'engaged',
-    ginni_opened: 'engaged',
     ginni_message_sent: 'engaged',
+    reading_completed: 'engaged',
+    ginni_opened: 'engaged',
+    reading_viewed: 'engaged',
     booking_page_visit: 'intent',
     booking_click: 'intent',
     booking_submitted: 'conversion',
@@ -78,8 +76,7 @@ export function getFunnelStage(eventName: EventName): string {
 
 export function buildTrackingMetadata(data: {
   question?: string;
-  cards?: string[];
-  spreadType?: string;
+  ginniSessionId?: string;
   page?: string;
   error?: string;
 }): Record<string, unknown> {

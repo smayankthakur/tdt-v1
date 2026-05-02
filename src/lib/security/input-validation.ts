@@ -13,10 +13,8 @@ export interface ValidationResult {
  */
 export function validateReadingInput(input: {
   question: any;
-  selectedCards: any;
   language?: any;
   name?: any;
-  topic?: any;
 }): ValidationResult {
   const errors: string[] = [];
 
@@ -36,34 +34,9 @@ export function validateReadingInput(input: {
     }
   }
 
-  // Validate selected cards
-  if (!Array.isArray(input.selectedCards)) {
-    errors.push('Selected cards must be an array');
-  } else {
-    if (input.selectedCards.length < 3) {
-      errors.push('At least 3 cards must be selected');
-    }
-    if (input.selectedCards.length > 10) {
-      errors.push('Maximum 10 cards can be selected');
-    }
-    
-    input.selectedCards.forEach((card: any, index: number) => {
-      if (!card || typeof card !== 'object') {
-        errors.push(`Card at index ${index} is invalid`);
-        return;
-      }
-      if (!card.id || typeof card.id !== 'string') {
-        errors.push(`Card at index ${index} has invalid ID`);
-      }
-      if (!card.name || typeof card.name !== 'string') {
-        errors.push(`Card at index ${index} has invalid name`);
-      }
-    });
-  }
-
   // Validate language
   if (input.language && typeof input.language === 'string') {
-    const validLanguages = ['en', 'hi', 'hinglish'];
+    const validLanguages = ['en', 'hi', 'hinglish', 'ar', 'he'];
     if (!validLanguages.includes(input.language)) {
       errors.push(`Language must be one of: ${validLanguages.join(', ')}`);
     }
@@ -80,21 +53,6 @@ export function validateReadingInput(input: {
       }
       if (containsXSS(trimmed)) {
         errors.push('Name contains invalid characters');
-      }
-    }
-  }
-
-  // Validate topic (optional)
-  if (input.topic !== undefined && input.topic !== null) {
-    if (typeof input.topic !== 'string') {
-      errors.push('Topic must be a string if provided');
-    } else {
-      const trimmed = input.topic.trim();
-      if (trimmed.length > 200) {
-        errors.push('Topic must not exceed 200 characters');
-      }
-      if (containsXSS(trimmed)) {
-        errors.push('Topic contains invalid characters');
       }
     }
   }

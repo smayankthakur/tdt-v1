@@ -128,125 +128,8 @@ export const en: TranslationSchema = {
     },
   },
 
-  ritualHub: {
-    topicSelect: {
-      title: "What area do you need clarity in?",
-      subtitle: "Choose the topic that resonates with your heart...",
-    },
-    question: {
-      title: "What's been on your mind...",
-      subtitle: "Write it. From your heart.",
-      label: "Your question",
-      placeholder: "What do you want to know?",
-      submit: "Continue",
-      hint: "Clear question leads to clear direction",
-      back: "← Back",
-    },
-    intentionLock: {
-      message: "Focus is shifting to what matters",
-      topicLabel: "Topic",
-    },
-    cardSelect: {
-      title: "Choose the cards that call to you...",
-      selectionMessage: "{count} selected — choose {remaining} more",
-      complete: "Perfect! Your selection is complete...",
-    },
-    suspense: {
-      default: "What you chose wasn't random",
-    },
-    cardReveal: {
-      progress: "Card {current} of {total} — almost there...",
-    },
-    intent: {
-      love: "What's in your heart keeps coming back… that energy is here.",
-      career: "Your professional life question is on your mind. What you feel reflects your career energy.",
-      finance: "You want financial clarity. The cards are picking up signals about your money matters.",
-      conflict: "Tension or conflict you feel… the energy is showing in the cards.",
-      action: "What should you do? Your internal signal is in every card.",
-      spiritual: "You seek spiritual clarity. The cards you pull are bringing universe messages.",
-      noContact: "That person is on your mind. The energy between you shows.",
-      general: "Your question's energy is with you. The cards you choose are meaningful signals.",
-    },
-    suspenseMsgs: {
-      love: "What you chose… are signals about your love. Now seeing what they say.",
-      career: "Your career energy has been chosen. A bit more wait… clarity is coming.",
-      finance: "Financial signals are captured in the cards. Now signal is clearing…",
-      conflict: "Conflict energy is captured. Now seeing what nature has to say.",
-      action: "Your next step is hidden in the cards… just a bit more wait.",
-      spiritual: "Universe messages are in your cards. Now decoding them…",
-      noContact: "That person is on your mind. The energy between you shows.",
-      general: "What you chose… is meaningful for your question. Now seeing what's being shared.",
-    },
-    shuffle: [
-      "Just a moment...",
-      "Aligning energy...",
-      "What's meant to come...",
-      "The cards are speaking...",
-      "Catching signals...",
-    ],
-    reveal: [
-      "This is the first sign...",
-      "What's coming is important...",
-      "Look at what's hidden...",
-      "Energy is clearing...",
-      "This is what you've been seeking...",
-    ],
-    fallbackClosing: "You already know what's right… just don't ignore it now.",
-    loadingMessage: "Just a moment… signals coming through",
-    preStreamText: "Look carefully… what's coming is important.",
-    readingFallback: "Your question brings clarity… direction is forming.",
-    guidanceIntro: "Your cards are saying:",
-    startOver: "Ask Something New",
-    unlockAccess: "See What's Hidden",
-    reminder: {
-      optIn: "🔔 Remind me tomorrow",
-      optInActive: "🔔 Reminder set for tomorrow",
-    },
-    behavioral: {
-      dailyHook: "Something shifted in that reading…",
-      subHook: "You'll only notice it in the next 24 hours — but only if you stay aware.",
-      timerContext: "Watch closely. This is where things start aligning.",
-    },
-  },
-
-  reading: {
-    title: 'Your Tarot Reading',
-    selectTopic: 'What area calls to you?',
-    love: 'Love & Relationships',
-    career: 'Career & Work',
-    confusion: 'Finding Clarity',
-    finance: 'Finance',
-    marriage: 'Marriage',
-    noContact: 'No Contact',
-    general: 'General Guidance',
-    selectQuestion: 'What do you want to know?',
-    askOwn: 'Ask your own question...',
-    reveal: 'Reveal Your Answer',
-    loading: 'Reading your energy...',
-    yourCards: 'Your Cards',
-    interpretation: 'Interpretation',
-    past: 'The Past',
-    present: 'The Present',
-    guidance: 'The Guidance',
-    inputPlaceholder: "What do you want to ask?",
-  },
-
-  yesno: {
-    title: 'Yes or No?',
-    subtitle: 'A simple question, a clear answer',
-    questionPlaceholder: 'Think of your question… What yes/no answer do you seek?',
-    decode: 'Decode My Answer',
-    result: {
-      yes: 'YES',
-      no: 'NO',
-      maybe: 'THINK AGAIN',
-    },
-    share: 'This result seems meant for others too?',
-    newReading: 'Try another',
-  },
-
-  landing: {
-    problems: {
+   landing: {
+     problems: {
       stuck: {
         title: 'Feeling stuck in your life?',
         description: 'When everything feels motionless',
@@ -309,6 +192,42 @@ export const en: TranslationSchema = {
   testimonials: {
     title: 'What Seekers Say',
     seeMore: 'See more reviews',
+  },
+
+  reading: {
+    title: 'Your Tarot Reading',
+    selectTopic: 'What area calls to you?',
+    love: 'Love & Relationships',
+    career: 'Career & Work',
+    confusion: 'Finding Clarity',
+    finance: 'Finance',
+    marriage: 'Marriage',
+    noContact: 'No Contact',
+    general: 'General Guidance',
+    selectQuestion: 'What do you want to know?',
+    askOwn: 'Ask your own question...',
+    reveal: 'Reveal Your Answer',
+    loading: 'Reading your energy...',
+    yourCards: 'Your Cards',
+    interpretation: 'Interpretation',
+    past: 'The Past',
+    present: 'The Present',
+    guidance: 'The Guidance',
+    inputPlaceholder: "What do you want to ask?",
+  },
+
+  yesno: {
+    title: 'Yes or No?',
+    subtitle: 'A simple question, a clear answer',
+    questionPlaceholder: 'Think of your question… What yes/no answer do you seek?',
+    decode: 'Decode My Answer',
+    result: {
+      yes: 'YES',
+      no: 'NO',
+      maybe: 'THINK AGAIN',
+    },
+    share: 'This result seems meant for others too?',
+    newReading: 'Try another',
   },
 
   footer: {

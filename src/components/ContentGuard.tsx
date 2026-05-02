@@ -72,7 +72,6 @@ export function validateTranslationKey(key: string): boolean {
     'nav.',
     'hero.',
     'reading.',
-    'ritualHub.',
     'chat.',
     'testimonials.',
     'whySection.',

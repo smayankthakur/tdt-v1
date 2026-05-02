@@ -1,7 +1,7 @@
 // src/hooks/usePaywall.ts
 import { useEffect, useState } from 'react';
 import { canAccessReading, startTrial } from '@/lib/system/accessControl';
-import { User } from '@/types'; // Assuming we have a User type
+import { User } from '@/types';
 
 export function usePaywallAccess(user: User | null) {
   const [access, setAccess] = useState<{ access: boolean; reason: string }>({ access: false, reason: 'loading' });

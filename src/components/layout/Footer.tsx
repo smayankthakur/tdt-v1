@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 // Icons (exact SVG match from demo)
 const InstagramIcon = (props: React.SVGProps<SVGSVGElement>) => (
@@ -188,16 +189,16 @@ const Footer = () => {
       />
 
       <footer className="bg-[#000] border-t border-white/10">
-        <div className="max-w-[1200px] mx-auto px-5 lg:px-5 py-12 lg:py-16">
-          {/* Mobile Newsletter - visible only on mobile, EXACT demo match */}
-          <div className="lg:hidden mb-10 p-6 rounded-2xl bg-gradient-to-br from-[#FFD700]/5 via-transparent to-[#FF4D4D]/5 border border-[#FFD700]/10" style={{ display: 'none' }}>
-            <h3 className="font-serif text-xl font-semibold text-[#EAEAF0] mb-2">
+        <div className="max-w-[1200px] mx-auto px-4 sm:px-5 lg:px-5 py-10 lg:py-12">
+          {/* Mobile Newsletter - visible only on mobile */}
+          <div className="lg:hidden mb-8 p-5 rounded-2xl bg-gradient-to-br from-[#FFD700]/5 via-transparent to-[#FF4D4D]/5 border border-[#FFD700]/10">
+            <h3 className="font-serif text-lg font-semibold text-[#EAEAF0] mb-2">
               Get Daily Tarot Guidance
             </h3>
             <p className="text-[#A1A1AA] text-sm mb-4">
               Receive personalized insights directly to your inbox.
             </p>
-            <form onSubmit={handleSubmit} className="flex gap-2">
+            <form onSubmit={handleSubmit} className="flex flex-col gap-3">
               <input
                 type="email"
                 value={email}
@@ -206,14 +207,14 @@ const Footer = () => {
                   setError('');
                 }}
                 placeholder="your.email@example.com"
-                className="flex-1 px-4 py-3 rounded-xl bg-white/5 border border-[#3C281A] text-[#EAEAF0] placeholder-[#A1A1AA] focus:outline-none focus:border-[#FFD700] focus:ring-2 focus:ring-[#FFD700]/20 transition-all"
+                className="w-full px-4 py-3 rounded-xl bg-white/5 border border-[#3C281A] text-[#EAEAF0] placeholder-[#A1A1AA] focus:outline-none focus:border-[#FFD700] focus:ring-2 focus:ring-[#FFD700]/20 transition-all text-sm min-h-[48px]"
                 disabled={isSubmitting || isSuccess}
                 aria-label="Email address for newsletter subscription"
               />
               <button
                 type="submit"
                 disabled={isSubmitting || isSuccess}
-                className={`px-6 py-3 rounded-xl font-semibold text-sm transition-all duration-300 ${
+                className={`w-full py-3 rounded-xl font-semibold text-sm transition-all duration-300 min-h-[48px] ${
                   isSuccess
                     ? 'bg-green-600 text-white cursor-default'
                     : isSubmitting
@@ -224,23 +225,24 @@ const Footer = () => {
                 {isSuccess ? 'Subscribed!' : isSubmitting ? 'Joining...' : 'Subscribe'}
               </button>
             </form>
-            {error && <p className="text-red-400 text-sm mt-2">{error}</p>}
+            {error && <p className="text-red-400 text-sm mt-2" role="alert">{error}</p>}
           </div>
 
-          {/* Main Grid - EXACT demo: 4 equal columns, gap: 40px, margin-bottom: 40px */}
-          <div className="grid grid-cols-1 lg:grid-cols-4 gap-10" style={{ gap: '40px', marginBottom: '40px' }}>
+          {/* Main Grid - responsive: 1 col mobile, 2 cols tablet, 4 cols desktop */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-10" style={{ marginBottom: '40px' }}>
             {/* Brand Section */}
-            <div className="animate-in space-y-6">
-              <div className="flex items-center gap-3">
-                {/* EXACT: 48x48px image with border-radius: 12px - NO gradient SVG wrapper */}
-                <img
-                  src="/logo.png"
-                  alt="The Divine Tarot Logo"
-                  className="w-12 h-12 rounded-xl object-cover"
-                  style={{ width: '48px', height: '48px', borderRadius: '12px' }}
-                />
-                <div>
-                  <h2 className="font-serif text-xl font-bold text-[#EAEAF0]">
+            <div className="animate-in space-y-4 sm:space-y-6">
+               <div className="flex items-center gap-3">
+                 <Image
+                   src="/logo.png"
+                   alt="The Divine Tarot Logo"
+                   width={48}
+                   height={48}
+                   className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl object-cover"
+                   style={{ borderRadius: '12px' }}
+                 />
+                 <div>
+                  <h2 className="font-serif text-lg sm:text-xl font-bold text-[#EAEAF0]">
                     The Divine Tarot
                   </h2>
                   <p className="text-[#A1A1AA] text-xs">
@@ -252,9 +254,9 @@ const Footer = () => {
                 Guiding your path with clarity, intuition, and cosmic insight.
               </p>
 
-              {/* Desktop Newsletter - EXACT demo match */}
-              <div className="hidden lg:block p-5 rounded-2xl bg-white/5 border border-[#3C281A]/50" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,215,0,0.1)', marginTop: '24px' }}>
-                <h3 className="font-serif text-lg font-semibold text-[#EAEAF0] mb-2">
+              {/* Desktop Newsletter - hidden on mobile/tablet */}
+              <div className="hidden lg:block p-4 sm:p-5 rounded-2xl bg-white/5 border border-[#3C281A]/50" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,215,0,0.1)', marginTop: '24px' }}>
+                <h3 className="font-serif text-base sm:text-lg font-semibold text-[#EAEAF0] mb-2">
                   Daily Guidance
                 </h3>
                 <p className="text-[#A1A1AA] text-xs mb-3">
@@ -269,14 +271,14 @@ const Footer = () => {
                       setError('');
                     }}
                     placeholder="Enter email"
-                    className="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-[#3C281A] text-[#EAEAF0] placeholder-[#A1A1AA] focus:outline-none focus:border-[#FFD700] focus:ring-2 focus:ring-[#FFD700]/20 transition-all text-sm"
+                    className="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-[#3C281A] text-[#EAEAF0] placeholder-[#A1A1AA] focus:outline-none focus:border-[#FFD700] focus:ring-2 focus:ring-[#FFD700]/20 transition-all text-sm min-h-[44px]"
                     disabled={isSubmitting || isSuccess}
                     aria-label="Email address for newsletter subscription"
                   />
                   <button
                     type="submit"
                     disabled={isSubmitting || isSuccess}
-                    className={`w-full py-2.5 rounded-xl font-semibold text-sm transition-all duration-300 ${
+                    className={`w-full py-2.5 rounded-xl font-semibold text-sm transition-all duration-300 min-h-[44px] ${
                       isSuccess
                         ? 'bg-green-600 text-white cursor-default'
                         : isSubmitting
@@ -287,16 +289,16 @@ const Footer = () => {
                     {isSuccess ? 'Subscribed!' : isSubmitting ? 'Joining...' : 'Join'}
                   </button>
                 </form>
-                {error && <p className="text-red-400 text-xs mt-1">{error}</p>}
+                {error && <p className="text-red-400 text-xs mt-1" role="alert">{error}</p>}
               </div>
             </div>
 
-            {/* Social Links - EXACT demo match */}
+            {/* Social Links */}
             <div className="animate-in delay-1">
-              <h3 className="font-serif font-semibold text-[#EAEAF0] mb-4 text-sm uppercase tracking-wider">
+              <h3 className="font-serif font-semibold text-[#EAEAF0] mb-3 sm:mb-4 text-sm uppercase tracking-wider">
                 Connect With Us
               </h3>
-              <div className="space-y-3">
+              <div className="space-y-2 sm:space-y-3">
                 {socialLinks.map((social) => {
                   const Icon = social.icon;
                   return (
@@ -305,11 +307,11 @@ const Footer = () => {
                       href={social.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="group flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-transparent hover:border-[#FFD700]/30 hover:bg-[#FFD700]/5 transition-all duration-300 hover:translate-x-1"
+                      className="group flex items-center gap-3 p-2 sm:p-3 rounded-xl bg-white/5 border border-transparent hover:border-[#FFD700]/30 hover:bg-[#FFD700]/5 transition-all duration-300 hover:translate-x-1 min-h-[48px]"
                       aria-label={social.ariaLabel}
                     >
                       <div className="w-10 h-10 rounded-lg bg-[#1A1A1F] flex items-center justify-center group-hover:bg-gradient-to-br group-hover:from-[#FFD700]/20 group-hover:to-[#FF4D4D]/20 transition-all duration-300 group-hover:shadow-[0_0_20px_rgba(255,215,0,0.3)]">
-                        <Icon className="w-5 h-5 text-[#A1A1AA] group-hover:text-[#FFD700] transition-colors duration-300" />
+                        <Icon className="w-4 h-4 sm:w-5 sm:h-5 text-[#A1A1AA] group-hover:text-[#FFD700] transition-colors duration-300" />
                       </div>
                       <span className="text-[#A1A1AA] group-hover:text-[#EAEAF0] transition-colors text-sm font-medium">
                         {social.name}
@@ -320,21 +322,21 @@ const Footer = () => {
               </div>
             </div>
 
-            {/* Quick Links - EXACT demo match with inline hover styles */}
+            {/* Quick Links */}
             <div className="animate-in delay-2">
-              <h3 className="font-serif font-semibold text-[#EAEAF0] mb-4 text-sm uppercase tracking-wider">
+              <h3 className="font-serif font-semibold text-[#EAEAF0] mb-3 sm:mb-4 text-sm uppercase tracking-wider">
                 Quick Links
               </h3>
-              <ul className="space-y-3" style={{ listStyle: 'none' }}>
+              <ul className="space-y-2 sm:space-y-3" style={{ listStyle: 'none' }}>
                 {quickLinks.map((link) => (
                   <li key={link.name} style={{ marginBottom: '12px' }}>
                     <Link
                       href={link.href}
-                      className="text-[#A1A1AA] hover:text-[#FFD700] transition-colors duration-300 flex items-center gap-2 group text-sm"
+                      className="text-[#A1A1AA] hover:text-[#FFD700] transition-colors duration-300 flex items-center gap-2 group text-sm min-h-[44px] py-2"
                       onMouseOver={(e) => { e.currentTarget.style.color = '#FFD700'; }}
                       onMouseOut={(e) => { e.currentTarget.style.color = '#A1A1AA'; }}
                     >
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#FFD700]/30 group-hover:bg-[#FFD700] transition-colors" />
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#FFD700]/30 group-hover:bg-[#FFD700] transition-colors flex-shrink-0" />
                       {link.name}
                     </Link>
                   </li>
@@ -342,21 +344,21 @@ const Footer = () => {
               </ul>
             </div>
 
-            {/* Trust Badges - EXACT demo match */}
+            {/* Trust Badges */}
             <div className="animate-in delay-3">
-              <h3 className="font-serif font-semibold text-[#EAEAF0] mb-4 text-sm uppercase tracking-wider">
+              <h3 className="font-serif font-semibold text-[#EAEAF0] mb-3 sm:mb-4 text-sm uppercase tracking-wider">
                 Your Trust
               </h3>
-              <div className="space-y-3">
+              <div className="space-y-2 sm:space-y-3">
                 {trustBadges.map((badge) => {
                   const Icon = badge.icon;
                   return (
                     <div
                       key={badge.label}
-                      className="flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-[#3C281A]/50 hover:border-[#FFD700]/30 transition-all duration-300 group"
+                      className="flex items-center gap-3 p-2 sm:p-3 rounded-xl bg-white/5 border border-[#3C281A]/50 hover:border-[#FFD700]/30 transition-all duration-300 group min-h-[48px]"
                     >
                       <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#FFD700]/10 to-[#FF4D4D]/10 flex items-center justify-center group-hover:scale-110 transition-transform">
-                        <Icon className="w-5 h-5 text-[#FFD700]" />
+                        <Icon className="w-4 h-4 sm:w-5 sm:h-5 text-[#FFD700]" />
                       </div>
                       <span className="text-[#A1A1AA] group-hover:text-[#EAEAF0] transition-colors text-sm">
                         {badge.label}
@@ -366,10 +368,10 @@ const Footer = () => {
                 })}
               </div>
 
-              {/* Contact Info - EXACT demo match */}
-              <div className="mt-4 p-4 rounded-xl bg-gradient-to-br from-[#FFD700]/5 to-[#FF4D4D]/10 border border-[#FFD700]/10">
+              {/* Contact Info */}
+              <div className="mt-4 p-3 sm:p-4 rounded-xl bg-gradient-to-br from-[#FFD700]/5 to-[#FF4D4D]/10 border border-[#FFD700]/10">
                 <div className="flex items-center gap-3">
-                  <svg className="w-5 h-5 text-[#FFD700]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <svg className="w-4 h-4 sm:w-5 sm:h-5 text-[#FFD700]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
                     <polyline points="22,6 12,13 2,6" />
                   </svg>
@@ -387,13 +389,13 @@ const Footer = () => {
             </div>
           </div>
 
-          {/* Bottom Bar - EXACT demo match with designer credit */}
-          <div className="mt-12 pt-8 border-t border-[#3C281A]">
+          {/* Bottom Bar */}
+          <div className="mt-8 pt-6 border-t border-[#3C281A]">
             <div className="flex flex-col lg:flex-row items-center justify-between gap-4">
-              <p className="text-[#A1A1AA] text-sm">
+              <p className="text-[#A1A1AA] text-sm text-center lg:text-left">
                 © <span id="footer-year"></span> The Divine Tarot. All rights reserved.
               </p>
-              <div className="flex items-center gap-6">
+              <div className="flex items-center gap-6 flex-wrap justify-center">
                 <span className="text-[#A1A1AA] text-sm">
                   Designed with ❤️ by{' '}
                   <a

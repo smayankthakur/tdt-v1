@@ -147,12 +147,13 @@ export async function withApiMiddleware(
     if (method === 'OPTIONS') {
       const preflightResponse = new NextResponse(null, { status: 204 });
       addSecurityHeaders(preflightResponse, cspNonce);
-      addCorsHeaders(preflightResponse, origin);
+      addCorsHeaders(preflightResponse, origin || undefined);
       return preflightResponse;
     }
 
     // Determine rate limit based on endpoint
-    let rateLimitKey = `${ip}:${path}`;
+    const rateLimitKey = `${ip}:${path}`;
+    const isAuthenticated = !!req.headers.get('authorization');
     let limit = 100;
     let windowMs = 60000;
 
@@ -199,7 +200,7 @@ export async function withApiMiddleware(
       );
       
       addSecurityHeaders(errorResponse, cspNonce);
-      addCorsHeaders(errorResponse, origin);
+      addCorsHeaders(errorResponse, origin || undefined);
       errorResponse.headers.set('X-RateLimit-Limit', limit.toString());
       errorResponse.headers.set('X-RateLimit-Remaining', '0');
       errorResponse.headers.set('X-RateLimit-Reset', rateLimitResult.resetTime.toString());
@@ -213,7 +214,7 @@ export async function withApiMiddleware(
 
     // Add security headers
     addSecurityHeaders(response, cspNonce);
-    addCorsHeaders(response, origin);
+    addCorsHeaders(response, origin || undefined);
 
     // Add rate limit headers
     const currentRateLimit = rateLimit(rateLimitKey, limit, windowMs);
@@ -270,7 +271,7 @@ export async function withApiMiddleware(
     );
     
     addSecurityHeaders(errorResponse, cspNonce);
-    addCorsHeaders(errorResponse, origin);
+    addCorsHeaders(errorResponse, origin || undefined);
     
     return errorResponse;
   }

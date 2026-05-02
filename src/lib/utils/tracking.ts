@@ -57,6 +57,7 @@ export function getFunnelStage(eventName: EventName): string {
   const stages: Record<EventName, string> = {
     landing_page_view: 'visitor',
     start_reading_click: 'visitor',
+    reading_started: 'reader', // Reading session initiated
     question_submitted: 'reader',
     cards_selected: 'reader',
     reading_completed: 'engaged',

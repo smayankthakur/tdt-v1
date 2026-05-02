@@ -1,34 +1,62 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getResendClient } from '@/lib/resend';
+import { rateLimit } from '@/lib/security/middleware';
+import { subscribeSchema, validateRequest, sanitizeInput } from '@/lib/validation/schemas';
 
-// In-memory storage for demo/dev - replace with database in production
-const subscribers = new Set<string>();
+/**
+ * POST /api/subscribe
+ * Subscribe email to newsletter
+ * 
+ * Rate limiting: 5 per IP per hour (prevent spam)
+ * Validation: Email format, length, sanitization
+ * CSRF: Required for POST (check x-csrf-token header)
+ */
 
 export async function POST(request: NextRequest) {
   try {
+    // Rate limiting by IP
+    const ip = request.ip || request.headers.get('x-forwarded-for') || 'anonymous';
+    const { allowed, remaining } = rateLimit(`subscribe:${ip}`, 60 * 60 * 1000, 5); // 5 per hour
+    
+    if (!allowed) {
+      return NextResponse.json(
+        { error: 'Too many subscription attempts. Please try again later.' },
+        { status: 429, headers: { 'X-RateLimit-Remaining': '0' } }
+      );
+    }
+
+    // CSRF validation (if from browser)
+    const userAgent = request.headers.get('user-agent') || '';
+    if (userAgent.includes('Mozilla') || userAgent.includes('Chrome') || userAgent.includes('Safari')) {
+      const csrfToken = request.headers.get('x-csrf-token');
+      if (!csrfToken) {
+        return NextResponse.json(
+          { error: 'CSRF token required' },
+          { status: 403 }
+        );
+      }
+      // In production, validate token against session cookie
+      // For now, accept any non-empty token (server-side rendered forms have this automatically)
+    }
+
+    // Parse and validate body
     const body = await request.json();
-    const { email } = body;
-
-    // Validate email
-    if (!email || typeof email !== 'string') {
-      return NextResponse.json(
-        { message: 'Email is required' },
-        { status: 400 }
-      );
+    const validation = validateRequest(subscribeSchema, body);
+    if (!validation.success) {
+      return validation.response;
     }
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      return NextResponse.json(
-        { message: 'Please enter a valid email address' },
-        { status: 400 }
-      );
-    }
+    const { email: rawEmail } = validation.data;
+    
+    // Sanitize input
+    const email = sanitizeInput(rawEmail);
 
-    // Check for duplicate
+    // Check for duplicate (in-memory for dev)
+    // In production, check database
+    const subscribers = new Set<string>();
     if (subscribers.has(email)) {
       return NextResponse.json(
-        { message: 'This email is already subscribed' },
+        { error: 'This email is already subscribed' },
         { status: 409 }
       );
     }
@@ -36,10 +64,10 @@ export async function POST(request: NextRequest) {
     // Add to subscribers
     subscribers.add(email);
 
-    // Log subscription (in production, save to database)
-    console.log('New subscriber:', email, 'at', new Date().toISOString());
+    // Log subscription
+    console.log('[Subscribe] New subscriber:', email, 'at', new Date().toISOString());
 
-    // Send welcome email via Resend (optional)
+    // Send welcome email via Resend if configured
     const resend = getResendClient();
     if (resend && process.env.RESEND_FROM_EMAIL) {
       try {
@@ -74,25 +102,31 @@ export async function POST(request: NextRequest) {
                 </p>
               </div>
              </div>
-           `
+          `,
         });
       } catch (emailError) {
-        console.warn('Failed to send welcome email:', emailError);
-        // Don't fail the subscription if email sending fails
+        console.warn('[Subscribe] Failed to send welcome email:', emailError);
+        // Don't fail subscription if email fails
       }
     }
 
-    return NextResponse.json(
+    const response = NextResponse.json(
       { 
         message: 'You\'re now connected to your daily guidance ✨',
         success: true 
       },
       { status: 200 }
     );
+
+    // Add rate limit headers
+    response.headers.set('X-RateLimit-Remaining', remaining.toString());
+    response.headers.set('X-RateLimit-Reset', new Date(Date.now() + 60 * 60 * 1000).toISOString());
+
+    return response;
   } catch (error) {
-    console.error('Subscription error:', error);
+    console.error('[Subscribe] Unexpected error:', error);
     return NextResponse.json(
-      { message: 'Something went wrong. Please try again.' },
+      { error: 'Something went wrong. Please try again.' },
       { status: 500 }
     );
   }
@@ -100,7 +134,13 @@ export async function POST(request: NextRequest) {
 
 export async function GET(request: NextRequest) {
   return NextResponse.json(
-    { message: 'Use POST method to subscribe' },
-    { status: 405 }
+    { 
+      endpoint: 'Subscribe',
+      method: 'POST',
+      description: 'Subscribe email to newsletter',
+      requiredFields: ['email'],
+      rateLimit: '5 per hour per IP'
+    },
+    { status: 200 }
   );
 }

@@ -1,13 +1,11 @@
 ﻿'use client';
 
-import { useEffect } from 'react';
 import "./globals.css";
 import ClientProviders from "@/components/ClientProviders";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import AnalyticsProvider from "@/components/AnalyticsProvider";
-import DynamicWatermark from "@/components/security/DynamicWatermark";
-import { useContentProtection } from "@/lib/utils/protection";
+import SecureWatermark from "@/components/watermark/SecureWatermark";
 import ContentGuard from "@/components/ContentGuard";
 import { usePathname } from 'next/navigation';
 
@@ -19,14 +17,11 @@ export default function ClientLayout({
   const pathname = usePathname();
   const isReadingPage = pathname === '/reading';
 
-  // Initialize content protection (lightweight version)
-  useContentProtection();
-
   return (
     <div className="antialiased bg-[rgb(var(--background))] text-[rgb(var(--foreground))] min-h-screen" suppressHydrationWarning>
-      {/* Dynamic Watermark System - 3 Layer Protection */}
-      <DynamicWatermark />
-      
+      {/* Unified Dynamic Watermark System - 3 Layer Protection */}
+      <SecureWatermark showReadingLayer={isReadingPage} />
+
       <ContentGuard>
         <ClientProviders>
           <AnalyticsProvider />
@@ -37,8 +32,6 @@ export default function ClientLayout({
             </main>
             {!isReadingPage && <Footer />}
           </div>
-          {/* Mobile Chat Widget - disabled by default for cleaner UI */}
-          {/* <GinniChatWrapper /> */}
         </ClientProviders>
       </ContentGuard>
     </div>

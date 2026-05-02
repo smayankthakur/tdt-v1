@@ -3,6 +3,7 @@ import { supabase, isSupabaseConfigured } from '@/lib/supabase/client';
 export type EventName = 
   | 'landing_page_view'
   | 'start_reading_click'
+  | 'reading_started'
   | 'question_submitted'
   | 'cards_selected'
   | 'reading_completed'

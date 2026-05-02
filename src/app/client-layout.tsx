@@ -1,4 +1,4 @@
-﻿"use client";
+﻿'use client';
 
 import { useEffect } from 'react';
 import "./globals.css";
@@ -6,32 +6,39 @@ import ClientProviders from "@/components/ClientProviders";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import AnalyticsProvider from "@/components/AnalyticsProvider";
-import GlobalWatermark from "@/components/global-watermark";
+import DynamicWatermark from "@/components/security/DynamicWatermark";
+import { useContentProtection } from "@/lib/utils/protection";
 import ContentGuard from "@/components/ContentGuard";
-import DebugPanel from "@/components/DebugPanel";
-import dynamic from 'next/dynamic';
-
-const GinniChatWrapper = dynamic(() => import('@/components/GinniChatWrapper'), {
-  ssr: false,
-  loading: () => null
-});
+import { usePathname } from 'next/navigation';
 
 export default function ClientLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const pathname = usePathname();
+  const isReadingPage = pathname === '/reading';
+
+  // Initialize content protection (lightweight version)
+  useContentProtection();
+
   return (
-    <div className="antialiased bg-[rgb(var(--background))] text-[rgb(var(--foreground))]" suppressHydrationWarning>
-      <DebugPanel />
-      <GlobalWatermark />
+    <div className="antialiased bg-[rgb(var(--background))] text-[rgb(var(--foreground))] min-h-screen" suppressHydrationWarning>
+      {/* Dynamic Watermark System - 3 Layer Protection */}
+      <DynamicWatermark />
+      
       <ContentGuard>
         <ClientProviders>
           <AnalyticsProvider />
-          <Header />
-          <main className="min-h-screen">{children}</main>
-          <Footer />
-          <GinniChatWrapper />
+          <div className="flex min-h-screen flex-col">
+            {!isReadingPage && <Header />}
+            <main className="flex-1 relative">
+              {children}
+            </main>
+            {!isReadingPage && <Footer />}
+          </div>
+          {/* Mobile Chat Widget - disabled by default for cleaner UI */}
+          {/* <GinniChatWrapper /> */}
         </ClientProviders>
       </ContentGuard>
     </div>

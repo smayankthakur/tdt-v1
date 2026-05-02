@@ -3,65 +3,88 @@
 import { useEffect } from 'react';
 import { shouldBlockContextMenu, shouldBlockDevTools, shouldBlockScreenshots } from '@/lib/securityConfig';
 
+/**
+ * Content Protection Hook
+ * 
+ * Implements lightweight, accessibility-friendly content protection.
+ * Avoids blocking standard browser functionality.
+ * 
+ * NOTE: Complete screenshot prevention is impossible on the web.
+ * This provides deterrence and traceability through watermarks.
+ */
 export function useContentProtection() {
   useEffect(() => {
     const shouldProtect = shouldBlockContextMenu() || shouldBlockDevTools() || shouldBlockScreenshots();
     if (!shouldProtect) return;
 
-    const handleContextMenu = (e: MouseEvent) => {
-      e.preventDefault();
-    };
+    // Context menu blocking (optional - disabled by default for accessibility)
+    let handleContextMenu: ((e: MouseEvent) => void) | undefined;
+    
+    if (shouldBlockContextMenu()) {
+      handleContextMenu = (e: MouseEvent) => {
+        // Only prevent on long-press/special cases, not general access
+        if (e.button === 2 && e.ctrlKey) {
+          e.preventDefault();
+        }
+      };
+      document.addEventListener('contextmenu', handleContextMenu);
+    }
 
-    const handleKeyDown = (e: KeyboardEvent) => {
-      const blockedKeys = [
-        'PrintScreen',
-        's' as unknown as typeof e.key,
-        'u' as unknown as typeof e.key,
-        'c' as unknown as typeof e.key,
-        'i' as unknown as typeof e.key,
-        'j' as unknown as typeof e.key,
-      ];
-      
-      const ctrlKeys = ['s', 'u', 'c', 'i', 'j'];
-      const shiftKeys = ['i', 'j'];
-      
-      if (e.key === 'PrintScreen') {
-        e.preventDefault();
-        return;
-      }
-      
-      if (e.ctrlKey && ctrlKeys.includes(e.key.toLowerCase())) {
-        e.preventDefault();
-        return;
-      }
-      
-      if (e.ctrlKey && e.shiftKey && shiftKeys.includes(e.key.toLowerCase())) {
-        e.preventDefault();
-        return;
-      }
-    };
+    // Keyboard shortcut handling (lightweight - only block destructive combos)
+    let handleKeyDown: ((e: KeyboardEvent) => void) | undefined;
+    
+    if (shouldBlockScreenshots()) {
+      handleKeyDown = (e: KeyboardEvent) => {
+        // Only block PrintScreen if specified
+        if (e.key === 'PrintScreen') {
+          e.preventDefault();
+          return;
+        }
+        
+        // Block browser save dialogs only when combined with other keys
+        if (e.ctrlKey && e.shiftKey && ['i', 'j', 'c'].includes(e.key.toLowerCase())) {
+          e.preventDefault();
+          return;
+        }
+      };
+      document.addEventListener('keydown', handleKeyDown);
+    }
 
-    const handleVisibilityChange = () => {
-      if (document.hidden) {
-        document.body.style.filter = 'blur(8px)';
-      } else {
-        document.body.style.filter = 'none';
-      }
-    };
-
-    document.addEventListener('contextmenu', handleContextMenu);
-    document.addEventListener('keydown', handleKeyDown);
-    document.addEventListener('visibilitychange', handleVisibilityChange);
+    // Visibility change handling - subtle indicator only
+    let handleVisibilityChange: ((e: Event) => void) | undefined;
+    
+    if (shouldBlockScreenshots()) {
+      handleVisibilityChange = () => {
+        // Add subtle visual indicator when tab is hidden
+        if (document.hidden) {
+          document.documentElement.style.setProperty('--watermark-opacity', '0.3');
+        } else {
+          document.documentElement.style.setProperty('--watermark-opacity', '0.12');
+        }
+      };
+      document.addEventListener('visibilitychange', handleVisibilityChange);
+    }
 
     return () => {
-      document.removeEventListener('contextmenu', handleContextMenu);
-      document.removeEventListener('keydown', handleKeyDown);
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
-      document.body.style.filter = 'none';
+      if (handleContextMenu) {
+        document.removeEventListener('contextmenu', handleContextMenu);
+      }
+      if (handleKeyDown) {
+        document.removeEventListener('keydown', handleKeyDown);
+      }
+      if (handleVisibilityChange) {
+        document.removeEventListener('visibilitychange', handleVisibilityChange);
+      }
+      document.documentElement.style.setProperty('--watermark-opacity', '0.12');
     };
   }, []);
 }
 
+/**
+ * Legacy Watermark Component - Deprecated
+ * 
+ * @deprecated Use DynamicWatermark instead
+ */
 export function Watermark() {
   return (
     <div 
@@ -86,6 +109,11 @@ export function Watermark() {
   );
 }
 
+/**
+ * Initialize Content Protection
+ * 
+ * @deprecated Use useContentProtection hook instead
+ */
 export function initializeProtection() {
   'use client';
   

@@ -2,7 +2,6 @@
 
 import { useEffect, useState, useRef } from 'react';
 import { shouldShowWatermark } from '@/lib/securityConfig';
-import { useTranslation } from '@/hooks/useTranslation';
 
 function getUserId(): string {
   if (typeof window === 'undefined') return 'anonymous';
@@ -23,7 +22,6 @@ export default function Watermark() {
   const [userId, setUserId] = useState('');
   const [offset, setOffset] = useState(0);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const { t } = useTranslation();
 
   useEffect(() => {
     setUserId(getUserId());
@@ -52,11 +50,11 @@ export default function Watermark() {
     const drawWatermark = (ctx: CanvasRenderingContext2D) => {
       const w = window.innerWidth;
       const h = window.innerHeight;
-      const text = t('watermark.text', { userId });
+       const text = `The Devine Tarot — ${userId}`;
       const fontSize = Math.max(10, Math.min(14, w / 80));
       
       ctx.font = `${fontSize}px Inter, sans-serif`;
-      ctx.fillStyle = 'rgba(107, 107, 107, 0.3)';
+      ctx.fillStyle = 'rgba(107, 107, 107, 0.4)';
       ctx.textAlign = 'left';
       ctx.textBaseline = 'top';
 
@@ -78,14 +76,14 @@ export default function Watermark() {
     resize();
     window.addEventListener('resize', resize);
     return () => window.removeEventListener('resize', resize);
-  }, [userId, offset, t]);
+  }, [userId, offset]);
 
   if (!userId || !shouldShowWatermark()) return null;
 
   return (
     <canvas
       ref={canvasRef}
-      className="fixed inset-0 pointer-events-none z-[99999]"
+      className="fixed inset-0 pointer-events-none z-[999999]"
       aria-hidden="true"
     />
   );

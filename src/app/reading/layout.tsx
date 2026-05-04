@@ -7,8 +7,13 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: 'Sacred Tarot Reading',
-  description: 'Immersive tarot reading experience powered by our external reading engine.',
+  title: 'Sacred Tarot Reading | Divine Tarot',
+  description: 'Immersive tarot reading experience — connected to our external reading engine.',
+  openGraph: {
+    title: 'Sacred Tarot Reading',
+    description: 'Immersive tarot reading experience — connected to our external reading engine.',
+    images: [{ url: '/tdt-v3/logo.png', width: 1200, height: 630 }],
+  },
 };
 
 export default function ReadingLayout({
@@ -16,11 +21,6 @@ export default function ReadingLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return (
-    <>
-      <link rel="preconnect" href="https://ginni-ki-baatein-buddy.lovable.app" crossOrigin="anonymous" />
-      <link rel="dns-prefetch" href="https://ginni-ki-baatein-buddy.lovable.app" />
-      {children}
-    </>
-  );
+  return <>{children}</>;
 }
+

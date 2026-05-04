@@ -6,10 +6,10 @@ export default function ReadingPage() {
   const [loaded, setLoaded] = useState(false);
 
   return (
-    <div className="w-full flex-1 flex flex-col bg-[#0B0B0F] min-h-0">
-      {/* Loader - fills all available space */}
+    <div className="flex flex-col flex-1 bg-[#0B0B0F] min-h-0">
+      {/* Loader */}
       {!loaded && (
-        <div className="flex-1 flex items-center justify-center bg-[#0B0B0F]">
+        <div className="flex flex-1 items-center justify-center">
           <div className="text-center">
             <div className="inline-flex items-center justify-center w-16 h-16 rounded-full border-4 border-[#C9A962]/30 border-t-[#C9A962] mb-4 animate-spin" />
             <p className="text-[#C9A962] text-sm font-medium">
@@ -19,7 +19,7 @@ export default function ReadingPage() {
         </div>
       )}
 
-      {/* Iframe Container - fills all available space */}
+      {/* Iframe Wrapper - fills all available space */}
       <div className={`flex-1 relative min-h-0 ${loaded ? "opacity-100" : "opacity-0"} transition-opacity duration-500`}>
         <iframe
           src="https://ginni-ki-baatein-buddy.lovable.app"

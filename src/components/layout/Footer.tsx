@@ -107,13 +107,13 @@ const Footer = () => {
     },
     {
       name: 'YouTube',
-      url: 'https://youtube.com/@thedivineetarot',
+      url: 'https://youtube.com/@TheDivineTarot',
       icon: YoutubeIcon,
       ariaLabel: 'Visit our YouTube channel',
     },
     {
       name: 'YouTube',
-      url: 'https://www.youtube.com/@TheDivineTarot',
+      url: 'https://www.youtube.com/@thedivineetarot',
       icon: YoutubeIcon,
       ariaLabel: 'Visit our second YouTube channel',
     },

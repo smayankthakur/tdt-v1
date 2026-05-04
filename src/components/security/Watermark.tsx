@@ -85,7 +85,7 @@ export default function Watermark() {
   return (
     <canvas
       ref={canvasRef}
-      className="fixed inset-0 pointer-events-none z-[9997]"
+      className="fixed inset-0 pointer-events-none z-[99999]"
       aria-hidden="true"
     />
   );

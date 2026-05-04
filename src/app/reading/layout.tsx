@@ -7,8 +7,8 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: 'Ginni Reading | The Divine Tarot',
-  description: 'Connect with ginni.dt for a deeply personalized, interactive tarot experience powered by our external reading engine.',
+  title: 'Sacred Tarot Reading | Divine Tarot',
+  description: 'Ask your question. The 78 cards reveal their wisdom. No paywall, no AI — only the ancient tarot and your intention.',
 };
 
 export default function ReadingLayout({
@@ -16,11 +16,6 @@ export default function ReadingLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return (
-    <>
-      <link rel="preconnect" href="https://ginnitdt.lovable.app" crossOrigin="anonymous" />
-      <link rel="dns-prefetch" href="https://ginnitdt.lovable.app" />
-      {children}
-    </>
-  );
+  return <>{children}</>;
 }
+

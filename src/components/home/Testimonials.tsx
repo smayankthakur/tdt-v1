@@ -34,6 +34,12 @@ const testimonials = [
     role: 'Verified Reader',
     rating: 5
   },
+  { 
+    name: 'Michael K.', 
+    text: "Got clarity on a career decision that had me stuck for months. The guidance was specific and actionable.", 
+    role: 'Verified Reader',
+    rating: 5
+  },
 ];
 
 const containerVariants = {

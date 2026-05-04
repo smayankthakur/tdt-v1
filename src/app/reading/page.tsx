@@ -1,304 +1,453 @@
 'use client';
 
-import { useEffect, useState, useCallback, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ArrowLeft, Star, Check } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { ArrowLeft, Loader2, RefreshCw, Sparkles } from 'lucide-react';
-import { supabase, isSupabaseConfigured } from '@/lib/supabase/client';
-import { trackEvent, type TrackingEvent } from '@/lib/utils/tracking';
-import { useLanguage } from '@/hooks/useLanguage';
-
-const IFRAME_URL = 'https://ginnitdt.lovable.app/';
-const IFRAME_ORIGIN = 'https://ginnitdt.lovable.app';
+import tarotData from '@/data/tarot-data.json';
 
 export default function ReadingPage() {
   const router = useRouter();
-  const { language } = useLanguage();
 
-  const [user, setUser] = useState<{ id: string } | null>(null);
-  const [hasAccess, setHasAccess] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState(true);
-  const [iframeLoaded, setIframeLoaded] = useState(false);
-  const [iframeError, setIframeError] = useState(false);
-  const [retryCount, setRetryCount] = useState(0);
-  const [sessionToken, setSessionToken] = useState<string | null>(null);
+  const [name, setName] = useState('');
+  const [question, setQuestion] = useState('');
+  const [step, setStep] = useState<'input' | 'shuffle' | 'selection' | 'reading' | 'result'>('input');
 
-  const iframeRef = useRef<HTMLIFrameElement>(null);
+  const [availableCards, setAvailableCards] = useState<typeof tarotData.cards>([]);
+  const [selectedCards, setSelectedCards] = useState<Array<typeof tarotData.cards[number] & { index: number }>>([]);
+  const [cardStates, setCardStates] = useState<Record<number, 'face-down' | 'selected'>>({});
+  const [reading, setReading] = useState<Array<typeof tarotData.cards[number] & {
+    position: { title: string; desc: string };
+    isReversed: boolean;
+    meaning: string;
+    yesNo: string;
+  }>>([]);
+  const [currentRevealIndex, setCurrentRevealIndex] = useState(0);
+  const [shuffleCount, setShuffleCount] = useState(0);
+  const shuffleIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Fetch user and subscription/trial status on mount
   useEffect(() => {
-    const checkAccess = async () => {
-      setIsLoading(true);
-      try {
-        const { data: { user: authUser } } = await supabase.auth.getUser();
-
-        if (!authUser) {
-          // No authenticated user → treat as guest with no access
-          setUser(null);
-          setHasAccess(false);
-          setIsLoading(false);
-          return;
-        }
-
-        setUser({ id: authUser.id });
-
-        if (!isSupabaseConfigured()) {
-          // In dev without DB, allow access
-          setHasAccess(true);
-          setIsLoading(false);
-          return;
-        }
-
-        // Fetch user record for subscription/trial info
-        const { data: userData, error } = await supabase
-          .from('users')
-          .select('trial_start_date, subscription_status, subscription_end_date')
-          .eq('id', authUser.id)
-          .single();
-
-        if (error) {
-          console.error('[Reading] Error fetching user data:', error);
-          setHasAccess(false);
-          setIsLoading(false);
-          return;
-        }
-
-        // Initialize trial if missing (first-time user)
-        let trialStart = userData.trial_start_date ? new Date(userData.trial_start_date) : null;
-        if (!userData.trial_start_date) {
-          const now = new Date();
-          const { error: updateError } = await supabase
-            .from('users')
-            .update({ trial_start_date: now.toISOString() })
-            .eq('id', authUser.id);
-          if (!updateError) {
-            trialStart = now;
-          } else {
-            console.error('[Reading] Failed to initialize trial:', updateError);
-          }
-        }
-
-        const now = new Date();
-        const subscriptionEnd = userData.subscription_end_date ? new Date(userData.subscription_end_date) : null;
-
-        const isTrialValid = trialStart ? now <= new Date(trialStart.getTime() + 3 * 24 * 60 * 60 * 1000) : false;
-        const isSubscribed = userData.subscription_status === 'active' && (!subscriptionEnd || subscriptionEnd > now);
-
-        setHasAccess(isTrialValid || isSubscribed);
-      } catch (err) {
-        console.error('[Reading] Access check failed:', err);
-        setHasAccess(false);
-      } finally {
-        setIsLoading(false);
-      }
+    const cards = [...tarotData.cards].sort(() => Math.random() - 0.5);
+    setAvailableCards(cards);
+    const states: Record<number, 'face-down' | 'selected'> = {};
+    cards.forEach((_, i) => {
+      states[i] = 'face-down';
+    });
+    setCardStates(states);
+    return () => {
+      if (shuffleIntervalRef.current) clearInterval(shuffleIntervalRef.current);
     };
+  }, []);
 
-    checkAccess();
-  }, [retryCount]);
+  const handleShuffle = () => {
+    if (!name.trim() || !question.trim()) return;
+    setStep('shuffle');
+    setShuffleCount(0);
+    setSelectedCards([]);
+    setReading([]);
+    setCurrentRevealIndex(0);
 
-  // PostMessage bridge handler
-  useEffect(() => {
-    const handleMessage = (event: MessageEvent) => {
-      if (event.origin !== IFRAME_ORIGIN) return;
+    const newCards = [...tarotData.cards].sort(() => Math.random() - 0.5);
+    setAvailableCards(newCards);
+    const states: Record<number, 'face-down' | 'selected'> = {};
+    newCards.forEach((_, i) => {
+      states[i] = 'face-down';
+    });
+    setCardStates(states);
 
-      const { type, payload } = event.data;
+    shuffleIntervalRef.current = setInterval(() => {
+      setShuffleCount((c) => c + 1);
+    }, 100);
 
-      switch (type) {
-        case 'reading_started': {
-          trackEvent({
-            userId: user?.id,
-            eventName: 'reading_started',
-            metadata: payload,
-          } as TrackingEvent);
-          break;
-        }
-        case 'reading_completed': {
-          trackEvent({
-            userId: user?.id,
-            eventName: 'reading_completed',
-            metadata: payload,
-          } as TrackingEvent);
-          break;
-        }
-        case 'payment_trigger': {
-          // Block iframe and show paywall
-          setHasAccess(false);
-          break;
-        }
-        case 'session_request': {
-          // Respond with session token if available
-          if (iframeRef.current?.contentWindow) {
-            iframeRef.current.contentWindow.postMessage(
-              {
-                type: 'session_response',
-                payload: {
-                  token: sessionToken,
-                  userId: user?.id,
-                  subscriptionStatus: hasAccess ? 'active' : 'inactive',
-                },
-              },
-              IFRAME_ORIGIN
-            );
-          }
-          break;
-        }
-        default:
-          break;
+    setTimeout(() => {
+      if (shuffleIntervalRef.current) {
+        clearInterval(shuffleIntervalRef.current);
+        shuffleIntervalRef.current = null;
       }
-    };
+      setStep('selection');
+    }, 3000);
+  };
 
-    window.addEventListener('message', handleMessage);
-    return () => window.removeEventListener('message', handleMessage);
-  }, [user, router, hasAccess, sessionToken]);
+  const handleCardClick = (card: typeof tarotData.cards[number], index: number) => {
+    if (step !== 'selection') return;
+    if (cardStates[index] === 'selected') return;
+    if (selectedCards.length >= 3) return;
 
-  // Send INIT message to iframe after load
-  const handleIframeLoad = useCallback(() => {
-    setIframeLoaded(true);
-    setIframeError(false);
+    setCardStates((prev) => ({ ...prev, [index]: 'selected' }));
+    setSelectedCards((prev) => [...prev, { ...card, index }]);
+  };
 
-    if (iframeRef.current?.contentWindow) {
-      iframeRef.current.contentWindow.postMessage(
-        {
-          type: 'INIT',
-          payload: {
-            userId: user?.id || null,
-            subscriptionStatus: hasAccess ? 'active' : 'inactive',
-            language: language,
-            sessionToken: sessionToken,
-          },
-        },
-        IFRAME_ORIGIN
-      );
+  const handleBeginReading = () => {
+    if (selectedCards.length !== 3) return;
+    setStep('reading');
+
+    const positions = [
+      { title: 'Past', desc: 'What has led you here.' },
+      { title: 'Present', desc: 'Where you are now.' },
+      { title: 'Future', desc: 'The direction ahead.' },
+    ];
+
+    const cards = selectedCards.map((card, position) => {
+      const isReversed = Math.random() > 0.5;
+      return {
+        ...card,
+        position: positions[position],
+        isReversed,
+        meaning: isReversed ? card.reversed : card.upright,
+        yesNo: card.yes_no,
+      };
+    });
+
+    setReading(cards);
+    setCurrentRevealIndex(0);
+
+    const interval = setInterval(() => {
+      setCurrentRevealIndex((i) => {
+        if (i >= 2) {
+          clearInterval(interval);
+          setStep('result');
+          return i;
+        }
+        return i + 1;
+      });
+    }, 2000);
+  };
+
+  const genSummary = () => {
+    const yesCount = reading.filter((c) => c.yesNo === 'Yes').length;
+    const noCount = reading.filter((c) => c.yesNo === 'No').length;
+    const maybeCount = reading.filter((c) => c.yesNo === 'Maybe').length;
+    const hasReversed = reading.some((c) => c.isReversed);
+
+    let summary = `${name}, the cards reveal insights about your question: "${question}". `;
+
+    if (yesCount >= 2) {
+      summary += 'The energy is strongly affirmative — favorable conditions support your path forward. ';
+    } else if (noCount >= 2) {
+      summary += 'The wisdom here suggests restraint — now is not the time to force this direction. ';
+    } else if (maybeCount >= 2) {
+      summary += 'The picture is nuanced and complex — clarity will emerge through patience and reflection. ';
+    } else {
+      summary += 'A mixed pattern emerges — multiple currents flow through your situation. ';
     }
-  }, [user, hasAccess, language, sessionToken]);
 
-  const handleRetry = () => {
-    setIframeError(false);
-    setIframeLoaded(false);
-    setRetryCount((c) => c + 1);
+    if (hasReversed) {
+      summary += 'Reversed cards indicate inner obstacles or the need to approach from a different angle.';
+    }
+
+    return summary;
   };
 
-  const goBack = () => {
-    router.push('/');
+  const resetReading = () => {
+    setStep('input');
+    setName('');
+    setQuestion('');
+    setSelectedCards([]);
+    setReading([]);
+    setCurrentRevealIndex(0);
+    const cards = [...tarotData.cards].sort(() => Math.random() - 0.5);
+    setAvailableCards(cards);
+    const states: Record<number, 'face-down' | 'selected'> = {};
+    cards.forEach((_, i) => {
+      states[i] = 'face-down';
+    });
+    setCardStates(states);
   };
 
-  // Loading state
-  if (isLoading) {
+  // Input Screen
+  if (step === 'input') {
     return (
-      <div className="fixed inset-0 flex items-center justify-center bg-[rgb(var(--background))]">
-        <div className="text-center space-y-4">
-          <Sparkles className="h-12 w-12 text-gold animate-pulse mx-auto" />
-          <p className="text-foreground-secondary">Loading your reading…</p>
-        </div>
-      </div>
-    );
-  }
-
-  // Paywall state (no access)
-  if (!hasAccess) {
-    return (
-      <div className="fixed inset-0 flex items-center justify-center bg-[rgb(var(--background))] p-4">
-        <div className="max-w-md w-full space-y-8 text-center">
-          <div className="inline-flex rounded-full p-4 bg-gold/10">
-            <Sparkles className="h-8 w-8 text-gold" />
-          </div>
-
-          <div className="space-y-3">
-            <h1 className="text-3xl font-heading text-foreground">Your access has paused…</h1>
-            <p className="text-foreground-secondary">
-              Continue your journey with full clarity
-            </p>
-          </div>
-
-          <div className="space-y-4">
-            <div className="text-4xl font-bold text-foreground">₹199<span className="text-lg font-normal text-foreground-secondary">/month</span></div>
-
-            <button
-              onClick={() => router.push('/premium')}
-              className="w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-gold/90 to-amber-600 text-black font-semibold text-lg shadow-lg hover:scale-[1.02] transition-transform"
-            >
-              Unlock Now
-            </button>
-          </div>
-
-          <button onClick={goBack} className="text-foreground-muted text-sm hover:text-foreground transition-colors">
-            ← Back to Home
-          </button>
-        </div>
-      </div>
-    );
-  }
-
-  // Full-screen iframe immersion
-  return (
-    <>
-      {/* Floating back button */}
-      <button
-        onClick={goBack}
-        className="fixed top-4 left-4 z-50 flex items-center gap-2 px-4 py-2 rounded-full bg-black/40 backdrop-blur-md border border-white/10 text-white hover:bg-black/60 hover:border-gold/30 transition-all group"
-        aria-label="Back to home"
-      >
-        <ArrowLeft className="h-5 w-5 group-hover:-translate-x-1 transition-transform" />
-        <span className="hidden sm:inline text-sm">Back</span>
-      </button>
-
-      {/* Loader overlay before iframe */}
-      {!iframeLoaded && !iframeError && (
-        <div className="fixed inset-0 flex items-center justify-center bg-[rgb(var(--background))] z-40">
-          <div className="text-center space-y-4">
-            <Loader2 className="h-12 w-12 text-gold animate-spin mx-auto" />
-            <p className="text-foreground-secondary">Connecting to the cosmos…</p>
-          </div>
-        </div>
-      )}
-
-      {/* Error fallback */}
-      {iframeError && (
-        <div className="fixed inset-0 flex items-center justify-center bg-[rgb(var(--background))] z-30">
-          <div className="text-center space-y-6 max-w-sm px-6">
-            <div className="text-foreground-muted">
-              <RefreshCw className="h-12 w-12 mx-auto mb-3 opacity-50" />
-              <h2 className="text-xl font-heading text-foreground mb-2">Unable to load reading</h2>
-              <p className="text-sm">Something went wrong. Please check your connection and try again.</p>
+      <div className="min-h-screen bg-gradient-to-br from-[#0B0B0F] via-[#12121A] to-[#0B0B0F] pt-24">
+        <div className="max-w-2xl mx-auto px-4 py-8">
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-12">
+            <div className="inline-flex rounded-full p-4 bg-[#C9A962]/10 mb-6">
+              <Star className="h-8 w-8 text-[#C9A962]" />
             </div>
+            <h1 className="text-4xl font-serif text-[#E8E4DC] mb-4">Sacred Tarot Reading</h1>
+            <p className="text-[#8E8E93]">Ask your question. The cards will reveal their wisdom.</p>
+          </motion.div>
 
-            <button
-              onClick={handleRetry}
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-surface border border-gold/30 text-foreground hover:bg-surface-elevated transition-colors"
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="space-y-6">
+            <div>
+              <label className="block text-[#C9A962] text-sm mb-2">Your Name</label>
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Your name"
+                className="w-full bg-[#1A1A24] border border-[#2A2A3A] rounded-xl px-4 py-3 text-[#E8E4DC] focus:outline-none focus:border-[#C9A962] placeholder-[#4A4A5A]"
+              />
+            </div>
+            <div>
+              <label className="block text-[#C9A962] text-sm mb-2">Your Question</label>
+              <textarea
+                value={question}
+                onChange={(e) => setQuestion(e.target.value)}
+                placeholder="What do you seek guidance on?"
+                rows={4}
+                className="w-full bg-[#1A1A24] border border-[#2A2A3A] rounded-xl px-4 py-3 text-[#E8E4DC] focus:outline-none focus:border-[#C9A962] placeholder-[#4A4A5A] resize-none"
+              />
+            </div>
+            <motion.button
+              onClick={handleShuffle}
+              disabled={!name.trim() || !question.trim()}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="w-full py-4 rounded-xl bg-gradient-to-r from-[#C9A962] to-[#D4AF37] text-[#0B0B0F] font-serif text-lg font-semibold flex items-center justify-center gap-2 disabled:opacity-50"
             >
-              <RefreshCw className="h-4 w-4" />
-              Retry
-            </button>
+              <Star className="h-5 w-5" />
+              Begin Reading
+            </motion.button>
+          </motion.div>
+        </div>
+      </div>
+    );
+  }
 
-            <button onClick={goBack} className="text-foreground-muted text-sm hover:text-foreground">
-              ← Back to Home
-            </button>
+  // Shuffle Screen
+  if (step === 'shuffle') {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-[#0B0B0F] via-[#12121A] to-[#0B0B0F] flex items-center justify-center">
+        <div className="text-center">
+          <motion.div
+            animate={{ rotate: 360 * shuffleCount }}
+            transition={{ duration: 0.3, repeat: Infinity, ease: 'linear' }}
+            className="inline-block mb-8"
+          >
+            <div className="w-24 h-24 rounded-full border-4 border-[#C9A962] border-t-transparent"></div>
+          </motion.div>
+          <motion.h2
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-3xl font-serif text-[#E8E4DC] mb-4"
+          >
+            Shuffling the Deck
+          </motion.h2>
+          <p className="text-[#8E8E93]">Infusing with your intention...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Selection Screen
+  if (step === 'selection') {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-[#0B0B0F] via-[#12121A] to-[#0B0B0F] pt-24 pb-8">
+        <div className="max-w-6xl mx-auto px-4">
+          <button
+            onClick={() => setStep('input')}
+            className="flex items-center gap-2 text-[#C9A962] mb-8 hover:text-[#D4AF37] transition-colors"
+          >
+            <ArrowLeft className="h-5 w-5" />
+            <span>Back</span>
+          </button>
+
+          <div className="text-center mb-8">
+            <h2 className="text-4xl font-serif text-[#E8E4DC] mb-2">Choose Three Cards</h2>
+            <p className="text-[#8E8E93]">Select the cards that call to you</p>
+          </div>
+
+          <div className="mb-8 text-center">
+            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#C9A962]/10">
+              <span className="text-[#C9A962] font-semibold">{selectedCards.length}/3 selected</span>
+            </span>
+          </div>
+
+          <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 gap-3">
+            <AnimatePresence>
+              {availableCards.map((card, index) => {
+                const state = cardStates[index];
+                if (state === undefined || state !== 'face-down' && state !== 'selected') {
+                  // Hidden cards are filtered out
+                  if (state !== 'selected' && state !== 'face-down') return null;
+                }
+                return (
+                  <motion.div
+                    key={card.id + '_' + index}
+                    layout
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <motion.div
+                      onClick={() => handleCardClick(card, index)}
+                      whileHover={{ scale: state !== 'selected' ? 1.05 : 1 }}
+                      whileTap={{ scale: 0.95 }}
+                      className={`relative aspect-[2/3] rounded-xl cursor-pointer transition-all duration-300 overflow-hidden ${
+                        state === 'selected'
+                          ? 'ring-2 ring-[#C9A962] shadow-lg shadow-[#C9A962]/30 brightness-110'
+                          : 'ring-1 ring-[#2A2A3A] hover:ring-[#C9A962]/50'
+                      }`}
+                    >
+                      <img
+                        src={card.image}
+                        alt={card.name}
+                        className="w-full h-full object-contain bg-[#1A1A24]"
+                        loading="lazy"
+                      />
+                      {state === 'selected' && (
+                        <motion.div
+                          initial={{ scale: 0 }}
+                          animate={{ scale: 1 }}
+                          className="absolute inset-0 bg-[#C9A962]/20 flex items-center justify-center"
+                        >
+                          <Check className="h-6 w-6 text-[#C9A962] stroke-[3]" />
+                        </motion.div>
+                      )}
+                    </motion.div>
+                  </motion.div>
+                );
+              })}
+            </AnimatePresence>
+          </div>
+
+          <div className="flex justify-center">
+            <motion.button
+              onClick={handleBeginReading}
+              disabled={selectedCards.length !== 3}
+              whileHover={{ scale: selectedCards.length === 3 ? 1.02 : 1 }}
+              whileTap={{ scale: 0.98 }}
+              className="py-4 px-8 rounded-xl bg-gradient-to-r from-[#C9A962] to-[#D4AF37] text-[#0B0B0F] font-serif text-lg font-semibold flex items-center gap-2 shadow-lg shadow-[#C9A962]/20 disabled:opacity-50"
+            >
+              <Star className="h-5 w-5" />
+              Begin Reading
+            </motion.button>
           </div>
         </div>
-      )}
+      </div>
+    );
+  }
 
-      {/* Main iframe */}
-      <iframe
-        key={retryCount}
-        ref={iframeRef}
-        src={IFRAME_URL}
-        className="w-full h-screen border-none"
-        allow="clipboard-write; microphone; camera"
-        sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox"
-        onLoad={handleIframeLoad}
-        onError={() => {
-          setIframeError(true);
-          setIframeLoaded(false);
-        }}
-        title="Ginni Reading"
-        style={{
-          // Prevent layout shift and ensure fullscreen
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          width: '100vw',
-          height: '100vh',
-        }}
-      />
-    </>
+  // Reading Reveal Screen
+  if (step === 'reading') {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-[#0B0B0F] via-[#12121A] to-[#0B0B0F] pt-24 pb-8">
+        <div className="max-w-4xl mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl font-serif text-[#E8E4DC] mb-4">Your Reading</h2>
+            <p className="text-[#8E8E93]">The cards reveal their messages...</p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-6">
+          {selectedCards.map((card, i) => (
+            <motion.div
+              key={card.index}
+              initial={{ opacity: 0, y: 20 }}
+              animate={currentRevealIndex >= i ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+              transition={{ duration: 0.5, delay: i * 0.3 }}
+              className={`bg-[#1A1A24] rounded-xl p-6 border ${
+                currentRevealIndex >= i ? 'border-[#C9A962]/30' : 'border-[#2A2A3A]'
+              }`}
+            >
+              <div className="text-center mb-4">
+                <span className="text-[#C9A962] text-sm font-medium bg-[#C9A962]/10 px-3 py-1 rounded-full">
+                  {["Past", "Present", "Future"][i]}
+                </span>
+              </div>
+              <div className="aspect-[2/3] rounded-lg overflow-hidden bg-[#0B0B0F] mb-4">
+                <img src={card.image} alt={card.name} className="w-full h-full object-contain" />
+              </div>
+              <div className="text-center">
+                <h3 className="text-xl font-serif text-[#E8E4DC] mb-2">{card.name}</h3>
+              </div>
+            </motion.div>
+          ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Result Screen
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-[#0B0B0F] via-[#12121A] to-[#0B0B0F] pt-24 pb-16">
+      <div className="max-w-4xl mx-auto px-4">
+        <button
+          onClick={() => router.push('/')}
+          className="flex items-center gap-2 text-[#C9A962] mb-8 hover:text-[#D4AF37] transition-colors"
+        >
+          <ArrowLeft className="h-5 w-5" />
+          <span>Back</span>
+        </button>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-center mb-12"
+        >
+          <div className="inline-flex rounded-full p-4 bg-[#C9A962]/10 mb-6">
+            <Star className="h-8 w-8 text-[#C9A962]" />
+          </div>
+          <h1 className="text-4xl font-serif text-[#E8E4DC] mb-4">Reading Complete</h1>
+          <p className="text-[#8E8E93]">{name}, the cards reveal your path</p>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="grid md:grid-cols-3 gap-6 mb-12"
+        >
+          {reading.map((card, i) => (
+            <div key={i} className="bg-[#1A1A24] rounded-xl p-6 border border-[#2A2A3A]">
+              <div className="text-center mb-4">
+                <span className="text-[#C9A962] text-sm font-medium bg-[#C9A962]/10 px-3 py-1 rounded-full">
+                  {card.position.title}
+                </span>
+              </div>
+              <div className="aspect-[2/3] rounded-lg overflow-hidden bg-[#0B0B0F] mb-4">
+                <img src={card.image} alt={card.name} className="w-full h-full object-contain" />
+              </div>
+              <h3 className="text-lg font-serif text-[#E8E4DC] mb-2 text-center">{card.name}</h3>
+              <p className="text-[#8E8E93] text-sm text-center mb-3">
+                <span className={card.isReversed ? 'text-[#D4AF37]' : 'text-[#C9A962]' }>
+                  [{card.isReversed ? 'Reversed' : 'Upright'}]
+                </span>
+              </p>
+              <p className="text-[#C9B098] text-sm leading-relaxed text-center">{card.meaning}</p>
+            </div>
+          ))}
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
+          className="bg-[#1A1A24] rounded-xl p-8 border border-[#2A2A3A] mb-8"
+        >
+          <h2 className="text-2xl font-serif text-[#E8E4DC] mb-6 text-center">Interpretation</h2>
+          <div className="text-[#C9B098] leading-relaxed space-y-4 max-w-3xl mx-auto">
+            <p className="text-[#C9B098] leading-relaxed text-lg text-center mb-6 italic text-[#8E8E93]">{`"${question}"`}</p>
+            <p className="text-[#E8E4DC] text-base leading-relaxed">{genSummary()}</p>
+          </div>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.6 }}
+          className="text-center"
+        >
+          <div className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[#C9A962]/10">
+            <Star className="h-5 w-5 text-[#C9A962]" />
+            <span className="text-[#C9A962] font-medium">
+              {reading.map((c) => c.yesNo).join(', ')}
+            </span>
+          </div>
+        </motion.div>
+
+        <div className="flex justify-center gap-4 mt-12">
+          <motion.button
+            onClick={resetReading}
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            className="px-8 py-4 rounded-xl bg-[#1A1A24] border border-[#2A2A3A] text-[#E8E4DC] font-serif text-lg hover:border-[#C9A962]/50 transition-colors"
+          >
+            New Reading
+          </motion.button>
+        </div>
+      </div>
+    </div>
   );
 }

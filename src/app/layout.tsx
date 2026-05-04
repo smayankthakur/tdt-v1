@@ -25,10 +25,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <head>
-        {/* Security headers are set via middleware */}
-        {/* CSP nonce is generated per request for inline scripts */}
-      </head>
+      <head />
       <body
         className="antialiased bg-[rgb(var(--background))] text-[rgb(var(--foreground))]"
         suppressHydrationWarning
@@ -40,4 +37,5 @@ export default function RootLayout({
     </html>
   );
 }
+
 

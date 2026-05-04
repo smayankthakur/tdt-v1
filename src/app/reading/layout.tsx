@@ -7,8 +7,8 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: 'Sacred Tarot Reading | Divine Tarot',
-  description: 'Ask your question. The 78 cards reveal their wisdom. No paywall, no AI — only the ancient tarot and your intention.',
+  title: 'Sacred Tarot Reading',
+  description: 'Immersive tarot reading experience powered by our external reading engine.',
 };
 
 export default function ReadingLayout({
@@ -16,6 +16,11 @@ export default function ReadingLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <>{children}</>;
+  return (
+    <>
+      <link rel="preconnect" href="https://ginni-ki-baatein-buddy.lovable.app" crossOrigin="anonymous" />
+      <link rel="dns-prefetch" href="https://ginni-ki-baatein-buddy.lovable.app" />
+      {children}
+    </>
+  );
 }
-

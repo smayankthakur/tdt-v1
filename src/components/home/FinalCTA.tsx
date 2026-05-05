@@ -8,7 +8,7 @@ import { cn } from '@/lib/utils';
 
 export default function FinalCTA() {
   return (
-    <section className="relative py-16 md:py-20 bg-gradient-to-br from-[rgb(var(--background))] via-[rgb(var(--surface))] to-[rgb(var(--background))] overflow-hidden">
+    <section className="relative py-14 md:py-20 bg-gradient-to-br from-[rgb(var(--background))] via-[rgb(var(--surface))] to-[rgb(var(--background))] overflow-hidden">
       {/* Background Effects */}
       <div className="absolute inset-0">
         <motion.div
@@ -29,7 +29,7 @@ export default function FinalCTA() {
         />
       </div>
 
-      <div className="relative mx-auto max-w-3xl px-6 text-center">
+      <div className="relative mx-auto w-full max-w-3xl px-4 sm:px-6 text-center">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -41,7 +41,7 @@ export default function FinalCTA() {
             className="relative inline-block mb-8"
             whileHover={{ scale: 1.05 }}
           >
-            <Sparkles className="h-14 w-14 text-[rgb(var(--gold))]" />
+            <Sparkles className="h-12 w-12 text-[rgb(var(--gold))]" />
             <motion.div
               className="absolute inset-0"
               animate={{ 
@@ -50,7 +50,7 @@ export default function FinalCTA() {
               }}
               transition={{ duration: 2, repeat: Infinity }}
             >
-              <Sparkles className="h-14 w-14 text-[rgb(var(--gold-light))]" />
+              <Sparkles className="h-12 w-12 text-[rgb(var(--gold-light))]" />
             </motion.div>
             <motion.div
               className="absolute inset-0 rounded-full bg-[rgb(var(--gold))]/20 blur-xl"
@@ -62,15 +62,15 @@ export default function FinalCTA() {
             />
           </motion.div>
 
-          <h2 className="font-heading text-3xl md:text-4xl lg:text-5xl text-[rgb(var(--foreground))] mb-6">
+          <h2 className="font-heading text-2xl sm:text-3xl md:text-4xl text-[rgb(var(--foreground))] mb-6 leading-tight">
             Tumhare answers wait kar rahe hain...
           </h2>
-          <p className="text-lg md:text-xl text-[rgb(var(--foreground-muted))] mb-10 leading-relaxed">
+          <p className="text-base sm:text-lg text-[rgb(var(--foreground-muted))] mb-10 leading-relaxed">
             Cards fail jaane hain. Tumhara guidance ready hai. 
             Clarity ke liye pehla step lo.
           </p>
           
-          <Link href="/reading" className={cn(buttonVariants({ size: 'xl' }), 'btn-cta-pulse')}>
+          <Link href="/reading" className={cn(buttonVariants({ size: 'xl' }), 'btn-cta-pulse w-full sm:w-auto flex items-center justify-center gap-2 mx-auto')}>
             <span>Aage Badhte Hain</span>
             <ArrowRight className="h-6 w-6" />
           </Link>

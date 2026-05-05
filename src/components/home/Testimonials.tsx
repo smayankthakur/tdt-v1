@@ -61,7 +61,7 @@ const itemVariants = {
 export default function Testimonials() {
   return (
     <section className="py-16 md:py-20 bg-[rgb(var(--background))] overflow-hidden">
-      <div className="mx-auto max-w-6xl px-6">
+      <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -82,21 +82,21 @@ export default function Testimonials() {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: '-100px' }}
-          className="grid gap-6 md:grid-cols-3"
+          className="flex gap-6 overflow-x-auto pb-4 -mx-4 px-4 sm:mx-0 sm:px-0 sm:grid sm:grid-cols-2 md:grid-cols-3 sm:gap-6 sm:overflow-visible sm:pb-0"
         >
           {testimonials.map((testimonial, index) => (
             <motion.div
               key={testimonial.name}
               variants={itemVariants}
               whileHover={{ y: -4, transition: { duration: 0.3 } }}
-              className="group p-8 rounded-2xl bg-[rgb(var(--surface))/60] border border-[rgb(var(--gold))/10] hover:border-[rgb(var(--gold))/30] hover:shadow-[0_0_30px_rgba(244,197,66,0.1)] transition-all duration-300"
+              className="group flex-none w-72 sm:w-auto p-8 rounded-2xl bg-[rgb(var(--surface))/60] border border-[rgb(var(--gold))/10] hover:border-[rgb(var(--gold))/30] hover:shadow-[0_0_30px_rgba(244,197,66,0.1)] transition-all duration-300"
             >
               <div className="mb-4 flex gap-1">
                 {[...Array(testimonial.rating)].map((_, i) => (
                   <Star key={i} className="h-4 w-4 text-[rgb(var(--gold))] fill-[rgb(var(--gold))]" />
                 ))}
               </div>
-              <p className="text-[rgb(var(--foreground-secondary))] italic mb-6 leading-relaxed">
+              <p className="text-[rgb(var(--foreground-secondary))] italic mb-6 leading-relaxed text-sm sm:text-base">
                 &ldquo;{testimonial.text}&rdquo;
               </p>
               <div className="flex items-center gap-3">

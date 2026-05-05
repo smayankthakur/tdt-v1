@@ -31,7 +31,7 @@ export default function HowItWorks() {
 
   return (
     <section className="py-section bg-background">
-      <div className="mx-auto max-w-6xl px-6">
+      <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -52,7 +52,7 @@ export default function HowItWorks() {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: '-100px' }}
-          className="grid gap-block md:grid-cols-3"
+          className="flex flex-col gap-8 md:grid md:grid-cols-3 md:gap-block"
         >
           {stepsData.map((step, index) => {
             const StepIcon = step.icon;
@@ -60,7 +60,7 @@ export default function HowItWorks() {
               <motion.div
                 key={step.key}
                 variants={itemVariants}
-                className="relative text-center p-8"
+                className="relative text-center"
               >
                 <div className="mb-element flex justify-center">
                   <motion.div
@@ -78,7 +78,7 @@ export default function HowItWorks() {
                 </div>
 
                 {index < stepsData.length - 1 && (
-                  <div className="absolute top-[60%] left-[60%] hidden h-px w-[80%] md:block">
+                  <div className="hidden md:block absolute top-[60%] left-[60%] h-px w-[80%]">
                     <motion.div
                       className="h-full w-full bg-gradient-to-r from-gold-10 via-gold-20 to-gold-10"
                       initial={{ scaleX: 0 }}

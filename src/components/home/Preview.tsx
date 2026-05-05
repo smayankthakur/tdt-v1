@@ -13,7 +13,7 @@ export default function Preview() {
 
   return (
     <section className="py-section bg-background">
-      <div className="mx-auto max-w-4xl px-6">
+      <div className="mx-auto w-full max-w-4xl px-4 sm:px-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -38,7 +38,7 @@ export default function Preview() {
         >
           <div className="absolute inset-0 gradient-preview-card" />
 
-          <div className="relative p-8 md:p-12">
+          <div className="relative p-6 sm:p-12">
             <div className="flex items-center gap-element mb-block">
               <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-r from-gold-start to-gold">
                 <Sparkles className="h-5 w-5 text-black" />
@@ -51,7 +51,7 @@ export default function Preview() {
             <div className="space-y-element">
               {/* Preview cards using real images */}
               <div className="flex gap-element justify-center">
-                <div className="relative w-16 h-24 flex-shrink-0 rounded-lg overflow-hidden border border-gold/30">
+                <div className="relative w-14 h-20 flex-shrink-0 rounded-lg overflow-hidden border border-gold/30">
                   <Image
                     src="/card_img/The Fool.png"
                     alt="The Fool"
@@ -59,7 +59,7 @@ export default function Preview() {
                     className="object-cover"
                   />
                 </div>
-                <div className="relative w-16 h-24 flex-shrink-0 rounded-lg overflow-hidden border border-gold/30">
+                <div className="relative w-14 h-20 flex-shrink-0 rounded-lg overflow-hidden border border-gold/30">
                   <Image
                     src="/card_img/The Lovers.png"
                     alt="The Lovers"
@@ -67,7 +67,7 @@ export default function Preview() {
                     className="object-cover"
                   />
                 </div>
-                <div className="relative w-16 h-24 flex-shrink-0 rounded-lg overflow-hidden border border-gold/30">
+                <div className="relative w-14 h-20 flex-shrink-0 rounded-lg overflow-hidden border border-gold/30">
                   <Image
                     src="/card_img/The Star.png"
                     alt="The Star"
@@ -78,31 +78,31 @@ export default function Preview() {
               </div>
 
               <div className="prose prose-sm max-w-none">
-                <p className="text-foreground-secondary leading-relaxed italic">
+                <p className="text-foreground-secondary leading-relaxed italic text-sm sm:text-base">
                   <span className="text-gold font-semibold not-italic">
                     {isHydrated ? t('landing.preview.pastLabel') : 'The Past:'}
                   </span>{' '}
                   {isHydrated ? t('landing.preview.pastText') : "You've been at a crossroads, feeling uncertain about which path to take. The decisions you've made have led you here, but something still feels unresolved..."}
                 </p>
-                <p className="text-foreground-secondary leading-relaxed mt-element italic">
+                <p className="text-foreground-secondary leading-relaxed mt-element italic text-sm sm:text-base">
                   <span className="text-gold font-semibold not-italic">
                     {isHydrated ? t('landing.preview.presentLabel') : 'The Present:'}
                   </span>{' '}
                   {isHydrated ? t('landing.preview.presentText') : "There's a new opportunity approaching. The universe is aligning to bring clarity to your situation, but you need to trust your intuition..."}
                 </p>
-                <p className="text-foreground-secondary leading-relaxed mt-element italic">
+                <p className="text-foreground-secondary leading-relaxed mt-element italic text-sm sm:text-base">
                   <span className="text-gold font-semibold not-italic">
                     {isHydrated ? t('landing.preview.guidanceLabel') : 'The Guidance:'}
                   </span>{' '}
                   {isHydrated ? t('landing.preview.guidanceText') : 'The cards speak of hope and new beginnings. Whatever you\'ve been worrying about, there\'s light at the end. Trust the process...'}
                 </p>
               </div>
+            </div>
 
-              <div className="mt-block pt-block border-t border-gold-10">
-                <p className="text-body-sm text-foreground-muted text-center italic">
-                  {isHydrated ? t('landing.preview.ctaText') : 'This is just a glimpse. Your full reading awaits...'}
-                </p>
-              </div>
+            <div className="mt-block pt-block border-t border-gold-10">
+              <p className="text-body-sm text-foreground-muted text-center italic">
+                {isHydrated ? t('landing.preview.ctaText') : 'This is just a glimpse. Your full reading awaits...'}
+              </p>
             </div>
           </div>
         </motion.div>
@@ -114,7 +114,7 @@ export default function Preview() {
           transition={{ duration: 0.6, delay: 0.4 }}
           className="mt-block text-center"
         >
-          <Link href="/reading" className={cn(buttonVariants({ size: 'lg' }), 'btn-cta-pulse')}>
+          <Link href="/reading" className={cn(buttonVariants({ size: 'lg' }), 'btn-cta-pulse w-full sm:w-auto flex items-center justify-center gap-2')}>
             <span>{isHydrated ? t('landing.preview.ctaButton') : "See What's Coming"}</span>
             <ArrowRight className="h-5 w-5" />
           </Link>
@@ -125,4 +125,5 @@ export default function Preview() {
       </div>
     </section>
   );
+
 }

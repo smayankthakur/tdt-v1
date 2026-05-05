@@ -125,7 +125,7 @@ export default function Hero() {
       <FloatingStars />
 
       {/* Main Content - Two Column Layout */}
-      <div className="relative z-10 mx-auto max-w-7xl px-6 py-12 lg:py-20">
+      <div className="relative z-10 mx-auto w-full max-w-7xl px-4 py-12 lg:px-6 lg:py-20">
         {/* Subtle glow behind text area */}
         <motion.div
           className="absolute left-0 top-1/2 -translate-y-1/2 w-full lg:w-1/2 h-full max-h-[600px] pointer-events-none glow-orb-center"
@@ -133,14 +133,14 @@ export default function Hero() {
           animate={{ opacity: 1 }}
           transition={{ duration: 2, delay: 0.5 }}
         />
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+        <div className="grid gap-8 lg:gap-16 items-center lg:grid-cols-2">
           {/* Mobile: Image first, Desktop: Text first */}
           {/* Right Column - Stacked Image Composition */}
           <motion.div
             variants={itemVariants}
-            className="flex justify-center lg:justify-end order-1 lg:order-2"
+            className="flex justify-center order-1 lg:order-2"
           >
-            <div className="relative w-full max-w-[500px] aspect-[3/4]">
+            <div className="relative w-full max-w-[280px] sm:max-w-[340px] lg:max-w-[500px] aspect-[3/4]">
               {/* Layer 1 - Base Background (imgbg.png) */}
               <div className="absolute inset-0 z-10">
                 <Image
@@ -154,10 +154,10 @@ export default function Hero() {
 
               {/* Layer 2 - Main Image (img.png) with floating animation */}
               <motion.div
-                className="absolute inset-0 z-20 flex items-center justify-center px-8"
+                className="absolute inset-0 z-20 flex items-center justify-center px-4 lg:px-8"
                 animate={floatAnimation}
               >
-                <div className="relative w-full max-w-[500px] aspect-[3/4]">
+                <div className="relative w-full max-w-[280px] sm:max-w-[340px] lg:max-w-[500px] aspect-[3/4]">
                   <Image
                     src="/tdt-v3/img.png"
                     alt="Tarot Reading"
@@ -171,13 +171,13 @@ export default function Hero() {
               </motion.div>
 
               {/* Layer 3 - Logo (logo.png) at top-left */}
-              <div className="absolute top-4 left-4 z-30">
+              <div className="absolute top-3 left-3 z-30">
                 <Image
                   src="/tdt-v3/logo.png"
                   alt="The Devine Tarot"
-                  width={60}
-                  height={60}
-                  className="w-12 h-12 lg:w-16 lg:h-16 object-contain drop-shadow-lg"
+                  width={48}
+                  height={48}
+                  className="w-10 h-10 lg:w-16 lg:h-16 object-contain drop-shadow-lg"
                   priority
                 />
               </div>
@@ -194,7 +194,7 @@ export default function Hero() {
             {/* Micro Bio */}
             <motion.p
               variants={itemVariants}
-              className="text-body text-text-secondary max-w-2xl mx-auto lg:mx-0 mb-element leading-relaxed"
+              className="text-body text-text-secondary max-w-xl mx-auto lg:mx-0 mb-element leading-relaxed text-sm sm:text-base"
             >
               {isHydrated ? t('home.hero.sloganLine1') : "This isn't just tarot…"}
               <br />
@@ -203,7 +203,7 @@ export default function Hero() {
 
             {/* Powerful Quote (Hook) */}
             <motion.div variants={itemVariants} className="mb-block">
-              <p className="font-serif text-hero text-text-primary leading-tight text-glow">
+              <p className="font-serif text-2xl sm:text-3xl lg:text-hero text-text-primary leading-tight text-glow px-2">
                 &quot;{isHydrated ? t('home.hero.quote') : "The answer you're looking for… you already feel it."}&quot;
               </p>
             </motion.div>
@@ -212,12 +212,12 @@ export default function Hero() {
             <motion.div variants={itemVariants}>
               <Link
                 href="/reading"
-                className={cn(buttonVariants({ size: 'xl' }), 'btn-cta-pulse')}
+                className={cn(buttonVariants({ size: 'xl' }), 'btn-cta-pulse w-full sm:w-auto flex items-center justify-center gap-2')}
               >
-                <span className="relative z-10">{isHydrated ? t('home.hero.ctaButton') : 'Know Your Fortune'}</span>
+                <span className="relative z-10 text-base sm:text-lg">{isHydrated ? t('home.hero.ctaButton') : 'Know Your Fortune'}</span>
               </Link>
               {/* Subtext below CTA */}
-              <p className="mt-4 text-body-sm text-foreground-muted text-center font-sans">
+              <p className="mt-4 text-body-sm text-foreground-muted text-center font-sans px-4">
                 {isHydrated ? t('home.hero.ctaSubtext') : 'Maybe this is the answer you have been waiting for…'}
               </p>
             </motion.div>

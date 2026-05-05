@@ -15,8 +15,8 @@ export default function WhySection() {
   const { t, isHydrated } = useLanguage();
   return (
     <section className="py-section bg-background">
-      <div className="mx-auto max-w-6xl px-6">
-        <div className="grid gap-block lg:grid-cols-2 lg:items-center">
+      <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
+        <div className="grid gap-block sm:grid-cols-2 lg:grid-cols-2 lg:items-center">
           {/* Left Content */}
           <motion.div
             initial={{ opacity: 0, x: -30 }}
@@ -58,7 +58,7 @@ export default function WhySection() {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="grid gap-element"
+            className="grid gap-element grid-cols-1"
           >
             {featuresData.map((feature, index) => {
               const FeatureIcon = feature.icon;
@@ -90,10 +90,11 @@ export default function WhySection() {
                   </p>
                 </div>
               </motion.div>
-            )})}
+             )})}  
           </motion.div>
         </div>
       </div>
     </section>
   );
+
 }

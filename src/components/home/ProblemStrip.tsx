@@ -31,13 +31,13 @@ export default function ProblemStrip() {
 
   return (
     <section className="py-section bg-background">
-      <div className="mx-auto max-w-6xl px-6">
+      <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
         <motion.div
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: '-100px' }}
-          className="grid gap-block md:grid-cols-3"
+          className="flex gap-6 overflow-x-auto no-scrollbar pb-4 -mx-4 px-4 sm:mx-0 sm:px-0 sm:grid sm:grid-cols-3 sm:gap-block sm:overflow-visible sm:pb-0"
         >
           {problemsData.map((problem) => {
             const ProblemIcon = problem.icon;
@@ -46,7 +46,7 @@ export default function ProblemStrip() {
                 key={problem.key}
                 variants={itemVariants}
                 whileHover={{ y: -8, transition: { duration: 0.3 } }}
-                className="group cursor-pointer rounded-2xl bg-surface-60 p-8 backdrop-blur-sm border border-gold-10 hover:border-gold-30 hover-glow-gold transition-all duration-300"
+                className="group cursor-pointer flex-none w-64 sm:w-auto rounded-2xl bg-surface-60 p-8 backdrop-blur-sm border border-gold-10 hover:border-gold-30 hover-glow-gold transition-all duration-300"
               >
                 <motion.div
                   className="mx-auto mb-element flex h-14 w-14 items-center justify-center rounded-full relative gradient-gold-red"

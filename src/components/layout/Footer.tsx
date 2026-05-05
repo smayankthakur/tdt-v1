@@ -252,10 +252,10 @@ const Footer = () => {
             Designed by <a href="https://www.sitelytc.com/" target="_blank" rel="noopener noreferrer" className="hover:text-amber-500/70 transition-colors">Sitelytc</a>
           </div>
           <div className="flex items-center gap-4 mt-2 md:mt-0">
-            <span>Privacy Policy</span>
+            {/* <span>Privacy Policy</span>
             <span className="w-px h-3 bg-white/10" />
             <span>Terms of Service</span>
-            <span className="w-px h-3 bg-white/10" />
+            <span className="w-px h-3 bg-white/10" /> */}
             <span>© 2026 The Divine Tarot. All rights reserved.</span>
           </div>
         </div>

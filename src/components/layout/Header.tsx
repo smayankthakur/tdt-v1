@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
@@ -33,6 +33,28 @@ export default function Header() {
   const pathname = usePathname();
   const { isHydrated, t } = useLanguage();
   const [isMobileOpen, setIsMobileOpen] = useState(false);
+  const [isHidden, setIsHidden] = useState(false);
+  const [lastScrollY, setLastScrollY] = useState(0);
+
+  // Hide header on scroll down, show on scroll up
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const handleScroll = () => {
+        const currentScrollY = window.scrollY;
+        if (currentScrollY > lastScrollY && currentScrollY > 100) {
+          // Scrolling down
+          setIsHidden(true);
+        } else {
+          // Scrolling up or near top
+          setIsHidden(false);
+        }
+        setLastScrollY(currentScrollY);
+      };
+
+      window.addEventListener('scroll', handleScroll);
+      return () => window.removeEventListener('scroll', handleScroll);
+    }
+  }, [lastScrollY]);
 
   const getNavLabel = (labelKey: string): string => {
     if (!isHydrated) return labelKey.split('.').pop() || labelKey;
@@ -42,7 +64,10 @@ export default function Header() {
   return (
     <>
       <motion.header
-        className="sticky top-0 left-0 right-0 z-50 transition-all duration-300 backdrop-blur-md bg-black/40 border-b border-white/10"
+        className={cn(
+          "sticky top-0 left-0 right-0 z-50 transition-all duration-300 backdrop-blur-md bg-black/40 border-b border-white/10",
+          isHidden ? "translate-y-[-100%]" : "translate-y-0"
+        )}
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         transition={{ duration: 0.5 }}

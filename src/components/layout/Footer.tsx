@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useLanguage } from '@/hooks/useLanguage';
-import { Mail } from 'lucide-react';
+import { Mail, Lock, Heart, Sparkles } from 'lucide-react';
 
 // Social icons as custom SVGs (clean, minimal)
 const InstagramIcon = (props: React.SVGProps<SVGSVGElement>) => (

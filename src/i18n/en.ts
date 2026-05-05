@@ -230,16 +230,38 @@ export const en: TranslationSchema = {
     newReading: 'Try another',
   },
 
-  footer: {
-    tagline: 'Clarity begins within',
-    copyright: '© Sitelytc Digital Media. All rights reserved.',
-    madeWith: 'Made with cosmic energy',
-    privacy: 'Privacy',
-    navigation: 'Navigation',
-    support: 'Support',
-    connect: 'Connect',
-    disclaimer: 'This is not a replacement for professional advice. It is here to provide you clarity and direction.',
-  },
+    footer: {
+      tagline: 'Clarity begins within',
+      copyright: '© Sitelytc Digital Media. All rights reserved.',
+      madeWith: 'Made with cosmic energy',
+      privacy: 'Privacy',
+      navigation: 'Navigation',
+      support: 'Support',
+      disclaimer: 'This is not a replacement for professional advice. It is here to provide you clarity and direction.',
+      description: 'Clarity for your path. Guidance for your soul.',
+      cta: {
+        title: 'Get Daily Divine Insights',
+        subtext: 'Receive intuitive guidance directly to your inbox.',
+        placeholder: 'Enter your email',
+        button: 'Unlock Daily Guidance',
+      },
+      trust: {
+        title: 'Your Trust',
+        secure: 'Secure & Private Readings',
+        seekers: 'Trusted by 7L+ Seekers',
+        authentic: 'Authentic Spiritual Guidance',
+      },
+      quickLinks: {
+        title: 'Quick Links',
+        about: 'About',
+        readings: 'Readings',
+        premium: 'Premium',
+        contact: 'Contact',
+      },
+      connect: {
+        title: 'Connect With Us',
+      },
+    },
 
   chat: {
     button: 'Talk to Ginni',

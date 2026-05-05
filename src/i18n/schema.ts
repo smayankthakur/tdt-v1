@@ -257,19 +257,41 @@ export const schema = {
     seeMore: "",
   },
 
-  // =====================
-  // FOOTER
-  // =====================
-  footer: {
-    tagline: "",
-    copyright: "",
-    madeWith: "",
-    privacy: "",
-    navigation: "",
-    support: "",
-    connect: "",
-    disclaimer: "",
-  },
+   // =====================
+   // FOOTER
+   // =====================
+   footer: {
+     tagline: "",
+     description: "",
+     cta: {
+       title: "",
+       subtext: "",
+       placeholder: "",
+       button: "",
+     },
+     trust: {
+       title: "",
+       secure: "",
+       seekers: "",
+       authentic: "",
+     },
+     quickLinks: {
+       title: "",
+       about: "",
+       readings: "",
+       premium: "",
+       contact: "",
+     },
+     connect: {
+       title: "",
+     },
+     copyright: "",
+     madeWith: "",
+     privacy: "",
+     navigation: "",
+     support: "",
+     disclaimer: "",
+   },
 
   // =====================
   // CHAT

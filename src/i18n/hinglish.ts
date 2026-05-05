@@ -212,19 +212,7 @@ export const hinglish: TranslationSchema = {
       },
     },
 
-  footer: {
-    ...en.footer,
-    tagline: 'Clarity begins within',
-    copyright: `© Divine Tarot. All rights reserved.`,
-    madeWith: 'Made with cosmic energy',
-    privacy: 'Privacy',
-    navigation: 'Navigation',
-    support: 'Support',
-    connect: 'Connect',
-    disclaimer: 'This is not a replacement for professional advice. It is here to provide you clarity and direction.',
-  },
-
-  readingForm: {
+    readingForm: {
     title: 'Thoda aur batao…',
     subtitle: 'Taaki clear dekh sakein',
     name: 'Tumhara naam',
@@ -267,11 +255,38 @@ export const hinglish: TranslationSchema = {
     },
   },
 
-  booking: {
-    ...en.booking,
-  },
+   booking: {
+     ...en.booking,
+   },
 
-  metadata: {
-    ...en.metadata,
-  },
-};
+   footer: {
+     ...en.footer,
+     description: 'Apne raaste ki clarity. Apni aatma ke liye guidance.',
+     cta: {
+       title: 'Daily Divine Insights paein',
+       subtext: 'Apne inbox ko intuitive guidance receive karo.',
+       placeholder: 'Enter your email',
+       button: 'Unlock Daily Guidance',
+     },
+     trust: {
+       title: 'Your Trust',
+       secure: 'Secure & Private Readings',
+       seekers: 'Trusted by 7L+ Seekers',
+       authentic: 'Authentic Spiritual Guidance',
+     },
+     quickLinks: {
+       title: 'Quick Links',
+       about: 'About',
+       readings: 'Readings',
+       premium: 'Premium',
+       contact: 'Contact',
+     },
+     connect: {
+       title: 'Connect With Us',
+     },
+   },
+
+   metadata: {
+     ...en.metadata,
+   },
+ };

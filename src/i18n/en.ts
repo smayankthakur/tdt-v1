@@ -163,17 +163,42 @@ export const en: TranslationSchema = {
       title: 'A Glimpse Into Your Journey',
       subtitle: 'What the cards might reveal for you',
       cardTitle: 'Your Reading Preview',
-      pastLabel: 'The Past:',
-      pastText: "You've been at a crossroads, feeling uncertain about which path to take. The decisions you've made have led you here, but something still feels unresolved...",
-      presentLabel: 'The Present:',
-      presentText: "There's a new opportunity approaching. The universe is aligning to bring clarity to your situation, but you need to trust your intuition...",
-      guidanceLabel: 'The Guidance:',
-      guidanceText: 'The cards speak of hope and new beginnings. Whatever you\'ve been worrying about, there\'s light at the end. Trust the process...',
-      ctaText: 'This is just a glimpse. Your full reading awaits...',
-      ctaButton: "See What's Coming",
+      // NEW: Personal opening with dynamic name
+      personalOpening: 'Hey {name}… I can already feel your energy through these cards. 💖',
+      // NEW: Section header
+      messageOfCards: 'Message of the Cards',
+      // NEW: Individual card interpretations
+      card1: {
+        name: 'The Fool',
+        interpretation: 'This card reveals a deep emotional crossroads. You\'re beginning a new journey, but uncertainty clouds the first step. The universe is nudging you to trust despite the fear.',
+      },
+      card2: {
+        name: 'The Lovers',
+        interpretation: 'There\'s a powerful connection energizing your situation. This isn\'t just about romance — it\'s about aligning with what (or who) truly resonates with your soul.',
+      },
+      card3: {
+        name: 'The Star',
+        interpretation: 'Hope and healing are on the horizon. After recent challenges, clarity and renewed faith are appearing. The universe is restoring your belief in brighter days ahead.',
+      },
+      // NEW: Guidance block
+      guidanceBlock: {
+        text: "The universe is speaking one clear message to you — trust the process. 💫\n\nThe connections and opportunities you're feeling are not random. Keep your energy elevated and aligned with your true desires.",
+      },
+      // NEW: Cliffhanger preview lock
+      previewLock: 'Cards have so much more to reveal… Your future, next actions, and hidden emotions are still veiled. 🌙',
+      // UPDATED: More emotional CTA
+      ctaButton: "Unlock My Full Reading ✨",
       ctaSubtext: 'Takes less than 60 seconds',
-    },
-  },
+      // Keep old keys for compatibility
+      pastLabel: 'The Past:',
+      pastText: "You've been at a crossroads, feeling uncertain about which path to take.",
+      presentLabel: 'The Present:',
+      presentText: "There's a new opportunity approaching. The universe is aligning...",
+      guidanceLabel: 'The Guidance:',
+      guidanceText: 'The cards speak of hope and new beginnings...',
+       ctaText: 'This is just a glimpse. Your full reading awaits...',
+     },
+   },
 
    whySection: {
       title: 'Why The Devine Tarot?',

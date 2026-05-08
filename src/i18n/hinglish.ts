@@ -121,6 +121,49 @@ export const hinglish: TranslationSchema = {
     },
   },
 
+   landing: {
+     ...en.landing,
+     preview: {
+       title: 'A Glimpse Into Your Journey',
+       subtitle: 'What the cards might reveal for you',
+       cardTitle: 'Your Reading Preview',
+       // NEW: Personal opening with dynamic name
+       personalOpening: 'Arey yaar {name}… cards tumhari energy bohot strongly feel kar rahe hain. 💖',
+       // NEW: Section header
+       messageOfCards: 'Cards Ka Message',
+       // NEW: Individual card interpretations
+       card1: {
+         name: 'The Fool',
+         interpretation: 'Yeh card ek deep emotional aur soul-level crossroads dikha raha hai. Tum naya safar shuru kar rahe ho, lekin pehla kadam uthane mein uncertainty hai. Universe tumhe fear ke bawajood trust karne ke liye push kar raha hai.',
+       },
+       card2: {
+         name: 'The Lovers',
+         interpretation: 'Yeh card tumhare situation mein ek powerful connection ka energy dikha raha hai. Yeh sirf pyaar ke baare mein nahi hai — yeh tumhare soul se resonate karne wale cheez ya rishte ke saath align hone ke baare mein hai.',
+       },
+       card3: {
+         name: 'The Star',
+         interpretation: 'Umeed aur healing ka raasta khul raha hai. Recent challenges ke baad, clarity aur restored faith aa rahi hai. Universe tumhare andar ek brighter tomorrow par faith wapas kar raha hai.',
+       },
+       // NEW: Guidance block
+       guidanceBlock: {
+         text: "Universe tumhe ek hi cheez bol raha hai — trust the process. 💫\n\nJo connection tum feel kar rahe ho woh random nahi hain. Abhi bas apni energy ko positive rakhna zaroori hai.",
+       },
+       // NEW: Cliffhanger preview lock
+       previewLock: 'Cards ke andar aur bhi bohot kuch reveal ho raha hai... Tumhare future, next actions, aur hidden emotions ka message abhi baaki hai. 🌙',
+       // UPDATED: More emotional CTA
+       ctaButton: "Mera Full Reading Dekho ✨",
+       ctaSubtext: '60 seconds se kam',
+       // Keep old keys for compatibility
+       pastLabel: 'The Past:',
+       pastText: "You've been at a crossroads, feeling uncertain about which path to take.",
+       presentLabel: 'The Present:',
+       presentText: "There's a new opportunity approaching. The universe is aligning...",
+       guidanceLabel: 'The Guidance:',
+       guidanceText: 'The cards speak of hope and new beginnings...',
+       ctaText: 'This is just a glimpse. Your full reading awaits...',
+     },
+   },
+
   reading: {
     ...en.reading,
     title: 'Tumhara Tarot Reading',

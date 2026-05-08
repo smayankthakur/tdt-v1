@@ -220,6 +220,27 @@ export const schema = {
       title: "",
       subtitle: "",
       cardTitle: "",
+      personalOpening: "",
+      messageOfCards: "",
+      card1: {
+        name: "",
+        interpretation: "",
+      },
+      card2: {
+        name: "",
+        interpretation: "",
+      },
+      card3: {
+        name: "",
+        interpretation: "",
+      },
+      guidanceBlock: {
+        text: "",
+      },
+      previewLock: "",
+      ctaButton: "",
+      ctaSubtext: "",
+      // Legacy keys for backward compatibility
       pastLabel: "",
       pastText: "",
       presentLabel: "",
@@ -227,8 +248,6 @@ export const schema = {
       guidanceLabel: "",
       guidanceText: "",
       ctaText: "",
-      ctaButton: "",
-      ctaSubtext: "",
     },
   },
 

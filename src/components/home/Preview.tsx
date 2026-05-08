@@ -25,20 +25,20 @@ export default function Preview() {
 
   const userName = getUserName();
 
-  // Interpolated opening text
-  const personalOpening = isHydrated
-    ? t('landing.preview.personalOpening', { name: userName })
-    : userName
-    ? `Arey yaar ${userName}… cards are picking up your energy so strongly. 💖`
-    : 'Arey yaar… cards are picking up your energy so strongly. 💖';
+   // Interpolated opening text
+   const personalOpening = isHydrated
+     ? t('landing.preview.personalOpening', { name: userName })
+     : userName
+     ? `Arey yaar ${userName}… cards tumhari energy bohot strongly feel kar rahe hain. 💖\n\nLagta hai tumhare dil mein kaafi confusion aur emotional pull chal raha hai…\n\nChalo dekhte hain universe tumhe kya message dena chahta hai. ✨`
+     : 'Arey yaar… cards tumhari energy bohot strongly feel kar rahe hain. 💖\n\nLagta hai tumhare dil mein kaafi confusion aur emotional pull chal raha hai…\n\nChalo dekhte hain universe tumhe kya message dena chahta hai. ✨';
 
-  // Guidance block text - prepend name if available
-  const getGuidanceText = () => {
-    const base = isHydrated
-      ? t('landing.preview.guidanceBlock.text')
-      : 'the universe is speaking one clear message to you — trust the process. 💫\n\nThe connections and opportunities you\'re feeling are not random. Keep your energy elevated and aligned with your true desires.';
-    return userName ? `${userName}, ${base}` : base;
-  };
+   // Guidance block text - prepend name if available
+   const getGuidanceText = () => {
+     const base = isHydrated
+       ? t('landing.preview.guidanceBlock.text')
+       : 'Universe tumhe ek hi cheez bol raha hai — trust the process. 💫\n\nJo connection tum feel kar rahe ho woh random nahi hain. Abhi bas apni energy ko positive rakhna zaroori hai.';
+     return userName ? `${userName}, ${base}` : base;
+   };
 
   const guidanceText = getGuidanceText();
 

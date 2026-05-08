@@ -164,7 +164,7 @@ export const en: TranslationSchema = {
       subtitle: 'What the cards might reveal for you',
       cardTitle: 'Your Reading Preview',
       // NEW: Personal opening with dynamic name
-      personalOpening: 'Hey {name}… I can already feel your energy through these cards. 💖',
+      personalOpening: 'Hey {name}… I can already feel your energy through these cards. 💖\n\nI sense a lot of confusion and emotional pull in your heart…\n\nLet’s see what message the universe has for you. ✨',
       // NEW: Section header
       messageOfCards: 'Message of the Cards',
       // NEW: Individual card interpretations
@@ -182,7 +182,7 @@ export const en: TranslationSchema = {
       },
       // NEW: Guidance block
       guidanceBlock: {
-        text: "The universe is speaking one clear message to you — trust the process. 💫\n\nThe connections and opportunities you're feeling are not random. Keep your energy elevated and aligned with your true desires.",
+        text: "The universe is speaking one clear message to you — trust the process. 💫\n\nThe connections and opportunities you're feeling are not random. The universe is slowly pushing you in the right direction.",
       },
       // NEW: Cliffhanger preview lock
       previewLock: 'Cards have so much more to reveal… Your future, next actions, and hidden emotions are still veiled. 🌙',
@@ -195,7 +195,7 @@ export const en: TranslationSchema = {
       presentLabel: 'The Present:',
       presentText: "There's a new opportunity approaching. The universe is aligning...",
       guidanceLabel: 'The Guidance:',
-      guidanceText: 'The cards speak of hope and new beginnings...',
+       guidanceText: "The universe is speaking one clear message to you — trust the process. 💫\n\nThe connections and opportunities you're feeling are not random. The universe is slowly pushing you in the right direction.",
        ctaText: 'This is just a glimpse. Your full reading awaits...',
      },
    },
@@ -234,7 +234,7 @@ export const en: TranslationSchema = {
     reveal: 'Reveal Your Answer',
     loading: 'Reading your energy...',
     yourCards: 'Your Cards',
-    interpretation: 'Interpretation',
+     interpretation: 'What this card means for you',
     past: 'The Past',
     present: 'The Present',
     guidance: 'The Guidance',

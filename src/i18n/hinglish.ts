@@ -127,8 +127,8 @@ export const hinglish: TranslationSchema = {
        title: 'A Glimpse Into Your Journey',
        subtitle: 'What the cards might reveal for you',
        cardTitle: 'Your Reading Preview',
-       // NEW: Personal opening with dynamic name
-       personalOpening: 'Arey yaar {name}… cards tumhari energy bohot strongly feel kar rahe hain. 💖',
+        // NEW: Personal opening with dynamic name
+        personalOpening: 'Arey yaar {name}… cards tumhari energy bohot strongly feel kar rahe hain. 💖\n\nLagta hai tumhare dil mein kaafi confusion aur emotional pull chal raha hai…\n\nChalo dekhte hain universe tumhe kya message dena chahta hai. ✨',
        // NEW: Section header
        messageOfCards: 'Cards Ka Message',
        // NEW: Individual card interpretations
@@ -180,7 +180,7 @@ export const hinglish: TranslationSchema = {
     reveal: 'Answer reveal karo',
     loading: 'Tumhari energy read kar rha hoon...',
     yourCards: 'Tumhare Cards',
-    interpretation: 'Interpretation',
+     interpretation: 'इस कार्ड का अर्थ',
     past: 'Past',
     present: 'Present',
     guidance: 'Guidance',

@@ -5,7 +5,7 @@ import ClientProviders from "@/components/ClientProviders";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import AnalyticsProvider from "@/components/AnalyticsProvider";
-import SecureWatermark from "@/components/watermark/SecureWatermark";
+import UniversalProtectionOverlay from "@/components/security/UniversalProtectionOverlay";
 import ContentGuard from "@/components/ContentGuard";
 
 export default function ClientLayout({
@@ -15,8 +15,7 @@ export default function ClientLayout({
 }) {
   return (
     <div className="antialiased bg-[rgb(var(--background))] text-[rgb(var(--foreground))] min-h-screen" suppressHydrationWarning>
-      {/* Unified Dynamic Watermark System - 3 Layer Protection */}
-      <SecureWatermark />
+      <UniversalProtectionOverlay />
 
       <ContentGuard>
         <ClientProviders>

@@ -186,9 +186,9 @@ export const en: TranslationSchema = {
       },
       // NEW: Cliffhanger preview lock
       previewLock: 'Cards have so much more to reveal… Your future, next actions, and hidden emotions are still veiled. 🌙',
-      // UPDATED: More emotional CTA
-      ctaButton: "Unlock My Full Reading ✨",
-      ctaSubtext: 'Takes less than 60 seconds',
+// UPDATED: More emotional CTA
+       ctaButton: "Unlock My Full Reading ✨",
+       ctaSubtext: 'Complete Guidance Awaits 💖',
       // Keep old keys for compatibility
       pastLabel: 'The Past:',
       pastText: "You've been at a crossroads, feeling uncertain about which path to take.",

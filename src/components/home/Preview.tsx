@@ -3,270 +3,204 @@
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
-import { ArrowRight } from 'lucide-react';
-import { buttonVariants } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
 import { useLanguage } from '@/hooks/useLanguage';
 import { usePersonalizationContext } from '@/components/personalization/PersonalizationProvider';
+
+interface TarotCard {
+  name: string;
+  image: string;
+  emoji: string;
+  interpretation: string;
+}
 
 export default function Preview() {
   const { t, isHydrated } = useLanguage();
   const { profile } = usePersonalizationContext();
 
-  // Get user's first name from personalization metadata
   const getUserName = () => {
     if (!profile) return '';
-    // Try to get name from metadata
     const metadata = profile as any;
     const name = metadata?.metadata?.name || metadata?.name;
-    if (name) return name.split(' ')[0]; // First name only
-    return '';
+    return name ? name.split(' ')[0] : '';
   };
 
   const userName = getUserName();
 
-   // Interpolated opening text
-   const personalOpening = isHydrated
-     ? t('landing.preview.personalOpening', { name: userName })
-     : userName
-     ? `Arey yaar ${userName}… cards tumhari energy bohot strongly feel kar rahe hain. 💖\n\nLagta hai tumhare dil mein kaafi confusion aur emotional pull chal raha hai…\n\nChalo dekhte hain universe tumhe kya message dena chahta hai. ✨`
-     : 'Arey yaar… cards tumhari energy bohot strongly feel kar rahe hain. 💖\n\nLagta hai tumhare dil mein kaafi confusion aur emotional pull chal raha hai…\n\nChalo dekhte hain universe tumhe kya message dena chahta hai. ✨';
+  const previewReading = {
+    personalOpening: isHydrated
+      ? t('landing.preview.personalOpening', { name: userName })
+      : userName
+        ? `Arey yaar ${userName}… cards tumhari energy bohot strongly feel kar rahe hain. 💖`
+        : 'Arey yaar… cards tumhari energy bohot strongly feel kar rahe hain. 💖',
 
-   // Guidance block text - prepend name if available
-   const getGuidanceText = () => {
-     const base = isHydrated
-       ? t('landing.preview.guidanceBlock.text')
-       : 'Universe tumhe ek hi cheez bol raha hai — trust the process. 💫\n\nJo connection tum feel kar rahe ho woh random nahi hain. Abhi bas apni energy ko positive rakhna zaroori hai.';
-     return userName ? `${userName}, ${base}` : base;
-   };
+    cards: [
+      {
+        name: isHydrated ? t('landing.preview.card1.name') : 'The Fool',
+        image: '/card_img/The Fool.png',
+        emoji: '🌟',
+        interpretation: isHydrated
+          ? t('landing.preview.card1.interpretation')
+          : 'Yeh card umeed, healing aur inspiration dikhta hai. Universe clarity la raha hai. ✨',
+      },
+      {
+        name: isHydrated ? t('landing.preview.card2.name') : 'The Lovers',
+        image: '/card_img/The Lovers.png',
+        emoji: '💰',
+        interpretation: isHydrated
+          ? t('landing.preview.card2.interpretation')
+          : 'Yeh stability aur emotional security ka card hai. Family bonds strong hain. 💖',
+      },
+      {
+        name: isHydrated ? t('landing.preview.card3.name') : 'The Star',
+        image: '/card_img/The Star.png',
+        emoji: '🎉',
+        interpretation: isHydrated
+          ? t('landing.preview.card3.interpretation')
+          : 'Celebration aur harmony ka sign hai! Kuch exciting hone wala hai. 🪄',
+      },
+    ],
 
-  const guidanceText = getGuidanceText();
+    guidance: userName
+      ? `${userName}, universe ek hi cheez keh raha hai — trust the process. 💫 Jo connection tum feel kar rahe ho woh random nahi hai.`
+      : isHydrated
+        ? t('landing.preview.guidanceBlock.text')
+        : 'Universe tumhe trust the process keh raha hai. 💫 Jo connection tum feel kar rahe ho woh random nahi hai.',
+
+    cliffhanger: isHydrated
+      ? t('landing.preview.previewLock')
+      : 'Mayank… cards ke andar aur bohot kuch reveal ho raha hai. 🌙',
+
+    ctaButton: isHydrated
+      ? t('landing.preview.ctaButton')
+      : 'Full Reading Dekho ✨',
+
+    ctaSubtext: isHydrated
+      ? t('landing.preview.ctaSubtext')
+      : 'Universe Ka Message Unlock Karo 🌙',
+  };
 
   return (
-    <section className="py-section bg-background">
-      <div className="mx-auto w-full max-w-4xl px-4 sm:px-6">
-        {/* Section Header */}
+    <section className="relative bg-background py-8 md:py-12 overflow-hidden">
+      <div className="w-[90%] max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-block"
+          transition={{ duration: 0.8 }}
+          className="rounded-[32px] border border-yellow-500/20 bg-gradient-to-br from-[#140A24] to-[#0B0B0F] backdrop-blur-xl shadow-[0_0_80px_rgba(255,215,0,0.08)] min-h-[80vh] max-h-[85vh] flex flex-col justify-between"
         >
-          <h2 className="font-heading text-heading text-foreground">
-            {isHydrated ? t('landing.preview.title') : 'A Glimpse Into Your Journey'}
-          </h2>
-          <p className="mt-element text-foreground-muted max-w-2xl mx-auto">
-            {isHydrated ? t('landing.preview.subtitle') : 'What the cards might reveal for you'}
-          </p>
-        </motion.div>
-
-        {/* Main Preview Card - Premium Design */}
-        <motion.div
-          initial={{ opacity: 0, y: 30, scale: 0.98 }}
-          whileInView={{ opacity: 1, y: 0, scale: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.7, delay: 0.2 }}
-          className="relative overflow-hidden rounded-3xl bg-gradient-to-b from-[#120B1F] to-[#0B0B0F] backdrop-blur-xl border border-gold-30 shadow-glow-gold-sm"
-        >
-          {/* Ambient glow effects */}
-          <div className="absolute inset-0 opacity-30">
-            <div className="absolute top-0 left-1/4 w-64 h-64 bg-[rgba(var(--gold),0.2)] rounded-full blur-[100px]" />
-            <div className="absolute bottom-0 right-1/4 w-64 h-64 bg-[rgba(var(--secondary),0.2)] rounded-full blur-[100px]" />
-          </div>
-
-          <div className="relative p-6 sm:p-10">
-            {/* SECTION 1: PERSONAL OPENING */}
+          {/* CONTENT CONTAINER */}
+          <div className="px-6 md:px-10 lg:px-14 py-6 flex flex-col">
+            {/* SECTION 1: COMPACT EMOTIONAL OPENING */}
             <motion.div
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.3 }}
-              className="mb-10 text-center"
+              transition={{ duration: 0.5 }}
             >
-              <p className="text-body-base sm:text-body-lg text-foreground-secondary leading-relaxed font-serif italic">
-                {personalOpening}
+              <p className="text-gray-200 text-base md:text-lg font-serif italic px-6 py-3 rounded-2xl bg-gradient-to-br from-[#1A0B2E] to-[#0B0B0F] border border-yellow-500/20 inline-block">
+                {previewReading.personalOpening}
               </p>
             </motion.div>
 
             {/* SECTION 2: MESSAGE OF THE CARDS */}
-            <div className="space-y-8">
-              {/* Section Header */}
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                className="flex items-center justify-center gap-3 mb-8"
-              >
-                <div className="h-px w-12 bg-gradient-to-r from-transparent to-[rgba(var(--gold),0.3)]" />
-                <span className="font-heading text-subheading text-accent-gold">
-                  {t('landing.preview.messageOfCards')}
-                </span>
-                <div className="h-px w-12 bg-gradient-to-l from-transparent to-[rgba(var(--gold),0.3)]" />
-              </motion.div>
-
-              {/* Cards Layout - Premium centered with hover effects */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
-                {/* Card 1 */}
-                 <motion.div
-                   initial={{ opacity: 0, y: 20 }}
-                   whileInView={{ opacity: 1, y: 0 }}
-                   viewport={{ once: true }}
-                   transition={{ delay: 0.1 }}
-                   whileHover={{ scale: 1.05 }}
-                   className="group relative"
-                 >
-                   <div className="relative overflow-hidden rounded-2xl bg-gradient-to-b from-surface-60 to-surface-80 backdrop-blur-sm border border-[rgba(var(--gold),0.2)] transition-all duration-300 hover:border-[rgba(var(--gold),0.5)] hover:shadow-glow-gold-sm p-6 flex flex-col items-center text-center gap-5">
-                     {/* Glow on hover */}
-                     <div className="absolute inset-0 bg-gradient-to-b from-[rgba(var(--gold),0.05)] via-transparent to-[rgba(var(--gold),0.05)] opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-
-                     {/* Card Image - Large */}
-                     <div className="relative w-32 h-44 sm:w-40 sm:h-56 flex-shrink-0 rounded-xl overflow-hidden shadow-lg">
-                       <Image
-                         src="/card_img/The Fool.png"
-                         alt={t('landing.preview.card1.name')}
-                         fill
-                         className="object-cover transition-transform duration-500 group-hover:scale-110"
-                       />
-                       {/* Image overlay glow */}
-                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-60" />
-                     </div>
-
-                     {/* Card Name */}
-                     <div className="relative z-10">
-                       <h4 className="font-heading text-lg sm:text-xl text-gold mb-2">
-                         {t('landing.preview.card1.name')}
-                       </h4>
-                       {/* Interpretation */}
-                       <p className="text-sm sm:text-base text-foreground-secondary leading-relaxed font-serif italic">
-                         {t('landing.preview.card1.interpretation')}
-                       </p>
-                     </div>
-                   </div>
-                 </motion.div>
-
-                {/* Card 2 */}
-                 <motion.div
-                   initial={{ opacity: 0, y: 20 }}
-                   whileInView={{ opacity: 1, y: 0 }}
-                   viewport={{ once: true }}
-                   transition={{ delay: 0.2 }}
-                   whileHover={{ scale: 1.05 }}
-                   className="group relative"
-                 >
-                   <div className="relative overflow-hidden rounded-2xl bg-gradient-to-b from-surface-60 to-surface-80 backdrop-blur-sm border border-[rgba(var(--gold),0.2)] transition-all duration-300 hover:border-[rgba(var(--gold),0.5)] hover:shadow-glow-gold-sm p-6 flex flex-col items-center text-center gap-5">
-                     <div className="absolute inset-0 bg-gradient-to-b from-[rgba(var(--gold),0.05)] via-transparent to-[rgba(var(--gold),0.05)] opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-
-                     <div className="relative w-32 h-44 sm:w-40 sm:h-56 flex-shrink-0 rounded-xl overflow-hidden shadow-lg">
-                       <Image
-                         src="/card_img/The Lovers.png"
-                         alt={t('landing.preview.card2.name')}
-                         fill
-                         className="object-cover transition-transform duration-500 group-hover:scale-110"
-                       />
-                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-60" />
-                     </div>
-
-                     <div className="relative z-10">
-                       <h4 className="font-heading text-lg sm:text-xl text-gold mb-2">
-                         {t('landing.preview.card2.name')}
-                       </h4>
-                       <p className="text-sm sm:text-base text-foreground-secondary leading-relaxed font-serif italic">
-                         {t('landing.preview.card2.interpretation')}
-                       </p>
-                     </div>
-                   </div>
-                 </motion.div>
-
-                {/* Card 3 */}
-                 <motion.div
-                   initial={{ opacity: 0, y: 20 }}
-                   whileInView={{ opacity: 1, y: 0 }}
-                   viewport={{ once: true }}
-                   transition={{ delay: 0.3 }}
-                   whileHover={{ scale: 1.05 }}
-                   className="group relative"
-                 >
-                   <div className="relative overflow-hidden rounded-2xl bg-gradient-to-b from-surface-60 to-surface-80 backdrop-blur-sm border border-[rgba(var(--gold),0.2)] transition-all duration-300 hover:border-[rgba(var(--gold),0.5)] hover:shadow-glow-gold-sm p-6 flex flex-col items-center text-center gap-5">
-                     <div className="absolute inset-0 bg-gradient-to-b from-[rgba(var(--gold),0.05)] via-transparent to-[rgba(var(--gold),0.05)] opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-
-                     <div className="relative w-32 h-44 sm:w-40 sm:h-56 flex-shrink-0 rounded-xl overflow-hidden shadow-lg">
-                       <Image
-                         src="/card_img/The Star.png"
-                         alt={t('landing.preview.card3.name')}
-                         fill
-                         className="object-cover transition-transform duration-500 group-hover:scale-110"
-                       />
-                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-60" />
-                     </div>
-
-                     <div className="relative z-10">
-                       <h4 className="font-heading text-lg sm:text-xl text-gold mb-2">
-                         {t('landing.preview.card3.name')}
-                       </h4>
-                       <p className="text-sm sm:text-base text-foreground-secondary leading-relaxed font-serif italic">
-                         {t('landing.preview.card3.interpretation')}
-                       </p>
-                     </div>
-                   </div>
-                 </motion.div>
-              </div>
-            </div>
-
-            {/* SECTION 3: GUIDANCE BLOCK - Special Styling */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.4 }}
-              className="mt-10 mb-10"
-            >
-               <div className="relative overflow-hidden rounded-2xl bg-gradient-to-b from-[rgba(var(--gold),0.1)] via-[rgba(var(--gold),0.05)] to-transparent border border-[rgba(var(--gold),0.2)] p-8 text-center">
-                {/* Subtle animated glow */}
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[rgba(var(--gold),0.1)] to-transparent animate-shimmer" />
-
-                <p className="relative z-10 text-body-base sm:text-body-lg text-foreground leading-relaxed font-serif italic whitespace-pre-line max-w-2xl mx-auto">
-                  {guidanceText}
-                </p>
-              </div>
-            </motion.div>
-
-            {/* SECTION 4: PREVIEW LOCK / CLIFFHANGER */}
             <motion.div
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
-              transition={{ delay: 0.5 }}
-              className="mt-8 pt-8 border-t border-gold-10 text-center"
+              transition={{ delay: 0.1 }}
+              className="flex items-center justify-center gap-3 my-6"
             >
-              <p className="text-body text-foreground-muted max-w-2xl mx-auto leading-relaxed">
-                {isHydrated ? t('landing.preview.previewLock') : 'Cards have so much more to reveal… Your future, next actions, and hidden emotions are still veiled. 🌙'}
+              <div className="h-px w-12 bg-gradient-to-r from-transparent to-yellow-400/40" />
+              <h3 className="font-heading text-yellow-300 text-lg md:text-xl tracking-wide font-semibold">
+                {isHydrated ? t('landing.preview.messageOfCards') : 'Cards Ka Message'}
+              </h3>
+              <div className="h-px w-12 bg-gradient-to-l from-transparent to-yellow-400/40" />
+            </motion.div>
+
+            {/* SECTION 3: CARD READINGS - 3 COLUMN GRID */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
+              {previewReading.cards.map((card, index) => (
+                <motion.div
+                  key={card.name}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.1 * index }}
+                  className="flex flex-col items-center text-center h-full"
+                >
+                  <div className="relative aspect-[3/4] w-full max-w-[180px] rounded-2xl overflow-hidden shadow-2xl shadow-yellow-500/20 mb-4">
+                    <Image
+                      src={card.image}
+                      alt={card.name}
+                      fill
+                      className="object-cover"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                    <div className="absolute bottom-2 left-2">
+                      <span className="text-xl">{card.emoji}</span>
+                    </div>
+                  </div>
+                  <h4 className="text-yellow-300 text-lg md:text-xl font-heading font-semibold mb-2">
+                    {card.name}
+                  </h4>
+                  <p className="text-gray-200 text-sm md:text-base leading-relaxed font-serif italic flex-grow">
+                    {card.interpretation}
+                  </p>
+                </motion.div>
+              ))}
+            </div>
+
+            {/* SECTION 4: GUIDANCE & MOTIVATION */}
+            <motion.div
+              initial={{ opacity: 0, y: 15 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.3 }}
+              className="mb-6"
+            >
+              <h4 className="text-yellow-300 text-lg font-heading font-semibold mb-3">
+                ✨ Guidance &amp; Motivation
+              </h4>
+              <div className="rounded-2xl border border-yellow-500/20 bg-gradient-to-r from-yellow-500/10 to-orange-500/10 px-6 py-5">
+                <p className="text-yellow-100/90 text-base md:text-lg leading-relaxed font-serif italic">
+                  {previewReading.guidance}
+                </p>
+              </div>
+            </motion.div>
+
+            {/* SECTION 5: EMOTIONAL CLIFFHANGER */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.4 }}
+              className="mb-6 text-center"
+            >
+              <p className="text-gray-300 text-base md:text-lg leading-relaxed">
+                {previewReading.cliffhanger}
               </p>
             </motion.div>
           </div>
-        </motion.div>
 
-        {/* SECTION 5: CTA BUTTON */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.6 }}
-          className="mt-block text-center"
-        >
-          <Link
-            href="/reading"
-            className={cn(
-              buttonVariants({ size: 'lg' }),
-              'btn-cta-pulse w-full sm:w-auto flex items-center justify-center gap-2 text-lg px-10 py-5'
-            )}
+          {/* SECTION 6: CTA BUTTON */}
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.5 }}
+            className="px-6 md:px-10 lg:px-14 pt-2 pb-8"
           >
-            <span>{isHydrated ? t('landing.preview.ctaButton') : "Unlock My Full Reading ✨"}</span>
-            <ArrowRight className="h-6 w-6" />
-          </Link>
-          <p className="mt-element text-body-sm text-foreground-muted">
-            {isHydrated ? t('landing.preview.ctaSubtext') : 'Takes less than 60 seconds'}
-          </p>
+            <Link
+              href="/reading"
+              className="block w-full max-w-[700px] mx-auto rounded-full bg-gradient-to-r from-[#FF5F6D] to-[#FFC371] text-black font-semibold text-lg py-4 px-6 text-center hover:scale-[1.02] transition-all duration-300 shadow-[0_0_50px_rgba(255,193,113,0.45)]"
+            >
+              {previewReading.ctaButton}
+              <p className="mt-1 text-sm text-black/70 font-normal">
+                {previewReading.ctaSubtext}
+              </p>
+            </Link>
+          </motion.div>
         </motion.div>
       </div>
     </section>

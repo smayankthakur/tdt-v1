@@ -477,10 +477,19 @@ function getNestedTranslation(key: string, lang: Language): string {
  */
 function getFlatTranslation(key: string, lang: Language): string | undefined {
   const mappedLang = langMap[lang] || lang
-  // Use explicit typing to satisfy TypeScript
   const flatDicts: Record<string, Record<string, string>> = flatTranslations
   const langDict = flatDicts[mappedLang as keyof typeof flatDicts]
-  return langDict?.[key]
+  if (langDict?.[key]) {
+    return langDict[key]
+  }
+  // Fallback to English if available (prevents placeholder fallback)
+  if (mappedLang !== 'english') {
+    const englishDict = flatDicts.english
+    if (englishDict?.[key]) {
+      return englishDict[key]
+    }
+  }
+  return undefined
 }
 
 /**

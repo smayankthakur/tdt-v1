@@ -1,4 +1,4 @@
-import { getRegionalPricing, type UserRegion } from '@/lib/regionDetector';
+// src/lib/payments/plans.ts
 
 export type PlanType = 'free' | 'premium';
 export type SubscriptionStatus = 'active' | 'inactive' | 'cancelled' | 'past_due';
@@ -16,18 +16,21 @@ export interface SubscriptionPlan {
   whatsappExclusive: boolean;
 }
 
+const MESSAGE_COUNT_KEY = 'daily_message_count';
+const MESSAGE_DATE_KEY = 'daily_message_date';
+
 export const SUBSCRIPTION_PLANS: Record<PlanType, SubscriptionPlan> = {
   free: {
     id: 'free',
     name: 'Free',
     type: 'free',
     price: 0,
+    priceId: '',
     features: [
-      '3 tarot readings per day',
-      'Basic card interpretations',
-      'Standard AI responses',
+      '1 message per day to Ginni',
+      'Basic tarot guidance',
     ],
-    readingsPerDay: 3,
+    readingsPerDay: 1,
     aiResponsesPriority: false,
     personalConsultation: false,
     whatsappExclusive: false,
@@ -37,12 +40,12 @@ export const SUBSCRIPTION_PLANS: Record<PlanType, SubscriptionPlan> = {
     name: 'Premium',
     type: 'premium',
     price: 199,
-    priceId: 'premium_monthly',
+    priceId: 'premium_monthly_inr',
     features: [
       'Unlimited tarot readings',
-      'Deep AI interpretation',
-      'Priority AI responses',
-      'Personalized guidance',
+      'Unlimited messages with Ginni',
+      'Deep spiritual insights',
+      'Priority response experience',
     ],
     readingsPerDay: -1,
     aiResponsesPriority: true,
@@ -63,17 +66,14 @@ export interface UserSubscription {
 }
 
 export function canAccessFeature(userPlan: PlanType, feature: string): boolean {
-  const plan = SUBSCRIPTION_PLANS[userPlan];
-  
-  const featureAccess: Record<string, PlanType[]> = {
+  const allowedPlans: Record<string, PlanType[]> = {
     unlimited_readings: ['premium'],
     deep_insights: ['premium'],
     priority_ai: ['premium'],
     personal_consultation: ['premium'],
   };
   
-  const allowedPlans = featureAccess[feature] || [];
-  return allowedPlans.includes(userPlan);
+  return (allowedPlans[feature] || []).includes(userPlan);
 }
 
 export function getPlanLimit(plan: PlanType): number {
@@ -92,16 +92,46 @@ export function getNextPlan(currentPlan: PlanType): PlanType | null {
   return upgrades[currentPlan];
 }
 
-export function getPlanDisplayPrice(plan: PlanType, region: UserRegion = 'india'): string {
-  const pricing = getRegionalPricing(region);
-  const price = plan === 'free' ? 0 : pricing.monthly;
-  if (price === 0) return 'Free';
-  return `${pricing.symbol}${price}/month`;
+export function getPlanDisplayPrice(plan: PlanType, region: 'india' = 'india'): string {
+  const planConfig = SUBSCRIPTION_PLANS[plan];
+  if (planConfig.price === 0) return 'Free';
+  return `₹${planConfig.price}/month`;
 }
 
-export function getYearlyDisplayPrice(plan: PlanType, region: UserRegion = 'india'): string {
-  const pricing = getRegionalPricing(region);
-  const price = plan === 'free' ? 0 : pricing.yearly;
-  if (price === 0) return 'Free';
-  return `${pricing.symbol}${price}/year`;
+export async function getRemainingMessages(userId: string): Promise<number> {
+  if (typeof window === 'undefined') return 1;
+
+  const today = new Date().toDateString();
+  const storedDate = localStorage.getItem(`${MESSAGE_DATE_KEY}_${userId}`);
+  
+  if (storedDate !== today) {
+    localStorage.setItem(`${MESSAGE_DATE_KEY}_${userId}`, today);
+    localStorage.setItem(`${MESSAGE_COUNT_KEY}_${userId}`, '0');
+    return 1;
+  }
+
+  const count = parseInt(localStorage.getItem(`${MESSAGE_COUNT_KEY}_${userId}`) || '0', 10);
+  return Math.max(0, 1 - count);
+}
+
+export async function incrementMessageCount(userId: string): Promise<void> {
+  if (typeof window === 'undefined') return;
+  
+  const count = parseInt(localStorage.getItem(`${MESSAGE_COUNT_KEY}_${userId}`) || '0', 10);
+  localStorage.setItem(`${MESSAGE_COUNT_KEY}_${userId}`, String(count + 1));
+}
+
+export async function canSendMessage(
+  userId: string,
+  plan: PlanType
+): Promise<{ allowed: boolean; remainingMessages: number }> {
+  if (plan === 'premium') {
+    return { allowed: true, remainingMessages: -1 };
+  }
+
+  const remaining = await getRemainingMessages(userId);
+  return {
+    allowed: remaining > 0,
+    remainingMessages: remaining,
+  };
 }

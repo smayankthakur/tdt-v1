@@ -1,6 +1,6 @@
 import { PlanType } from './plans';
 
-export type UpsellTrigger = 'post-reading' | 'partial-result' | 'multi-session' | 'high-engagement' | 'time-based';
+export type UpsellTrigger = 'post-reading' | 'partial-result' | 'multi-session' | 'high-engagement' | 'time-based' | 'daily-limit';
 
 export interface UpsellConfig {
   trigger: UpsellTrigger;
@@ -13,41 +13,48 @@ export interface UpsellConfig {
 }
 
 export const UPSELL_CONFIGS: Record<UpsellTrigger, UpsellConfig> = {
+  'daily-limit': {
+    trigger: 'daily-limit',
+    title: "Your Daily Guidance Is Complete ✨",
+    message: "Unlock unlimited conversations with Ginni and receive deeper spiritual guidance anytime you want.",
+    ctaText: "Upgrade to Premium — ₹199/month",
+    ctaLink: "/premium",
+  },
   'post-reading': {
     trigger: 'post-reading',
-    title: "There's More to This...",
-    message: "The cards have revealed the surface, but there's deeper insight waiting for you. Unlock the full reading to see everything.",
-    ctaText: "Unlock Full Reading",
-    ctaLink: "/upgrade?source=post-reading",
+    title: "Your answers are waiting beyond the veil...",
+    message: "Continue your spiritual journey without limits. Your next clarity is just one upgrade away.",
+    ctaText: "Unlock Premium",
+    ctaLink: "/premium",
     showOncePerSession: true,
   },
   'partial-result': {
     trigger: 'partial-result',
-    title: "This is Only Part of What's Coming Through...",
-    message: "You've seen a glimpse of what the universe wants you to know. The full picture reveals everything.",
+    title: "This is only the beginning...",
+    message: "The universe has more to show you. Deep insights await beyond today's limit.",
     ctaText: "See Full Interpretation",
-    ctaLink: "/upgrade?source=partial",
+    ctaLink: "/premium",
   },
   'multi-session': {
     trigger: 'multi-session',
-    title: "You've Been Exploring This Deeply...",
+    title: "You've been seeking answers...",
     message: "Your curiosity has brought you here multiple times. Get unlimited access to go as deep as you need.",
     ctaText: "Go Unlimited",
-    ctaLink: "/upgrade?source=multi",
+    ctaLink: "/premium",
   },
   'high-engagement': {
     trigger: 'high-engagement',
-    title: "Your Situation Calls for Deeper Guidance...",
+    title: "Your situation calls for deeper guidance...",
     message: "Based on your journey here, a premium reading would give you the clarity you deserve.",
     ctaText: "Get Premium Insights",
-    ctaLink: "/upgrade?source=engagement",
+    ctaLink: "/premium",
   },
   'time-based': {
     trigger: 'time-based',
     title: "Special Offer - Limited Time",
     message: "For the next 24 hours, get Premium at a special rate. Your deeper answers await.",
     ctaText: "Claim Offer",
-    ctaLink: "/upgrade?source=limited",
+    ctaLink: "/premium",
     delay: 5000,
   },
 };
@@ -55,36 +62,32 @@ export const UPSELL_CONFIGS: Record<UpsellTrigger, UpsellConfig> = {
 export interface UpsellContext {
   userId: string;
   plan: PlanType;
-  readingsCount: number;
+  messagesToday: number;
   sessionCount: number;
   timeOnSite: number;
-  lastReadingTime?: Date;
+  lastInteraction?: Date;
   showPaywall: boolean;
 }
 
 export function determineUpsellTrigger(context: UpsellContext): UpsellTrigger | null {
-  const { plan, readingsCount, sessionCount, timeOnSite, showPaywall } = context;
+  const { plan, messagesToday, sessionCount, timeOnSite, showPaywall } = context;
 
   if (plan !== 'free') return null;
 
-  if (showPaywall) {
-    return 'partial-result';
+  if (messagesToday >= 1) {
+    return 'daily-limit';
   }
 
-  if (readingsCount >= 2 && readingsCount <= 4) {
-    return 'post-reading';
+  if (showPaywall) {
+    return 'partial-result';
   }
 
   if (sessionCount >= 3) {
     return 'multi-session';
   }
 
-  if (timeOnSite > 300 && readingsCount >= 1) {
+  if (timeOnSite > 300 && messagesToday >= 1) {
     return 'high-engagement';
-  }
-
-  if (readingsCount === 1 && timeOnSite > 120) {
-    return 'post-reading';
   }
 
   return null;
@@ -99,10 +102,10 @@ export function shouldShowUpsell(context: UpsellContext): boolean {
 
 export function getUpsellForPlan(plan: PlanType): UpsellConfig | undefined {
   const configs: Record<PlanType, UpsellConfig | undefined> = {
-    free: UPSELL_CONFIGS['post-reading'],
+    free: UPSELL_CONFIGS['daily-limit'],
     premium: undefined,
   };
-  
+
   return configs[plan];
 }
 
@@ -111,8 +114,8 @@ export function getPsychologicalTriggers(): string[] {
     "There's something more the cards want to show you...",
     "Your situation is more specific than a general reading can cover...",
     "You've been coming back for answers - here's the key...",
-    "This message came through for a reason...",
     "The universe brought you here for clarity...",
+    "This message came through for a reason...",
     "Others with your situation have found their answer here...",
     "This is only the beginning of what the cards can reveal...",
   ];
@@ -126,7 +129,7 @@ export function getCuriosityGapMessage(readingsCount: number): string {
     "This reading opened a door - step through for the full picture...",
     "You've touched on something significant - now go deeper...",
   ];
-  
+
   return messages[Math.min(readingsCount, messages.length - 1)];
 }
 
@@ -137,7 +140,7 @@ export function getTimingUrgencyMessage(): string {
     "What you're seeking has urgency - don't wait...",
     "Today brings a special energy to this question...",
   ];
-  
+
   return messages[Math.floor(Math.random() * messages.length)];
 }
 

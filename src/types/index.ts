@@ -1,7 +1,8 @@
 // src/types/index.ts
+export type SubscriptionPlan = 'free' | 'premium';
+
 export interface User {
   id: string;
-  trial_active?: boolean;
-  trial_start_date?: string;
-  subscription_active?: boolean;
+  plan?: SubscriptionPlan;
+  subscriptionStatus?: 'active' | 'inactive';
 }

@@ -2,17 +2,18 @@
 
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import GinniChat from '@/components/GinniChat';
+import GinniChat, { GinniContext } from '@/components/GinniChat';
 import { useGinniStore } from '@/store/ginni-store';
 import { useFunnelStore } from '@/store/funnel-store';
 import { 
-  FunnelStage, 
   getTriggerForStage, 
   getHesitationTrigger,
-  saveGinniMemory,
-  buildGinniContext 
+  saveGinniMemory, 
+  buildGinniContext,
+  FunnelStage,
 } from '@/lib/ginniTriggers';
 import { MessageCircle } from 'lucide-react';
+import PremiumUpgradeModal from '@/components/PremiumUpgradeModal';
 
 export default function GinniChatWrapper() {
   const { context, triggerOpen, isOpen, setIsOpen, setTriggerOpen, setContext, clearContext } = useGinniStore();
@@ -26,6 +27,7 @@ export default function GinniChatWrapper() {
   const [currentTrigger, setCurrentTrigger] = useState(getTriggerForStage('homepage'));
   const [lastActivityTime, setLastActivityTime] = useState(Date.now());
   const [hasTriggeredForStage, setHasTriggeredForStage] = useState<Record<string, boolean>>({});
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
 
   const triggerGinni = useCallback((stage: FunnelStage) => {
     const trigger = getTriggerForStage(stage);
@@ -196,6 +198,11 @@ export default function GinniChatWrapper() {
           setTriggerOpen(false);
         }}
         onClose={handleCloseChat}
+      />
+      
+      <PremiumUpgradeModal 
+        isOpen={showUpgradeModal} 
+        onClose={() => setShowUpgradeModal(false)} 
       />
     </>
   );

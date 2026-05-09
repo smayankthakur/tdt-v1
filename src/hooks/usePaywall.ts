@@ -1,57 +1,31 @@
 // src/hooks/usePaywall.ts
 import { useEffect, useState } from 'react';
-import { canAccessReading, startTrial } from '@/lib/system/accessControl';
-import { User } from '@/types';
+import { canAccessReading, getReadingsRemaining } from '@/lib/system/accessControl';
 
-export function usePaywallAccess(user: User | null) {
-  const [access, setAccess] = useState<{ access: boolean; reason: string }>({ access: false, reason: 'loading' });
-  const [trialActive, setTrialActive] = useState(false);
-  const [trialStartDate, setTrialStartDate] = useState<string | null>(null);
-  const [daysLeft, setDaysLeft] = useState(0);
+export function usePaywallAccess(userId: string | null, plan: 'free' | 'premium' = 'free') {
+  const [canAccess, setCanAccess] = useState(true);
+  const [reason, setReason] = useState('loading');
+  const [remainingToday, setRemainingToday] = useState(1);
 
   useEffect(() => {
-    if (!user) {
-      setAccess({ access: false, reason: 'no_user' });
+    if (!userId) {
+      setCanAccess(true);
+      setRemainingToday(1);
       return;
     }
 
-    const accessResult = canAccessReading(user);
-    setAccess(accessResult);
+    canAccessReading(userId, plan).then(result => {
+      setCanAccess(result.allowed);
+      setReason(result.reason);
+    });
 
-    // Update trial state
-    if (user.trial_active && user.trial_start_date) {
-      setTrialActive(true);
-      setTrialStartDate(user.trial_start_date);
-      
-      const start = new Date(user.trial_start_date);
-      const end = new Date(start);
-      end.setDate(end.getDate() + 3); // TRIAL_DURATION_DAYS from config
-      const now = new Date();
-      const diffTime = end.getTime() - now.getTime();
-      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-      setDaysLeft(Math.max(0, diffDays));
-    } else {
-      setTrialActive(false);
-      setTrialStartDate(null);
-      setDaysLeft(0);
-    }
-  }, [user]);
-
-  const handleStartTrial = () => {
-    if (user) {
-      const updatedUser = startTrial(user);
-      // In a real app, you would update the user in state/context
-      // For now, we'll just trigger a refetch by setting state
-      setAccess(canAccessReading(updatedUser));
-    }
-  };
+    getReadingsRemaining(userId, plan).then(setRemainingToday);
+  }, [userId, plan]);
 
   return {
-    canAccess: access.access,
-    reason: access.reason,
-    trialActive,
-    trialStartDate,
-    daysLeft,
-    startTrial: handleStartTrial,
+    canAccess,
+    reason,
+    remainingToday,
+    isPremium: plan === 'premium',
   };
 }

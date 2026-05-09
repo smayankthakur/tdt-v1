@@ -677,6 +677,16 @@ footer button:not([class*="focus"]):focus {
   outline-offset: 2px;
 }
 
+/* Hide horizontal scrollbars globally */
+.hide-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
 /* Footer form input states */
 footer input[data-invalid="true"] {
   border-color: #EF4444 !important;

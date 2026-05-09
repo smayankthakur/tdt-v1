@@ -32,13 +32,13 @@ export default function ProblemStrip() {
   return (
     <section className="py-section bg-background">
       <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: '-100px' }}
-          className="flex gap-6 overflow-x-auto no-scrollbar pb-4 -mx-4 px-4 sm:mx-0 sm:px-0 sm:grid sm:grid-cols-3 sm:gap-block sm:overflow-visible sm:pb-0"
-        >
+<motion.div
+           variants={containerVariants}
+           initial="hidden"
+           whileInView="visible"
+           viewport={{ once: true, margin: '-100px' }}
+           className="flex gap-6 overflow-x-auto hide-scrollbar pb-4 -mx-4 px-4 sm:mx-0 sm:px-0 sm:grid sm:grid-cols-3 sm:gap-block sm:overflow-visible sm:pb-0"
+         >
           {problemsData.map((problem) => {
             const ProblemIcon = problem.icon;
             return (

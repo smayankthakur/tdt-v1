@@ -156,3 +156,155 @@ ALTER TABLE public.events ENABLE ROW LEVEL SECURITY;
 -- Allow public read access to analytics
 CREATE POLICY "Enable read access for all users" ON public.funnel_summary FOR SELECT USING (true);
 CREATE POLICY "Enable read access for user retention" ON public.user_retention FOR SELECT USING (true);
+
+-- ============================================
+-- SUBSCRIPTION & PAYMENT SCHEMA (v2 Additions)
+-- ============================================
+
+-- Add subscription columns to users table
+ALTER TABLE public.users
+ADD COLUMN IF NOT EXISTS plan VARCHAR(20) DEFAULT 'free' CHECK (plan IN ('free', 'premium')),
+ADD COLUMN IF NOT EXISTS subscription_status VARCHAR(20) DEFAULT 'inactive' CHECK (subscription_status IN ('active', 'inactive', 'cancelled', 'past_due')),
+ADD COLUMN IF NOT EXISTS subscription_end_date TIMESTAMPTZ,
+ADD COLUMN IF NOT EXISTS auto_renew BOOLEAN DEFAULT FALSE,
+ADD COLUMN IF NOT EXISTS readings_today INTEGER DEFAULT 0,
+ADD COLUMN IF NOT EXISTS last_reading_date TIMESTAMPTZ,
+ADD COLUMN IF NOT EXISTS total_readings INTEGER DEFAULT 0,
+ADD COLUMN IF NOT EXISTS razorpay_subscription_id VARCHAR(100),
+ADD COLUMN IF NOT EXISTS payment_id VARCHAR(100);
+
+-- Payments table
+CREATE TABLE IF NOT EXISTS public.payments (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID REFERENCES public.users(id) ON DELETE CASCADE,
+  amount INTEGER NOT NULL,
+  currency VARCHAR(10) DEFAULT 'INR',
+  status VARCHAR(20) DEFAULT 'pending',
+  razorpay_order_id VARCHAR(100),
+  razorpay_payment_id VARCHAR(100),
+  razorpay_subscription_id VARCHAR(100),
+  plan_type VARCHAR(20) NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  paid_at TIMESTAMPTZ,
+  metadata JSONB DEFAULT '{}'
+);
+
+CREATE INDEX IF NOT EXISTS idx_payments_user ON public.payments(user_id);
+CREATE INDEX IF NOT EXISTS idx_payments_order ON public.payments(razorpay_order_id);
+CREATE INDEX IF NOT EXISTS idx_payments_status ON public.payments(status);
+
+-- Subscription events tracking table
+CREATE TABLE IF NOT EXISTS public.subscription_events (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID REFERENCES public.users(id) ON DELETE CASCADE,
+  event_type VARCHAR(50) NOT NULL,
+  event_data JSONB DEFAULT '{}',
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_subscription_events_user ON public.subscription_events(user_id);
+CREATE INDEX IF NOT EXISTS idx_subscription_events_type ON public.subscription_events(event_type);
+
+-- Track subscription event
+CREATE OR REPLACE FUNCTION track_subscription_event(
+  p_user_id UUID,
+  p_event_type VARCHAR(50),
+  p_event_data JSONB DEFAULT '{}'
+)
+RETURNS VOID AS $$
+BEGIN
+  INSERT INTO public.subscription_events (user_id, event_type, event_data)
+  VALUES (p_user_id, p_event_type, p_event_data);
+END;
+$$ LANGUAGE plpgsql;
+
+-- Increment reading count with daily reset
+CREATE OR REPLACE FUNCTION increment_reading_count(
+  p_user_id UUID,
+  p_reading_date VARCHAR DEFAULT to_char(NOW(), 'YYYY-MM-DD')
+)
+RETURNS VOID AS $$
+DECLARE
+  v_current_count INTEGER;
+  v_last_date TIMESTAMPTZ;
+BEGIN
+  SELECT readings_today, last_reading_date 
+  INTO v_current_count, v_last_date
+  FROM users 
+  WHERE id = p_user_id;
+
+  IF v_last_date IS NULL OR to_char(v_last_date, 'YYYY-MM-DD') != p_reading_date THEN
+    UPDATE users 
+    SET readings_today = 1, 
+        last_reading_date = NOW(),
+        total_readings = total_readings + 1,
+        updated_at = NOW()
+    WHERE id = p_user_id;
+  ELSE
+    UPDATE users 
+    SET readings_today = v_current_count + 1,
+        total_readings = total_readings + 1,
+        last_reading_date = NOW(),
+        updated_at = NOW()
+    WHERE id = p_user_id;
+  END IF;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Get remaining free messages for today
+CREATE OR REPLACE FUNCTION get_remaining_messages(
+  p_user_id UUID,
+  p_plan VARCHAR DEFAULT 'free'
+)
+RETURNS INTEGER AS $$
+DECLARE
+  v_readings_today INTEGER;
+  v_last_reading_date TIMESTAMPTZ;
+  v_today DATE;
+BEGIN
+  IF p_plan = 'premium' THEN
+    RETURN -1;
+  END IF;
+
+  v_today := CURRENT_DATE;
+  
+  SELECT readings_today, last_reading_date 
+  INTO v_readings_today, v_last_reading_date
+  FROM users 
+  WHERE id = p_user_id;
+
+  IF v_last_reading_date IS NULL OR DATE(v_last_reading_date) != v_today THEN
+    RETURN 1;
+  END IF;
+
+  RETURN GREATEST(0, 1 - COALESCE(v_readings_today, 0));
+END;
+$$ LANGUAGE plpgsql;
+
+-- Log payment transaction
+CREATE OR REPLACE FUNCTION log_payment(
+  p_user_id UUID,
+  p_amount INTEGER,
+  p_plan_type VARCHAR,
+  p_status VARCHAR,
+  p_order_id VARCHAR,
+  p_payment_id VARCHAR DEFAULT NULL
+)
+RETURNS UUID AS $$
+DECLARE
+  v_payment_id UUID;
+BEGIN
+  INSERT INTO public.payments (
+    user_id, amount, plan_type, status, 
+    razorpay_order_id, razorpay_payment_id, paid_at
+  )
+  VALUES (
+    p_user_id, p_amount, p_plan_type, p_status,
+    p_order_id, p_payment_id, 
+    CASE WHEN p_status = 'completed' THEN NOW() ELSE NULL END
+  )
+  RETURNING id INTO v_payment_id;
+
+  RETURN v_payment_id;
+END;
+$$ LANGUAGE plpgsql;

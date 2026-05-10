@@ -1,6 +1,6 @@
 import { supabase, isSupabaseConfigured } from '@/lib/supabase/client';
 
-export type EventName = 
+export type EventName =
   | 'landing_page_view'
   | 'start_reading_click'
   | 'reading_started'
@@ -16,7 +16,22 @@ export type EventName =
   | 'payment_completed'
   | 'session_start'
   | 'session_end'
-  | 'error_occurred';
+  | 'error_occurred'
+  | 'premium_payment_initiated'
+  | 'premium_payment_success'
+  | 'premium_payment_failed'
+  | 'premium_payment_dismissed'
+  | 'premium_conversion'
+  | 'premium_subscribed'
+  | 'premium_activated_reading_page'
+  | 'paywall_triggered'
+  | 'upgrade_requested'
+  | 'upgrade_cta_clicked'
+  | 'premium_modal_closed'
+  | 'message_sent'
+  | 'premium_order_created'
+  | 'payment_verification_failed'
+  | 'reading_iframe_loaded';
 
 export interface TrackingEvent {
   userId?: string;
@@ -52,11 +67,19 @@ export async function trackEvent(event: TrackingEvent): Promise<boolean> {
   }
 }
 
+export async function logEvent(
+  eventName: EventName,
+  metadata?: Record<string, unknown>,
+  userId?: string
+): Promise<boolean> {
+  return trackEvent({ eventName, metadata, userId });
+}
+
 export function getFunnelStage(eventName: EventName): string {
   const stages: Record<EventName, string> = {
     landing_page_view: 'visitor',
     start_reading_click: 'visitor',
-    reading_started: 'reader', // Reading session initiated
+    reading_started: 'reader',
     question_submitted: 'reader',
     ginni_message_sent: 'engaged',
     reading_completed: 'engaged',
@@ -70,6 +93,21 @@ export function getFunnelStage(eventName: EventName): string {
     session_start: 'visitor',
     session_end: 'visitor',
     error_occurred: 'error',
+    premium_payment_initiated: 'conversion',
+    premium_payment_success: 'revenue',
+    premium_payment_failed: 'error',
+    premium_payment_dismissed: 'error',
+    premium_conversion: 'revenue',
+    premium_subscribed: 'revenue',
+    premium_activated_reading_page: 'revenue',
+    paywall_triggered: 'conversion',
+    upgrade_requested: 'conversion',
+    upgrade_cta_clicked: 'conversion',
+    premium_modal_closed: 'error',
+    message_sent: 'engaged',
+    premium_order_created: 'conversion',
+    payment_verification_failed: 'error',
+    reading_iframe_loaded: 'engaged',
   };
   return stages[eventName] || 'unknown';
 }

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Clock, Crown, X } from 'lucide-react';
+import { Crown, X } from 'lucide-react';
 import Link from 'next/link';
 
 interface PremiumUpgradeModalProps {
@@ -61,22 +61,44 @@ export default function PremiumUpgradeModal({ isOpen, onClose }: PremiumUpgradeM
 
             <div className="text-center mb-6">
               <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-[#FFD700] to-[#FF4D4D] flex items-center justify-center">
-                <Clock className="w-8 h-8 text-black" />
+                <Crown className="w-8 h-8 text-black" />
               </div>
               
               <h3 className="text-2xl font-bold text-white mb-2">
                 Your Daily Guidance Is Complete ✨
               </h3>
               <p className="text-[#A1A1AA]">
-                Your next message will be available in{' '}
-                <span className="text-[#FFD700] font-medium">{timeUntilReset}</span>
+                 Ginni has revealed today&apos;s message for you.
               </p>
             </div>
 
             <div className="bg-white/5 rounded-xl p-4 mb-6 border border-white/10">
               <p className="text-white text-center leading-relaxed">
-                Unlock unlimited conversations with Ginni and receive deeper spiritual guidance anytime you want.
+                Unlock unlimited spiritual conversations and deeper tarot guidance anytime.
               </p>
+            </div>
+
+            <div className="space-y-2 mb-6">
+              <div className="flex items-center gap-2 text-sm text-[#A1A1AA]">
+                <span className="text-[#FFD700]">✓</span>
+                <span>Unlimited tarot readings</span>
+              </div>
+              <div className="flex items-center gap-2 text-sm text-[#A1A1AA]">
+                <span className="text-[#FFD700]">✓</span>
+                <span>Unlimited Ginni conversations</span>
+              </div>
+              <div className="flex items-center gap-2 text-sm text-[#A1A1AA]">
+                <span className="text-[#FFD700]">✓</span>
+                <span>Deep emotional guidance</span>
+              </div>
+              <div className="flex items-center gap-2 text-sm text-[#A1A1AA]">
+                <span className="text-[#FFD700]">✓</span>
+                <span>Spiritual clarity anytime</span>
+              </div>
+              <div className="flex items-center gap-2 text-sm text-[#A1A1AA]">
+                <span className="text-[#FFD700]">✓</span>
+                <span>Premium reading experience</span>
+              </div>
             </div>
 
             <Link href="/premium" passHref>
@@ -84,7 +106,7 @@ export default function PremiumUpgradeModal({ isOpen, onClose }: PremiumUpgradeM
                 className="w-full py-4 rounded-xl bg-gradient-to-r from-[#FFD700] to-[#FF4D4D] text-black font-bold text-lg hover:shadow-lg hover:shadow-[#FFD700]/25 transition-all transform hover:scale-[1.02]"
                 onClick={onClose}
               >
-                Upgrade to Premium — ₹199/month
+                Unlock Premium — ₹199/month
               </button>
             </Link>
 
@@ -92,7 +114,7 @@ export default function PremiumUpgradeModal({ isOpen, onClose }: PremiumUpgradeM
               onClick={onClose}
               className="w-full mt-3 text-sm text-[#A1A1AA] hover:text-white transition-colors"
             >
-              Continue Exploring
+              Maybe Later
             </button>
           </motion.div>
         </motion.div>

@@ -80,34 +80,40 @@ export async function getFunnelAnalytics(
     return getMockFunnelData();
   }
 
-  try {
-    const { data: events, error } = await supabase
-      .from('tracking_events')
-      .select('event_name, user_id, created_at')
-      .gte('created_at', startDate.toISOString())
-      .lte('created_at', endDate.toISOString())
-      .order('created_at', { ascending: true });
+   try {
+     const { data: rawEvents, error } = await supabase
+       .from('tracking_events')
+       .select('event_name, user_id, event_category')
+       .gte('created_at', startDate.toISOString())
+       .lte('created_at', endDate.toISOString())
+       .order('created_at', { ascending: true });
 
-    if (error || !events) {
-      console.error('[Funnel] Error:', error);
-      return getMockFunnelData();
-    }
+     if (error || !rawEvents) {
+       console.error('[Funnel] Error:', error);
+       return getMockFunnelData();
+     }
 
-    const stepCounts: Record<string, number> = {};
-    const uniqueUsers = new Set<string>();
+     const events: TrackingEvent[] = rawEvents.map(event => ({
+       eventName: event.event_name,
+       userId: event.user_id,
+       eventCategory: event.event_category,
+     }));
 
-    CONVERSION_FUNNEL.forEach(step => {
-      stepCounts[step] = 0;
-    });
+     const stepCounts: Record<string, number> = {};
+     const uniqueUsers = new Set<string>();
 
-    events.forEach(event => {
-      if (CONVERSION_FUNNEL.includes(event.event_name)) {
-        stepCounts[event.event_name]++;
-        if (event.user_id) {
-          uniqueUsers.add(event.user_id);
-        }
-      }
-    });
+     CONVERSION_FUNNEL.forEach(step => {
+       stepCounts[step] = 0;
+     });
+
+     events.forEach((event: TrackingEvent) => {
+       if (CONVERSION_FUNNEL.includes(event.eventName)) {
+         stepCounts[event.eventName]++;
+         if (event.userId) {
+           uniqueUsers.add(event.userId);
+         }
+       }
+     });
 
     const totalUsers = uniqueUsers.size || 1;
     const funnel: FunnelData[] = [];
@@ -176,22 +182,33 @@ export async function getDropOffAnalysis(
     };
   }
 
-  try {
-    const { data: events } = await supabase
-      .from('tracking_events')
-      .select('event_name, metadata')
-      .eq('page_url', page)
-      .gte('created_at', new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString());
+   try {
+     const { data: rawEvents } = await supabase
+       .from('tracking_events')
+       .select('event_name, metadata')
+       .eq('page_url', page)
+       .gte('created_at', new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString());
 
-    const clickCounts: Record<string, number> = {};
-    const exitEvents = events?.filter(e => e.event_name === 'page_exit') || [];
-    const bounceEvents = events?.filter(e => e.event_name === 'page_bounce') || [];
+     if (!rawEvents) {
+       return {
+         bounceRate: 42,
+         exitRate: 28,
+         avgTimeOnPage: 45,
+         clickHeatmap: {},
+       };
+     }
 
-    events?.forEach(event => {
-      if (event.event_name === 'element_click' && event.metadata?.element) {
-        clickCounts[event.metadata.element] = (clickCounts[event.metadata.element] || 0) + 1;
-      }
-    });
+     const events = rawEvents as Array<{ event_name: string; metadata: any }>;
+
+      const clickCounts: Record<string, number> = {};
+      const exitEvents = events?.filter((e) => e.event_name === 'page_exit') || [];
+      const bounceEvents = events?.filter((e) => e.event_name === 'page_bounce') || [];
+
+      events?.forEach((event) => {
+        if (event.event_name === 'element_click' && event.metadata?.element) {
+          clickCounts[event.metadata.element] = (clickCounts[event.metadata.element] || 0) + 1;
+        }
+      });
 
     const total = events?.length || 1;
     return {
@@ -233,23 +250,23 @@ export async function getConversionMetrics(): Promise<{
   try {
     const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
 
-    const { count: totalVisitors } = await supabase
-      .from('tracking_events')
-      .select('*', { count: 'exact', head: true })
-      .eq('event_name', 'page_view_homepage')
-      .gte('created_at', thirtyDaysAgo.toISOString());
+     const { count: totalVisitors } = await supabase
+       .from('tracking_events')
+       .select('*', { count: 'exact', head: true })
+       .eq('eventName', 'page_view_homepage')
+       .gte('created_at', thirtyDaysAgo.toISOString());
 
-    const { count: startReading } = await supabase
-      .from('tracking_events')
-      .select('*', { count: 'exact', head: true })
-      .eq('event_name', 'start_reading_click')
-      .gte('created_at', thirtyDaysAgo.toISOString());
+     const { count: startReading } = await supabase
+       .from('tracking_events')
+       .select('*', { count: 'exact', head: true })
+       .eq('eventName', 'start_reading_click')
+       .gte('created_at', thirtyDaysAgo.toISOString());
 
-    const { count: completed } = await supabase
-      .from('tracking_events')
-      .select('*', { count: 'exact', head: true })
-      .eq('event_name', 'reading_completed')
-      .gte('created_at', thirtyDaysAgo.toISOString());
+     const { count: completed } = await supabase
+       .from('tracking_events')
+       .select('*', { count: 'exact', head: true })
+       .eq('eventName', 'reading_completed')
+       .gte('created_at', thirtyDaysAgo.toISOString());
 
     const { data: payments } = await supabase
       .from('payments')
@@ -257,7 +274,7 @@ export async function getConversionMetrics(): Promise<{
       .gte('created_at', thirtyDaysAgo.toISOString())
       .eq('status', 'completed');
 
-    const totalRevenue = payments?.reduce((sum, p) => sum + (p.amount || 0), 0) || 0;
+     const totalRevenue = payments?.reduce((sum: number, p: { amount?: number | null }) => sum + (p.amount || 0), 0) || 0;
     const paidUsers = payments?.length || 0;
 
     const visitors = totalVisitors || 1;
@@ -311,7 +328,7 @@ export async function getTopPerformingPages(): Promise<Array<{
 
     const pageStats: Record<string, { visitors: number; conversions: number }> = {};
 
-    events.forEach(event => {
+     events.forEach((event: { page_url?: string; event_name: string }) => {
       const page = event.page_url || 'unknown';
       if (!pageStats[page]) {
         pageStats[page] = { visitors: 0, conversions: 0 };

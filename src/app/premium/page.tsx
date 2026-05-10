@@ -169,7 +169,7 @@ export default function PremiumPage() {
                 Can I cancel anytime?
               </summary>
               <p className="mt-2 px-4 text-[#A1A1AA]">
-                Yes, you can cancel your subscription at any time. You'll continue to have access until the end of your billing period.
+                 Yes, you can cancel your subscription at any time. You&apos;ll continue to have access until the end of your billing period.
               </p>
             </details>
             

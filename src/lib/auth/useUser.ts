@@ -26,9 +26,9 @@ export function useUser() {
     const fetchUser = async () => {
       setIsLoading(true);
 
-      try {
-        // Get auth user
-        const { data: { user: authUser }, error: authError } = await supabase.auth.getUser();
+       try {
+         // Get auth user
+         const { data: { user: authUser }, error: authError } = await supabase.auth.getUser();
 
         if (authError || !authUser) {
           // Not authenticated - use anonymous ID

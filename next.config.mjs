@@ -4,9 +4,6 @@ const nextConfig = {
     remotePatterns: [],
     unoptimized: true,
   },
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
 };
 
 export default nextConfig;

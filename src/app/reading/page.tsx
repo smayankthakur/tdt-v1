@@ -1,44 +1,234 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import Head from "next/head";
+import { useState, useEffect, useRef, useCallback } from 'react';
+import { motion } from 'framer-motion';
+import Head from 'next/head';
+import { useUser } from '@/lib/auth/useUser';
+import { useSubscription } from '@/lib/subscription/useSubscription';
+import { useDailyMessageLimit } from '@/hooks/useDailyMessageLimit';
+import PremiumModal from '@/components/subscription/PremiumModal';
+import { logEvent } from '@/lib/utils/tracking';
 
 export default function ReadingPage() {
+  const { user, isLoading: userLoading } = useUser();
+  const {
+    plan,
+    isActive: premiumActive,
+    isPremiumOverride,
+    setPaymentStatus,
+    refresh: refreshSubscription,
+    userId,
+  } = useSubscription();
+  const {
+    remaining,
+    isUnlimited,
+    canSendMessage: canSendMsg,
+    consumeMessage,
+    refresh: refreshLimit,
+    getTimeUntilReset,
+  } = useDailyMessageLimit();
+
   const [loaded, setLoaded] = useState(false);
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+  const [iframeBlocked, setIframeBlocked] = useState(false);
+  const [subscriptionSent, setSubscriptionSent] = useState(false);
+  const iframeRef = useRef<HTMLIFrameElement>(null);
+
+  const isPremium = premiumActive || isPremiumOverride;
+  const canInteract = isPremium || canSendMsg;
+  const isLoading = userLoading;
+
+  const sendSubscriptionState = useCallback(() => {
+    if (!iframeRef.current?.contentWindow) return;
+    try {
+      iframeRef.current.contentWindow.postMessage(
+        { type: 'SUBSCRIPTION_STATUS', plan: isPremium ? 'premium' : 'free', isPremium, canSendMessage: canInteract },
+        '*'
+      );
+    } catch { /* cross-origin expected */ }
+  }, [isPremium, canInteract]);
+
+  const sendUnlockToIframe = useCallback(() => {
+    if (!iframeRef.current?.contentWindow) return;
+    try {
+      iframeRef.current.contentWindow.postMessage({ type: 'SUBSCRIPTION_SUCCESS', plan: 'premium' }, '*');
+    } catch { /* expected */ }
+    window.dispatchEvent(new CustomEvent('subscription_activated', { detail: { plan: 'premium' } }));
+  }, []);
+
+  const handleMessageSent = async () => {
+    if (!userId || isPremium) return;
+    const mod = await import('@/lib/subscription/checkAccess');
+    await mod.recordMessage(userId);
+    consumeMessage();
+    const { canSendMessage } = await mod.checkSubscriptionAccess(userId, 'free');
+    if (!canSendMessage) {
+      setIframeBlocked(true);
+      setTimeout(() => {
+        setShowUpgradeModal(true);
+        logEvent('paywall_triggered', { userId, trigger: 'message_limit_reached' });
+      }, 1500);
+    }
+  };
+
+  useEffect(() => {
+    if (userLoading) return;
+    const doCheck = async () => {
+      if (!userId) return;
+      const mod = await import('@/lib/subscription/checkAccess');
+      const { canSendMessage } = await mod.checkSubscriptionAccess(userId, 'free');
+      if (!canSendMessage && !isPremium) setIframeBlocked(true);
+    };
+    doCheck();
+  }, [userId, userLoading, isPremium]);
+
+  useEffect(() => {
+    const handleMessage = async (event: MessageEvent) => {
+      if (event.data?.type === 'GINNI_MESSAGE_SENT' && !isPremium) {
+        await handleMessageSent();
+      }
+      if (event.data?.type === 'INITIATE_UPGRADE') {
+        setShowUpgradeModal(true);
+        logEvent('upgrade_requested', { source: 'iframe', userId });
+      }
+      if (event.data?.type === 'GINNI_READY') {
+        sendSubscriptionState();
+      }
+    };
+    window.addEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
+  }, [isPremium, userId, sendSubscriptionState]);
+
+  useEffect(() => {
+    if (loaded && subscriptionSent) sendSubscriptionState();
+  }, [isPremium, plan, loaded, subscriptionSent, sendSubscriptionState]);
+
+  useEffect(() => {
+    if (!loaded) return;
+    const timer = setTimeout(() => {
+      sendSubscriptionState();
+      setSubscriptionSent(true);
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [loaded, sendSubscriptionState]);
+
+  const handlePaymentSuccess = useCallback(() => {
+    setIframeBlocked(false);
+    setShowUpgradeModal(false);
+    setPaymentStatus('success');
+    refreshSubscription();
+    refreshLimit();
+    sendUnlockToIframe();
+    logEvent('premium_activated_reading_page', { userId, previousPlan: 'free', newPlan: 'premium' });
+  }, [refreshSubscription, refreshLimit, sendUnlockToIframe, setPaymentStatus, userId]);
+
+  useEffect(() => {
+    if (iframeBlocked && isPremium) { setIframeBlocked(false); sendUnlockToIframe(); }
+  }, [isPremium, iframeBlocked, sendUnlockToIframe]);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const url = new URL(window.location.href);
+    if (url.searchParams.get('payment') === 'success' || url.searchParams.get('plan') === 'premium') {
+      url.searchParams.delete('plan');
+      url.searchParams.delete('payment');
+      window.history.replaceState({}, '', url.toString());
+      setIframeBlocked(false);
+      setPaymentStatus('success');
+      if (userId) localStorage.setItem('premium_override', 'true');
+    }
+  }, [userId, setPaymentStatus]);
 
   return (
-    <main className="flex-1 flex flex-col overflow-hidden bg-[#0B0B0F]">
-      {/* Reading Container */}
-      <section className="flex-1 relative bg-gradient-to-b from-[#0B0B0F] to-[#1A1A2E]">
-        {/* Loader */}
+    <>
+      <Head>
+        <title>The Divine Tarot | Your Reading</title>
+        <meta name="description" content="Receive your personalized tarot reading from Ginni." />
+        <meta name="robots" content="noindex, nofollow" />
+      </Head>
+
+      <main className="flex-1 flex flex-col overflow-hidden bg-[#0B0B0F] relative">
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-0 left-0 w-full h-full opacity-[0.03]">
+            <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-[#FFD700] rounded-full blur-3xl" />
+            <div className="absolute top-1/3 right-1/4 w-80 h-80 bg-[#FF4D4D] rounded-full blur-3xl" />
+            <div className="absolute bottom-1/4 left-1/3 w-72 h-72 bg-[#7C3AED] rounded-full blur-3xl" />
+          </div>
+        </div>
+
         {!loaded && (
-          <div className="absolute inset-0 flex items-center justify-center z-10 text-white">
+          <div className="flex-1 flex items-center justify-center relative z-10">
             <div className="text-center">
               <div className="inline-flex items-center justify-center w-16 h-16 rounded-full border-4 border-[#C9A962]/30 border-t-[#C9A962] mb-4 animate-spin" />
-              <p className="text-[#C9A962] text-sm font-medium">
-                Connecting to your reader...
-              </p>
+              <p className="text-[#C9A962] text-sm font-medium">Connecting to your reader...</p>
+              {!isLoading && !isPremium && <p className="text-[#A1A1AA] text-xs mt-2">You have {remaining} free reading{remaining !== 1 ? 's' : ''} today</p>}
             </div>
           </div>
         )}
 
-        {/* Iframe Container - 90% size, centered */}
-        <div className="flex-1 flex items-center justify-center">
-          <div className="w-[90vw] h-[90vh] flex items-center justify-center">
-            <iframe
-              src="https://ginni-ki-baatein-buddy.lovable.app"
-              width="100%"
-              height="100%"
-              className={`border-none transition-all duration-500 ${
-                loaded ? "opacity-100 scale-100" : "opacity-0 scale-95"
-              }`}
-              onLoad={() => setLoaded(true)}
-              allow="clipboard-write; microphone; camera"
-              sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
-            />
+        <div className={`flex-1 relative transition-all duration-700 ${loaded ? 'opacity-100' : 'opacity-0'} ${iframeBlocked ? 'blur-sm' : ''}`}>
+          {iframeBlocked && !isPremium && (
+            <div className="absolute inset-0 z-30 flex items-center justify-center" style={{ background: 'rgba(11,11,15,0.7)', backdropFilter: 'blur(8px)' }}>
+              <div className="text-center animate-fade-in-up max-w-sm mx-4">
+                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-purple-900/40 to-indigo-900/40 border border-purple-500/30 flex items-center justify-center">
+                  <svg className="w-7 h-7 text-purple-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
+                </div>
+                <h3 className="font-heading text-xl text-white mb-2">Daily Reading Complete</h3>
+                <p className="text-[#A1A1AA] text-sm mb-4">Your daily free reading is complete. Upgrade to Premium for unlimited guidance.</p>
+                <div className="bg-white/[0.03] rounded-xl p-3 mb-4 border border-white/[0.05]">
+                  <div className="flex items-center gap-2 text-[11px] text-purple-300/60 mb-2">
+                    <ClockIcon /> <span>Next reading in: {getTimeUntilReset()}</span>
+                  </div>
+                </div>
+                <button onClick={() => { setShowUpgradeModal(true); logEvent('upgrade_cta_clicked', { userId }); }} className="w-full py-3.5 rounded-xl bg-gradient-to-r from-[#FFD700] to-[#FFC400] text-black font-bold text-sm hover:shadow-lg hover:shadow-[#FFD700]/30 transition-all flex items-center justify-center gap-2">
+                  <CrownIcon className="w-4 h-4" /> Unlock Premium - 199/month
+                </button>
+                <button onClick={() => setIframeBlocked(false)} className="w-full mt-2.5 text-xs text-purple-400/50 hover:text-purple-300 transition-colors py-1.5">Continue with free experience</button>
+              </div>
+            </div>
+          )}
+
+          <div className="flex-1 flex items-center justify-center">
+            <div className="w-[92vw] h-[88vh] md:w-[85vw] md:h-[88vh]">
+              <iframe
+                ref={iframeRef}
+                src={`https://ginni-ki-baatein-buddy.lovable.app${isPremium ? '?plan=premium' : ''}`}
+                width="100%" height="100%"
+                className={`border-none transition-all duration-500 ${loaded ? 'opacity-100' : 'opacity-0'} ${iframeBlocked ? 'pointer-events-none opacity-40' : ''}`}
+                onLoad={() => { setLoaded(true); logEvent('reading_iframe_loaded', { userId, plan, isPremium }); }}
+                allow="clipboard-write; microphone; camera"
+                sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
+                title="Ginni AI Spiritual Reading"
+                referrerPolicy="no-referrer" loading="lazy"
+              />
+            </div>
           </div>
         </div>
-      </section>
-    </main>
+
+        {!isPremium && loaded && (
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.8 }} className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20">
+            <div className={`px-4 py-2 rounded-full text-xs font-medium backdrop-blur-md border ${remaining > 0 ? 'bg-emerald-900/30 border-emerald-500/30 text-emerald-300' : 'bg-red-900/30 border-red-500/30 text-red-300'}`}>
+              {remaining > 0 ? `${remaining} free reading${remaining !== 1 ? 's' : ''} remaining today` : 'Daily limit reached'}
+            </div>
+          </motion.div>
+        )}
+      </main>
+
+      <PremiumModal
+        isOpen={showUpgradeModal}
+        onClose={() => { setShowUpgradeModal(false); logEvent('premium_modal_closed', { userId }); }}
+        triggerSource="paywall"
+        onPaymentSuccess={handlePaymentSuccess}
+      />
+
+      <style>{`@keyframes fade-in-up{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}.animate-fade-in-up{animation:fade-in-up .5s ease-out forwards}`}</style>
+    </>
   );
+}
+
+function ClockIcon({ className = 'w-4 h-4' }: { className?: string }) {
+  return <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>;
+}
+function CrownIcon({ className = 'w-4 h-4' }: { className?: string }) {
+  return <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v5.25c0 .564.18 1.083.507 1.5L12 20l8.493-5.247c.327-.417.507-.936.507-1.5V6.253C19.168 5.477 17.582 5 16 5s-3.168.477-4.5 1.253z" /></svg>;
 }

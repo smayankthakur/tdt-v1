@@ -99,6 +99,192 @@
     font-family: var(--font-heading);
   }
 
+  /* ==========================================
+     PREMIUM PAYWALL & SUBSCRIPTION STYLES
+     ========================================== */
+
+  /* Locked iframe overlay */
+  .iframe-lock-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 30;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(11, 11, 15, 0.75);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+
+  /* Blur effect for locked iframe */
+  .iframe-blurred iframe {
+    filter: blur(6px);
+    pointer-events: none;
+    opacity: 0.5;
+    transition: filter 0.5s ease, opacity 0.5s ease;
+  }
+
+  /* Premium modal backdrop */
+  .premium-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+  }
+
+  /* Premium modal card */
+  .premium-modal-card {
+    position: relative;
+    width: 100%;
+    max-width: 28rem;
+    padding: 2.5rem 2rem;
+    background: linear-gradient(135deg, #1a1a2e 0%, #0b0b0f 100%);
+    border-radius: 1.75rem;
+    border: 1px solid rgba(255, 215, 0, 0.2);
+    box-shadow:
+      0 0 60px rgba(255, 215, 0, 0.08),
+      0 0 120px rgba(124, 58, 237, 0.05);
+    overflow: hidden;
+  }
+
+  /* Premium shimmer animation */
+  @keyframes shimmer-glow {
+    0% { box-shadow: 0 0 20px rgba(255, 215, 0, 0.2); }
+    50% { box-shadow: 0 0 40px rgba(255, 215, 0, 0.4), 0 0 60px rgba(255, 77, 77, 0.1); }
+    100% { box-shadow: 0 0 20px rgba(255, 215, 0, 0.2); }
+  }
+
+  .premium-glow {
+    animation: shimmer-glow 3s ease-in-out infinite;
+  }
+
+  /* Shimmer sweep */
+  @keyframes shimmer-sweep {
+    0% { transform: translateX(-100%); opacity: 0; }
+    50% { opacity: 0.4; }
+    100% { transform: translateX(100%); opacity: 0; }
+  }
+
+  .shimmer-sweep {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    animation: shimmer-sweep 3s ease-in-out infinite;
+  }
+
+  /* Feature list item hover */
+  .premium-feature-item {
+    transition: background-color 0.2s ease, transform 0.15s ease;
+  }
+
+  .premium-feature-item:hover {
+    background-color: rgba(255, 255, 255, 0.06);
+    transform: translateX(4px);
+  }
+
+  /* CTA button pulse */
+  @keyframes cta-pulse {
+    0%, 100% { box-shadow: 0 0 20px rgba(255, 215, 0, 0.3); }
+    50% { box-shadow: 0 0 30px rgba(255, 215, 0, 0.5); }
+  }
+
+  .cta-pulse {
+    animation: cta-pulse 2s ease-in-out infinite;
+  }
+
+  /* Bottom usage indicator */
+  .usage-indicator-enter {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+  }
+
+  .usage-indicator-enter-active {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Loading spinner */
+  @keyframes spin-slow {
+    to { transform: rotate(360deg); }
+  }
+
+  .spin-slow {
+    animation: spin-slow 2s linear infinite;
+  }
+
+  /* Fade in up animation */
+  @keyframes fade-in-up {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-fade-in-up {
+    animation: fade-in-up 0.5s ease-out forwards;
+  }
+
+  /* Scale bounce for interactive elements */
+  @keyframes scale-bounce {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+  }
+
+  .scale-bounce {
+    animation: scale-bounce 0.3s ease-in-out;
+  }
+
+  /* Progress bar animation */
+  @keyframes progress-pulse {
+    0%, 100% { opacity: 0.6; }
+    50% { opacity: 1; }
+  }
+
+  .progress-pulse {
+    animation: progress-pulse 2s ease-in-out infinite;
+  }
+
+  /* Mobile-specific optimizations */
+  @media (max-width: 768px) {
+    .premium-modal-card {
+      padding: 1.75rem 1.25rem;
+      max-width: calc(100vw - 2rem);
+      border-radius: 1.5rem;
+    }
+
+    .premium-modal-backdrop {
+      padding: 0.75rem;
+      align-items: flex-end;
+    }
+
+    .usage-indicator-enter {
+      transform: translateY(10px);
+    }
+  }
+
+  @media (max-width: 480px) {
+    .premium-modal-card {
+      padding: 1.5rem 1rem;
+      border-radius: 1.25rem;
+    }
+
+    .premium-modal-backdrop {
+      padding: 0.5rem;
+    }
+  }
+
   p {
     line-height: 1.75;
   }
